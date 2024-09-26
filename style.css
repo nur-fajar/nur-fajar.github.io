@@ -1,0 +1,213 @@
+/* CSS files add styling rules to your content */
+
+p, h1, h2, h3, h4, span {
+  font-family: "Barlow";
+  font-weight: 300; 
+}
+
+body.dark-mode {
+  background-color: #000;
+  color: #fff;
+}
+
+body.light-mode {
+  background-color: #fff;
+  color: #000;
+}
+
+body {
+  scroll-behavior: smooth;
+  background-color: #fff;
+  color: #000;
+}
+
+a {
+  text-decoration: none;
+}
+
+.switch {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 4%;
+  right: 2%;
+}
+
+.st {
+  font-weight: 300;
+}
+
+.st:hover {
+  font-weight: 700;
+}
+
+.link {
+  font-weight: 700;
+  color: #00aacc;
+}
+
+.link:hover {
+  padding-left: 5px;
+  padding-right: 5px;
+  color: yellow;
+  background-color: #FF0077;
+  font-weight: 700;
+}
+
+.link1 {
+  font-weight: 700;
+
+}
+
+.link1:hover {
+  padding-left: 5px;
+  padding-right: 5px;
+  color: white;
+  background-color: #c40000;
+}
+
+
+#tia1:hover #tia2:after {
+  content: "Athiya Deviyani";
+  font-weight: 500;
+}
+#tia1:hover #tia2:before {
+  content: "";
+  font-weight: 500;
+}
+#tia2:before {
+  content: "Tia";
+  font-weight: 500;
+}
+
+
+.eukbc:hover:after {
+  white-space: pre-wrap;
+  content: '\A British National Championships (2019) \A #BleedGreen \A';
+  background-color: #35602C;
+  color: #fff;
+  font-weight: 500;
+}
+
+.orchestra:hover:after {
+  white-space: pre-wrap;
+  content: '\A Edinburgh University Sinfonia Orchestra (2018) \A Composers\' Orchestra (2017) \A';
+  background-color: #A50034;
+  color: #fff;
+  font-weight: 500;
+  font-size: 3.5vw;
+  line-height: 4vw;
+}
+
+.volunteering:hover:after {
+  white-space: pre-wrap;
+  content: '\A InfPALS Leader (2018-2019) \A Hoppers\' Interview Coach (2019-2020) \A';
+  background-color: #00aacc;
+  color: #fff;
+  font-weight: 500;
+  font-size: 4vw;
+}
+
+.twentynineteen:hover:after {
+    content:' (2019)';
+    font-weight:700;
+}
+
+.twentynineteentwenty:hover:after {
+    content:' (2019, 2020)';
+    font-weight:700;
+}
+
+.twentyeighteen:hover:after {
+    content:' (2018)';
+    font-weight:700;
+}
+
+.twentytwentyone:hover:after {
+    white-space: pre-wrap;
+    content:' #ClassOf2021 ';
+    background-color: #35602C;
+    color: #fff;
+    font-weight:700;
+    paddingright: 5vw;
+  
+}
+.tia:hover:before{
+    content: '';
+    font-weight:500;
+}
+
+.tia:hover:after {
+    content:'';
+    font-weight:500;
+}
+
+.all {
+  position: absolute;
+  bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh; 
+  right: 0em;
+  left: 0em;
+  margin-bottom:2em;
+}
+
+.main {
+  margin-right: 10%;
+  margin-left: 10%;
+}
+
+.bigtext{
+  font-size: 8vw;
+}
+
+.smalltext{
+  font-size: 5vw;
+  LINE-HEIGHT:6vw;
+  align="justify";
+}
+
+.smallishtext{
+  font-size: 4vw;
+  LINE-HEIGHT:5vw;
+  align="justify";
+}
+
+.smallertext{
+  font-size: 2.25vw;
+  LINE-HEIGHT: 3.25vw;
+  align="justify";
+}
+
+
+/* Next & previous buttons */
+.prev, .next {
+  position: absolute;
+  font-family: "Barlow";
+  font-weight: 300;
+  font-size: 5vw;
+  border-radius: 50%;
+  align: center;
+  display: inline-block;
+  padding-left: 3%;
+  padding-right: 3%;
+  bottom: 0px;
+}
+
+/* Position the "next button" to the right */
+
+.prev {
+  position: absolute;
+  left: 3%;
+}
+.next {
+  position: absolute;
+  right: 3%;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  font-weight: 900;
+}
