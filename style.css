@@ -68,7 +68,7 @@ a {
 
 
 #tia1:hover #tia2:after {
-  content: "Athiya Deviyani";
+  content: "NF";
   font-weight: 500;
 }
 #tia1:hover #tia2:before {
@@ -76,7 +76,7 @@ a {
   font-weight: 500;
 }
 #tia2:before {
-  content: "Tia";
+  content: "Nur Fajar";
   font-weight: 500;
 }
 
