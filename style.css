@@ -89,6 +89,22 @@ a {
   font-weight: 500;
 }
 
+.gpa:hover:after {
+  white-space: pre-wrap;
+  content: '\A (GPA: 3.94) \A';
+  background-color: #35602C;
+  color: #fff;
+  font-weight: 500;
+}
+
+.fresh:hover:after {
+  white-space: pre-wrap;
+  content: '\A Fresh \A';
+  background-color: #ff8f21;
+  color: #fff;
+  font-weight: 500;
+}
+
 .orchestra:hover:after {
   white-space: pre-wrap;
   content: '\A Edinburgh University Sinfonia Orchestra (2018) \A Composers\' Orchestra (2017) \A';
@@ -102,6 +118,15 @@ a {
 .volunteering:hover:after {
   white-space: pre-wrap;
   content: '\A InfPALS Leader (2018-2019) \A Hoppers\' Interview Coach (2019-2020) \A';
+  background-color: #00aacc;
+  color: #fff;
+  font-weight: 500;
+  font-size: 4vw;
+}
+
+.teknik:hover:after {
+  white-space: pre-wrap;
+  content: '\A of The Enngineering Faculty \A';
   background-color: #00aacc;
   color: #fff;
   font-weight: 500;
