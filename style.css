@@ -126,7 +126,7 @@ a {
 
 .teknik:hover:after {
   white-space: pre-wrap;
-  content: '\A of The Enngineering Faculty \A';
+  content: '\A of The Engineering Faculty \A';
   background-color: #00aacc;
   color: #fff;
   font-weight: 500;
