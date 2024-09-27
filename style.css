@@ -123,7 +123,7 @@ a {
 }
 
 .teknik:hover:after {
-  content: ' of The Engineering Faculty ';
+  content: ' of The Engineering Faculty';
   font-weight: 500;
   background-color: #35602C;
   color: #fff;
