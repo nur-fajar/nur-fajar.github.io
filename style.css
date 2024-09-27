@@ -157,6 +157,27 @@ a {
   color: #fff;
 }
 
+.BI:hover:after {
+  content: ' in 2021';
+  font-weight: 500;
+  background-color: #35602C;
+  color: #fff;
+}
+
+.BRI:hover:after {
+  content: ' in 2020';
+  font-weight: 500;
+  background-color: #35602C;
+  color: #fff;
+}
+
+.genbi2:hover:after {
+  content: ' (Bank Indonesia Scholarship Awardees Organization) ';
+  font-weight: 500;
+  background-color: #35602C;
+  color: #fff;
+}
+
 .twentynineteen:hover:after {
     content:' (2019)';
     font-weight:700;
