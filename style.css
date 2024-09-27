@@ -129,6 +129,34 @@ a {
   color: #fff;
 }
 
+.gdsc:hover:after {
+  content: ' (Lead & Founder)';
+  font-weight: 500;
+  background-color: #35602C;
+  color: #fff;
+}
+
+.genbi:hover:after {
+  content: ' (QRIS Creative Competition Coordinator)';
+  font-weight: 500;
+  background-color: #35602C;
+  color: #fff;
+}
+
+.kkn:hover:after {
+  content: '(Coordinator)';
+  font-weight: 500;
+  background-color: #35602C;
+  color: #fff;
+}
+
+.hmif:hover:after {
+  content: '(Cadreization Head)';
+  font-weight: 500;
+  background-color: #35602C;
+  color: #fff;
+}
+
 .twentynineteen:hover:after {
     content:' (2019)';
     font-weight:700;
