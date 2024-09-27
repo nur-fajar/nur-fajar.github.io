@@ -92,11 +92,15 @@ a {
 .gpa:hover:after {
   content: ' (GPA: 3.94) ';
   font-weight: 500;
+  background-color: #35602C;
+  color: #fff;
 }
 
 .fresh:hover:after {
   content: ' Fresh ';
   font-weight: 500;
+  background-color: #35602C;
+  color: #fff;
 }
 
 .orchestra:hover:after {
@@ -121,6 +125,8 @@ a {
 .teknik:hover:after {
   content: ' of The Engineering Faculty ';
   font-weight: 500;
+  background-color: #35602C;
+  color: #fff;
 }
 
 .twentynineteen:hover:after {
