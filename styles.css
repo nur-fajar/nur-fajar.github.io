@@ -138,17 +138,87 @@ a:hover { text-decoration: underline; }
 
 /* hero globe — bordered card with a hard offset shadow (stamp-style),
    colors stay on the existing grey/cyan palette */
+.hero-globe { perspective: 1400px; }
 .globe-box {
+  position: relative;
   width: 100%; max-width: 340px; aspect-ratio: 1 / 1; margin: 0 auto;
   border: 1.5px solid var(--line-strong);
   border-radius: 8px;
   background: var(--panel);
   box-shadow: 8px 8px 0 0 var(--line-strong);
-  overflow: hidden;
   transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 .globe-canvas { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
 .globe-canvas:active { cursor: grabbing; }
+
+/* flip card: globe on the front, a Sudoku game on the back */
+.flip-btn {
+  position: absolute; top: 8px; right: 8px; z-index: 3;
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 1px solid var(--line-strong); background: var(--panel-2);
+  color: var(--text-secondary); font-size: 14px; line-height: 1; padding: 0;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+.flip-btn:hover { border-color: var(--accent); color: var(--accent); }
+.flip-inner {
+  position: relative; width: 100%; height: 100%; border-radius: 8px;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(.4, .2, .2, 1);
+}
+.globe-box.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-face {
+  position: absolute; inset: 0; border-radius: 8px; overflow: hidden;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+}
+.flip-back { transform: rotateY(180deg); background: var(--panel); }
+@media (prefers-reduced-motion: reduce) {
+  .flip-inner { transition: none; }
+}
+
+/* sudoku */
+.sudoku { display: flex; flex-direction: column; height: 100%; padding: 12px; gap: 8px; }
+/* padding-right clears the flip button, which sits absolutely at the
+   card's top-right corner above this row */
+.sudoku-head { display: flex; align-items: center; justify-content: space-between; padding-right: 34px; }
+.sudoku-levels { display: flex; gap: 4px; }
+.sudoku-levels button {
+  width: 22px; height: 22px; border-radius: 4px; padding: 0;
+  border: 1px solid var(--line-strong); background: none; color: var(--text-dim);
+  font: inherit; font-size: 11px; cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.sudoku-levels button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.sudoku-timer { font-size: 11px; color: var(--text-dim); }
+
+.sudoku-grid {
+  flex: 1; display: grid; grid-template-columns: repeat(9, 1fr); grid-template-rows: repeat(9, 1fr);
+  background: var(--line-strong); border: 1.5px solid var(--line-strong); border-radius: 3px;
+  gap: 1px; overflow: hidden;
+}
+.sudoku-cell {
+  background: var(--panel-2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--text-primary); font-weight: 600;
+}
+.sudoku-cell.b-right { border-right: 1.5px solid var(--line-strong); }
+.sudoku-cell.b-bottom { border-bottom: 1.5px solid var(--line-strong); }
+.sudoku-cell input {
+  width: 100%; height: 100%; border: 0; background: none; text-align: center;
+  font: inherit; font-size: 12px; font-weight: 400; color: var(--accent); outline: none; padding: 0;
+}
+.sudoku-cell.correct { background: var(--accent-soft); }
+.sudoku-cell.wrong input { color: #e35d5d; }
+
+.sudoku-actions { display: flex; gap: 6px; }
+.sudoku-actions button {
+  flex: 1; padding: 5px 0; border-radius: 5px;
+  border: 1px solid var(--line-strong); background: none; color: var(--text-secondary);
+  font: inherit; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.sudoku-actions button:hover { border-color: var(--accent); color: var(--accent); }
+.sudoku-msg { min-height: 14px; margin: 0; font-size: 10.5px; color: var(--accent); text-align: center; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }

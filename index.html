@@ -75,9 +75,32 @@
         </p>
       </div>
 
-      <div class="hero-globe" aria-hidden="true">
-        <div class="globe-box">
-          <canvas id="globe" class="globe-canvas"></canvas>
+      <div class="hero-globe">
+        <div class="globe-box" id="flip-card">
+          <button type="button" class="flip-btn mono" id="flip-btn" aria-label="Flip for a Sudoku game" title="Flip for a game">⇄</button>
+          <div class="flip-inner">
+            <div class="flip-face flip-front" aria-hidden="true">
+              <canvas id="globe" class="globe-canvas"></canvas>
+            </div>
+            <div class="flip-face flip-back" inert>
+              <div class="sudoku" id="sudoku">
+                <div class="sudoku-head">
+                  <div class="sudoku-levels mono" role="group" aria-label="Sudoku difficulty">
+                    <button type="button" data-level="1" aria-pressed="true">1</button>
+                    <button type="button" data-level="2" aria-pressed="false">2</button>
+                    <button type="button" data-level="3" aria-pressed="false">3</button>
+                  </div>
+                  <span class="sudoku-timer mono" id="sudoku-timer">00:00</span>
+                </div>
+                <div class="sudoku-grid" id="sudoku-grid"></div>
+                <div class="sudoku-actions mono">
+                  <button type="button" id="sudoku-check">Check</button>
+                  <button type="button" id="sudoku-reset">Reset</button>
+                </div>
+                <p class="sudoku-msg mono" id="sudoku-msg" aria-live="polite"></p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -610,6 +633,7 @@
 
 <script src="constellations.js"></script>
 <script src="app.js"></script>
+<script src="sudoku.js"></script>
 
 <!-- GSAP dimuat defer dari CDN. Kalau gagal, motion.js keluar lebih awal dan
      halaman tetap utuh — semua animasi memakai gsap.from(), jadi posisi natural
