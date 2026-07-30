@@ -42,7 +42,13 @@ function skyInit() {
   // canvas covers the whole scrollable page, not just one viewport —
   // gives 88 constellations room to breathe instead of stacking on screen 1
   W = innerWidth; H = docHeight();
-  const dpr = devicePixelRatio || 1;
+  // Canvas ini setinggi seluruh dokumen, jadi W*H*dpr² bisa meledak: di layar
+  // lebar dengan dpr 2 dan halaman ~8.000px, hasilnya puluhan juta piksel yang
+  // digambar ulang setiap frame. Batasi lewat anggaran piksel, bukan dengan
+  // mematikan dpr — layar sempit (mobile) tetap dapat retina karena murah.
+  const SKY_PX_BUDGET = 16e6;
+  const dpr = Math.min(devicePixelRatio || 1,
+                       Math.max(1, Math.sqrt(SKY_PX_BUDGET / (W * H))));
   canvas.style.height = H + 'px';
   canvas.width = W * dpr; canvas.height = H * dpr;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
