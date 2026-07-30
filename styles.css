@@ -156,11 +156,12 @@ a:hover { text-decoration: underline; }
 /* ── Sections & panels ───────────────────────────────────────────────── */
 .section { padding: 40px 0; }
 .section-label {
-  font-size: 11px; letter-spacing: 0.16em; color: var(--text-dim);
-  margin-bottom: 16px;
-  /* Ini <h2> sekarang, tapi tetap harus terbaca quiet — jadi berat dan leading
-     dari aturan h1,h2,h3 dikunci ulang di sini. */
-  font-weight: 400; line-height: 1.65;
+  font-size: 26px; letter-spacing: 0.04em; color: var(--text-secondary);
+  margin-bottom: 20px;
+  /* Ini <h2> — besarnya disengaja supaya benar-benar terbaca sebagai judul
+     section, bukan caption kecil. Berat dan leading dari aturan h1,h2,h3
+     dikunci ulang karena family-nya mono, bukan Space Grotesk. */
+  font-weight: 500; line-height: 1.3;
 }
 .section-label::before { content: '▸ '; color: var(--accent); }
 .panel {
