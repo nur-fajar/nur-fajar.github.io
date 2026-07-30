@@ -345,15 +345,22 @@ const GLOBE_MERIDIANS = [0, 30, 60, 90, 120, 150].map((lon) => {
   }
   return { pts, isEquator: false };
 });
-const GLOBE_BLIPS = [
-  { lat: 35, lon: 40, label: 'L&D' },
-  { lat: -10, lon: -100, label: 'GENAI' },
-  { lat: -30, lon: 150, label: 'AUTOMATION' },
-  { lat: -55, lon: -40, label: 'ML' },
-].map((b) => {
-  const phi = b.lat * Math.PI / 180, lam = b.lon * Math.PI / 180;
-  return { p: [Math.cos(phi) * Math.cos(lam), Math.sin(phi), Math.cos(phi) * Math.sin(lam)], label: b.label };
-});
+// The 12 zodiac constellations, reused straight from the page's own real
+// RA/Dec sky data (constellations.js) — same unit-sphere convention as the
+// parallels/meridians above, so no extra projection or scaling is needed.
+const ZODIAC_NAMES = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+  'Libra', 'Scorpius', 'Sagittarius', 'Capricornus', 'Aquarius', 'Pisces'];
+const raDecToXYZ = ([ra, dec]) => {
+  const r = ra * Math.PI / 180, d = dec * Math.PI / 180;
+  return [Math.cos(d) * Math.cos(r), Math.sin(d), Math.cos(d) * Math.sin(r)];
+};
+const GLOBE_ZODIAC = CONSTELLATIONS.filter((c) => ZODIAC_NAMES.includes(c.n)).map((c) => ({
+  name: c.n,
+  center: raDecToXYZ(c.c),
+  segs: c.l.map((line) => line.map(raDecToXYZ)),
+  la: 0, // label alpha, eased toward hover state
+}));
+const gMouse = { x: -1, y: -1 };
 
 let gYaw = 0.5, gPitch = -0.3, gDragging = false, gLastX = 0, gLastY = 0;
 
@@ -405,19 +412,55 @@ function globeDraw() {
   gctx.arc(cx, cy, R, 0, Math.PI * 2);
   gctx.stroke();
 
+  // zodiac figures on the sphere — drawn after the neutral grid so they read
+  // as "content"; hover reveals the name, same quiet reveal as the
+  // background sky's constellation labels.
+  const GLOBE_HOVER_PX = 10;
+  let gHovered = null, gBestDist = GLOBE_HOVER_PX;
+  const gMouseActive = gMouse.x >= 0;
+
+  gctx.lineWidth = 1;
+  for (const z of GLOBE_ZODIAC) {
+    for (const line of z.segs) {
+      let prev = null;
+      for (const p3 of line) {
+        const p = project(p3);
+        if (prev) {
+          const front = (prev.z + p.z) / 2 >= 0;
+          gctx.globalAlpha = front ? 0.6 : 0.15;
+          gctx.strokeStyle = globeColors.accent;
+          gctx.beginPath();
+          gctx.moveTo(prev.x, prev.y);
+          gctx.lineTo(p.x, p.y);
+          gctx.stroke();
+          if (gMouseActive && front) {
+            const d = distToSegment(gMouse.x, gMouse.y, prev.x, prev.y, p.x, p.y);
+            if (d < gBestDist) { gBestDist = d; gHovered = z; }
+          }
+        }
+        if (p.z >= -0.05) {
+          gctx.globalAlpha = p.z >= 0 ? 0.75 : 0.25;
+          gctx.fillStyle = globeColors.accent;
+          gctx.beginPath();
+          gctx.arc(p.x, p.y, 1.6, 0, Math.PI * 2);
+          gctx.fill();
+        }
+        prev = p;
+      }
+    }
+  }
+
   gctx.font = '9px "IBM Plex Mono", monospace';
-  GLOBE_BLIPS.forEach((b) => {
-    const p = project(b.p);
-    if (p.z < -0.1) return; // hide once it's well around the back
-    gctx.globalAlpha = Math.max(0.35, Math.min(1, p.z + 0.6));
-    gctx.fillStyle = globeColors.accent;
-    gctx.beginPath();
-    gctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-    gctx.fill();
-    gctx.fillStyle = globeColors.text;
-    gctx.textAlign = p.x > cx ? 'left' : 'right';
-    gctx.fillText(b.label, p.x + (p.x > cx ? 8 : -8), p.y + 3);
-  });
+  gctx.textAlign = 'center';
+  for (const z of GLOBE_ZODIAC) {
+    z.la += ((z === gHovered ? 1 : 0) - z.la) * 0.15;
+    if (z.la > 0.01) {
+      const p = project(z.center);
+      gctx.globalAlpha = 0.8 * z.la;
+      gctx.fillStyle = globeColors.accent;
+      gctx.fillText(z.name.toUpperCase(), p.x, p.y - 8);
+    }
+  }
   gctx.globalAlpha = 1;
 }
 
@@ -432,12 +475,17 @@ globeCanvas.addEventListener('pointerdown', (e) => {
   globeCanvas.setPointerCapture(e.pointerId);
 });
 globeCanvas.addEventListener('pointermove', (e) => {
-  if (!gDragging) return;
-  gYaw += (e.clientX - gLastX) * 0.006;
-  gPitch = Math.max(-1.3, Math.min(1.3, gPitch + (e.clientY - gLastY) * 0.006));
-  gLastX = e.clientX; gLastY = e.clientY;
+  const rect = globeCanvas.getBoundingClientRect();
+  gMouse.x = e.clientX - rect.left;
+  gMouse.y = e.clientY - rect.top;
+  if (gDragging) {
+    gYaw += (e.clientX - gLastX) * 0.006;
+    gPitch = Math.max(-1.3, Math.min(1.3, gPitch + (e.clientY - gLastY) * 0.006));
+    gLastX = e.clientX; gLastY = e.clientY;
+  }
   if (reducedMotion.matches) globeDraw();
 });
+globeCanvas.addEventListener('pointerleave', () => { gMouse.x = -1; gMouse.y = -1; });
 addEventListener('pointerup', () => { gDragging = false; });
 
 globeReadColors();
