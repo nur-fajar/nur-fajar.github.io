@@ -83,8 +83,10 @@ const RA_CYCLE_MUL = 1.7;
 /** Sisipan atas/bawah supaya rasi di dekat kutub tidak terpotong tepi dokumen. */
 const EDGE_PAD = 140;
 
-/** 15°/jam dipercepat 40× ≈ 0,167°/detik. Arah dan rigiditas nyata, laju di-skala. */
-const DEG_PER_SEC = 0.167;
+/** 15°/jam dipercepat 120× ≈ 0,5°/detik. Arah dan rigiditas nyata, laju di-skala.
+    (Sebelumnya 40× / 0,167°/detik — itu cuma ~1px/detik gerak horizontal di layar
+    biasa, jadi nyaris tak terlihat. Dinaikkan ~3× supaya benar-benar terasa.) */
+const DEG_PER_SEC = 0.5;
 
 function skyReadColors() {
   const s = getComputedStyle(root);
