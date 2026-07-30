@@ -110,7 +110,8 @@ if (typeof module !== 'undefined') module.exports = { generateSolved, countSolut
 
 /* ── Flip-card UI ──────────────────────────────────────────────────────── */
 if (typeof document !== 'undefined') {
-  const LEVEL_CLUES = { 1: 38, 2: 30, 3: 24 };
+  // level N leaves N*9 cells empty (9 / 18 / 27), so clues = 81 - empty
+  const LEVEL_CLUES = { 1: 72, 2: 63, 3: 54 };
 
   const flipCard = document.getElementById('flip-card');
   const flipBtn = document.getElementById('flip-btn');
