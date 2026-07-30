@@ -22,31 +22,10 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const canvas = document.getElementById('sky');
 const ctx = canvas.getContext('2d');
 
-// simplified shapes of real constellations, local coords 0–1
-const CONSTELLATIONS = [
-  { stars: [[0.05,0.10],[0.20,0.22],[0.35,0.28],[0.50,0.22],[0.55,0.42],[0.80,0.45],[0.85,0.20]],
-    edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,3]] }, // Ursa Major
-  { stars: [[0.65,0.15],[0.25,0.18],[0.55,0.45],[0.45,0.48],[0.35,0.51],[0.30,0.85],[0.60,0.88]],
-    edges: [[0,1],[0,2],[1,4],[2,3],[3,4],[2,6],[4,5]] }, // Orion
-  { stars: [[0.05,0.5],[0.28,0.15],[0.5,0.55],[0.72,0.1],[0.95,0.45]],
-    edges: [[0,1],[1,2],[2,3],[3,4]] }, // Cassiopeia
-  { stars: [[0.1,0.2],[0.2,0.15],[0.28,0.25],[0.35,0.4],[0.4,0.55],[0.35,0.7],[0.25,0.85],[0.15,0.95],[0.05,0.9]],
-    edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8]] }, // Scorpius
-  { stars: [[0.5,0.05],[0.5,0.95],[0.1,0.5],[0.85,0.45]],
-    edges: [[0,1],[2,3]] }, // Crux
-  { stars: [[0.1,0.3],[0.15,0.15],[0.3,0.1],[0.35,0.25],[0.3,0.4],[0.5,0.45],[0.75,0.55],[0.65,0.3]],
-    edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,5]] }, // Leo
-  { stars: [[0.5,0.05],[0.5,0.4],[0.5,0.95],[0.15,0.35],[0.85,0.45]],
-    edges: [[0,1],[1,2],[1,3],[1,4]] }, // Cygnus
-  { stars: [[0.3,0.05],[0.32,0.3],[0.3,0.55],[0.28,0.8],[0.6,0.08],[0.62,0.32],[0.6,0.57],[0.58,0.82]],
-    edges: [[0,1],[1,2],[2,3],[4,5],[5,6],[6,7],[0,4]] }, // Gemini
-  { stars: [[0.5,0.5],[0.3,0.2],[0.4,0.35],[0.75,0.2],[0.6,0.35],[0.15,0.9],[0.9,0.85]],
-    edges: [[1,2],[2,0],[3,4],[4,0],[0,5],[0,6]] }, // Taurus
-  { stars: [[0.5,0.1],[0.3,0.5],[0.7,0.55],[0.65,0.85],[0.25,0.8]],
-    edges: [[0,1],[1,2],[2,3],[3,4],[4,1]] }, // Lyra
-];
+// CONSTELLATIONS (all 88 IAU figures) is loaded from constellations.js
 
 let W, H, dust = [], groups = [];
+const mouse = { x: -1, y: -1 };
 const colors = { dust: '#8B8D93', accent: '#54D6DE' };
 const rand = (a, b) => a + Math.random() * (b - a);
 
@@ -69,12 +48,15 @@ function skyInit() {
     vx: rand(-0.06, 0.06), vy: rand(-0.06, 0.06),
   }));
 
+  // 89 rigid groups; sized small so a full sky of them stays quiet
   groups = CONSTELLATIONS.map((c) => {
-    const w = W * rand(0.12, 0.22);
+    const w = W * rand(0.05, 0.11);
     return {
-      ...c, w, h: w * rand(0.65, 0.95),
+      name: c.n, stars: c.s, edges: c.e,
+      w, h: w * Math.min(c.a, 2.5),
       x: rand(0, W), y: rand(0, H),
       vx: rand(-0.07, 0.07), vy: rand(-0.05, 0.05),
+      la: 0, // label alpha, eased toward hover state
     };
   });
 }
@@ -94,13 +76,23 @@ function skyDraw() {
     ctx.fill();
   }
 
+  // hover: label the smallest constellation under the cursor
+  let hovered = null;
+  for (const g of groups) {
+    const pad = 8;
+    if (mouse.x >= g.x - pad && mouse.x <= g.x + g.w + pad &&
+        mouse.y >= g.y - pad && mouse.y <= g.y + g.h + pad &&
+        (!hovered || g.w * g.h < hovered.w * hovered.h)) hovered = g;
+  }
+
   // B. constellations (rigid groups, drift + wrap on bounding box)
   for (const g of groups) {
     g.x += g.vx; g.y += g.vy;
     if (g.x > W + 20) g.x = -g.w - 20; else if (g.x + g.w < -20) g.x = W + 20;
     if (g.y > H + 20) g.y = -g.h - 20; else if (g.y + g.h < -20) g.y = H + 20;
 
-    ctx.globalAlpha = 0.32;
+    // spec says 0.32, but that was tuned for 10 groups — 89 need a quieter sky
+    ctx.globalAlpha = 0.2;
     ctx.strokeStyle = colors.accent;
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -117,6 +109,16 @@ function skyDraw() {
       ctx.arc(g.x + sx * g.w, g.y + sy * g.h, 1.8, 0, Math.PI * 2);
       ctx.fill();
     }
+
+    // faint name label, eased in/out on hover
+    g.la += ((g === hovered ? 1 : 0) - g.la) * 0.08;
+    if (g.la > 0.01) {
+      ctx.globalAlpha = 0.3 * g.la;
+      ctx.fillStyle = colors.accent;
+      ctx.font = '11px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(g.name.toUpperCase(), g.x + g.w / 2, g.y + g.h + 16);
+    }
   }
   ctx.globalAlpha = 1;
 }
@@ -130,6 +132,10 @@ skyReadColors();
 skyInit();
 skyLoop();
 addEventListener('resize', () => { skyInit(); if (reducedMotion.matches) skyDraw(); });
+addEventListener('mousemove', (e) => {
+  mouse.x = e.clientX; mouse.y = e.clientY;
+  if (reducedMotion.matches) skyDraw();
+});
 reducedMotion.addEventListener('change', () => { if (!reducedMotion.matches) skyLoop(); });
 
 /* ── Terminal Q&A ─────────────────────────────────────────────────────── */
@@ -198,6 +204,11 @@ Certifications:
 · Bank Indonesia & BRI scholarships
 · Thesis published in JOIV (ensemble ML + SMOTE, SDG sentiment)
 · TensorFlow Developer & Google Data Analytics certifications`,
+  interests: `INT / 01  Chess — strategy, reading the opponent, position > material
+INT / 02  Sudoku — step-by-step risk, checking every possible way
+INT / 03  Astronomy — staying humble: we are dust in a cosmic ocean
+          (the 88 constellations behind this page — hover to meet them)
+INT / 04  Books — a standing subscription to other minds`,
   contact: `email     hi.nurfajar@gmail.com
 linkedin  linkedin.com/in/nurfajar
 github    github.com/nur-fajar
@@ -210,6 +221,7 @@ cv        type 'cv' to open the PDF`,
   projects     things built
   leadership   leadership track record
   achievements awards & key results
+  interests    chess, sudoku, astronomy, books
   education    degree & certifications
   contact      how to reach me
   cv           open resume PDF
@@ -231,6 +243,7 @@ const ROUTES = [
   ['contact', ['contact', 'kontak', 'email', 'hubungi', 'reach', 'linkedin', 'github', 'hire', 'rekrut']],
   ['leadership', ['leader', 'pemimpin', 'memimpin', 'kepemimpinan', 'ketua', 'lead ', 'organisasi', 'organization', 'team', 'tim', 'manage', 'kelola']],
   ['achievements', ['achievement', 'prestasi', 'award', 'penghargaan', 'accomplish', 'pencapaian', 'beasiswa', 'scholarship', 'satisfaction', 'kepuasan', 'best graduate', 'lulusan terbaik', 'publikasi', 'publication', 'hebat', 'proud', 'bangga']],
+  ['interests', ['interest', 'hobi', 'hobby', 'hobbies', 'chess', 'catur', 'sudoku', 'astronomy', 'astronomi', 'book', 'buku', 'baca', 'read', 'konstelasi', 'constellation', 'bintang', 'star', 'senggang', 'free time', 'fun']],
 ];
 
 function print(text, cls) {
