@@ -26,11 +26,65 @@ const ctx = canvas.getContext('2d');
 
 // CONSTELLATIONS (all 88 IAU figures) is loaded from constellations.js
 
-let W, H, dust = [], groups = [];
+/* ─────────────────────────────────────────────────────────────────────────────
+   LANGIT — peta deklinasi setinggi dokumen.
+
+   PEMETAAN
+     y  ← Deklinasi. Dec +90° (kutub langit utara) di puncak halaman, −90°
+          (kutub selatan) di dasar. Scroll ke bawah = menyusuri langit dari
+          utara ke selatan, jadi tiap layar baru membawa rasi yang berbeda.
+     x  ← Right Ascension, berputar dalam satu siklus yang lebih lebar dari
+          viewport, sehingga hanya sebagian yang terlihat sekaligus dan
+          pembungkusannya terjadi di luar layar.
+
+   YANG FAKTUAL
+     · Posisi   : dari RA/Dec sungguhan (constellations.js).
+     · Bentuk   : proyeksi gnomonik di pusat tiap rasi, jadi figurnya tidak melar.
+     · Ukuran   : satu skala px-per-derajat untuk semua figur, jadi Hydra (r 67,6°)
+                  memang ~20× Crux (r 3,43°).
+     · Gerak    : SATU rotasi rigid untuk seluruh langit, arah sama, laju sama.
+                  15°/jam yang dipercepat agar terlihat.
+
+   KOMPROMI YANG DISADARI
+     Jarak ANTAR rasi tidak berskala sudut: sumbu y direntangkan ke tinggi
+     dokumen dan sumbu x dipadatkan ke lebar layar. Jadi ini peta deklinasi,
+     bukan pandangan horizon. Posisi, bentuk, dan ukuran tiap rasi tetap benar —
+     yang direntangkan hanya ruang di antaranya.
+
+   KENAPA ABSOLUTE, BUKAN FIXED
+     Canvas ini setinggi dokumen dan ber-position absolute, jadi ia ikut lapisan
+     yang di-scroll: compositor menggesernya tanpa gambar ulang sama sekali.
+     Versi fixed sebelumnya menggambar dari scrollY di dalam rAF dan selalu
+     tertinggal satu frame — itu sumber rasa menyeret. Di sini scroll tidak
+     pernah menyentuh canvas.
+   ────────────────────────────────────────────────────────────────────────── */
+
+let W, docH, skyStars = [], groups = [];
+let lst = 0;              // RA yang sedang berada di titik acuan horizontal
+let lastT = 0;
+
 const mouse = { x: -1, y: -1 };
 const colors = { dust: '#8B8D93', accent: '#54D6DE' };
 const rand = (a, b) => a + Math.random() * (b - a);
 const docHeight = () => Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+
+const D2R = Math.PI / 180;
+const R2D = 180 / Math.PI;
+
+/* ── Dua tombol pengatur rasa ────────────────────────────────────────────────
+   FIGURE_SCALE  px per derajat untuk MENGGAMBAR figur. Naikkan → rasi lebih
+                 besar dan lebih bertumpuk; turunkan → lebih lega.
+   RA_CYCLE_MUL  lebar siklus RA sebagai kelipatan lebar layar. Naikkan → lebih
+                 sedikit rasi terlihat sekaligus (lebih lega), karena sebagian
+                 sedang berada di luar layar secara horizontal.                */
+const FIGURE_SCALE = 6;
+const RA_CYCLE_MUL = 1.7;
+
+/** Sisipan atas/bawah supaya rasi di dekat kutub tidak terpotong tepi dokumen. */
+const EDGE_PAD = 140;
+
+/** 15°/jam dipercepat 40× ≈ 0,167°/detik. Arah dan rigiditas nyata, laju di-skala. */
+const DEG_PER_SEC = 0.167;
 
 function skyReadColors() {
   const s = getComputedStyle(root);
@@ -38,36 +92,79 @@ function skyReadColors() {
   colors.accent = s.getPropertyValue('--accent').trim() || colors.accent;
 }
 
+function raDelta(ra, ref) {
+  let d = ra - ref;
+  while (d > 180) d -= 360;
+  while (d < -180) d += 360;
+  return d;
+}
+
+/** Gnomonik: (ra,dec) relatif pusat → offset derajat pada bidang singgung. */
+function gnomonic(ra, dec, ra0, dec0) {
+  const d = dec * D2R, d0 = dec0 * D2R;
+  const dRa = raDelta(ra, ra0) * D2R;
+  const sinD = Math.sin(d), cosD = Math.cos(d);
+  const sinD0 = Math.sin(d0), cosD0 = Math.cos(d0);
+  const cosC = sinD0 * sinD + cosD0 * cosD * Math.cos(dRa);
+  if (cosC <= 0.01) return null;
+  return [
+    (cosD * Math.sin(dRa)) / cosC * R2D,
+    (cosD0 * sinD - sinD0 * cosD * Math.cos(dRa)) / cosC * R2D,
+  ];
+}
+
+/** Dec → y dokumen. +90 di atas, −90 di bawah. */
+function decToY(dec) {
+  const usable = Math.max(200, docH - EDGE_PAD * 2);
+  return EDGE_PAD + ((90 - dec) / 180) * usable;
+}
+
+let raCycle = 0;
+
 function skyInit() {
-  // canvas covers the whole scrollable page, not just one viewport —
-  // gives 88 constellations room to breathe instead of stacking on screen 1
-  W = innerWidth; H = docHeight();
-  // Canvas ini setinggi seluruh dokumen, jadi W*H*dpr² bisa meledak: di layar
-  // lebar dengan dpr 2 dan halaman ~8.000px, hasilnya puluhan juta piksel yang
-  // digambar ulang setiap frame. Batasi lewat anggaran piksel, bukan dengan
-  // mematikan dpr — layar sempit (mobile) tetap dapat retina karena murah.
-  const SKY_PX_BUDGET = 16e6;
-  const dpr = Math.min(devicePixelRatio || 1,
-                       Math.max(1, Math.sqrt(SKY_PX_BUDGET / (W * H))));
-  canvas.style.height = H + 'px';
-  canvas.width = W * dpr; canvas.height = H * dpr;
+  W = innerWidth;
+  docH = docHeight();
+  raCycle = W * RA_CYCLE_MUL;
+
+  // Canvas setinggi dokumen, jadi dpr perlu dibatasi lewat anggaran piksel —
+  // di sini biayanya nyata, tidak seperti versi viewport.
+  const budget = 14e6;
+  const dpr = Math.min(devicePixelRatio || 1, Math.max(1, Math.sqrt(budget / (W * docH))));
+  canvas.style.height = docH + 'px';
+  canvas.width = Math.round(W * dpr);
+  canvas.height = Math.round(docH * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  const n = Math.min(220, Math.max(80, Math.round((W * H) / 9000)));
-  dust = Array.from({ length: n }, () => ({
-    x: rand(0, W), y: rand(0, H),
-    r: rand(0.4, 1.4),
-    vx: rand(-0.06, 0.06), vy: rand(-0.06, 0.06),
+  // Bintang latar ini PENGISI DEKORATIF, bukan katalog bintang sungguhan —
+  // berbeda dari figur rasi di bawah, yang koordinatnya nyata. Karena itu Dec-nya
+  // diacak MERATA, bukan lewat asin(uniform).
+  //
+  // asin(uniform) memberi sebaran merata di permukaan sfera, dan itu benar secara
+  // geometri — tapi peta ini linear terhadap Dec, sehingga hasilnya menumpuk di
+  // ekuator: terukur 70 bintang di sepersepuluh tengah halaman melawan 3 di
+  // puncak. Area hero jadi kosong. Untuk pengisi, merata di HALAMAN yang benar.
+  skyStars = Array.from({ length: Math.min(420, Math.max(160, Math.round(docH / 22))) }, () => ({
+    ra: rand(0, 360),
+    dec: rand(-90, 90),
+    r: rand(0.4, 1.3),
   }));
 
+  // Offset figur dihitung SEKALI: gnomonik terhadap pusat sendiri tidak
+  // bergantung pada waktu maupun scroll, jadi loop gambar bebas trigonometri.
   groups = CONSTELLATIONS.map((c) => {
-    const w = W * rand(0.035, 0.07);
+    const ra0 = c.c[0], dec0 = c.c[1];
+    const segs = c.l.map((line) => line.map(([ra, dec]) => {
+      const p = gnomonic(ra, dec, ra0, dec0);
+      return p ? [p[0] * FIGURE_SCALE, -p[1] * FIGURE_SCALE] : null;
+    }));
     return {
-      name: c.n, stars: c.s, edges: c.e,
-      w, h: w * Math.min(c.a, 2.5),
-      x: rand(0, W), y: rand(0, H),
-      vx: rand(-0.025, 0.025), vy: rand(-0.018, 0.018),
-      la: 0, // label alpha, eased toward hover state
+      name: c.n,
+      ra: ra0,
+      y: decToY(dec0),
+      rPx: c.r * FIGURE_SCALE,
+      segs,
+      la: 0,
+      sx: 0,
     };
   });
 }
@@ -80,93 +177,141 @@ function distToSegment(px, py, ax, ay, bx, by) {
   return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
 }
 
-function skyDraw() {
-  ctx.clearRect(0, 0, W, H);
+/** RA → x, dibungkus dalam siklus yang lebih lebar dari layar. */
+function raToX(ra) {
+  let f = ((ra - lst) % 360 + 360) % 360 / 360;   // 0..1
+  return f * raCycle - (raCycle - W) / 2;
+}
 
-  // A. ambient dust
-  ctx.globalAlpha = 0.4;
+function skyDraw(dt) {
+  if (dt) lst = (lst + DEG_PER_SEC * dt) % 360;
+
+  ctx.clearRect(0, 0, W, docH);
+
+  // A. bintang latar — penghuni langit yang sama, ikut berputar rigid
+  ctx.globalAlpha = 0.36;
   ctx.fillStyle = colors.dust;
-  for (const d of dust) {
-    d.x += d.vx; d.y += d.vy;
-    if (d.x < -5) d.x = W + 5; else if (d.x > W + 5) d.x = -5;
-    if (d.y < -5) d.y = H + 5; else if (d.y > H + 5) d.y = -5;
+  for (const s of skyStars) {
+    const x = raToX(s.ra);
+    if (x < -3 || x > W + 3) continue;
+    const y = decToY(s.dec);
     ctx.beginPath();
-    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+    ctx.arc(x, y, s.r, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  // hover: nearest constellation whose actual lines pass close to the cursor
+  // B. rasi
   const HOVER_PX = 14;
   let hovered = null, bestDist = HOVER_PX;
-  if (mouse.x >= 0) {
-    for (const g of groups) {
-      for (const [a, b] of g.edges) {
-        const ax = g.x + g.stars[a][0] * g.w, ay = g.y + g.stars[a][1] * g.h;
-        const bx = g.x + g.stars[b][0] * g.w, by = g.y + g.stars[b][1] * g.h;
-        const d = distToSegment(mouse.x, mouse.y, ax, ay, bx, by);
-        if (d < bestDist) { bestDist = d; hovered = g; }
+  const live = [];
+
+  for (const g of groups) {
+    g.sx = raToX(g.ra);
+    if (g.sx + g.rPx < -20 || g.sx - g.rPx > W + 20) { g.la = 0; continue; }
+    live.push(g);
+    if (mouse.x >= 0 && Math.abs(mouse.y - g.y) < g.rPx + 40) {
+      for (const pts of g.segs) {
+        for (let i = 0; i < pts.length - 1; i++) {
+          const a = pts[i], b = pts[i + 1];
+          if (!a || !b) continue;
+          const d = distToSegment(mouse.x, mouse.y,
+            g.sx + a[0], g.y + a[1], g.sx + b[0], g.y + b[1]);
+          if (d < bestDist) { bestDist = d; hovered = g; }
+        }
       }
     }
   }
 
-  // B. constellations (rigid groups, drift + wrap on bounding box)
-  for (const g of groups) {
-    g.x += g.vx; g.y += g.vy;
-    if (g.x > W + 20) g.x = -g.w - 20; else if (g.x + g.w < -20) g.x = W + 20;
-    if (g.y > H + 20) g.y = -g.h - 20; else if (g.y + g.h < -20) g.y = H + 20;
-
+  for (const g of live) {
     ctx.globalAlpha = 0.1;
     ctx.strokeStyle = colors.accent;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    for (const [a, b] of g.edges) {
-      ctx.moveTo(g.x + g.stars[a][0] * g.w, g.y + g.stars[a][1] * g.h);
-      ctx.lineTo(g.x + g.stars[b][0] * g.w, g.y + g.stars[b][1] * g.h);
+    for (const pts of g.segs) {
+      let started = false;
+      for (const p of pts) {
+        if (!p) { started = false; continue; }
+        if (!started) { ctx.moveTo(g.sx + p[0], g.y + p[1]); started = true; }
+        else ctx.lineTo(g.sx + p[0], g.y + p[1]);
+      }
     }
     ctx.stroke();
 
-    ctx.globalAlpha = 0.45;
+    ctx.globalAlpha = 0.5;
     ctx.fillStyle = colors.accent;
-    for (const [sx, sy] of g.stars) {
-      ctx.beginPath();
-      ctx.arc(g.x + sx * g.w, g.y + sy * g.h, 1.8, 0, Math.PI * 2);
-      ctx.fill();
+    for (const pts of g.segs) {
+      for (const p of pts) {
+        if (!p) continue;
+        ctx.beginPath();
+        ctx.arc(g.sx + p[0], g.y + p[1], 1.7, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
-    // faint name label, eased in/out on hover
-    g.la += ((g === hovered ? 1 : 0) - g.la) * 0.08;
+    g.la += ((g === hovered ? 1 : 0) - g.la) * 0.12;
     if (g.la > 0.01) {
-      ctx.globalAlpha = 0.3 * g.la;
+      ctx.globalAlpha = 0.45 * g.la;
       ctx.fillStyle = colors.accent;
       ctx.font = '11px "IBM Plex Mono", monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(g.name.toUpperCase(), g.x + g.w / 2, g.y + g.h + 16);
+      ctx.fillText(g.name.toUpperCase(), g.sx, g.y + g.rPx + 15);
     }
   }
+
   ctx.globalAlpha = 1;
 }
 
-function skyLoop() {
-  skyDraw();
+function skyLoop(t) {
+  const dt = lastT ? Math.min(0.05, (t - lastT) / 1000) : 0;
+  lastT = t;
+  skyDraw(dt);
   if (!reducedMotion.matches) requestAnimationFrame(skyLoop);
 }
 
 skyReadColors();
 skyInit();
-skyLoop();
+// Lewat rAF supaya frame pertama sudah membawa timestamp — kalau dipanggil
+// langsung, dt frame pertama terbuang.
+if (reducedMotion.matches) skyDraw(); else requestAnimationFrame(skyLoop);
+
+// TIDAK ADA listener scroll di sini, dan itu disengaja. Canvas absolute ikut
+// digeser compositor bersama halaman, jadi scroll tidak perlu — dan tidak boleh —
+// memicu gambar ulang. Di situlah lag versi fixed dulu muncul.
+
+const reinit = () => { skyInit(); if (reducedMotion.matches) skyDraw(); };
 
 let resizeTimer;
 addEventListener('resize', () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => { skyInit(); if (reducedMotion.matches) skyDraw(); }, 150);
+  resizeTimer = setTimeout(reinit, 150);
 });
-// content can grow after fonts/images finish loading, which changes doc height
-addEventListener('load', () => { skyInit(); if (reducedMotion.matches) skyDraw(); });
+addEventListener('load', reinit);
+
+// Tinggi dokumen berubah saat <details> dibuka/ditutup. Kalau canvas tidak
+// ikut menyesuaikan, bagian bawah halaman kehabisan langit dan pemetaan Dec
+// jadi meleset.
+if ('ResizeObserver' in window) {
+  let obsTimer, lastH = 0;
+  new ResizeObserver(() => {
+    const h = docHeight();
+    if (Math.abs(h - lastH) < 40) return;
+    lastH = h;
+    clearTimeout(obsTimer);
+    obsTimer = setTimeout(reinit, 120);
+  }).observe(document.body);
+}
+
 addEventListener('mousemove', (e) => {
+  // pageX/pageY: canvas kembali hidup di ruang DOKUMEN, jadi koordinat
+  // dokumenlah yang benar di sini.
   mouse.x = e.pageX; mouse.y = e.pageY;
   if (reducedMotion.matches) skyDraw();
 });
-reducedMotion.addEventListener('change', () => { if (!reducedMotion.matches) skyLoop(); });
+addEventListener('mouseleave', () => { mouse.x = -1; mouse.y = -1; });
+reducedMotion.addEventListener('change', () => {
+  if (!reducedMotion.matches) { lastT = 0; requestAnimationFrame(skyLoop); }
+  else skyDraw();
+});
 
 /* ── Hero globe: draggable wireframe sphere ───────────────────────────── */
 const globeCanvas = document.getElementById('globe');
