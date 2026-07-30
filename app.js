@@ -185,6 +185,19 @@ Awards: Bank Indonesia Scholarship, BRI Scholarship
 Certifications:
 · TensorFlow Developer Certificate — Google, 2024
 · Google Data Analytics Certificate — 2023`,
+  leadership: `Yes — leadership runs through most of the résumé:
+· Founded and led the first GDSC chapter at Siliwangi University —
+  100+ active members in year one, 4 national events co-organized
+· Led 5 learning programs end-to-end at Terra Weather, and led the
+  Train the Trainers initiative that upskilled 6 university lecturers
+· Mentored 50+ students from 25+ universities as a Bangkit ML Mentor
+· Coordinated 80+ Bank Indonesia scholarship recipients at GenBI`,
+  achievements: `· Best Graduate, Faculty of Engineering — GPA 3.94 (Siliwangi Univ.)
+· 9.0/10 learner satisfaction across 350+ learners trained
+· 83% cut in per-prospect email prep time — 1,250+ hours saved
+· Bank Indonesia & BRI scholarships
+· Thesis published in JOIV (ensemble ML + SMOTE, SDG sentiment)
+· TensorFlow Developer & Google Data Analytics certifications`,
   contact: `email     hi.nurfajar@gmail.com
 linkedin  linkedin.com/in/nurfajar
 github    github.com/nur-fajar
@@ -195,6 +208,8 @@ cv        type 'cv' to open the PDF`,
   skills       skill groups (SKL / 01–04)
   programs     GenAI curriculum designed
   projects     things built
+  leadership   leadership track record
+  achievements awards & key results
   education    degree & certifications
   contact      how to reach me
   cv           open resume PDF
@@ -214,6 +229,8 @@ const ROUTES = [
   ['projects', ['project', 'proyek', 'build', 'built', 'bangun', 'automation', 'otomasi', 'agent', 'pipeline', 'crm', 'outreach', 'thesis', 'skripsi']],
   ['education', ['education', 'pendidikan', 'kuliah', 'university', 'universitas', 'gpa', 'ipk', 'degree', 'cert', 'sertifi', 'tensorflow', 'graduate', 'lulus']],
   ['contact', ['contact', 'kontak', 'email', 'hubungi', 'reach', 'linkedin', 'github', 'hire', 'rekrut']],
+  ['leadership', ['leader', 'pemimpin', 'memimpin', 'kepemimpinan', 'ketua', 'lead ', 'organisasi', 'organization', 'team', 'tim', 'manage', 'kelola']],
+  ['achievements', ['achievement', 'prestasi', 'award', 'penghargaan', 'accomplish', 'pencapaian', 'beasiswa', 'scholarship', 'satisfaction', 'kepuasan', 'best graduate', 'lulusan terbaik', 'publikasi', 'publication', 'hebat', 'proud', 'bangga']],
 ];
 
 function print(text, cls) {
@@ -249,7 +266,7 @@ function answer(raw) {
     print(`[matched → ${best}]`, 'hl');
     print(T[best]);
   } else {
-    print(`no signal for "${raw}" — type 'help' for available commands.`);
+    print(`no signal for "${raw}" — try asking about: ${ROUTES.map(([t]) => t).join(', ')}.`);
   }
 }
 
