@@ -20,11 +20,12 @@ html[data-mode="dark"] {
   color-scheme: dark;
 }
 html[data-mode="light"] {
-  /* Jingga, bukan cyan. Cyan di atas latar terang jatuh di bawah 3:1 dan jadi
-     tidak terbaca; jingga tua ini terukur di atas 4,5:1 terhadap --bg, jadi
+  /* Royal blue, bukan cyan. Cyan di atas latar terang jatuh di bawah 3:1 dan
+     jadi tidak terbaca; royal blue standar (#4169E1) juga cuma ~3,8:1, masih
+     di bawah ambang. Shade ini terukur di atas 4,5:1 terhadap --bg, jadi
      tetap aman untuk label dan tautan. Nilainya diverifikasi, bukan dikira. */
-  --accent: #B23A08;
-  --accent-soft: rgba(178, 58, 8, 0.13);
+  --accent: #3050C0;
+  --accent-soft: rgba(48, 80, 192, 0.13);
   --bg: #E4E4E1;
   --panel: #EEEEEC;
   --panel-2: #F5F5F3;
