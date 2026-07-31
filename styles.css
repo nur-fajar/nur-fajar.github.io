@@ -187,7 +187,7 @@ a:hover { text-decoration: underline; }
 
 /* flip tooltip: a short line about this page, on hover/focus of the card */
 .flip-tooltip {
-  position: absolute; left: 50%; bottom: calc(100% + 12px); z-index: 4;
+  position: absolute; left: 50%; bottom: calc(100% + 12px); z-index: 6;
   width: 280px; max-width: 78vw;
   margin: 0; padding: 12px 14px; border-radius: 8px;
   border: 1px solid var(--line-strong); background: var(--panel-2);
