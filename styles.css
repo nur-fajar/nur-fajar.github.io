@@ -693,4 +693,13 @@ a:hover { text-decoration: underline; }
   .nav-links::-webkit-scrollbar { display: none; }
   .nav-links a { white-space: nowrap; }
   .rocket-btn { left: 14px; bottom: 14px; width: 40px; height: 40px; font-size: 18px; }
+  /* hero-globe sits right under the nav on mobile (order: -1), so there's
+     no headroom above the card for the tooltip — flip it to open downward
+     instead of getting clipped by the top of the viewport. */
+  .flip-tooltip { bottom: auto; top: calc(100% + 12px); }
+  .flip-tooltip::after {
+    top: 0; bottom: auto; margin-top: -5px; margin-bottom: 0;
+    border-right: 0; border-bottom: 0;
+    border-left: 1px solid var(--line-strong); border-top: 1px solid var(--line-strong);
+  }
 }
