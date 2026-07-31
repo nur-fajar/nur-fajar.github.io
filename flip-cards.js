@@ -8,11 +8,11 @@
 
 if (typeof document !== 'undefined') {
   const TOOLTIPS = [
-    "Hi, I'm Nur Fajar — most people call me NF or Fajar. Thanks for visiting my site. Flip this card to see what shaped how I think, strategize, and solve problems.",
-    "I've been drawn to the night sky since I was a kid — astronomy, and the patterns stars trace across it. It taught me early that things far apart can still form something beautiful, seen from the right angle.",
-    'Sudoku taught me to weigh many possibilities before committing to one right answer — and to take a calculated risk with confidence.',
-    "Chess taught me to commit to a move, own the consequences, and think a few steps ahead — not just mine, but my opponent's too.",
-    "Books were never just windows to the world or a source of knowledge to me — they've been my inspiration, and I'm still growing with them.",
+    "Hi, I'm Nur Fajar — most people call me NF or Fajar. Thanks for visiting my site. Flip this card to see how I actually think — how I read patterns, solve problems, lead, and keep growing.",
+    "I've read the night sky since I was a kid, tracing patterns in stars scattered light-years apart. It's where I first learned to step back, see the bigger picture, and connect things that don't look connected yet — the start of how I think strategically.",
+    "Sudoku is how I practice solving: weigh every possibility, rule out what doesn't hold, and commit to the one answer left — a calculated risk, not a guess.",
+    "Chess is how I practice leading: make the move, own what it costs, and think past my own next step to how the other side will respond.",
+    "Books are how I keep growing: every one pushes me to adapt, rethink what I know, and become a little more than I was before.",
   ];
 
   const QUOTES = [
@@ -38,11 +38,16 @@ if (typeof document !== 'undefined') {
     () => setRandomQuote(),
   ];
 
+  let lastQuoteIndex = -1;
   function setRandomQuote() {
-    const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+    let i;
+    do { i = Math.floor(Math.random() * QUOTES.length); } while (QUOTES.length > 1 && i === lastQuoteIndex);
+    lastQuoteIndex = i;
+    const q = QUOTES[i];
     document.getElementById('quote-page-text').textContent = q.text;
     document.getElementById('quote-page-meta').textContent = `${q.author} — ${q.book}`;
   }
+  document.getElementById('quote-more').addEventListener('click', setRandomQuote);
 
   let current = 0;
   let animating = false;

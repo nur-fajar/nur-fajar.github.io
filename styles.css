@@ -225,6 +225,13 @@ a:hover { text-decoration: underline; }
 .quote-page-text::before { content: '\201C'; color: var(--accent); }
 .quote-page-text::after { content: '\201D'; color: var(--accent); }
 .quote-page-meta { font-size: 10.5px; color: var(--text-dim); letter-spacing: 0.04em; }
+.quote-more {
+  margin-top: 4px; padding: 5px 16px; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: none; color: var(--text-secondary);
+  font: inherit; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.quote-more:hover { border-color: var(--accent); color: var(--accent); }
 
 /* sudoku */
 .sudoku { display: flex; flex-direction: column; height: 100%; padding: 12px; gap: 8px; }
