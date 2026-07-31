@@ -8,7 +8,7 @@
 
 if (typeof document !== 'undefined') {
   const TOOLTIPS = [
-    "Hi, I'm Nur Fajar — most people call me NF or Fajar. Thanks for visiting my site. Flip this card to see a few things I've actually built.",
+    "Hi, I'm Nur Fajar — most people call me NF or Fajar. Thanks for visiting my site. Flip this card to see what shaped how I think, strategize, and solve problems.",
     "I've been drawn to the night sky since I was a kid — astronomy, and the patterns stars trace across it. It taught me early that things far apart can still form something beautiful, seen from the right angle.",
     'Sudoku taught me to weigh many possibilities before committing to one right answer — and to take a calculated risk with confidence.',
     "Chess taught me to commit to a move, own the consequences, and think a few steps ahead — not just mine, but my opponent's too.",
