@@ -108,15 +108,11 @@ function makePuzzle(clueTarget) {
 
 if (typeof module !== 'undefined') module.exports = { generateSolved, countSolutions, makePuzzle };
 
-/* ── Flip-card UI ──────────────────────────────────────────────────────── */
+/* ── Sudoku page UI ────────────────────────────────────────────────────── */
 if (typeof document !== 'undefined') {
   // level N leaves N*9 cells empty (9 / 18 / 27), so clues = 81 - empty
   const LEVEL_CLUES = { 1: 72, 2: 63, 3: 54 };
 
-  const flipCard = document.getElementById('flip-card');
-  const flipBtn = document.getElementById('flip-btn');
-  const frontFace = flipCard.querySelector('.flip-front');
-  const backFace = flipCard.querySelector('.flip-back');
   const gridEl = document.getElementById('sudoku-grid');
   const timerEl = document.getElementById('sudoku-timer');
   const msgEl = document.getElementById('sudoku-msg');
@@ -130,7 +126,6 @@ if (typeof document !== 'undefined') {
   let timerInterval = null;
   let startTime = 0;
   let solved = false;
-  let flipped = false;
   let initialized = false;
 
   function updateTimerDisplay() {
@@ -245,17 +240,13 @@ if (typeof document !== 'undefined') {
   checkBtn.addEventListener('click', checkPuzzle);
   resetBtn.addEventListener('click', resetPuzzle);
 
-  function setFlipped(v) {
-    flipped = v;
-    flipCard.classList.toggle('flipped', v);
-    frontFace.toggleAttribute('inert', v);
-    backFace.toggleAttribute('inert', !v);
-    flipBtn.setAttribute('aria-label', v ? 'Flip back to globe' : 'Flip for a Sudoku game');
-    // generation only happens the first time someone actually flips the
-    // card, so visitors who never touch it never pay for it
-    if (v && !initialized) { initialized = true; startPuzzle(currentLevel); }
-  }
-  flipBtn.addEventListener('click', () => setFlipped(!flipped));
+  // generation only happens the first time the card is flipped to this
+  // page, so visitors who never see it never pay for it
+  window.initSudokuPage = function initSudokuPage() {
+    if (initialized) return;
+    initialized = true;
+    startPuzzle(currentLevel);
+  };
 
   // minimal hook for automated testing only — reads state, changes nothing
   window.__sudoku = { getSolution: () => solution, isSolved: () => solved };

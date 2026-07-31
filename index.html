@@ -77,12 +77,21 @@
 
       <div class="hero-globe">
         <div class="globe-box" id="flip-card">
-          <button type="button" class="flip-btn mono" id="flip-btn" aria-label="Flip for a Sudoku game" title="Flip for a game">⇄</button>
-          <div class="flip-inner">
-            <div class="flip-face flip-front" aria-hidden="true">
+          <div class="flip-controls">
+            <span class="flip-count mono" id="flip-count" aria-hidden="true">1/5</span>
+            <button type="button" class="flip-btn mono" id="flip-btn" aria-label="Flip to the next card" title="Flip to the next card">⇄</button>
+          </div>
+          <div class="flip-pages" id="flip-pages">
+
+            <div class="flip-page active">
+              <img class="flip-photo" src="foto profile nf.jpg" alt="Portrait of Nur Fajar">
+            </div>
+
+            <div class="flip-page" inert>
               <canvas id="globe" class="globe-canvas"></canvas>
             </div>
-            <div class="flip-face flip-back" inert>
+
+            <div class="flip-page" inert>
               <div class="sudoku" id="sudoku">
                 <div class="sudoku-head">
                   <div class="sudoku-levels mono" role="group" aria-label="Sudoku difficulty">
@@ -100,7 +109,33 @@
                 <p class="sudoku-msg mono" id="sudoku-msg" aria-live="polite"></p>
               </div>
             </div>
+
+            <div class="flip-page" inert>
+              <div class="chess" id="chess">
+                <div class="chess-head">
+                  <div class="chess-levels mono" role="group" aria-label="Chess level">
+                    <button type="button" data-clevel="1" aria-pressed="true" title="Mate in 2 — a scripted 3-move win">1</button>
+                    <button type="button" data-clevel="2" aria-pressed="false" title="Full game from the start">2</button>
+                  </div>
+                  <span class="chess-status mono" id="chess-status">Your move</span>
+                </div>
+                <div class="chess-board" id="chess-board"></div>
+                <div class="chess-actions mono">
+                  <button type="button" id="chess-reset">Reset</button>
+                </div>
+                <p class="chess-msg mono" id="chess-msg" aria-live="polite"></p>
+              </div>
+            </div>
+
+            <div class="flip-page" inert>
+              <div class="quote-page" id="quote-page">
+                <p class="quote-page-text mono" id="quote-page-text"></p>
+                <p class="quote-page-meta mono" id="quote-page-meta"></p>
+              </div>
+            </div>
+
           </div>
+          <p class="flip-tooltip mono" id="flip-tooltip" role="tooltip"></p>
         </div>
       </div>
     </section>
@@ -634,6 +669,9 @@
 <script src="constellations.js"></script>
 <script src="app.js"></script>
 <script src="sudoku.js"></script>
+<script src="chess-engine.js"></script>
+<script src="chess-ui.js"></script>
+<script src="flip-cards.js"></script>
 
 <!-- GSAP dimuat defer dari CDN. Kalau gagal, motion.js keluar lebih awal dan
      halaman tetap utuh — semua animasi memakai gsap.from(), jadi posisi natural

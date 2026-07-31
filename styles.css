@@ -151,36 +151,86 @@ a:hover { text-decoration: underline; }
 .globe-canvas { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
 .globe-canvas:active { cursor: grabbing; }
 
-/* flip card: globe on the front, a Sudoku game on the back */
-.flip-btn {
+/* flip card: 5 pages cycled by one button — photo, zodiac globe, sudoku,
+   chess, and a book quote. Each `.flip-page` is a persistent element that
+   flip-cards.js toggles with a two-stage rotateY so it still reads as a
+   flip, not a fade. */
+.flip-controls {
   position: absolute; top: 8px; right: 8px; z-index: 3;
-  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.flip-count { font-size: 10px; letter-spacing: 0.06em; color: var(--text-dim); }
+.flip-btn {
+  width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
   border: 1px solid var(--line-strong); background: var(--panel-2);
   color: var(--text-secondary); font-size: 14px; line-height: 1; padding: 0;
   display: flex; align-items: center; justify-content: center; cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease;
 }
 .flip-btn:hover { border-color: var(--accent); color: var(--accent); }
-.flip-inner {
-  position: relative; width: 100%; height: 100%; border-radius: 8px;
-  transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(.4, .2, .2, 1);
-}
-.globe-box.flipped .flip-inner { transform: rotateY(180deg); }
-.flip-face {
+.flip-pages { position: relative; width: 100%; height: 100%; perspective: 1200px; }
+.flip-page {
   position: absolute; inset: 0; border-radius: 8px; overflow: hidden;
+  background: var(--panel);
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  transform: rotateY(0deg); opacity: 1;
+  transition: transform 0.34s ease, opacity 0.34s ease;
 }
-.flip-back { transform: rotateY(180deg); background: var(--panel); }
+.flip-page:not(.active) { opacity: 0; pointer-events: none; z-index: 1; }
+.flip-page.active { z-index: 2; }
+.flip-page.leave { transform: rotateY(-100deg); opacity: 0; }
+.flip-page.enter-start { transform: rotateY(100deg); opacity: 0; transition: none; }
 @media (prefers-reduced-motion: reduce) {
-  .flip-inner { transition: none; }
+  .flip-page { transition: none; }
 }
+
+/* flip tooltip: a short line about this page, on hover/focus of the card */
+.flip-tooltip {
+  position: absolute; left: 50%; bottom: calc(100% + 12px); z-index: 4;
+  width: 280px; max-width: 78vw;
+  margin: 0; padding: 12px 14px; border-radius: 8px;
+  border: 1px solid var(--line-strong); background: var(--panel-2);
+  box-shadow: 4px 4px 0 0 var(--line-strong);
+  font-size: 11.5px; line-height: 1.55; color: var(--text-secondary);
+  text-align: left; text-transform: none; letter-spacing: normal;
+  opacity: 0; pointer-events: none;
+  transform: translate(-50%, 6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.flip-tooltip::after {
+  content: ''; position: absolute; top: 100%; left: 50%;
+  width: 10px; height: 10px; margin-left: -5px; margin-top: -5px;
+  background: var(--panel-2); border-right: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong); transform: rotate(45deg);
+}
+.globe-box:hover .flip-tooltip, .globe-box:focus-within .flip-tooltip {
+  opacity: 1; transform: translate(-50%, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip-tooltip { transition: none; }
+}
+
+/* photo page */
+.flip-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* book-quote page */
+.quote-page {
+  height: 100%; padding: 28px 24px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; gap: 14px;
+}
+.quote-page-text {
+  font-size: 14px; line-height: 1.6; color: var(--text-primary);
+  max-width: 30ch;
+}
+.quote-page-text::before { content: '\201C'; color: var(--accent); }
+.quote-page-text::after { content: '\201D'; color: var(--accent); }
+.quote-page-meta { font-size: 10.5px; color: var(--text-dim); letter-spacing: 0.04em; }
 
 /* sudoku */
 .sudoku { display: flex; flex-direction: column; height: 100%; padding: 12px; gap: 8px; }
-/* padding-right clears the flip button, which sits absolutely at the
-   card's top-right corner above this row */
-.sudoku-head { display: flex; align-items: center; justify-content: space-between; padding-right: 34px; }
+/* padding-right clears the flip controls (page counter + button), which
+   sit absolutely at the card's top-right corner above this row */
+.sudoku-head { display: flex; align-items: center; justify-content: space-between; padding-right: 66px; }
 .sudoku-levels { display: flex; gap: 4px; }
 .sudoku-levels button {
   width: 22px; height: 22px; border-radius: 4px; padding: 0;
@@ -219,6 +269,51 @@ a:hover { text-decoration: underline; }
 }
 .sudoku-actions button:hover { border-color: var(--accent); color: var(--accent); }
 .sudoku-msg { min-height: 14px; margin: 0; font-size: 10.5px; color: var(--accent); text-align: center; }
+
+/* chess */
+.chess { display: flex; flex-direction: column; height: 100%; padding: 12px; gap: 8px; }
+.chess-head { display: flex; align-items: center; justify-content: space-between; padding-right: 66px; gap: 8px; }
+.chess-levels { display: flex; gap: 4px; flex-shrink: 0; }
+.chess-levels button {
+  width: 22px; height: 22px; border-radius: 4px; padding: 0;
+  border: 1px solid var(--line-strong); background: none; color: var(--text-dim);
+  font: inherit; font-size: 11px; cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.chess-levels button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.chess-status {
+  font-size: 10.5px; color: var(--text-dim); text-align: right;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.chess-board {
+  flex: 1; display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr);
+  border: 1.5px solid var(--line-strong); border-radius: 3px; overflow: hidden;
+}
+.chess-cell {
+  border: 0; padding: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 22px; line-height: 1; cursor: pointer; color: var(--text-primary);
+  transition: background 0.12s ease;
+}
+.chess-cell:disabled { cursor: default; }
+.chess-cell.light { background: var(--panel-2); }
+.chess-cell.dark { background: color-mix(in srgb, var(--panel) 65%, var(--line) 35%); }
+.chess-cell.selected { box-shadow: inset 0 0 0 2px var(--accent); }
+.chess-cell.in-check { background: color-mix(in srgb, #e35d5d 30%, transparent); }
+.chess-cell.move-hint::after {
+  content: ''; width: 22%; height: 22%; border-radius: 50%; background: var(--accent-soft);
+  box-shadow: 0 0 0 2px var(--accent) inset;
+}
+.chess-cell.capture-hint { box-shadow: inset 0 0 0 2px var(--accent); }
+.chess-actions { display: flex; gap: 6px; }
+.chess-actions button {
+  flex: 1; padding: 5px 0; border-radius: 5px;
+  border: 1px solid var(--line-strong); background: none; color: var(--text-secondary);
+  font: inherit; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.chess-actions button:hover { border-color: var(--accent); color: var(--accent); }
+.chess-msg { min-height: 14px; margin: 0; font-size: 10.5px; color: var(--accent); text-align: center; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
@@ -526,6 +621,8 @@ a:hover { text-decoration: underline; }
   .hero { grid-template-columns: 1fr; padding-top: 56px; }
   .hero-globe { order: -1; }
   .globe-box { max-width: 240px; }
+  .chess-cell { font-size: 16px; }
+  .chess-status { font-size: 9.5px; }
   .stats { grid-template-columns: repeat(2, auto); gap: 18px 36px; }
   .track-grid, .skill-grid, .program-grid, .edu-grid, .quote-grid { grid-template-columns: 1fr; }
   /* dl dua kolom jadi bertumpuk — 190px label tidak masuk di layar sempit */
