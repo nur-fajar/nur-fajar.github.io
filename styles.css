@@ -465,24 +465,63 @@ a:hover { text-decoration: underline; }
 }
 .section-lede strong { color: var(--text-primary); font-weight: 500; }
 
-/* ── References / testimoni ──────────────────────────────────────────── */
-.quote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.quote { padding: 22px; margin: 0; display: flex; flex-direction: column; }
-/* Kutipan manajer dapat lebar penuh — satu-satunya suara level atasan. */
-.quote-lead { grid-column: 1 / -1; }
+/* ── References / testimoni — one-at-a-time slider ───────────────────── */
+.quote-carousel { display: flex; align-items: center; gap: 12px; }
+.quote-viewport { position: relative; flex: 1; min-height: 260px; overflow: hidden; }
+.quote {
+  position: absolute; inset: 0;
+  padding: 22px; margin: 0; display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none; transform: translateX(0);
+  transition: transform 0.34s ease, opacity 0.34s ease;
+}
+.quote.active { opacity: 1; pointer-events: auto; z-index: 2; }
+.quote.slide-out-left { transform: translateX(-28px); opacity: 0; }
+.quote.slide-out-right { transform: translateX(28px); opacity: 0; }
+.quote.slide-in-right { transform: translateX(28px); opacity: 0; transition: none; }
+.quote.slide-in-left { transform: translateX(-28px); opacity: 0; transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .quote { transition: none; }
+}
 .quote-id { font-size: 10.5px; letter-spacing: 0.1em; color: var(--accent); margin: 0 0 12px; }
 .quote blockquote {
   margin: 0 0 16px; padding: 0; flex: 1;
-  font-size: 15px; line-height: 1.7; color: var(--text-primary);
+  font-size: 15.5px; line-height: 1.7; color: var(--text-primary);
 }
-.quote-lead blockquote { font-size: 16.5px; }
 /* margin negatif menutup spasi dari whitespace HTML yang collapse,
    supaya tanda kutip menempel rapat ke teks */
 .quote blockquote::before { content: '\201C'; margin-right: -0.24em; }
 .quote blockquote::after { content: '\201D'; margin-left: -0.26em; }
-.quote figcaption { border-top: 1px solid var(--line); padding-top: 12px; }
+.quote figcaption {
+  display: flex; align-items: center; gap: 10px;
+  border-top: 1px solid var(--line); padding-top: 12px;
+}
+.quote-avatar {
+  flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--line-strong); background: var(--panel-2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 500;
+  color: var(--accent);
+}
+.quote-who { display: flex; flex-direction: column; }
 .quote-name { display: block; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; }
 .quote-role { display: block; font-size: 11px; color: var(--text-dim); margin-top: 3px; line-height: 1.5; }
+
+.quote-nav {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; padding: 0;
+  border: 1px solid var(--line-strong); background: var(--panel-2);
+  color: var(--text-secondary); font-size: 18px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.quote-nav:hover { border-color: var(--accent); color: var(--accent); }
+
+.quote-dots { display: flex; justify-content: center; gap: 7px; margin: 14px 0 0; padding: 0; list-style: none; }
+.quote-dots button {
+  width: 7px; height: 7px; padding: 0; border-radius: 50%; border: 0;
+  background: var(--line-strong); cursor: pointer;
+}
+.quote-dots button[aria-selected="true"] { background: var(--accent); }
+
 .quote-note { margin: 16px 0 0; font-size: 11px; color: var(--text-dim); max-width: 70ch; line-height: 1.6; }
 
 /* ── Program cards: outline modul ────────────────────────────────────── */
@@ -618,7 +657,6 @@ a:hover { text-decoration: underline; }
 .prg-outcome { max-width: 78ch; }
 .case-dl dd { max-width: 72ch; }
 .quote blockquote { max-width: 68ch; }
-.quote-lead blockquote { max-width: 76ch; }
 /* Design note tadinya 12,5px dan sekaligus paling lebar — kombinasi terburuk
    di halaman ini. */
 .case-note, .case-limit { font-size: 13.5px; line-height: 1.65; }
@@ -631,14 +669,15 @@ a:hover { text-decoration: underline; }
   .chess-cell { font-size: 16px; }
   .chess-status { font-size: 9.5px; }
   .stats { grid-template-columns: repeat(2, auto); gap: 18px 36px; }
-  .track-grid, .skill-grid, .program-grid, .edu-grid, .quote-grid { grid-template-columns: 1fr; }
+  .track-grid, .skill-grid, .program-grid, .edu-grid { grid-template-columns: 1fr; }
   /* dl dua kolom jadi bertumpuk — 190px label tidak masuk di layar sempit */
   .case-dl, .prg-meta { grid-template-columns: 1fr; gap: 4px; }
   .case-dl dd { margin-bottom: 10px; }
   .case-flow li { grid-template-columns: 1fr; gap: 2px; }
   .flow-kind { width: 78px; }
   .case-block { padding: 18px; }
-  .quote-lead blockquote { font-size: 15px; }
+  .quote-viewport { min-height: 340px; }
+  .quote-nav { width: 30px; height: 30px; font-size: 16px; }
   /* Nav TIDAK disembunyikan di mobile: halaman ini ~8.000px, tanpa nav
      recruiter tidak akan pernah sampai ke Contact. Baris 1 = logo + CV +
      toggle, baris 2 = link yang bisa di-scroll horizontal. */
