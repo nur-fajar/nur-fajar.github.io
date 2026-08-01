@@ -9,10 +9,47 @@ if (typeof document !== 'undefined') {
   const dots = Array.from(document.querySelectorAll('#quote-dots button'));
   const prevBtn = document.getElementById('quote-prev');
   const nextBtn = document.getElementById('quote-next');
+  const viewport = document.querySelector('.quote-viewport');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
   let current = 0;
   let animating = false;
+
+  /* Slides are position:absolute so the viewport can't size itself off their
+     content — at narrow widths a fixed height clips the longer quotes. Measure
+     each slide's natural (unstretched) height and size the viewport to the
+     tallest one, so nothing gets cut off at any width. */
+  function measureHeight(slide) {
+    const clone = slide.cloneNode(true);
+    clone.style.position = 'static';
+    clone.style.visibility = 'hidden';
+    clone.style.opacity = '1';
+    clone.style.transform = 'none';
+    clone.style.transition = 'none';
+    viewport.appendChild(clone);
+    const height = clone.offsetHeight;
+    viewport.removeChild(clone);
+    return height;
+  }
+
+  function updateHeight() {
+    const max = Math.max(...slides.map(measureHeight));
+    if (max > 0) viewport.style.height = max + 'px';
+  }
+
+  updateHeight();
+  window.addEventListener('resize', debounce(updateHeight, 150));
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(updateHeight);
+  }
+
+  function debounce(fn, wait) {
+    let t;
+    return function () {
+      clearTimeout(t);
+      t = setTimeout(fn, wait);
+    };
+  }
 
   function show(index, dir) {
     if (animating || index === current) return;

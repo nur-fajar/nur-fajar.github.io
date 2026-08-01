@@ -468,7 +468,7 @@ a:hover { text-decoration: underline; }
 
 /* ── References / testimoni — one-at-a-time slider ───────────────────── */
 .quote-carousel { display: flex; align-items: center; gap: 12px; }
-.quote-viewport { position: relative; flex: 1; min-height: 260px; overflow: hidden; }
+.quote-viewport { position: relative; flex: 1; min-height: 260px; overflow: hidden; transition: height 0.34s ease; }
 .quote {
   position: absolute; inset: 0;
   padding: 22px; margin: 0; display: flex; flex-direction: column;
