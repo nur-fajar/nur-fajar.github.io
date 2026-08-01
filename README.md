@@ -8,8 +8,9 @@ Personal portfolio for **Nur Fajar** — AI Learning & Development Specialist.
 
 Static site, zero dependencies, zero build step. Plain HTML + CSS + JS.
 
-- **Theme** — monochrome grey with a single cyan accent (`#54D6DE`), dark/light
-  toggle (default dark), all colors via CSS variables per `data-mode`.
+- **Theme** — mecha/Gundam-inspired: near-black or paper backgrounds, chamfered
+  panel corners, amber (dark) / blue (light) accent, dark/light toggle (default
+  dark), all colors via CSS variables per `data-mode`.
 - **Starfield** — fixed `<canvas>` background: ambient dust + 10 drifting
   constellations (Ursa Major, Orion, Cassiopeia, …). Respects
   `prefers-reduced-motion`.

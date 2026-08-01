@@ -64,7 +64,7 @@ let lst = 0;              // RA yang sedang berada di titik acuan horizontal
 let lastT = 0;
 
 const mouse = { x: -1, y: -1 };
-const colors = { dust: '#8B8D93', accent: '#54D6DE' };
+const colors = { dust: '#9C9A87', accent: '#FFB93C' };
 const rand = (a, b) => a + Math.random() * (b - a);
 const docHeight = () => Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
 
@@ -254,7 +254,7 @@ function skyDraw(dt) {
     if (g.la > 0.01) {
       ctx.globalAlpha = 0.45 * g.la;
       ctx.fillStyle = colors.accent;
-      ctx.font = '11px "IBM Plex Mono", monospace';
+      ctx.font = '11px "JetBrains Mono", monospace';
       ctx.textAlign = 'center';
       ctx.fillText(g.name.toUpperCase(), g.sx, g.y + g.rPx + 15);
     }
@@ -318,7 +318,7 @@ reducedMotion.addEventListener('change', () => {
 /* ── Hero globe: draggable wireframe sphere ───────────────────────────── */
 const globeCanvas = document.getElementById('globe');
 const gctx = globeCanvas.getContext('2d');
-const globeColors = { line: '#34363B', accent: '#54D6DE', text: '#8B8D93' };
+const globeColors = { line: '#33352A', accent: '#FFB93C', text: '#9C9A87' };
 let gW = 0, gH = 0;
 
 function globeReadColors() {
@@ -450,7 +450,7 @@ function globeDraw() {
     }
   }
 
-  gctx.font = '9px "IBM Plex Mono", monospace';
+  gctx.font = '9px "JetBrains Mono", monospace';
   gctx.textAlign = 'center';
   for (const z of GLOBE_ZODIAC) {
     z.la += ((z === gHovered ? 1 : 0) - z.la) * 0.15;
