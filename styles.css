@@ -289,9 +289,13 @@ a:hover { text-decoration: underline; }
   .flip-page { transition: none; }
 }
 
-/* flip tooltip: a short line about this page, on hover/focus of the card */
+/* flip tooltip: a short line about this page, on hover/focus of the card.
+   Opens *below* the card (not above) so it never has to out-stack the
+   sticky nav — a card near the top of the page put the old above-card
+   bubble directly behind the nav's backdrop-filter layer, which some
+   Chrome builds paint on top of regardless of z-index. */
 .flip-tooltip {
-  position: absolute; left: 50%; bottom: calc(100% + 12px); z-index: 6;
+  position: absolute; left: 50%; top: calc(100% + 12px); z-index: 4;
   width: 280px; max-width: 78vw;
   margin: 0; padding: 12px 14px; border-radius: 8px;
   border: 1px solid var(--line-strong); background: var(--panel-2);
@@ -299,14 +303,14 @@ a:hover { text-decoration: underline; }
   font-size: 11.5px; line-height: 1.55; color: var(--text-secondary);
   text-align: left; text-transform: none; letter-spacing: normal;
   opacity: 0; pointer-events: none;
-  transform: translate(-50%, 6px);
+  transform: translate(-50%, -6px);
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 .flip-tooltip::after {
-  content: ''; position: absolute; top: 100%; left: 50%;
-  width: 10px; height: 10px; margin-left: -5px; margin-top: -5px;
-  background: var(--panel-2); border-right: 1px solid var(--line-strong);
-  border-bottom: 1px solid var(--line-strong); transform: rotate(45deg);
+  content: ''; position: absolute; bottom: 100%; left: 50%;
+  width: 10px; height: 10px; margin-left: -5px; margin-bottom: -5px;
+  background: var(--panel-2); border-left: 1px solid var(--line-strong);
+  border-top: 1px solid var(--line-strong); transform: rotate(45deg);
 }
 .globe-box:hover .flip-tooltip, .globe-box:focus-within .flip-tooltip {
   opacity: 1; transform: translate(-50%, 0);
