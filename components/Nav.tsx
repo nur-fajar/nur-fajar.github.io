@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import ThemeToggle from './ThemeToggle';
 
 const HOME_LINKS = [
-  ['#tracks', 'Tracks'],
   ['#references', 'References'],
   ['#programs', 'Programs'],
   ['#design', 'Design'],

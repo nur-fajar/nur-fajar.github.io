@@ -3,7 +3,6 @@ import HomeBackdrop from '@/components/HomeBackdrop';
 import Starfield from '@/components/Starfield';
 import RocketButton from '@/components/RocketButton';
 import Hero from '@/components/Hero';
-import Tracks from '@/components/Tracks';
 import References from '@/components/References';
 import { WorkSignals, OrganizationSignals } from '@/components/Signals';
 import Skills from '@/components/Skills';
@@ -24,7 +23,6 @@ export default function HomePage() {
 
         <main id="top">
           <Hero />
-          <Tracks />
           <References />
           <WorkSignals />
           <OrganizationSignals />
