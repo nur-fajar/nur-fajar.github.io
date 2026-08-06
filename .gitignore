@@ -1,6 +1,13 @@
 .DS_Store
 *.log
 
+# Next.js
+/node_modules
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
 # Bahan sumber, sengaja TIDAK dipublikasikan.
 # Isinya sudah diringkas ke dalam index.html; file aslinya tetap lokal karena
 # modul penuh (~7,7 MB) kemungkinan IP milik pemberi kerja, dan testimonials.md
