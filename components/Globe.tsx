@@ -76,10 +76,19 @@ export default function Globe() {
     }
 
     function resize() {
-      const rect = canvas!.getBoundingClientRect();
+      // offsetWidth/Height, NOT getBoundingClientRect() — this canvas sits
+      // inside a flip-card page that Framer Motion rotates on the Y axis
+      // (rotateY) while it's not the active page. getBoundingClientRect()
+      // returns the post-transform, on-screen projected box, so measuring
+      // this while the card is mid-flip (or parked at rotateY:100 before
+      // ever being flipped to) captures a squashed sliver instead of the
+      // card's real 340×340 layout size — every ring and constellation then
+      // gets drawn into that wrong, tiny canvas buffer, which is why the
+      // globe rendered as a flat smear instead of a sphere. offsetWidth/
+      // Height report the untransformed CSS layout box, immune to this.
       const dpr = devicePixelRatio || 1;
-      gW = rect.width;
-      gH = rect.height;
+      gW = canvas!.offsetWidth;
+      gH = canvas!.offsetHeight;
       canvas!.width = gW * dpr;
       canvas!.height = gH * dpr;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
