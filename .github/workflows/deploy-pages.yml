@@ -1,0 +1,75 @@
+name: Deploy to GitHub Pages
+
+# Publishes a static export of the site to GitHub Pages (nur-fajar.github.io).
+# This is a second, independent deploy target — Vercel (nurfajar.com) remains
+# the primary one and is untouched by this workflow. See next.config.mjs for
+# how NEXT_STATIC_EXPORT switches the build between the two (real headers +
+# next/image optimization on Vercel vs. a plain static export here).
+#
+# One-time manual step this workflow can't do by itself: in this repo's
+# Settings → Pages, set "Source" to "GitHub Actions" (it's presumably still
+# set to "Deploy from a branch" from before this project moved to Next.js —
+# that's why nur-fajar.github.io was serving a years-stale build). Once
+# that's switched, this workflow becomes the thing that publishes it.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one Pages deployment at a time; let an in-flight one finish rather
+# than cancelling it mid-publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static export
+        run: npm run build
+        env:
+          NEXT_STATIC_EXPORT: 'true'
+
+      # Without this, GitHub Pages runs the export through Jekyll, which
+      # ignores any file/folder starting with an underscore — including
+      # Next's own _next/static, which the whole build depends on.
+      - name: Disable Jekyll processing
+        run: touch out/.nojekyll
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
