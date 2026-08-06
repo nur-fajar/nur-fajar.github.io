@@ -131,15 +131,15 @@ a:hover {
   padding: 0 24px;
 }
 
-/* ── Latar: blueprint grid + scan beam ────────────────────────────────── */
+/* ── Latar: blueprint grid ─────────────────────────────────────────────── */
 /* Dirender sebagai elemen sungguhan (bukan ::before/::after pada <body>,
    yang tidak praktis di App Router karena <body> dipakai bersama semua
    route) — hanya dipasang oleh halaman beranda lewat <HomeBackdrop>.
    lab/page.tsx sengaja tidak memakainya supaya tetap tenang untuk dibaca.
 
    Urutan lapisan (dari bawah ke atas):
-     --bg  →  .bp-grid  →  #sky bintang  →  .scan-beam  →  .wrap teks
-   Keduanya z-index 0 dan .wrap z-index 1, jadi TEKS SELALU DI ATAS beam. */
+     --bg  →  .bp-grid  →  #sky bintang  →  .wrap teks
+   Keduanya z-index 0 dan .wrap z-index 1, jadi TEKS SELALU DI ATAS grid. */
 .bp-grid {
   content: '';
   position: fixed;
@@ -152,39 +152,45 @@ a:hover {
     repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px var(--grid-size));
 }
 
-/* Beam: satu siklus = 16 detik: 6 detik melintas turun, lalu 10 detik diam
-   di luar layar. Jedanya dibuat lewat keyframe, bukan properti terpisah:
-   gerakan diselesaikan pada 37.5% (6 dtk dari 16 dtk), lalu posisinya ditahan
-   sampai 100%. Dianimasikan lewat transform, BUKAN top, supaya ditangani
-   compositor dan tidak memicu layout ulang tiap frame. */
-.scan-beam {
+/* Scan beam — used to sweep the entire viewport (fixed, full-page). It's now
+   scoped to a single card instead: the hero flip-card (.globe-box in
+   FlipCard.tsx), the one box on the page with a photo/globe/sudoku/chess/quote
+   rotating through it. Positioned absolute against .globe-box (position:
+   relative) rather than fixed against the viewport, and clipped to the
+   card's own chamfered outline for free by .globe-box's clip-path.
+   Satu siklus = 16 detik: 6 detik melintas turun, lalu 10 detik diam di luar
+   kartu. Jedanya dibuat lewat keyframe: gerakan selesai pada 37.5% (6 dtk
+   dari 16 dtk), lalu ditahan sampai 100%. Dianimasikan lewat `top` (persen,
+   relatif ke tinggi .globe-box) bukan `transform: translateY(px)` seperti
+   versi lama — kartunya kecil dan lepas dari flow, jadi reflow-nya lokal
+   dan bukan lagi beban compositor seluruh halaman. */
+.card-scan-beam {
   content: '';
-  position: fixed;
+  position: absolute;
   left: 0;
   right: 0;
-  top: 0;
-  height: 180px;
-  z-index: 0;
+  top: -35%;
+  height: 35%;
+  z-index: 3;
   pointer-events: none;
   background: linear-gradient(to bottom, transparent, var(--beam-tint), transparent);
-  animation: scan-beam 16s linear infinite;
-  will-change: transform;
+  animation: card-scan-beam 16s linear infinite;
 }
-@keyframes scan-beam {
+@keyframes card-scan-beam {
   0% {
-    transform: translateY(-180px);
-  } /* mulai tepat di atas layar   */
+    top: -35%;
+  } /* mulai tepat di atas kartu   */
   37.5% {
-    transform: translateY(100vh);
-  } /* 6 dtk: sampai bawah layar   */
+    top: 100%;
+  } /* 6 dtk: sampai bawah kartu   */
   100% {
-    transform: translateY(100vh);
+    top: 100%;
   } /* 10 dtk: diam, tak terlihat  */
 }
 /* Gerakan terus-menerus adalah pemicu utama motion sickness, jadi beam-nya
    dihilangkan sepenuhnya di sini. Grid tetap tampil — grid tidak bergerak. */
 @media (prefers-reduced-motion: reduce) {
-  .scan-beam {
+  .card-scan-beam {
     display: none;
   }
 }
@@ -902,12 +908,111 @@ a:hover {
   flex-wrap: wrap;
   gap: 7px;
 }
-.tags li {
+/* Every tag is a button (see Skills.tsx) — opens a popup with the related
+   project for that skill. Styled to look exactly like the old plain <li>
+   tag at rest, so the only thing that changes visually is the hover/focus
+   state, which is the one hint that it's now interactive. */
+.tags button {
+  font: inherit;
   font-size: 11.5px;
   color: var(--text-secondary);
+  background: transparent;
   border: 1px solid var(--line-strong);
   clip-path: var(--chamfer-sm);
   padding: 3px 9px;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+.tags button:hover,
+.tags button:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Skill popup — portalled to <body> (see SkillPopup.tsx), so it stacks above
+   everything regardless of where in the tree it was triggered from. */
+.skill-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.55);
+}
+.skill-popup {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 26px 26px 22px;
+  box-shadow: 8px 8px 0 0 var(--line-strong);
+}
+.skill-popup-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--line-strong);
+  background: var(--panel-2);
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+.skill-popup-close:hover,
+.skill-popup-close:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.skill-popup-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.skill-popup h3 {
+  font-size: 19px;
+  margin-bottom: 16px;
+  padding-right: 24px;
+}
+.skill-popup-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.skill-popup-list li + li {
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.skill-popup-item-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.skill-popup-item-blurb {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+.skill-popup-link {
+  font-size: 11.5px;
+  color: var(--accent);
+}
+.skill-popup-empty {
+  font-size: 13.5px;
+  color: var(--text-dim);
 }
 
 /* signal rows */

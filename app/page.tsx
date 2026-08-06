@@ -23,13 +23,13 @@ export default function HomePage() {
 
         <main id="top">
           <Hero />
-          <References />
           <WorkSignals />
           <OrganizationSignals />
           <Skills />
           <Programs />
           <DesignCaseStudy />
           <Education />
+          <References />
         </main>
 
         <Contact />
