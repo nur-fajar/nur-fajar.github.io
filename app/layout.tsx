@@ -36,22 +36,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-mode="light" className={`${inter.variable} ${chakra.variable} ${jbmono.variable}`}>
       <head>
-        {/* GH Pages serves static files only, no custom HTTP headers — CSP/Referrer-Policy
-            are set here via meta as the closest available equivalent. frame-ancestors,
-            report-uri and X-Frame-Options need a real header, so they're not enforceable
-            this way and are intentionally left out rather than faked.
-            script-src and style-src both need 'unsafe-inline': the App Router ships its
-            React Server Components hydration payload as inline <script> tags baked into
-            the static HTML at build time, and Framer Motion animates by writing inline
-            style properties — a nonce would cover both correctly, but a nonce has to come
-            from a server on each request, and static export has none. This is strictly
-            looser than the old plain-HTML build's CSP, which never had a hydration payload
-            to allow for. */}
-        <meta
-          httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
-        />
-        <meta name="referrer" content="strict-origin-when-cross-origin" />
+        {/* CSP, Referrer-Policy, X-Frame-Options etc. are real HTTP headers now
+            (see next.config.mjs `headers()`) — Vercel runs this as an actual
+            server, unlike the old GitHub Pages static export, which could only
+            fake CSP via a <meta http-equiv> tag and had no way to set
+            frame-ancestors or X-Frame-Options at all. */}
         {/* Framer Motion bakes its `initial` (pre-animation) style into the
             server-rendered HTML — reveal-on-scroll and reveal-on-mount
             elements ship as opacity:0 until JS runs the animation that
