@@ -18,7 +18,6 @@ export default function Contact() {
           <a href="/nf.pdf" download="Nur-Fajar-CV-AI-LnD-2026.pdf" target="_blank" rel="noopener">
             CV.PDF ↓
           </a>
-          <a href="/lab">lab / pipeline teardown (technical deep-dive, optional) →</a>
         </div>
       </div>
       <p className="foot mono">

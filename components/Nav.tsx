@@ -6,8 +6,6 @@ import ThemeToggle from './ThemeToggle';
 
 const HOME_LINKS = [
   ['#references', 'References'],
-  ['#programs', 'Programs'],
-  ['#design', 'Design'],
   ['#signals', 'Signals'],
   ['#skills', 'Skills'],
   ['#contact', 'Contact'],
@@ -23,37 +21,31 @@ function LogoMark() {
   );
 }
 
-export default function Nav({ variant }: { variant: 'home' | 'lab' }) {
+export default function Nav() {
   return (
     <header className="nav">
-      <Link className="logo mono" href={variant === 'home' ? '#top' : '/'}>
+      <Link className="logo mono" href="#top">
         <LogoMark />
         NF://
       </Link>
       <nav className="nav-links mono">
-        {variant === 'home' ? (
-          HOME_LINKS.map(([href, label]) => (
-            <a key={href} href={href}>
-              {label}
-            </a>
-          ))
-        ) : (
-          <Link href="/">← Back to portfolio</Link>
-        )}
+        {HOME_LINKS.map(([href, label]) => (
+          <a key={href} href={href}>
+            {label}
+          </a>
+        ))}
       </nav>
-      {variant === 'home' && (
-        <motion.a
-          className="nav-cv mono"
-          href="/nf.pdf"
-          download="Nur-Fajar-CV-AI-LnD-2026.pdf"
-          target="_blank"
-          rel="noopener"
-          whileHover={{ y: -2 }}
-          transition={{ duration: 0.18, ease: 'easeOut' }}
-        >
-          CV&nbsp;↓
-        </motion.a>
-      )}
+      <motion.a
+        className="nav-cv mono"
+        href="/nf.pdf"
+        download="Nur-Fajar-CV-AI-LnD-2026.pdf"
+        target="_blank"
+        rel="noopener"
+        whileHover={{ y: -2 }}
+        transition={{ duration: 0.18, ease: 'easeOut' }}
+      >
+        CV&nbsp;↓
+      </motion.a>
       <ThemeToggle />
     </header>
   );
