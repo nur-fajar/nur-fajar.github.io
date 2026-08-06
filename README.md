@@ -6,8 +6,9 @@ Personal portfolio for **Nur Fajar** — AI Learning & Development Specialist.
 
 ## Stack
 
-Next.js (App Router) + TypeScript + Tailwind CSS + Framer Motion, statically
-exported (`output: 'export'`) — no server, deployed straight to GitHub Pages.
+Next.js (App Router) + TypeScript + Tailwind CSS + Framer Motion, deployed
+natively on Vercel (no static export — real Next.js server, image
+optimization, and HTTP headers).
 
 - **Theme** — mecha/Gundam-inspired: near-black or paper backgrounds, chamfered
   panel corners, amber (dark) / blue (light) accent, dark/light toggle,
@@ -28,6 +29,9 @@ exported (`output: 'export'`) — no server, deployed straight to GitHub Pages.
   scroll/mount reveal carries a `.motion-safe` class; a `<noscript>` rule in
   the root layout forces it visible when JavaScript never runs, so the
   server-rendered HTML is always readable on its own.
+- **Security headers** — CSP, `Referrer-Policy`, `X-Frame-Options`, and
+  `X-Content-Type-Options` are set as real HTTP headers in
+  `next.config.mjs`, enforced by Vercel's edge on every response.
 
 ## Development
 
@@ -35,10 +39,15 @@ exported (`output: 'export'`) — no server, deployed straight to GitHub Pages.
 npm install
 npm run dev      # http://localhost:3000
 npm test         # vitest — chess engine test suite
-npm run build    # static export to out/
+npm run build    # production build
 ```
 
 ## Deploy
 
-Every push to `main` runs the test suite, builds the static export, and
-publishes `out/` to GitHub Pages via `.github/workflows/deploy.yml`.
+Vercel's GitHub App builds and deploys this repo directly — a preview per
+pull request, production on every push to `main`. `.github/workflows/ci.yml`
+runs lint, tests, and a production build on the same triggers as a
+pass/fail gate; it does not publish anything itself.
+
+Custom domain (`nurfajar.com`) and project settings are managed in the
+Vercel dashboard, not in this repo.
