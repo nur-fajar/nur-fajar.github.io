@@ -1,7 +1,13 @@
+'use client';
+
+import { useState } from 'react';
 import { SKILL_GROUPS } from '@/content/skills';
 import Reveal from './motion/Reveal';
+import SkillPopup from './SkillPopup';
 
 export default function Skills() {
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+
   return (
     <section id="skills" className="section">
       <Reveal as="div">
@@ -15,12 +21,18 @@ export default function Skills() {
             </p>
             <ul className="tags mono">
               {g.items.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item}>
+                  <button type="button" onClick={() => setActiveTag(item)}>
+                    {item}
+                  </button>
+                </li>
               ))}
             </ul>
           </Reveal>
         ))}
       </div>
+
+      {activeTag && <SkillPopup tag={activeTag} onClose={() => setActiveTag(null)} />}
     </section>
   );
 }
