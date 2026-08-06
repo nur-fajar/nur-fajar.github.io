@@ -24,21 +24,39 @@ const CSP = [
   "frame-ancestors 'none'",
 ].join('; ');
 
+// Two deploy targets share this file now:
+//   - Vercel (nurfajar.com / *.vercel.app) — a real Next.js server, so it
+//     gets the headers() below plus on-demand next/image optimization.
+//   - GitHub Pages (nur-fajar.github.io) — static hosting, no server at all.
+//     Built via `NEXT_STATIC_EXPORT=true next build`
+//     (.github/workflows/deploy-pages.yml), which flips this into
+//     `output: 'export'`. Next refuses to combine `output: 'export'` with
+//     headers()/redirects()/rewrites() — those need a server to run — so
+//     the Pages build ships without the headers below (the pre-existing
+//     <meta http-equiv> gap this comment already describes) and with
+//     next/image unoptimized (the optimizer needs a server too).
+const STATIC_EXPORT = process.env.NEXT_STATIC_EXPORT === 'true';
+
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  async headers() {
-    return [
-      {
-        source: '/:path*',
-        headers: [
-          { key: 'Content-Security-Policy', value: CSP },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'X-Frame-Options', value: 'DENY' },
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-        ],
+const nextConfig = STATIC_EXPORT
+  ? {
+      output: 'export',
+      images: { unoptimized: true },
+    }
+  : {
+      async headers() {
+        return [
+          {
+            source: '/:path*',
+            headers: [
+              { key: 'Content-Security-Policy', value: CSP },
+              { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+              { key: 'X-Frame-Options', value: 'DENY' },
+              { key: 'X-Content-Type-Options', value: 'nosniff' },
+            ],
+          },
+        ];
       },
-    ];
-  },
-};
+    };
 
 export default nextConfig;

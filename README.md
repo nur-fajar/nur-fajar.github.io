@@ -6,9 +6,15 @@ Personal portfolio for **Nur Fajar** — AI Learning & Development Specialist.
 
 ## Stack
 
-Next.js (App Router) + TypeScript + Tailwind CSS + Framer Motion, deployed
-natively on Vercel (no static export — real Next.js server, image
-optimization, and HTTP headers).
+Next.js (App Router) + TypeScript + Tailwind CSS + Framer Motion, deployed to
+two targets from one codebase:
+
+- **Vercel** (`nurfajar.com`) — the primary deploy, a real Next.js server:
+  on-demand image optimization and real HTTP security headers.
+- **GitHub Pages** (`nur-fajar.github.io`) — a static export of the same
+  build, `output: 'export'` triggered by `NEXT_STATIC_EXPORT=true` (see
+  `next.config.mjs`). No server, so no image optimization and no HTTP
+  headers there — see "Deploy" below.
 
 - **Theme** — mecha/Gundam-inspired: near-black or paper backgrounds, chamfered
   panel corners, amber (dark) / blue (light) accent, dark/light toggle,
@@ -31,7 +37,9 @@ optimization, and HTTP headers).
   server-rendered HTML is always readable on its own.
 - **Security headers** — CSP, `Referrer-Policy`, `X-Frame-Options`, and
   `X-Content-Type-Options` are set as real HTTP headers in
-  `next.config.mjs`, enforced by Vercel's edge on every response.
+  `next.config.mjs`, enforced by Vercel's edge on every response. GitHub
+  Pages is static hosting and can't set custom headers at all, so the
+  export build ships without this layer — an accepted gap, not an oversight.
 
 ## Development
 
@@ -39,15 +47,22 @@ optimization, and HTTP headers).
 npm install
 npm run dev      # http://localhost:3000
 npm test         # vitest — chess engine test suite
-npm run build    # production build
+npm run build    # production build (Vercel mode)
+NEXT_STATIC_EXPORT=true npm run build   # static export (GitHub Pages mode) → out/
 ```
 
 ## Deploy
 
-Vercel's GitHub App builds and deploys this repo directly — a preview per
-pull request, production on every push to `main`. `.github/workflows/ci.yml`
-runs lint, tests, and a production build on the same triggers as a
-pass/fail gate; it does not publish anything itself.
+Two independent pipelines, both triggered by a push to `main`:
 
-Custom domain (`nurfajar.com`) and project settings are managed in the
-Vercel dashboard, not in this repo.
+- **Vercel** — its GitHub App builds and deploys this repo directly, a
+  preview per pull request and production on every push to `main`.
+  Custom domain (`nurfajar.com`) and project settings are managed in the
+  Vercel dashboard, not in this repo.
+- **GitHub Pages** — `.github/workflows/deploy-pages.yml` builds the static
+  export and publishes it via `actions/deploy-pages`. Requires the repo's
+  Settings → Pages → Source to be set to "GitHub Actions".
+
+`.github/workflows/ci.yml` runs lint, tests, and a (Vercel-mode) production
+build on every push and pull request as a pass/fail gate; it does not
+publish anything itself.
