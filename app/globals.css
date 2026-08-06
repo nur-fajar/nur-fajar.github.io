@@ -895,31 +895,6 @@ a:hover {
   box-shadow: var(--shadow);
 }
 
-/* tracks */
-.track-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-.track {
-  padding: 26px;
-}
-.track-role {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: var(--accent);
-  margin-bottom: 12px;
-}
-.track h3 {
-  font-size: 22px;
-  margin-bottom: 12px;
-}
-.track p {
-  color: var(--text-secondary);
-  font-size: 14.5px;
-  margin-bottom: 16px;
-  font-family: var(--font-inter), sans-serif;
-}
 .tags {
   list-style: none;
   padding: 0;
@@ -1739,7 +1714,6 @@ a:hover {
     grid-template-columns: repeat(2, auto);
     gap: 18px 36px;
   }
-  .track-grid,
   .skill-grid,
   .program-grid,
   .edu-grid {
