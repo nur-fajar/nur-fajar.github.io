@@ -1,79 +1,73 @@
 @import 'tailwindcss';
 
-/* ── Bento theme tokens ─────────────────────────────────────────────────
-   Clean, soft, rounded — cards on a pastel gradient mesh instead of the
-   old chamfered mecha plate system. Same two-mode structure as before
-   (light/dark), same CSS-variable contract the canvas widgets (Starfield,
-   Globe) already read via getComputedStyle(), just a different skin.
+/* ── Spacecraft HUD theme tokens ─────────────────────────────────────────
+   Dayside / Nightside — one orbital terminator, two passes. Every ±90
+   minutes a spacecraft crosses from the sunlit side (light mode: navy/
+   teal/gold on pearl) to the dark side of the orbit (dark mode: cyan/
+   green/red on near-black) — that's the light/dark toggle this site
+   already had, just re-cast as the real thing instead of a generic
+   theme switch.
 
-   Font-face di-self-host lewat next/font (lihat app/layout.tsx), yang
-   mengekspos --font-inter / --font-jbmono sebagai CSS variable di <html>.
-   Itu sebabnya CSP tidak lagi perlu mengizinkan fonts.googleapis.com /
-   fonts.gstatic.com dibanding versi statis. */
+   Panels are chamfered (opposite corners cut, --chamfer*), not rounded —
+   the plate-and-rivet language of a console housing instead of a rounded
+   app card. Font-face di-self-host lewat next/font (lihat app/layout.tsx):
+   --font-inter untuk body copy, --font-display (Space Grotesk) untuk
+   heading, --font-jbmono untuk semua label/ID/data (.mono sekarang benar2
+   monospace lagi, bukan cuma letter-spacing). */
 :root {
-  /* Aksen default = dark mode. Light mode menimpanya di bawah. Canvas rasi
-     bintang membaca --accent lewat skyReadColors(), jadi bintangnya ikut
-     berganti warna tanpa kode tambahan. */
-  --accent: #6a5cff;
-  --accent-2: #3aa0ff;
-  --accent-soft: rgba(106, 92, 255, 0.12);
-  --accent-gradient: linear-gradient(120deg, var(--accent-2), var(--accent));
-  /* Rounded-card language shared by every panel so the whole site reads as
-     one bento system instead of per-component radii. */
-  --radius: 22px;
-  --radius-sm: 14px;
-  --radius-lg: 28px;
-  --grid-size: 32px;
+  --chamfer: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+  --chamfer-sm: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+  --chamfer-lg: polygon(24px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%, 0 24px);
+  --grid-size: 34px;
 }
 html[data-mode='dark'] {
-  --bg: #0f1020;
-  --bg-gradient: radial-gradient(circle at 10% 0%, rgba(106, 92, 255, 0.22), transparent 55%),
-    radial-gradient(circle at 85% 15%, rgba(58, 160, 255, 0.16), transparent 50%),
-    radial-gradient(circle at 25% 90%, rgba(255, 130, 190, 0.1), transparent 55%), #0f1020;
-  --panel: #171833;
-  --panel-2: #1e2040;
-  --line: #2c2e52;
-  --line-strong: #3d3f6b;
-  --text-primary: #eef0ff;
-  --text-secondary: #a9acd6;
-  --text-dim: #7679a3;
-  --red: #ff6b6b;
-  --blue: #3aa0ff;
-  --teal: #4fd1c5;
-  --yellow: #f2b705;
-  --grid-line: #3d3f6b;
-  --beam-tint: rgba(106, 92, 255, 0.08);
-  --glow: 0 0 18px rgba(106, 92, 255, 0.35);
-  --shadow: 0 16px 36px rgba(4, 5, 20, 0.45);
-  --shadow-sm: 0 6px 16px rgba(4, 5, 20, 0.35);
+  /* Nightside — dark side of the orbit. Cyan #35C7FF reads 9.8:1 on
+     #05070C, well past the 4.5:1 text threshold, so it's safe as the
+     link/label color as well as the glow accent. */
+  --bg: #05070c;
+  --panel: #0f1424;
+  --panel-2: #141b30;
+  --line: #232c48;
+  --line-strong: #33406a;
+  --text-primary: #edf1fb;
+  --text-secondary: #8a96b8;
+  --text-dim: #5c6690;
+  --accent: #35c7ff;
+  --accent-2: #33e8a6;
+  --accent-soft: color-mix(in srgb, var(--accent) 14%, transparent);
+  --on-accent: #05070c;
+  --red: #ff4d6d;
+  --blue: #35c7ff;
+  --teal: #33e8a6;
+  --yellow: #ffd86b;
+  --glow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent);
+  --shadow: 0 14px 30px rgba(0, 0, 0, 0.55);
+  --shadow-sm: 0 6px 16px rgba(0, 0, 0, 0.45);
   color-scheme: dark;
 }
 html[data-mode='light'] {
-  --accent: #5b4fe8;
-  --accent-2: #2f8bf0;
-  --accent-soft: rgba(91, 79, 232, 0.1);
-  --accent-gradient: linear-gradient(120deg, var(--accent-2), var(--accent));
-  --bg: #f4f2ec;
-  --bg-gradient: radial-gradient(circle at 8% -5%, rgba(255, 224, 130, 0.55), transparent 45%),
-    radial-gradient(circle at 90% 5%, rgba(178, 165, 255, 0.45), transparent 45%),
-    radial-gradient(circle at 15% 95%, rgba(255, 190, 210, 0.4), transparent 50%),
-    radial-gradient(circle at 95% 90%, rgba(150, 210, 255, 0.4), transparent 45%), #f4f2ec;
+  /* Dayside — sunlit orbital pass. Navy #1F3868 is the accent that carries
+     text/links here (8.5:1); gold and teal stay decorative fills/borders,
+     same split the mecha theme used and for the same contrast reason. */
+  --bg: #e7ecf3;
   --panel: #ffffff;
-  --panel-2: #f4f4fb;
-  --line: #e7e6f2;
-  --line-strong: #d3d1e6;
-  --text-primary: #1c1d33;
-  --text-secondary: #55567a;
-  --text-dim: #83849f;
-  --red: #d94f4f;
-  --blue: #2f6fe0;
-  --teal: #2ea89a;
-  --yellow: #e0a300;
-  --grid-line: #d3d1e6;
-  --beam-tint: rgba(91, 79, 232, 0.05);
+  --panel-2: #dce3ee;
+  --line: #c7d0de;
+  --line-strong: #a9b7cc;
+  --text-primary: #1b2430;
+  --text-secondary: #4e5a73;
+  --text-dim: #7c879c;
+  --accent: #1f3868;
+  --accent-2: #3fa796;
+  --accent-soft: color-mix(in srgb, var(--accent) 10%, transparent);
+  --on-accent: #ffffff;
+  --red: #c0392b;
+  --blue: #1f3868;
+  --teal: #3fa796;
+  --yellow: #ebbb2e;
   --glow: none;
-  --shadow: 0 20px 45px rgba(28, 29, 51, 0.1);
-  --shadow-sm: 0 8px 20px rgba(28, 29, 51, 0.08);
+  --shadow: 0 10px 22px rgba(20, 30, 50, 0.1);
+  --shadow-sm: 0 6px 14px rgba(20, 30, 50, 0.08);
   color-scheme: light;
 }
 
@@ -87,8 +81,7 @@ html {
 }
 body {
   position: relative;
-  background: var(--bg-gradient);
-  background-attachment: fixed;
+  background: var(--bg);
   color: var(--text-primary);
   font-family: var(--font-inter), sans-serif;
   font-size: 16px;
@@ -101,16 +94,19 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-inter), sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   line-height: 1.15;
 }
-/* Was a swap to a monospace font under the old terminal/HUD skin — now just
-   the light tracked-caps treatment used for eyebrows, ids and tags, still
-   set on the same elements so no JSX had to change. */
+/* Reactivated as a real monospace face (it had been demoted to just
+   letter-spacing under the bento skin) — every label/ID/readout on the
+   site (eyebrow, sig-id, stat numbers, footer) is tagged .mono, so this
+   one rule is most of what makes the page read as instrument output
+   again instead of prose with extra tracking. */
 .mono {
-  letter-spacing: 0.04em;
+  font-family: var(--font-jbmono), monospace;
+  letter-spacing: 0.05em;
 }
 a {
   color: var(--accent);
@@ -141,20 +137,23 @@ a:hover {
   padding: 0 24px;
 }
 
-/* ── Latar: soft gradient mesh ──────────────────────────────────────────
-   Replaces the old blueprint grid. The mesh itself already lives on `body`
-   (--bg-gradient, see the mode blocks above) so it scrolls with the page
-   like a normal background; <HomeBackdrop> only adds a very faint grain of
-   dots on top so large panels of flat color don't look sterile. */
+/* ── Latar: blueprint grid ──────────────────────────────────────────────
+   Replaces the pastel gradient-mesh. Faint crossing lines instead of a
+   dot-grain, so large panels of flat color read as a technical drawing
+   sheet rather than sterile white space. <HomeBackdrop> also mounts the
+   constellation Starfield canvas back onto the home page (it existed all
+   along for the zodiac globe widget, just wasn't drawn full-page under
+   the bento skin) — apt for a dayside/nightside orbital theme. */
 .bp-grid {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.5;
-  background-image: radial-gradient(var(--grid-line) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
+  opacity: 0.08;
+  background-image:
+    repeating-linear-gradient(0deg, var(--line-strong) 0 1px, transparent 1px var(--grid-size)),
+    repeating-linear-gradient(90deg, var(--line-strong) 0 1px, transparent 1px var(--grid-size));
   mask-image: radial-gradient(circle at 50% 0%, black, transparent 75%);
 }
 
@@ -169,8 +168,8 @@ a:hover {
   margin-top: 16px;
   padding: 10px 18px;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  clip-path: var(--chamfer-sm);
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(10px);
 }
@@ -211,11 +210,11 @@ a:hover {
   flex-shrink: 0;
   font-size: 11.5px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   padding: 8px 18px;
-  border-radius: 999px;
-  color: #fff;
-  background: var(--accent-gradient);
+  clip-path: var(--chamfer-sm);
+  color: var(--on-accent);
+  background: var(--accent);
   white-space: nowrap;
   box-shadow: var(--shadow-sm);
   transition:
@@ -224,13 +223,13 @@ a:hover {
 }
 .nav-cv:hover {
   transform: translateY(-1px);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), var(--glow);
   text-decoration: none;
 }
 .mode-toggle {
   display: flex;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  clip-path: var(--chamfer-sm);
   overflow: hidden;
 }
 .mode-toggle button {
@@ -256,16 +255,36 @@ a:hover {
   gap: 40px;
   padding: 64px 0 56px;
 }
+/* Warning-placard treatment, not a soft pill: bordered rectangle, no fill.
+   The blinking mono cursor after the text is the one deliberate "live
+   readout" flourish on the page — cheap, self-contained, and it turns the
+   eyebrow into something that reads like a terminal prompt rather than a
+   label. */
 .eyebrow {
   display: inline-block;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   color: var(--accent);
-  background: var(--accent-soft);
+  background: transparent;
+  border: 1px solid var(--line-strong);
   padding: 6px 14px;
-  border-radius: 999px;
   margin-bottom: 18px;
+}
+.eyebrow::after {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  margin-left: 6px;
+  background: var(--accent);
+  vertical-align: -2px;
+  animation: cursor-blink 1.1s steps(1) infinite;
+}
+@keyframes cursor-blink {
+  50% {
+    opacity: 0;
+  }
 }
 .hero h1 {
   font-size: clamp(32px, 5vw, 52px);
@@ -284,15 +303,19 @@ a:hover {
 }
 .stats > div {
   padding: 12px 16px;
-  border-radius: var(--radius-sm);
+  clip-path: var(--chamfer-sm);
   background: var(--panel);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
 }
+/* Mono readout instead of a plain bold number — same treatment a real
+   telemetry display would give a figure like this. */
 .stat-n {
   display: block;
+  font-family: var(--font-jbmono), monospace;
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
+  color: var(--accent);
 }
 .stat-l {
   display: block;
@@ -326,7 +349,7 @@ a:hover {
   align-items: center;
   gap: 7px;
   padding: 5px 12px 5px 10px;
-  border-radius: 999px;
+  clip-path: var(--chamfer-sm);
   background: var(--panel);
   border: 1px solid var(--line);
 }
@@ -365,7 +388,7 @@ a:hover {
   }
 }
 
-/* hero globe — soft rounded bento card, same grey/cyan widget colors */
+/* hero globe — chamfered viewport housing, same grey/cyan widget colors */
 .hero-globe {
   perspective: 1400px;
 }
@@ -376,7 +399,7 @@ a:hover {
   aspect-ratio: 1 / 1;
   margin: 0 auto;
   border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
+  clip-path: var(--chamfer-lg);
   overflow: hidden;
   background: var(--panel);
   box-shadow: var(--shadow);
@@ -419,7 +442,7 @@ a:hover {
 .flip-btn {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  clip-path: var(--chamfer-sm);
   flex-shrink: 0;
   border: 1px solid var(--line-strong);
   background: var(--panel-2);
@@ -452,7 +475,6 @@ a:hover {
 .flip-page {
   position: absolute;
   inset: 0;
-  border-radius: 8px;
   overflow: hidden;
   background: var(--panel);
   backface-visibility: hidden;
@@ -469,7 +491,7 @@ a:hover {
   max-width: 78vw;
   margin: 0;
   padding: 12px 14px;
-  border-radius: var(--radius-sm);
+  clip-path: var(--chamfer-sm);
   border: 1px solid var(--line);
   background: var(--panel-2);
   box-shadow: var(--shadow-sm);
@@ -552,7 +574,6 @@ a:hover {
 .quote-more {
   margin-top: 4px;
   padding: 5px 16px;
-  border-radius: 999px;
   border: 1px solid var(--line-strong);
   background: none;
   color: var(--text-secondary);
@@ -659,7 +680,7 @@ a:hover {
   background: var(--accent-soft);
 }
 .sudoku-cell.wrong input {
-  color: #e35d5d;
+  color: var(--red);
 }
 
 .sudoku-actions {
@@ -777,7 +798,7 @@ a:hover {
   box-shadow: inset 0 0 0 2px var(--accent);
 }
 .chess-cell.in-check {
-  background: color-mix(in srgb, #e35d5d 30%, transparent);
+  background: color-mix(in srgb, var(--red) 30%, transparent);
 }
 .chess-cell.move-hint::after {
   content: '';
@@ -834,17 +855,20 @@ a:hover {
 }
 .section-label {
   font-size: clamp(24px, 3.4vw, 32px);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.01em;
   color: var(--text-primary);
   margin-bottom: 20px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
 }
-/* Rounded bento card — the language every card on the site now shares. */
+/* Chamfered plate — the language every card on the site now shares
+   instead of a rounded bento corner. Hover adds a thin accent-tinted ring
+   on top of the lift, a cheap "energized" cue that costs nothing extra in
+   dayside mode since --glow resolves to none there. */
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  clip-path: var(--chamfer);
   box-shadow: var(--shadow-sm);
   transition:
     background 0.25s ease,
@@ -853,7 +877,8 @@ a:hover {
     transform 0.2s ease;
 }
 .panel:hover {
-  box-shadow: var(--shadow);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow), var(--glow);
   transform: translateY(-2px);
 }
 
@@ -865,16 +890,15 @@ a:hover {
   gap: 7px;
 }
 /* Every tag is a button (see Skills.tsx) — opens a popup with the related
-   project for that skill. Styled to look exactly like the old plain <li>
-   tag at rest, so the only thing that changes visually is the hover/focus
-   state, which is the one hint that it's now interactive. */
+   project for that skill. Styled like a small part-number chip: bordered,
+   flat, no fill until hover. */
 .tags button {
   font: inherit;
   font-size: 11.5px;
   color: var(--text-secondary);
   background: var(--panel-2);
   border: 1px solid var(--line);
-  border-radius: 999px;
+  clip-path: var(--chamfer-sm);
   padding: 4px 11px;
   cursor: pointer;
   transition:
@@ -914,7 +938,7 @@ a:hover {
   right: 12px;
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  clip-path: var(--chamfer-sm);
   border: 1px solid var(--line-strong);
   background: var(--panel-2);
   color: var(--text-secondary);
@@ -1022,7 +1046,7 @@ a:hover {
 }
 .skill-detail-card {
   border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  clip-path: var(--chamfer-sm);
   padding: 18px 20px;
   margin-bottom: 14px;
 }
@@ -1127,7 +1151,7 @@ a:hover {
 }
 .sig-name {
   display: block;
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-display), sans-serif;
   font-weight: 700;
   font-size: 16px;
 }
@@ -1259,7 +1283,8 @@ a:hover {
   transition:
     opacity 0.25s ease,
     transform 0.25s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .rocket-btn.visible {
   opacity: 1;
@@ -1268,6 +1293,7 @@ a:hover {
 }
 .rocket-btn:hover {
   border-color: var(--accent);
+  box-shadow: var(--shadow), var(--glow);
 }
 .rocket-btn.launching {
   animation: rocket-launch 0.7s cubic-bezier(0.3, 0, 0.55, 1) forwards;
@@ -1322,12 +1348,12 @@ a:hover {
   flex-shrink: 0;
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-sm);
+  clip-path: var(--chamfer-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent-gradient);
-  color: #fff;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 .contact-box-head h3 {
   font-size: 17px;
@@ -1340,7 +1366,7 @@ a:hover {
 .cal-embed {
   flex: 1;
   min-height: 480px;
-  border-radius: var(--radius-sm);
+  clip-path: var(--chamfer-sm);
   overflow: hidden;
   border: 1px solid var(--line);
   background: var(--panel-2);
@@ -1368,7 +1394,7 @@ a:hover {
   align-items: center;
   gap: 10px;
   padding: 12px 14px;
-  border-radius: var(--radius-sm);
+  clip-path: var(--chamfer-sm);
   border: 1px solid var(--line);
   background: var(--panel-2);
   transition:
@@ -1415,9 +1441,9 @@ a:hover {
   gap: 8px;
   padding: 13px 20px;
   border: 0;
-  border-radius: 999px;
-  background: var(--accent-gradient);
-  color: #fff;
+  clip-path: var(--chamfer-sm);
+  background: var(--accent);
+  color: var(--on-accent);
   font: inherit;
   font-size: 13.5px;
   font-weight: 600;
@@ -1429,7 +1455,7 @@ a:hover {
 }
 .contact-send:hover {
   transform: translateY(-1px);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), var(--glow);
 }
 .contact-send:disabled {
   opacity: 0.6;
@@ -1467,7 +1493,6 @@ a:hover {
 }
 .contact-links a {
   padding: 7px 14px;
-  border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--panel);
   color: var(--text-secondary);
@@ -1497,7 +1522,7 @@ a:hover {
   width: 340px;
   max-width: calc(100vw - 40px);
   padding: 16px 18px;
-  border-radius: var(--radius);
+  clip-path: var(--chamfer);
   border: 1px solid var(--line);
   background: var(--panel);
   box-shadow: var(--shadow);
@@ -1511,8 +1536,8 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent-gradient);
-  color: #fff;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 .toast-copy {
   flex: 1;
@@ -1658,7 +1683,8 @@ a:hover {
   padding-top: 12px;
 }
 /* Mission-patch treatment: a second ring outside the border, offset like
-   embroidered edging on a unit insignia. */
+   embroidered edging on a unit insignia. Deliberately left circular — real
+   patches are round; nothing else on the page needs to be. */
 .quote-avatar {
   flex-shrink: 0;
   width: 34px;
@@ -1671,7 +1697,7 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-display), sans-serif;
   font-size: 13px;
   font-weight: 700;
   color: var(--accent);
@@ -1682,7 +1708,7 @@ a:hover {
 }
 .quote-name {
   display: block;
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-display), sans-serif;
   font-size: 14px;
   font-weight: 700;
 }
@@ -1698,7 +1724,7 @@ a:hover {
   flex-shrink: 0;
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  clip-path: var(--chamfer-sm);
   padding: 0;
   border: 1px solid var(--line-strong);
   background: var(--panel-2);
@@ -1943,7 +1969,7 @@ a:hover {
   font-size: 14.5px;
 }
 .case-lesson-head strong {
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-display), sans-serif;
   font-weight: 700;
 }
 .case-lesson-head span {
@@ -2030,7 +2056,7 @@ a:hover {
   margin: 0 0 4px;
 }
 .rung .rung-what {
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-display), sans-serif;
   font-weight: 700;
   font-size: 15px;
   color: var(--text-primary);
@@ -2198,7 +2224,7 @@ a:hover {
   margin-bottom: 18px;
 }
 .agent-claim {
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-display), sans-serif;
   font-weight: 700;
   font-size: 17px !important;
   color: var(--text-primary) !important;
