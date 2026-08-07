@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import Script from 'next/script';
 import { MotionConfig } from 'framer-motion';
 import './globals.css';
@@ -14,9 +14,17 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
 });
+// Headings only (h1-h4, sig-name, quote-name, agent-claim, …) — body copy
+// stays on Inter, which was never the "fairy" part of the old skin.
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  variable: '--font-display',
+  display: 'swap',
+});
 const jbmono = JetBrains_Mono({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-jbmono',
   display: 'swap',
 });
@@ -38,7 +46,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-mode="light" className={`${inter.variable} ${jbmono.variable}`}>
+    <html lang="en" data-mode="light" className={`${inter.variable} ${spaceGrotesk.variable} ${jbmono.variable}`}>
       <head>
         {/* CSP, Referrer-Policy, X-Frame-Options etc. are real HTTP headers now
             (see next.config.mjs `headers()`) — Vercel runs this as an actual

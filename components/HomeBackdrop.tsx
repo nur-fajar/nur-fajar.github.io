@@ -1,9 +1,14 @@
-// Faint dot-grain layer over the page's gradient-mesh background (see
-// --bg-gradient in globals.css) — keeps large panels of flat color from
-// looking sterile without reintroducing the old blueprint grid. Rendered as
-// a real element (not body::before/::after) since the App Router shares one
-// <body> across routes; any route that doesn't import this simply doesn't
-// get it.
+import Starfield from './Starfield';
+
+// Two backdrop layers behind the page content: a faint blueprint grid (see
+// .bp-grid in globals.css) and the constellation Starfield canvas — apt for
+// a dayside/nightside orbital theme, and it already existed for the hero's
+// zodiac globe widget, just wasn't drawn full-page under the old bento skin.
 export default function HomeBackdrop() {
-  return <div className="bp-grid" aria-hidden="true" />;
+  return (
+    <>
+      <div className="bp-grid" aria-hidden="true" />
+      <Starfield />
+    </>
+  );
 }

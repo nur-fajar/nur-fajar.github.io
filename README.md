@@ -16,21 +16,24 @@ two targets from one codebase:
   `next.config.mjs`). No server, so no image optimization and no HTTP
   headers there — see "Deploy" below.
 
-- **Theme** — clean bento style: soft pastel gradient-mesh backgrounds,
-  rounded cards with soft shadows, blue→purple gradient accent, dark/light
-  toggle, all colors via CSS variables per `data-mode`. The bulk of the
-  visual system (`app/globals.css`) is hand-written CSS rather than
-  translated into Tailwind utilities one-for-one; Tailwind and Framer Motion
-  do the rest (layout utilities, scroll reveals, page transitions).
-- **Contact** — two bento boxes: a live Cal.com embed
+- **Theme** — spacecraft HUD: Dayside/Nightside orbital-terminator palette
+  (navy/teal/gold sunlit ↔ cyan/green/red dark-side, the dark/light toggle
+  is the two halves of one orbit), chamfered console-plate panels instead of
+  rounded cards, blueprint-grid backdrop, Space Grotesk headings + JetBrains
+  Mono for every label/ID/readout. All colors via CSS variables per
+  `data-mode`. The bulk of the visual system (`app/globals.css`) is
+  hand-written CSS rather than translated into Tailwind utilities
+  one-for-one; Tailwind and Framer Motion do the rest (layout utilities,
+  scroll reveals, page transitions).
+- **Contact** — two console panels: a live Cal.com embed
   (`cal.com/nurfajar/15min`) to book a call, and a "drop a message" form
   that (no backend on this static site) opens the visitor's email client
   with the fields pre-filled via a `mailto:` link.
 - **Starfield** — `<canvas>` constellation background (ambient dust + real
-  RA/Dec data, `content/constellations.ts`), currently unmounted from the
-  home page to keep the bento look clean; the component and its geometry
-  lib (`lib/sky-geometry.ts`) are still used by the hero's zodiac globe
-  widget. Respects `prefers-reduced-motion`.
+  RA/Dec data, `content/constellations.ts`), mounted full-page via
+  `HomeBackdrop`; the component and its geometry lib (`lib/sky-geometry.ts`)
+  are also used standalone by the hero's zodiac globe widget. Respects
+  `prefers-reduced-motion`.
 - **Widgets** — hero flip-card carousel (photo / draggable zodiac globe /
   sudoku / chess / book quotes), all client components under `components/`.
   The sudoku generator and the hand-rolled chess engine live in `lib/` with
