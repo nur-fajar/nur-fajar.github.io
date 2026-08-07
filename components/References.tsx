@@ -1,11 +1,12 @@
 import ReferencesCarousel from './ReferencesCarousel';
 import Reveal from './motion/Reveal';
+import SectionHeading from './SectionHeading';
 
 export default function References() {
   return (
     <section id="references" className="section">
       <Reveal as="div">
-        <h2 className="section-label mono">REFERENCES / WHAT PEOPLE SAY</h2>
+        <SectionHeading num="06" title="What People Say" />
       </Reveal>
       <Reveal as="div">
         <ReferencesCarousel />

@@ -1,11 +1,12 @@
 import { EDUCATION } from '@/content/education';
 import Reveal from './motion/Reveal';
+import SectionHeading from './SectionHeading';
 
 export default function Education() {
   return (
     <section id="education" className="section">
       <Reveal as="div">
-        <h2 className="section-label mono">EDUCATION &amp; CREDENTIALS</h2>
+        <SectionHeading num="05" title="Education & Credentials" />
       </Reveal>
       <div className="edu-grid">
         <Reveal as="div" className="panel edu" index={0}>

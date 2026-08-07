@@ -1,32 +1,41 @@
 import Nav from '@/components/Nav';
-import HomeBackdrop from '@/components/HomeBackdrop';
+import Sidebar from '@/components/Sidebar';
 import RocketButton from '@/components/RocketButton';
 import Hero from '@/components/Hero';
-import References from '@/components/References';
 import { WorkSignals, OrganizationSignals } from '@/components/Signals';
 import Skills from '@/components/Skills';
+import Playground from '@/components/Playground';
 import Education from '@/components/Education';
+import References from '@/components/References';
 import Contact from '@/components/Contact';
 
 export default function HomePage() {
   return (
     <>
-      <HomeBackdrop />
       <RocketButton />
+      <Nav />
 
       <div className="wrap">
-        <Nav />
+        <div className="layout">
+          <Sidebar />
 
-        <main id="top">
-          <Hero />
-          <WorkSignals />
-          <OrganizationSignals />
-          <Skills />
-          <Education />
-          <References />
-        </main>
+          {/* .content is the one flex sibling next to the sticky Sidebar — main
+              content *and* the footer live inside it so the sidebar stays
+              pinned for the full page height, contact section included. */}
+          <div className="content">
+            <main>
+              <Hero />
+              <WorkSignals />
+              <OrganizationSignals />
+              <Skills />
+              <Playground />
+              <Education />
+              <References />
+            </main>
 
-        <Contact />
+            <Contact />
+          </div>
+        </div>
       </div>
     </>
   );

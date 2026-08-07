@@ -18,16 +18,11 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import YearNow from './YearNow';
 import Reveal from './motion/Reveal';
+import SectionHeading from './SectionHeading';
 import { getMode, MODE_CHANGE_EVENT, type Mode } from '@/lib/theme';
+import { CONTACT_EMAIL, SOCIAL_LINKS, CV_HREF, CV_FILENAME } from '@/content/socials';
 
-const CONTACT_EMAIL = 'hi.nurfajar@gmail.com';
 const WEB3FORMS_ACCESS_KEY = '95e8d354-0a97-4000-8798-0e12285f9251';
-
-const CONTACT_LINKS = [
-  ['mailto:' + CONTACT_EMAIL, CONTACT_EMAIL],
-  ['https://www.linkedin.com/in/nurfajar/', 'linkedin/nurfajar'],
-  ['https://github.com/nur-fajar', 'github/nur-fajar'],
-] as const;
 
 function CalendarIcon() {
   return (
@@ -157,7 +152,7 @@ export default function Contact() {
   return (
     <footer id="contact" className="section">
       <Reveal as="div" className="contact-intro">
-        <h2 className="section-label">Open channel.</h2>
+        <SectionHeading num="07" title="Contact" />
         <p>Available for AI L&amp;D programs, GenAI curriculum work, and automation projects.</p>
       </Reveal>
 
@@ -224,12 +219,12 @@ export default function Contact() {
       </div>
 
       <div className="contact-links mono">
-        {CONTACT_LINKS.map(([href, label]) => (
-          <a key={href} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noopener">
-            {label}
+        {SOCIAL_LINKS.map((s) => (
+          <a key={s.href} href={s.href} target={s.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
+            {s.label}
           </a>
         ))}
-        <a href="/nf.pdf" download="Nur-Fajar-CV-AI-LnD-2026.pdf" target="_blank" rel="noopener">
+        <a href={CV_HREF} download={CV_FILENAME} target="_blank" rel="noopener">
           CV.PDF ↓
         </a>
       </div>

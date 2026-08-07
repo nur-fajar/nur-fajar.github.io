@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { SKILL_GROUPS } from '@/content/skills';
 import Reveal from './motion/Reveal';
+import SectionHeading from './SectionHeading';
 import SkillPopup from './SkillPopup';
 
 export default function Skills() {
@@ -11,7 +12,7 @@ export default function Skills() {
   return (
     <section id="skills" className="section">
       <Reveal as="div">
-        <h2 className="section-label mono">SKILL GROUPS</h2>
+        <SectionHeading num="03" title="Skills" />
       </Reveal>
       <div className="skill-grid">
         {SKILL_GROUPS.map((g, i) => (
