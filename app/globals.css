@@ -1485,6 +1485,80 @@ a:hover {
   padding: 36px 0 28px;
 }
 
+/* ── Toast: confirmation after a successful "drop a message" send ──────── */
+.toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 340px;
+  max-width: calc(100vw - 40px);
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  animation: toast-in 0.3s ease;
+}
+.toast-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-gradient);
+  color: #fff;
+}
+.toast-copy {
+  flex: 1;
+  min-width: 0;
+}
+.toast-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.toast-body {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.toast-close {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 0;
+  background: none;
+  color: var(--text-dim);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+.toast-close:hover {
+  color: var(--accent);
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
+
 /* ── Section lede: satu paragraf konteks di bawah label section ───────── */
 .section-lede {
   max-width: 62ch;
@@ -2018,6 +2092,12 @@ a:hover {
   .cal-embed,
   .cal-embed iframe {
     min-height: 560px;
+  }
+  .toast {
+    left: 14px;
+    right: 14px;
+    bottom: 68px;
+    width: auto;
   }
   /* dl dua kolom jadi bertumpuk — 190px label tidak masuk di layar sempit */
   .case-dl,

@@ -74,10 +74,18 @@ function SendIcon() {
     </svg>
   );
 }
+function CheckIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
 
 const EMPTY_FORM = { firstName: '', lastName: '', email: '', message: '' };
+const TOAST_DURATION = 5000;
 
-type Status = 'idle' | 'sending' | 'success' | 'error';
+type Status = 'idle' | 'sending' | 'error';
 
 export default function Contact() {
   // Same pattern as ThemeToggle: SSR default 'light', corrected from the DOM
@@ -95,10 +103,17 @@ export default function Contact() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
-  const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [toastVisible, setToastVisible] = useState(false);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => {
-    if (resetTimer.current) clearTimeout(resetTimer.current);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
   }, []);
+
+  function showToast() {
+    setToastVisible(true);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToastVisible(false), TOAST_DURATION);
+  }
 
   function field(key: keyof typeof EMPTY_FORM) {
     return {
@@ -130,16 +145,13 @@ export default function Contact() {
       });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.message || 'Something went wrong.');
-      setStatus('success');
       setForm(EMPTY_FORM);
+      setStatus('idle');
+      showToast();
     } catch (err) {
       setStatus('error');
       setError(err instanceof Error ? err.message : 'Something went wrong.');
-      return;
     }
-    // Back to idle after a beat so the confirmation is readable but a
-    // visitor who wants to send a second message isn't stuck.
-    resetTimer.current = setTimeout(() => setStatus('idle'), 4000);
   }
 
   return (
@@ -202,7 +214,7 @@ export default function Contact() {
             </label>
             <button type="submit" className="contact-send" disabled={status === 'sending'}>
               <SendIcon />
-              {status === 'sending' ? 'Sending…' : status === 'success' ? 'Sent — thank you!' : 'Send message'}
+              {status === 'sending' ? 'Sending…' : 'Send message'}
             </button>
             <p className={`contact-form-hint${status === 'error' ? ' is-error' : ''}`}>
               {status === 'error' ? error : `Goes straight to ${CONTACT_EMAIL}.`}
@@ -224,6 +236,21 @@ export default function Contact() {
       <p className="foot mono">
         — END OF TRANSMISSION · © <YearNow /> NUR FAJAR —
       </p>
+
+      {toastVisible && (
+        <div className="toast" role="status" aria-live="polite">
+          <span className="toast-icon" aria-hidden="true">
+            <CheckIcon />
+          </span>
+          <div className="toast-copy">
+            <p className="toast-title">Message sent!</p>
+            <p className="toast-body">Thanks — I&apos;ll get back to you within a day or two.</p>
+          </div>
+          <button type="button" className="toast-close" aria-label="Dismiss" onClick={() => setToastVisible(false)}>
+            ×
+          </button>
+        </div>
+      )}
     </footer>
   );
 }
