@@ -1,75 +1,79 @@
 @import 'tailwindcss';
 
-/* ── Mecha/Gundam theme tokens — Zeta / Banshee ───────────────────────── */
-/* Dua mode = dua unit, bukan sekadar terang/gelap:
-     light = Zeta Gundam        → putih mutiara, navy, merah, emas, teal
-     dark  = Unicorn 02 Banshee → hitam matte, psycho-frame emas menyala
+/* ── Bento theme tokens ─────────────────────────────────────────────────
+   Clean, soft, rounded — cards on a pastel gradient mesh instead of the
+   old chamfered mecha plate system. Same two-mode structure as before
+   (light/dark), same CSS-variable contract the canvas widgets (Starfield,
+   Globe) already read via getComputedStyle(), just a different skin.
 
    Font-face di-self-host lewat next/font (lihat app/layout.tsx), yang
-   mengekspos --font-inter / --font-chakra / --font-jbmono sebagai CSS
-   variable di <html>. Itu sebabnya CSP tidak lagi perlu mengizinkan
-   fonts.googleapis.com / fonts.gstatic.com dibanding versi statis. */
+   mengekspos --font-inter / --font-jbmono sebagai CSS variable di <html>.
+   Itu sebabnya CSP tidak lagi perlu mengizinkan fonts.googleapis.com /
+   fonts.gstatic.com dibanding versi statis. */
 :root {
   /* Aksen default = dark mode. Light mode menimpanya di bawah. Canvas rasi
      bintang membaca --accent lewat skyReadColors(), jadi bintangnya ikut
      berganti warna tanpa kode tambahan. */
-  --accent: #f2b705;
-  --accent-soft: rgba(242, 183, 5, 0.16);
-  /* Chamfered-corner cut, shared by every panel/card so the whole site reads
-     as one plate system instead of per-component clip-paths. */
-  --chamfer: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
-  --chamfer-sm: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-  /* Sel blueprint grid. Satu angka dipakai kedua sumbu, jadi selnya bujur sangkar. */
+  --accent: #6a5cff;
+  --accent-2: #3aa0ff;
+  --accent-soft: rgba(106, 92, 255, 0.12);
+  --accent-gradient: linear-gradient(120deg, var(--accent-2), var(--accent));
+  /* Rounded-card language shared by every panel so the whole site reads as
+     one bento system instead of per-component radii. */
+  --radius: 22px;
+  --radius-sm: 14px;
+  --radius-lg: 28px;
   --grid-size: 32px;
 }
 html[data-mode='dark'] {
-  /* Banshee: hitam matte dengan psycho-frame emas. Emas #F2B705 dapat 10.3:1
-     di atas #121214 — jauh di atas ambang 4.5:1, jadi aman jadi warna link. */
-  --bg: #121214;
-  --panel: #1a1a1d;
-  --panel-2: #212126;
-  --line: #33333a;
-  --line-strong: #5a5a60;
-  --text-primary: #e6e5e2;
-  --text-secondary: #9b9aa0;
-  --text-dim: #6e6d74;
-  --red: #ff4433;
-  /* Banshee sebenarnya tidak punya biru. --blue sudah dipakai logo dan
-     beberapa diagram, jadi diisi steel abu-biru: cukup dingin untuk
-     membedakan diri, tapi tidak berebut perhatian dengan emas. 5.3:1. */
-  --blue: #7a8a9e;
-  --teal: #7a8a9e;
+  --bg: #0f1020;
+  --bg-gradient: radial-gradient(circle at 10% 0%, rgba(106, 92, 255, 0.22), transparent 55%),
+    radial-gradient(circle at 85% 15%, rgba(58, 160, 255, 0.16), transparent 50%),
+    radial-gradient(circle at 25% 90%, rgba(255, 130, 190, 0.1), transparent 55%), #0f1020;
+  --panel: #171833;
+  --panel-2: #1e2040;
+  --line: #2c2e52;
+  --line-strong: #3d3f6b;
+  --text-primary: #eef0ff;
+  --text-secondary: #a9acd6;
+  --text-dim: #7679a3;
+  --red: #ff6b6b;
+  --blue: #3aa0ff;
+  --teal: #4fd1c5;
   --yellow: #f2b705;
-  --grid-line: #5a5a60;
-  --beam-tint: rgba(242, 183, 5, 0.05);
-  --glow: 0 0 8px rgba(242, 183, 5, 0.5);
-  --shadow: 0 12px 26px rgba(0, 0, 0, 0.6);
+  --grid-line: #3d3f6b;
+  --beam-tint: rgba(106, 92, 255, 0.08);
+  --glow: 0 0 18px rgba(106, 92, 255, 0.35);
+  --shadow: 0 16px 36px rgba(4, 5, 20, 0.45);
+  --shadow-sm: 0 6px 16px rgba(4, 5, 20, 0.35);
   color-scheme: dark;
 }
 html[data-mode='light'] {
-  /* Zeta: emas #EBBB2E cuma 1.3:1 dan teal #3FA796 cuma 2.2:1 di atas
-     #DCDDE0 — dua-duanya jauh di bawah ambang teks, jadi dikunci sebagai
-     warna dekoratif (isian, garis, tint grid) dan TIDAK pernah untuk teks.
-     Navy #1F3868 yang membawa link/label di sini: 8.5:1. */
-  --accent: #1f3868;
-  --accent-soft: rgba(31, 56, 104, 0.12);
-  --bg: #dcddE0;
+  --accent: #5b4fe8;
+  --accent-2: #2f8bf0;
+  --accent-soft: rgba(91, 79, 232, 0.1);
+  --accent-gradient: linear-gradient(120deg, var(--accent-2), var(--accent));
+  --bg: #f4f2ec;
+  --bg-gradient: radial-gradient(circle at 8% -5%, rgba(255, 224, 130, 0.55), transparent 45%),
+    radial-gradient(circle at 90% 5%, rgba(178, 165, 255, 0.45), transparent 45%),
+    radial-gradient(circle at 15% 95%, rgba(255, 190, 210, 0.4), transparent 50%),
+    radial-gradient(circle at 95% 90%, rgba(150, 210, 255, 0.4), transparent 45%), #f4f2ec;
   --panel: #ffffff;
-  --panel-2: #cfd1d5;
-  --line: #bfc2c8;
-  --line-strong: #9ba0a8;
-  --text-primary: #1b2331;
-  --text-secondary: #4a5464;
-  --text-dim: #6b7484;
-  /* 3.9:1 — lolos untuk teks besar, border, dan label. Bukan untuk paragraf. */
-  --red: #c23b2e;
-  --blue: #1f3868;
-  --teal: #3fa796;
-  --yellow: #ebbb2e;
-  --grid-line: #3fa796;
-  --beam-tint: rgba(31, 56, 104, 0.05);
+  --panel-2: #f4f4fb;
+  --line: #e7e6f2;
+  --line-strong: #d3d1e6;
+  --text-primary: #1c1d33;
+  --text-secondary: #55567a;
+  --text-dim: #83849f;
+  --red: #d94f4f;
+  --blue: #2f6fe0;
+  --teal: #2ea89a;
+  --yellow: #e0a300;
+  --grid-line: #d3d1e6;
+  --beam-tint: rgba(91, 79, 232, 0.05);
   --glow: none;
-  --shadow: 0 10px 22px rgba(27, 35, 49, 0.1);
+  --shadow: 0 20px 45px rgba(28, 29, 51, 0.1);
+  --shadow-sm: 0 8px 20px rgba(28, 29, 51, 0.08);
   color-scheme: light;
 }
 
@@ -83,25 +87,30 @@ html {
 }
 body {
   position: relative;
-  background: var(--bg);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-inter), sans-serif;
   font-size: 16px;
   line-height: 1.65;
   transition:
-    background 0.25s ease,
+    background-color 0.25s ease,
     color 0.25s ease;
 }
 h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-chakra), sans-serif;
-  font-weight: 700;
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   line-height: 1.15;
 }
+/* Was a swap to a monospace font under the old terminal/HUD skin — now just
+   the light tracked-caps treatment used for eyebrows, ids and tags, still
+   set on the same elements so no JSX had to change. */
 .mono {
-  font-family: var(--font-jbmono), monospace;
+  letter-spacing: 0.04em;
 }
 a {
   color: var(--accent);
@@ -132,68 +141,21 @@ a:hover {
   padding: 0 24px;
 }
 
-/* ── Latar: blueprint grid ─────────────────────────────────────────────── */
-/* Dirender sebagai elemen sungguhan (bukan ::before/::after pada <body>,
-   yang tidak praktis di App Router karena <body> dipakai bersama semua
-   route) — hanya dipasang oleh halaman beranda lewat <HomeBackdrop>.
-   lab/page.tsx sengaja tidak memakainya supaya tetap tenang untuk dibaca.
-
-   Urutan lapisan (dari bawah ke atas):
-     --bg  →  .bp-grid  →  #sky bintang  →  .wrap teks
-   Keduanya z-index 0 dan .wrap z-index 1, jadi TEKS SELALU DI ATAS grid. */
+/* ── Latar: soft gradient mesh ──────────────────────────────────────────
+   Replaces the old blueprint grid. The mesh itself already lives on `body`
+   (--bg-gradient, see the mode blocks above) so it scrolls with the page
+   like a normal background; <HomeBackdrop> only adds a very faint grain of
+   dots on top so large panels of flat color don't look sterile. */
 .bp-grid {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.07;
-  background-image:
-    repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px var(--grid-size)),
-    repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px var(--grid-size));
-}
-
-/* Scan beam — used to sweep the entire viewport (fixed, full-page). It's now
-   scoped to a single card instead: the hero flip-card (.globe-box in
-   FlipCard.tsx), the one box on the page with a photo/globe/sudoku/chess/quote
-   rotating through it. Positioned absolute against .globe-box (position:
-   relative) rather than fixed against the viewport, and clipped to the
-   card's own chamfered outline for free by .globe-box's clip-path.
-   Satu siklus = 16 detik: 6 detik melintas turun, lalu 10 detik diam di luar
-   kartu. Jedanya dibuat lewat keyframe: gerakan selesai pada 37.5% (6 dtk
-   dari 16 dtk), lalu ditahan sampai 100%. Dianimasikan lewat `top` (persen,
-   relatif ke tinggi .globe-box) bukan `transform: translateY(px)` seperti
-   versi lama — kartunya kecil dan lepas dari flow, jadi reflow-nya lokal
-   dan bukan lagi beban compositor seluruh halaman. */
-.card-scan-beam {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -35%;
-  height: 35%;
-  z-index: 3;
-  pointer-events: none;
-  background: linear-gradient(to bottom, transparent, var(--beam-tint), transparent);
-  animation: card-scan-beam 16s linear infinite;
-}
-@keyframes card-scan-beam {
-  0% {
-    top: -35%;
-  } /* mulai tepat di atas kartu   */
-  37.5% {
-    top: 100%;
-  } /* 6 dtk: sampai bawah kartu   */
-  100% {
-    top: 100%;
-  } /* 10 dtk: diam, tak terlihat  */
-}
-/* Gerakan terus-menerus adalah pemicu utama motion sickness, jadi beam-nya
-   dihilangkan sepenuhnya di sini. Grid tetap tampil — grid tidak bergerak. */
-@media (prefers-reduced-motion: reduce) {
-  .card-scan-beam {
-    display: none;
-  }
+  opacity: 0.5;
+  background-image: radial-gradient(var(--grid-line) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  mask-image: radial-gradient(circle at 50% 0%, black, transparent 75%);
 }
 
 /* ── Nav ─────────────────────────────────────────────────────────────── */
@@ -204,10 +166,13 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 24px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--line);
-  background: color-mix(in srgb, var(--bg) 86%, transparent);
-  backdrop-filter: blur(8px);
+  margin-top: 16px;
+  padding: 10px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(10px);
 }
 .logo {
   display: flex;
@@ -244,33 +209,35 @@ a:hover {
 /* CTA utama: aksi #1 recruiter, jadi selalu terlihat tanpa perlu scroll. */
 .nav-cv {
   flex-shrink: 0;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  padding: 5px 14px;
-  border: 1px solid var(--line-strong);
-  clip-path: var(--chamfer-sm);
-  color: var(--text-primary);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 8px 18px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--accent-gradient);
   white-space: nowrap;
+  box-shadow: var(--shadow-sm);
   transition:
-    border-color 0.18s ease,
-    color 0.18s ease;
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 .nav-cv:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
   text-decoration: none;
 }
 .mode-toggle {
   display: flex;
   border: 1px solid var(--line);
-  clip-path: var(--chamfer-sm);
+  border-radius: 999px;
   overflow: hidden;
 }
 .mode-toggle button {
   font: inherit;
   font-size: 11px;
-  letter-spacing: 0.08em;
-  padding: 5px 12px;
+  letter-spacing: 0.06em;
+  padding: 6px 14px;
   border: 0;
   background: none;
   cursor: pointer;
@@ -287,12 +254,17 @@ a:hover {
   grid-template-columns: 1.2fr 0.8fr;
   align-items: center;
   gap: 40px;
-  padding: 88px 0 64px;
+  padding: 64px 0 56px;
 }
 .eyebrow {
-  font-size: 12px;
-  letter-spacing: 0.14em;
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   color: var(--accent);
+  background: var(--accent-soft);
+  padding: 6px 14px;
+  border-radius: 999px;
   margin-bottom: 18px;
 }
 .hero h1 {
@@ -302,24 +274,30 @@ a:hover {
 .lede {
   color: var(--text-secondary);
   max-width: 52ch;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 .stats {
   display: grid;
   grid-template-columns: repeat(4, auto);
-  gap: 28px;
+  gap: 10px;
   justify-content: start;
+}
+.stats > div {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
 }
 .stat-n {
   display: block;
-  font-family: var(--font-chakra), sans-serif;
-  font-size: 26px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
 }
 .stat-l {
   display: block;
   font-size: 10px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-dim);
   margin-top: 2px;
@@ -327,7 +305,7 @@ a:hover {
 .stats-note {
   margin: 14px 0 0;
   font-size: 10.5px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   color: var(--text-dim);
 }
 
@@ -335,19 +313,22 @@ a:hover {
 .status-lamps {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 18px;
+  gap: 8px;
   list-style: none;
   padding: 0;
   margin: 0 0 20px;
   font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--text-secondary);
 }
 .status-lamps li {
   display: flex;
   align-items: center;
   gap: 7px;
+  padding: 5px 12px 5px 10px;
+  border-radius: 999px;
+  background: var(--panel);
+  border: 1px solid var(--line);
 }
 .status-lamps li::before {
   content: '';
@@ -384,8 +365,7 @@ a:hover {
   }
 }
 
-/* hero globe — bordered card with a hard offset shadow (stamp-style),
-   colors stay on the existing grey/cyan palette */
+/* hero globe — soft rounded bento card, same grey/cyan widget colors */
 .hero-globe {
   perspective: 1400px;
 }
@@ -395,38 +375,19 @@ a:hover {
   max-width: 340px;
   aspect-ratio: 1 / 1;
   margin: 0 auto;
-  border: 1.5px solid var(--line-strong);
-  clip-path: var(--chamfer);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
   background: var(--panel);
-  box-shadow: 8px 8px 0 0 var(--line-strong);
+  box-shadow: var(--shadow);
   transition:
     background 0.25s ease,
     border-color 0.25s ease,
-    box-shadow 0.25s ease;
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
-/* Corner-bracket viewfinder frame — the one flagship HUD flourish, reserved
-   for the hero card so it doesn't turn into wallpaper repeated everywhere. */
-.globe-box::before,
-.globe-box::after {
-  content: '';
-  position: absolute;
-  z-index: 4;
-  width: 22px;
-  height: 22px;
-  pointer-events: none;
-  border-color: var(--accent);
-}
-.globe-box::before {
-  top: 8px;
-  left: 8px;
-  border-top: 2px solid;
-  border-left: 2px solid;
-}
-.globe-box::after {
-  bottom: 8px;
-  right: 8px;
-  border-bottom: 2px solid;
-  border-right: 2px solid;
+.globe-box:hover {
+  transform: translateY(-3px);
 }
 .globe-canvas {
   width: 100%;
@@ -458,7 +419,7 @@ a:hover {
 .flip-btn {
   width: 28px;
   height: 28px;
-  border-radius: 6px;
+  border-radius: 50%;
   flex-shrink: 0;
   border: 1px solid var(--line-strong);
   background: var(--panel-2);
@@ -508,10 +469,10 @@ a:hover {
   max-width: 78vw;
   margin: 0;
   padding: 12px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
   background: var(--panel-2);
-  box-shadow: 4px 4px 0 0 var(--line-strong);
+  box-shadow: var(--shadow-sm);
   font-size: 11.5px;
   line-height: 1.55;
   color: var(--text-secondary);
@@ -869,37 +830,31 @@ a:hover {
 
 /* ── Sections & panels ───────────────────────────────────────────────── */
 .section {
-  padding: 40px 0;
+  padding: 36px 0;
 }
 .section-label {
-  font-size: clamp(34px, 6vw, 64px);
-  letter-spacing: 0.02em;
-  color: var(--text-secondary);
+  font-size: clamp(24px, 3.4vw, 32px);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
   margin-bottom: 20px;
-  font-weight: 500;
-  line-height: 1.15;
+  font-weight: 800;
+  line-height: 1.2;
 }
-.section-label::before {
-  content: '▸ ';
-  color: var(--accent);
-}
-/* Chamfered corner + two rivet dots on the sharp corners left over — the
-   plate-and-bolt language every card in the site shares. */
+/* Rounded bento card — the language every card on the site now shares. */
 .panel {
-  background:
-    radial-gradient(circle at calc(100% - 8px) 8px, var(--line-strong) 1.4px, transparent 1.6px),
-    radial-gradient(circle at 8px calc(100% - 8px), var(--line-strong) 1.4px, transparent 1.6px),
-    var(--panel);
+  background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 0;
-  clip-path: var(--chamfer);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
   transition:
     background 0.25s ease,
     border-color 0.25s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 .panel:hover {
   box-shadow: var(--shadow);
+  transform: translateY(-2px);
 }
 
 .tags {
@@ -917,10 +872,10 @@ a:hover {
   font: inherit;
   font-size: 11.5px;
   color: var(--text-secondary);
-  background: transparent;
-  border: 1px solid var(--line-strong);
-  clip-path: var(--chamfer-sm);
-  padding: 3px 9px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 11px;
   cursor: pointer;
   transition:
     border-color 0.18s ease,
@@ -951,7 +906,7 @@ a:hover {
   max-height: 80vh;
   overflow-y: auto;
   padding: 26px 26px 22px;
-  box-shadow: 8px 8px 0 0 var(--line-strong);
+  box-shadow: var(--shadow);
 }
 .skill-popup-close {
   position: absolute;
@@ -959,7 +914,7 @@ a:hover {
   right: 12px;
   width: 28px;
   height: 28px;
-  border-radius: 6px;
+  border-radius: 50%;
   border: 1px solid var(--line-strong);
   background: var(--panel-2);
   color: var(--text-secondary);
@@ -1067,6 +1022,7 @@ a:hover {
 }
 .skill-detail-card {
   border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
   padding: 18px 20px;
   margin-bottom: 14px;
 }
@@ -1171,7 +1127,7 @@ a:hover {
 }
 .sig-name {
   display: block;
-  font-family: var(--font-chakra), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-weight: 700;
   font-size: 16px;
 }
@@ -1294,8 +1250,8 @@ a:hover {
   font-size: 21px;
   line-height: 1;
   background: var(--panel);
-  border: 1.5px solid var(--line-strong);
-  box-shadow: 4px 4px 0 0 var(--line-strong);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
   cursor: pointer;
   opacity: 0;
   transform: translateY(10px) scale(0.9);
@@ -1333,30 +1289,184 @@ a:hover {
   }
 }
 
-/* ── Contact / footer ────────────────────────────────────────────────── */
-.contact {
-  padding: 32px;
+/* ── Contact / footer: two bento boxes — book a call, or drop a message ── */
+.contact-intro {
   text-align: center;
+  max-width: 56ch;
+  margin: 0 auto 28px;
 }
-.contact h2 {
-  font-size: 28px;
+.contact-intro .section-label {
   margin-bottom: 8px;
 }
-.contact p {
+.contact-intro p {
   color: var(--text-secondary);
-  margin-bottom: 22px;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+.contact-box {
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.contact-box-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.contact-box-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-gradient);
+  color: #fff;
+}
+.contact-box-head h3 {
+  font-size: 17px;
+  margin-bottom: 2px;
+}
+.contact-box-head p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.cal-embed {
+  flex: 1;
+  min-height: 480px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+}
+.cal-embed iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  border: 0;
+  display: block;
+}
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+.contact-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.contact-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.contact-field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.contact-field svg {
+  flex-shrink: 0;
+  color: var(--text-dim);
+}
+.contact-field input,
+.contact-field textarea {
+  flex: 1;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  outline: none;
+  resize: none;
+}
+.contact-field input::placeholder,
+.contact-field textarea::placeholder {
+  color: var(--text-dim);
+}
+.contact-field-textarea {
+  align-items: flex-start;
+  flex: 1;
+}
+.contact-field-textarea svg {
+  margin-top: 3px;
+}
+.contact-field-textarea textarea {
+  min-height: 120px;
+}
+.contact-send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent-gradient);
+  color: #fff;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.contact-send:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+.contact-send:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+.contact-form-hint {
+  margin: 0;
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
 }
 .contact-links {
   display: flex;
-  gap: 22px;
+  gap: 10px;
   justify-content: center;
   flex-wrap: wrap;
-  font-size: 13px;
+  font-size: 12.5px;
+  margin: 28px 0 0;
+}
+.contact-links a {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text-secondary);
+}
+.contact-links a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  text-decoration: none;
 }
 .foot {
   text-align: center;
   font-size: 10px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   color: var(--text-dim);
   padding: 36px 0 28px;
 }
@@ -1473,7 +1583,7 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-chakra), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 13px;
   font-weight: 700;
   color: var(--accent);
@@ -1484,7 +1594,7 @@ a:hover {
 }
 .quote-name {
   display: block;
-  font-family: var(--font-chakra), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 14px;
   font-weight: 700;
 }
@@ -1745,7 +1855,7 @@ a:hover {
   font-size: 14.5px;
 }
 .case-lesson-head strong {
-  font-family: var(--font-chakra), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-weight: 700;
 }
 .case-lesson-head span {
@@ -1832,7 +1942,7 @@ a:hover {
   margin: 0 0 4px;
 }
 .rung .rung-what {
-  font-family: var(--font-chakra), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-weight: 700;
   font-size: 15px;
   color: var(--text-primary);
@@ -1884,8 +1994,16 @@ a:hover {
     gap: 18px 36px;
   }
   .skill-grid,
-  .edu-grid {
+  .edu-grid,
+  .contact-grid {
     grid-template-columns: 1fr;
+  }
+  .contact-form-row {
+    grid-template-columns: 1fr;
+  }
+  .cal-embed,
+  .cal-embed iframe {
+    min-height: 560px;
   }
   /* dl dua kolom jadi bertumpuk — 190px label tidak masuk di layar sempit */
   .case-dl,
@@ -1986,7 +2104,7 @@ a:hover {
   margin-bottom: 18px;
 }
 .agent-claim {
-  font-family: var(--font-chakra), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-weight: 700;
   font-size: 17px !important;
   color: var(--text-primary) !important;

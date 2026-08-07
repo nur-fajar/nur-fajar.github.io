@@ -1,6 +1,5 @@
 import Nav from '@/components/Nav';
 import HomeBackdrop from '@/components/HomeBackdrop';
-import Starfield from '@/components/Starfield';
 import RocketButton from '@/components/RocketButton';
 import Hero from '@/components/Hero';
 import References from '@/components/References';
@@ -13,7 +12,6 @@ export default function HomePage() {
   return (
     <>
       <HomeBackdrop />
-      <Starfield />
       <RocketButton />
 
       <div className="wrap">

@@ -18,6 +18,8 @@ const CSP = [
   "img-src 'self' data:",
   "font-src 'self'",
   "connect-src 'self'",
+  // Contact section embeds a Cal.com booking iframe (cal.com/nurfajar/15min).
+  "frame-src https://cal.com https://app.cal.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

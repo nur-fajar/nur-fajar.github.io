@@ -16,16 +16,21 @@ two targets from one codebase:
   `next.config.mjs`). No server, so no image optimization and no HTTP
   headers there — see "Deploy" below.
 
-- **Theme** — mecha/Gundam-inspired: near-black or paper backgrounds, chamfered
-  panel corners, amber (dark) / blue (light) accent, dark/light toggle,
-  all colors via CSS variables per `data-mode`. The bulk of the visual system
-  (`app/globals.css`) is hand-written CSS carried over from the original build
-  — clip-path plates, the blueprint grid, the scan beam — rather than
+- **Theme** — clean bento style: soft pastel gradient-mesh backgrounds,
+  rounded cards with soft shadows, blue→purple gradient accent, dark/light
+  toggle, all colors via CSS variables per `data-mode`. The bulk of the
+  visual system (`app/globals.css`) is hand-written CSS rather than
   translated into Tailwind utilities one-for-one; Tailwind and Framer Motion
   do the rest (layout utilities, scroll reveals, page transitions).
-- **Starfield** — `<canvas>` background: ambient dust + real RA/Dec
-  constellation data, ported to `content/constellations.ts`. Respects
-  `prefers-reduced-motion`.
+- **Contact** — two bento boxes: a live Cal.com embed
+  (`cal.com/nurfajar/15min`) to book a call, and a "drop a message" form
+  that (no backend on this static site) opens the visitor's email client
+  with the fields pre-filled via a `mailto:` link.
+- **Starfield** — `<canvas>` constellation background (ambient dust + real
+  RA/Dec data, `content/constellations.ts`), currently unmounted from the
+  home page to keep the bento look clean; the component and its geometry
+  lib (`lib/sky-geometry.ts`) are still used by the hero's zodiac globe
+  widget. Respects `prefers-reduced-motion`.
 - **Widgets** — hero flip-card carousel (photo / draggable zodiac globe /
   sudoku / chess / book quotes), all client components under `components/`.
   The sudoku generator and the hand-rolled chess engine live in `lib/` with
