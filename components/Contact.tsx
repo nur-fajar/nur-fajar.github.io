@@ -3,17 +3,25 @@
 /* ── Contact: two bento boxes ────────────────────────────────────────────
    Left  — a live Cal.com embed (cal.com/nurfajar/15min) so a visitor can
            book straight off the page, no email round-trip needed.
-   Right — a "drop a message" form. There is no backend on this static
-           site, so submitting just opens the visitor's own email client
-           with the fields pre-filled (a plain mailto: link) — no new
-           dependency, no form-handling service to wire up. */
+   Right — a "drop a message" form. This is a static site with no backend
+           of its own (it ships to both Vercel and a GitHub Pages export,
+           the latter with no server at all), so submission goes straight
+           from the browser to Web3Forms (web3forms.com) — free tier,
+           250 submissions/month, no signup required from the visitor —
+           which relays it to CONTACT_EMAIL as a normal email.
 
-import { useEffect, useState, type FormEvent } from 'react';
+   The access key below is not a secret: Web3Forms' whole model is a
+   public key meant to sit in client-side code (same idea as a reCAPTCHA
+   site key), scoped server-side to the one destination address it was
+   created for. Nothing to hide, nothing in an env var. */
+
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import YearNow from './YearNow';
 import Reveal from './motion/Reveal';
 import { getMode, MODE_CHANGE_EVENT, type Mode } from '@/lib/theme';
 
 const CONTACT_EMAIL = 'hi.nurfajar@gmail.com';
+const WEB3FORMS_ACCESS_KEY = '95e8d354-0a97-4000-8798-0e12285f9251';
 
 const CONTACT_LINKS = [
   ['mailto:' + CONTACT_EMAIL, CONTACT_EMAIL],
@@ -69,6 +77,8 @@ function SendIcon() {
 
 const EMPTY_FORM = { firstName: '', lastName: '', email: '', message: '' };
 
+type Status = 'idle' | 'sending' | 'success' | 'error';
+
 export default function Contact() {
   // Same pattern as ThemeToggle: SSR default 'light', corrected from the DOM
   // once mounted, kept in sync so the Cal.com iframe re-mounts with the
@@ -83,7 +93,12 @@ export default function Contact() {
   }, []);
 
   const [form, setForm] = useState(EMPTY_FORM);
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
+  const [error, setError] = useState('');
+  const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (resetTimer.current) clearTimeout(resetTimer.current);
+  }, []);
 
   function field(key: keyof typeof EMPTY_FORM) {
     return {
@@ -92,12 +107,39 @@ export default function Contact() {
     };
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const subject = `Portfolio message from ${form.firstName} ${form.lastName}`.trim();
-    const body = `${form.message}\n\n— ${form.firstName} ${form.lastName} (${form.email})`;
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    // Honeypot: a field real visitors never see or fill (see .hp-field in
+    // globals.css). Bots that blind-fill every input trip it; Web3Forms
+    // just silently drops the submission instead of relaying it.
+    if (new FormData(e.currentTarget).get('botcheck')) return;
+
+    setStatus('sending');
+    setError('');
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `Portfolio message from ${form.firstName} ${form.lastName}`.trim(),
+          name: `${form.firstName} ${form.lastName}`.trim(),
+          email: form.email,
+          message: form.message,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || 'Something went wrong.');
+      setStatus('success');
+      setForm(EMPTY_FORM);
+    } catch (err) {
+      setStatus('error');
+      setError(err instanceof Error ? err.message : 'Something went wrong.');
+      return;
+    }
+    // Back to idle after a beat so the confirmation is readable but a
+    // visitor who wants to send a second message isn't stuck.
+    resetTimer.current = setTimeout(() => setStatus('idle'), 4000);
   }
 
   return (
@@ -139,6 +181,7 @@ export default function Contact() {
             </div>
           </div>
           <form className="contact-form" onSubmit={handleSubmit}>
+            <input type="checkbox" name="botcheck" className="hp-field" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             <div className="contact-form-row">
               <label className="contact-field">
                 <UserIcon />
@@ -157,11 +200,13 @@ export default function Contact() {
               <NoteIcon />
               <textarea required name="message" placeholder="Your message…" rows={5} {...field('message')} />
             </label>
-            <button type="submit" className="contact-send" disabled={sent}>
+            <button type="submit" className="contact-send" disabled={status === 'sending'}>
               <SendIcon />
-              {sent ? 'Opening your email…' : 'Send message'}
+              {status === 'sending' ? 'Sending…' : status === 'success' ? 'Sent — thank you!' : 'Send message'}
             </button>
-            <p className="contact-form-hint">No backend here — this opens your email client with the message pre-filled.</p>
+            <p className={`contact-form-hint${status === 'error' ? ' is-error' : ''}`}>
+              {status === 'error' ? error : `Goes straight to ${CONTACT_EMAIL}.`}
+            </p>
           </form>
         </Reveal>
       </div>

@@ -1443,6 +1443,20 @@ a:hover {
   color: var(--text-dim);
   text-align: center;
 }
+.contact-form-hint.is-error {
+  color: var(--red);
+}
+/* Honeypot — present in the DOM so bots that blind-fill every field trip
+   it, invisible and unreachable for real visitors (off-screen rather than
+   display:none/opacity:0, which some bots already know to skip). */
+.hp-field {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
 .contact-links {
   display: flex;
   gap: 10px;
