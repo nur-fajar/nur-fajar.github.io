@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Chakra_Petch, Inter, JetBrains_Mono } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import Script from 'next/script';
 import { MotionConfig } from 'framer-motion';
 import './globals.css';
@@ -8,8 +8,12 @@ import './globals.css';
 // on the same origin) instead of the old <link> to fonts.googleapis.com — one
 // less external host the CSP below needs to trust, and one less render-blocking
 // cross-origin request.
-const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-inter', display: 'swap' });
-const chakra = Chakra_Petch({ subsets: ['latin'], weight: ['600', '700'], variable: '--font-chakra', display: 'swap' });
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 const jbmono = JetBrains_Mono({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
@@ -34,7 +38,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-mode="light" className={`${inter.variable} ${chakra.variable} ${jbmono.variable}`}>
+    <html lang="en" data-mode="light" className={`${inter.variable} ${jbmono.variable}`}>
       <head>
         {/* CSP, Referrer-Policy, X-Frame-Options etc. are real HTTP headers now
             (see next.config.mjs `headers()`) — Vercel runs this as an actual

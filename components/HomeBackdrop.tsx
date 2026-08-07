@@ -1,12 +1,9 @@
-// Blueprint grid — the home page's calm, static backdrop layer. Rendered as
+// Faint dot-grain layer over the page's gradient-mesh background (see
+// --bg-gradient in globals.css) — keeps large panels of flat color from
+// looking sterile without reintroducing the old blueprint grid. Rendered as
 // a real element (not body::before/::after) since the App Router shares one
-// <body> across routes; lab/page.tsx simply never mounts this, so it stays
-// calm and readable there.
-//
-// The scan beam used to live here too, sweeping the entire viewport. It now
-// lives scoped inside the hero flip-card (see FlipCard.tsx / .card-scan-beam
-// in globals.css) so it reads as a HUD flourish on that one card instead of
-// motion wallpapered across the whole page.
+// <body> across routes; any route that doesn't import this simply doesn't
+// get it.
 export default function HomeBackdrop() {
   return <div className="bp-grid" aria-hidden="true" />;
 }

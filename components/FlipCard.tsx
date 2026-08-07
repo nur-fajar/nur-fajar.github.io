@@ -93,11 +93,6 @@ export default function FlipCard() {
 
   return (
     <div className="globe-box" id="flip-card">
-      {/* Scoped scan beam — the one HUD sweep left on the page, confined to
-          this card (see .card-scan-beam in globals.css). It used to sweep
-          the whole viewport; now it's local to the box that actually has
-          something worth scanning (photo / globe / sudoku / chess / quote). */}
-      <div className="card-scan-beam" aria-hidden="true" />
       <div className="flip-controls">
         <span className="flip-count mono" aria-hidden="true">
           {current + 1}/{PAGE_COUNT}
