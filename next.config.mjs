@@ -17,7 +17,9 @@ const CSP = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self'",
-  "connect-src 'self'",
+  // Contact form's "drop a message" box posts straight to Web3Forms
+  // (web3forms.com) — no backend of our own, see components/Contact.tsx.
+  "connect-src 'self' https://api.web3forms.com",
   // Contact section embeds a Cal.com booking iframe (cal.com/nurfajar/15min).
   "frame-src https://cal.com https://app.cal.com",
   "object-src 'none'",
