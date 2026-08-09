@@ -1657,58 +1657,102 @@ a:hover {
   font-weight: 500;
 }
 
-/* ── References / testimoni — one-at-a-time slider ───────────────────── */
-.quote-carousel {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.quote-viewport {
+/* ── References / testimoni — staggered card stack ──────────────────────
+   Click a side card (or the arrows) to bring it to the front; the clicked
+   card and everything between it and the front rotate across the array
+   (see components/ReferencesCarousel.tsx + lib/stagger.ts). Chamfer/panel/
+   accent tokens throughout, same plate language as every other card. */
+.ref-stack {
   position: relative;
-  flex: 1;
-  min-height: 260px;
+  width: 100%;
   overflow: hidden;
-  transition: height 0.34s ease;
 }
-.quote {
+.ref-card {
   position: absolute;
-  inset: 0;
-  padding: 22px;
-  margin: 0;
+  left: 50%;
+  top: 50%;
   display: flex;
   flex-direction: column;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(0);
+  padding: 22px;
+  text-align: left;
+  font: inherit;
+  color: var(--text-primary);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  clip-path: var(--chamfer);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
   transition:
-    transform 0.34s ease,
-    opacity 0.34s ease;
+    transform 0.5s ease,
+    box-shadow 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
 }
-.quote.active {
-  opacity: 1;
-  pointer-events: auto;
-  z-index: 2;
+.ref-card:hover {
+  border-color: var(--accent);
 }
-.quote.slide-out-left {
-  transform: translateX(-28px);
-  opacity: 0;
+.ref-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
-.quote.slide-out-right {
-  transform: translateX(28px);
-  opacity: 0;
+.ref-card--active {
+  z-index: 10;
+  cursor: default;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  box-shadow: var(--shadow), var(--glow);
 }
-.quote.slide-in-right {
-  transform: translateX(28px);
-  opacity: 0;
-  transition: none;
+.ref-card--active:hover {
+  border-color: var(--accent);
 }
-.quote.slide-in-left {
-  transform: translateX(-28px);
-  opacity: 0;
-  transition: none;
+.ref-card--active .quote-id,
+.ref-card--active .quote-name,
+.ref-card--active .quote-role {
+  color: var(--on-accent);
+}
+/* flex: 1 (a flex item) and display: -webkit-box (the line-clamp box model)
+   fight each other — the clamp height ends up inconsistent and a stray
+   line leaks past the ellipsis. figcaption's margin-top: auto pins it to
+   the card's bottom instead, so the quote can own its own box model. */
+.ref-card-quote {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 8;
+  -webkit-box-orient: vertical;
+}
+.ref-card-quote::before {
+  content: '\201C';
+}
+.ref-card-quote::after {
+  content: '\201D';
+}
+.ref-card figcaption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.ref-card--active figcaption {
+  border-top-color: color-mix(in srgb, var(--on-accent) 30%, transparent);
+}
+.ref-stack-nav {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+  transform: translateX(-50%);
 }
 @media (prefers-reduced-motion: reduce) {
-  .quote {
+  .ref-card {
     transition: none;
   }
 }
@@ -1717,31 +1761,6 @@ a:hover {
   letter-spacing: 0.1em;
   color: var(--accent);
   margin: 0 0 12px;
-}
-.quote blockquote {
-  margin: 0 0 16px;
-  padding: 0;
-  flex: 1;
-  font-size: 15.5px;
-  line-height: 1.7;
-  color: var(--text-primary);
-}
-/* margin negatif menutup spasi dari whitespace HTML yang collapse,
-   supaya tanda kutip menempel rapat ke teks */
-.quote blockquote::before {
-  content: '\201C';
-  margin-right: -0.24em;
-}
-.quote blockquote::after {
-  content: '\201D';
-  margin-left: -0.26em;
-}
-.quote figcaption {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-top: 1px solid var(--line);
-  padding-top: 12px;
 }
 /* Mission-patch treatment: a second ring outside the border, offset like
    embroidered edging on a unit insignia. Deliberately left circular — real
@@ -1803,27 +1822,6 @@ a:hover {
 .quote-nav:hover {
   border-color: var(--accent);
   color: var(--accent);
-}
-
-.quote-dots {
-  display: flex;
-  justify-content: center;
-  gap: 7px;
-  margin: 14px 0 0;
-  padding: 0;
-  list-style: none;
-}
-.quote-dots button {
-  width: 7px;
-  height: 7px;
-  padding: 0;
-  border-radius: 50%;
-  border: 0;
-  background: var(--line-strong);
-  cursor: pointer;
-}
-.quote-dots button[aria-selected='true'] {
-  background: var(--accent);
 }
 
 .quote-note {
@@ -2142,10 +2140,6 @@ a:hover {
 .prg-outcome {
   max-width: 78ch;
 }
-.quote blockquote {
-  max-width: 68ch;
-}
-
 /* ── Responsive ──────────────────────────────────────────────────────── */
 @media (max-width: 820px) {
   .hero {
@@ -2201,9 +2195,6 @@ a:hover {
   }
   .flow-kind {
     width: 78px;
-  }
-  .quote-viewport {
-    min-height: 340px;
   }
   .quote-nav {
     width: 30px;
