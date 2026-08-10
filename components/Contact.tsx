@@ -18,6 +18,8 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import YearNow from './YearNow';
 import Reveal from './motion/Reveal';
+import BorderBeam from './motion/BorderBeam';
+import SpotlightPanel from './motion/SpotlightPanel';
 import { getMode, MODE_CHANGE_EVENT, type Mode } from '@/lib/theme';
 
 const CONTACT_EMAIL = 'hi.nurfajar@gmail.com';
@@ -162,65 +164,70 @@ export default function Contact() {
       </Reveal>
 
       <div className="contact-grid">
-        <Reveal as="div" className="panel contact-box" index={0}>
-          <div className="contact-box-head">
-            <span className="contact-box-icon" aria-hidden="true">
-              <CalendarIcon />
-            </span>
-            <div>
-              <h3>Let&apos;s talk live</h3>
-              <p>Grab 15 minutes on my calendar.</p>
+        <SpotlightPanel className="panel contact-box">
+          <Reveal as="div" index={0}>
+            <div className="contact-box-head">
+              <span className="contact-box-icon" aria-hidden="true">
+                <CalendarIcon />
+              </span>
+              <div>
+                <h3>Let&apos;s talk live</h3>
+                <p>Grab 15 minutes on my calendar.</p>
+              </div>
             </div>
-          </div>
-          <div className="cal-embed">
-            <iframe
-              key={mode}
-              src={`https://cal.com/nurfajar/15min?embed=true&theme=${mode}`}
-              title="Book a 15-minute call with Nur Fajar on Cal.com"
-              loading="lazy"
-            />
-          </div>
-        </Reveal>
+            <div className="cal-embed">
+              <iframe
+                key={mode}
+                src={`https://cal.com/nurfajar/15min?embed=true&theme=${mode}`}
+                title="Book a 15-minute call with Nur Fajar on Cal.com"
+                loading="lazy"
+              />
+            </div>
+          </Reveal>
+        </SpotlightPanel>
 
-        <Reveal as="div" className="panel contact-box" index={1}>
-          <div className="contact-box-head">
-            <span className="contact-box-icon" aria-hidden="true">
-              <MessageIcon />
-            </span>
-            <div>
-              <h3>Drop a message</h3>
-              <p>I&apos;ll get back within a day or two.</p>
+        <SpotlightPanel className="panel contact-box">
+          <Reveal as="div" index={1}>
+            <div className="contact-box-head">
+              <span className="contact-box-icon" aria-hidden="true">
+                <MessageIcon />
+              </span>
+              <div>
+                <h3>Drop a message</h3>
+                <p>I&apos;ll get back within a day or two.</p>
+              </div>
             </div>
-          </div>
-          <form className="contact-form" onSubmit={handleSubmit}>
-            <input type="checkbox" name="botcheck" className="hp-field" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-            <div className="contact-form-row">
+            <form className="contact-form" onSubmit={handleSubmit}>
+              <input type="checkbox" name="botcheck" className="hp-field" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+              <div className="contact-form-row">
+                <label className="contact-field">
+                  <UserIcon />
+                  <input required name="firstName" placeholder="First name" autoComplete="given-name" {...field('firstName')} />
+                </label>
+                <label className="contact-field">
+                  <UserIcon />
+                  <input required name="lastName" placeholder="Last name" autoComplete="family-name" {...field('lastName')} />
+                </label>
+              </div>
               <label className="contact-field">
-                <UserIcon />
-                <input required name="firstName" placeholder="First name" autoComplete="given-name" {...field('firstName')} />
+                <AtIcon />
+                <input required type="email" name="email" placeholder="Your email" autoComplete="email" {...field('email')} />
               </label>
-              <label className="contact-field">
-                <UserIcon />
-                <input required name="lastName" placeholder="Last name" autoComplete="family-name" {...field('lastName')} />
+              <label className="contact-field contact-field-textarea">
+                <NoteIcon />
+                <textarea required name="message" placeholder="Your message…" rows={5} {...field('message')} />
               </label>
-            </div>
-            <label className="contact-field">
-              <AtIcon />
-              <input required type="email" name="email" placeholder="Your email" autoComplete="email" {...field('email')} />
-            </label>
-            <label className="contact-field contact-field-textarea">
-              <NoteIcon />
-              <textarea required name="message" placeholder="Your message…" rows={5} {...field('message')} />
-            </label>
-            <button type="submit" className="contact-send" disabled={status === 'sending'}>
-              <SendIcon />
-              {status === 'sending' ? 'Sending…' : 'Send message'}
-            </button>
-            <p className={`contact-form-hint${status === 'error' ? ' is-error' : ''}`}>
-              {status === 'error' ? error : `Goes straight to ${CONTACT_EMAIL}.`}
-            </p>
-          </form>
-        </Reveal>
+              <button type="submit" className="contact-send" disabled={status === 'sending'}>
+                <BorderBeam />
+                <SendIcon />
+                {status === 'sending' ? 'Sending…' : 'Send message'}
+              </button>
+              <p className={`contact-form-hint${status === 'error' ? ' is-error' : ''}`}>
+                {status === 'error' ? error : `Goes straight to ${CONTACT_EMAIL}.`}
+              </p>
+            </form>
+          </Reveal>
+        </SpotlightPanel>
       </div>
 
       <div className="contact-links mono">
