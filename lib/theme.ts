@@ -1,6 +1,6 @@
-// Small imperative theme store shared by ThemeToggle and the canvas widgets
-// (Starfield, Globe). Kept outside React state on purpose: the canvases read
-// colors straight from CSS variables via getComputedStyle and cache them, so
+// Small imperative theme store shared by ThemeToggle and the hero flip
+// card's canvas Globe widget. Kept outside React state on purpose: the
+// canvas reads colors straight from CSS variables via getComputedStyle, so
 // a mode change needs to (1) flip the DOM attribute that drives the CSS
 // variables and (2) tell any listener to re-read + redraw once. A DOM event
 // is the least amount of plumbing for that.

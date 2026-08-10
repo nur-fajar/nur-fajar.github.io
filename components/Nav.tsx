@@ -7,9 +7,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import ThemeToggle from './ThemeToggle';
 
 const HOME_LINKS = [
-  ['#references', 'References'],
-  ['#signals', 'Signals'],
+  ['#credibility', 'Track record'],
+  ['#signals', 'Experience'],
   ['#skills', 'Skills'],
+  ['#references', 'References'],
   ['#contact', 'Contact'],
 ] as const;
 
@@ -22,8 +23,7 @@ function LogoMark() {
   return (
     <svg className="logo-mark" viewBox="0 0 40 40" aria-hidden="true">
       <polygon points="20,3 34,12 34,28 20,37 6,28 6,12" fill="none" stroke="currentColor" strokeWidth="2.5" />
-      <rect x="15" y="16" width="10" height="10" fill="var(--blue)" />
-      <circle cx="20" cy="21" r="2" fill="var(--accent)" />
+      <circle cx="20" cy="20" r="6" fill="var(--accent)" />
     </svg>
   );
 }
@@ -40,9 +40,9 @@ export default function Nav() {
 
   return (
     <header className="nav">
-      <Link className="logo mono" href="#top">
+      <Link className="logo" href="#top">
         <LogoMark />
-        NF://
+        Nur Fajar
       </Link>
       <AnimatePresence initial={false}>
         {profileVisible && (
@@ -56,7 +56,7 @@ export default function Nav() {
             <Image className="nav-avatar" src="/foto-profile-nf.jpg" alt="Nur Fajar" width={30} height={30} />
             <span className="nav-id">
               <span className="nav-name">Nur Fajar</span>
-              <span className="nav-role mono">Full-Stack L&amp;D</span>
+              <span className="nav-role mono">Learning &amp; Development</span>
             </span>
             <span className="nav-otw mono">Open to work</span>
           </motion.div>

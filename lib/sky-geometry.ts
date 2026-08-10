@@ -1,7 +1,5 @@
-// Shared math for the starfield (Starfield.tsx) and the hero globe
-// (Globe.tsx) — both project real RA/Dec constellation data onto a 2D
-// canvas, just with different projections (gnomonic tangent-plane for the
-// flat sky map, a rotating unit sphere for the globe).
+// Shared math for the hero flip card's zodiac globe (Globe.tsx), which
+// projects real RA/Dec constellation data onto a rotating unit sphere.
 export const D2R = Math.PI / 180;
 export const R2D = 180 / Math.PI;
 

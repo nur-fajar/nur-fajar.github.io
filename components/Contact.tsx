@@ -157,7 +157,7 @@ export default function Contact() {
   return (
     <footer id="contact" className="section">
       <Reveal as="div" className="contact-intro">
-        <h2 className="section-label">Open channel.</h2>
+        <h2 className="section-label">Let&apos;s talk.</h2>
         <p>Available for AI L&amp;D programs, GenAI curriculum work, and automation projects.</p>
       </Reveal>
 
@@ -234,7 +234,7 @@ export default function Contact() {
         </a>
       </div>
       <p className="foot mono">
-        — END OF TRANSMISSION · © <YearNow /> NUR FAJAR —
+        © <YearNow /> Nur Fajar
       </p>
 
       {toastVisible && (

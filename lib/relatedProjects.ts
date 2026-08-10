@@ -1,7 +1,7 @@
 import { PROGRAMS } from '@/content/programs';
 import { WORK_EXPERIENCE, ORGANIZATION_EXPERIENCE } from '@/content/signals';
 import { AGENT_STEPS } from '@/content/pipeline';
-import { EDUCATION } from '@/content/education';
+import { CREDIBILITY } from '@/content/credibility';
 
 /* ── Skill → related project lookup, for the Skills popup ────────────────
    Every skill tag in the skill grid is clickable; this decides what the
@@ -109,16 +109,22 @@ function buildIndex(): IndexEntry[] {
 
   const fromEducation: IndexEntry[] = [
     {
-      title: EDUCATION.school.name,
-      href: '#education',
-      blurb: EDUCATION.school.body,
-      text: [EDUCATION.school.name, EDUCATION.school.sub, EDUCATION.school.body].join(' '),
+      title: 'Siliwangi University — B.CS in Informatics',
+      href: '#credibility',
+      blurb: CREDIBILITY.main.body,
+      text: [
+        'Siliwangi University',
+        CREDIBILITY.main.label,
+        CREDIBILITY.main.body,
+        CREDIBILITY.main.thesis,
+        ...CREDIBILITY.main.scholarships,
+      ].join(' '),
     },
     {
-      title: EDUCATION.certifications.name,
-      href: '#education',
-      blurb: EDUCATION.certifications.body.split('\n')[0],
-      text: [EDUCATION.certifications.name, EDUCATION.certifications.body].join(' '),
+      title: 'Certifications',
+      href: '#credibility',
+      blurb: CREDIBILITY.certifications[0],
+      text: CREDIBILITY.certifications.join(' '),
     },
   ];
 

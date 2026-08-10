@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { Public_Sans, Fraunces, IBM_Plex_Mono } from 'next/font/google';
 import Script from 'next/script';
 import { MotionConfig } from 'framer-motion';
 import './globals.css';
@@ -8,45 +8,49 @@ import './globals.css';
 // on the same origin) instead of the old <link> to fonts.googleapis.com — one
 // less external host the CSP below needs to trust, and one less render-blocking
 // cross-origin request.
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-// Headings only (h1-h4, sig-name, quote-name, agent-claim, …) — body copy
-// stays on Inter, which was never the "fairy" part of the old skin.
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['500', '600', '700'],
-  variable: '--font-display',
-  display: 'swap',
-});
-const jbmono = JetBrains_Mono({
+//
+// Three roles, not two (design brief §3): Public Sans is the quiet reading
+// workhorse for body copy and skill-list items; Fraunces is the "voice"
+// display serif for the hero statement and human-register section titles;
+// IBM Plex Mono is the labeling voice — nav, stat numbers, eyebrows — used
+// sparingly, never as a headline face.
+const publicSans = Public_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-jbmono',
+  variable: '--font-public-sans',
+  display: 'swap',
+});
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  variable: '--font-fraunces',
+  display: 'swap',
+});
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-plex-mono',
   display: 'swap',
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://nurfajar.com'),
   title: {
-    default: 'Nur Fajar — AI Learning & Development Specialist',
+    default: 'Nur Fajar — Learning & Development Specialist',
     template: '%s — Nur Fajar',
   },
   description:
-    'Nur Fajar — Learning & Development Specialist building GenAI curriculum and AI automation systems. 350+ learners trained, 9 AI agents deployed.',
+    'Nur Fajar — Learning & Development, end to end, and the systems to scale it. Curriculum, delivery, content, evaluation, plus the AI automation underneath. 350+ learners trained.',
   openGraph: {
-    title: 'Nur Fajar — AI Learning & Development Specialist',
-    description: 'GenAI curriculum, AI automation systems, 350+ learners trained.',
+    title: 'Nur Fajar — Learning & Development Specialist',
+    description: 'Curriculum, delivery, content, evaluation — and the automation underneath it. 350+ learners trained.',
     images: ['/og.png'],
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-mode="light" className={`${inter.variable} ${spaceGrotesk.variable} ${jbmono.variable}`}>
+    <html lang="en" data-mode="light" className={`${publicSans.variable} ${fraunces.variable} ${plexMono.variable}`}>
       <head>
         {/* CSP, Referrer-Policy, X-Frame-Options etc. are real HTTP headers now
             (see next.config.mjs `headers()`) — Vercel runs this as an actual
@@ -73,9 +77,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Collapses every Framer Motion animation in the tree to an instant,
             no-op transition under prefers-reduced-motion — the one central
             guard motion.js used to reimplement per-effect with an early
-            `if (reduced.matches) return`. The canvas widgets (Starfield,
-            Globe) still check it themselves since they drive their own RAF
-            loops rather than Motion's animate engine. */}
+            `if (reduced.matches) return`. The hero flip card's canvas Globe
+            widget still checks it itself since it drives its own RAF loop
+            rather than Motion's animate engine. */}
         <MotionConfig reducedMotion="user">{children}</MotionConfig>
       </body>
     </html>

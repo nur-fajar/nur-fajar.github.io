@@ -10,7 +10,7 @@ export interface Signal {
 
 export const WORK_EXPERIENCE: Signal[] = [
   {
-    id: 'EXP / 01',
+    id: '01',
     name: 'Learning & Development Specialist',
     sub: 'Terra Weather Pte. Ltd. · Singapore (Remote) · Jul 2025 – Jul 2026',
     fill: 5,
@@ -25,7 +25,7 @@ export const WORK_EXPERIENCE: Signal[] = [
     ],
   },
   {
-    id: 'EXP / 02',
+    id: '02',
     name: 'AI Training Specialist',
     sub: 'Terra AI · Singapore (Remote) · Feb 2024 – Jun 2025',
     fill: 4,
@@ -37,7 +37,7 @@ export const WORK_EXPERIENCE: Signal[] = [
     ],
   },
   {
-    id: 'EXP / 03',
+    id: '03',
     name: 'Machine Learning Mentor',
     sub: 'Bangkit Academy · Ministry of Education program · Feb 2023 – Jan 2024',
     fill: 4,
@@ -52,7 +52,7 @@ export const WORK_EXPERIENCE: Signal[] = [
 
 export const ORGANIZATION_EXPERIENCE: Signal[] = [
   {
-    id: 'ORG / 01',
+    id: '01',
     category: 'Tech Community',
     name: 'Chapter Lead',
     sub: 'Google Developer Student Clubs (GDSC) Unsil · Aug 2021 – Jul 2022',
@@ -65,7 +65,7 @@ export const ORGANIZATION_EXPERIENCE: Signal[] = [
     ],
   },
   {
-    id: 'ORG / 02',
+    id: '02',
     category: 'Programme Delivery at Scale',
     name: 'Lead Organizer, Kuliah Dhuha 2021',
     sub: 'LDK KISI · Mentoring Division · 2021',
@@ -76,7 +76,7 @@ export const ORGANIZATION_EXPERIENCE: Signal[] = [
     ],
   },
   {
-    id: 'ORG / 03',
+    id: '03',
     category: 'Community Leadership',
     name: 'Village Coordinator (Kordes)',
     sub: 'KKN · Purwaharja Village, Banjar City · Feb–Mar 2021',
