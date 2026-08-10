@@ -3,17 +3,22 @@
 /* ── References: staggered card stack ───────────────────────────────────
    Adapted from a "stagger testimonials" pattern (click a side card, or the
    arrows, to bring it to the front) — reskinned onto this file's own
-   chamfer/panel/accent tokens instead of a separate shadcn-style palette,
-   so it stays one visual system with the rest of the site. Reuses the
+   panel/accent tokens instead of a separate shadcn-style palette, so it
+   stays one visual system with the rest of the site. Reuses the
    .quote-avatar/-id/-name/-role type already defined below for the old
    one-at-a-time slider this replaced.
 
-   Rotation is array-shift, not index math: clicking a card moves it (and
-   everything between it and the front) across the array, same as the
-   source component. See lib/stagger.ts for the rotation/position math,
-   unit-tested there without needing a DOM. */
+   Position/rotation/scale are driven by Framer Motion springs rather than a
+   CSS transition on a hand-built transform string — same array-shift logic
+   as before (see lib/stagger.ts, unit-tested there without needing a DOM),
+   but the settle now has real physics (slight overshoot) instead of a
+   linear/eased tween, and side cards get a small hover lift to invite the
+   click. Centering is handled by plain CSS (left/top + negative margin) so
+   Framer's x/y only ever carry the *offset* from center, never fighting
+   with it. */
 
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { REFERENCES, type Reference } from '@/content/references';
 import { centeredPosition, rotateSlots, toSlots, type Slot } from '@/lib/stagger';
 
@@ -24,6 +29,8 @@ const CARD = {
   desktop: { width: 340, height: 440 },
   mobile: { width: 260, height: 400 },
 };
+
+const SPRING = { type: 'spring', stiffness: 300, damping: 28, mass: 0.7 } as const;
 
 function ReferenceCard({
   position,
@@ -41,24 +48,31 @@ function ReferenceCard({
   const isActive = position === 0;
 
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onSelect}
       disabled={isActive}
       aria-label={isActive ? undefined : `Show reference from ${reference.name}`}
       aria-current={isActive ? 'true' : undefined}
-      className={`ref-card${isActive ? ' ref-card--active' : ''}`}
+      className={`ref-card motion-safe${isActive ? ' ref-card--active' : ''}`}
       style={{
         width: cardWidth,
         height: cardHeight,
-        transform: `
-          translate(-50%, -50%)
-          translateX(${(cardWidth / 1.5) * position}px)
-          translateY(${isActive ? -70 : position % 2 ? 15 : -15}px)
-          rotate(${isActive ? 0 : position % 2 ? 2.5 : -2.5}deg)
-        `,
+        left: '50%',
+        top: '50%',
+        marginLeft: -cardWidth / 2,
+        marginTop: -cardHeight / 2,
         zIndex: isActive ? 10 : 5 - Math.abs(position),
       }}
+      initial={false}
+      animate={{
+        x: (cardWidth / 1.5) * position,
+        y: isActive ? -70 : position % 2 ? 15 : -15,
+        rotate: isActive ? 0 : position % 2 ? 2.5 : -2.5,
+        scale: isActive ? 1 : 0.95,
+      }}
+      whileHover={!isActive ? { scale: 0.98, y: (position % 2 ? 15 : -15) - 6 } : undefined}
+      transition={SPRING}
     >
       <span className="quote-avatar mono" aria-hidden="true">
         {reference.initial}
@@ -71,7 +85,7 @@ function ReferenceCard({
           <span className="quote-role mono">{reference.role}</span>
         </span>
       </figcaption>
-    </button>
+    </motion.button>
   );
 }
 

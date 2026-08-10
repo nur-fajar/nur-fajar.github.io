@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ThemeToggle from './ThemeToggle';
+import BorderBeam from './motion/BorderBeam';
 
 const HOME_LINKS = [
   ['#credibility', 'Track record'],
@@ -78,6 +79,7 @@ export default function Nav() {
         whileHover={{ y: -2 }}
         transition={{ duration: 0.18, ease: 'easeOut' }}
       >
+        <BorderBeam />
         CV&nbsp;↓
       </motion.a>
       <ThemeToggle />

@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav';
 import RocketButton from '@/components/RocketButton';
+import ScrollProgress from '@/components/ScrollProgress';
 import Hero from '@/components/Hero';
 import References from '@/components/References';
 import { WorkSignals, OrganizationSignals } from '@/components/Signals';
@@ -10,6 +11,7 @@ import Contact from '@/components/Contact';
 export default function HomePage() {
   return (
     <>
+      <ScrollProgress />
       <RocketButton />
 
       <div className="wrap">

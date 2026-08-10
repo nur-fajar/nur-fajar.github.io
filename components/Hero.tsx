@@ -17,6 +17,8 @@ const STATS = [
   ['Top 5', 'Terra AI apprenticeship'],
 ] as const;
 
+const HEADLINE = 'Learning & Development, end to end — and the systems to scale it.';
+
 // One quick entrance on mount, staggered — the hero is visible immediately
 // on load, so this plays right away rather than waiting on scroll (that's
 // what Reveal / whileInView is for, further down the page).
@@ -25,16 +27,56 @@ const item: Variants = {
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut', delay: i * 0.07 } }),
 };
 
+const word: Variants = {
+  hidden: { opacity: 0, y: '0.5em', filter: 'blur(6px)' },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { duration: 0.5, delay: 0.18 + i * 0.035, ease: [0.16, 1, 0.3, 1] },
+  }),
+};
+
+/** Word-by-word blur-in reveal — the headline is the single largest, most
+    looked-at element on the page, so it's the one place a per-word "text
+    generate" effect (the 21st.dev/Aceternity staple) earns its keep instead
+    of reading as decoration. */
+function AnimatedHeadline() {
+  const words = HEADLINE.split(' ');
+  return (
+    <h1 className="motion-safe">
+      {words.map((w, i) => (
+        <motion.span key={i} className="headline-word" custom={i} variants={word} initial="hidden" animate="visible">
+          {w}
+          {i < words.length - 1 ? ' ' : ''}
+        </motion.span>
+      ))}
+    </h1>
+  );
+}
+
 export default function Hero() {
   return (
     <section className="hero">
+      {/* Two soft, slowly-drifting color blobs behind the copy — depth
+          without noise, gone entirely under prefers-reduced-motion since
+          MotionConfig collapses the loop to a static frame. */}
+      <div className="hero-glow motion-safe" aria-hidden="true">
+        <motion.i
+          animate={{ x: [0, 24, 0], y: [0, 18, 0] }}
+          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.i
+          animate={{ x: [0, -20, 0], y: [0, -14, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        />
+      </div>
+
       <div className="hero-copy">
         <motion.p className="eyebrow mono motion-safe" custom={0} variants={item} initial="hidden" animate="visible">
           Nur Fajar — Tangerang, Indonesia
         </motion.p>
-        <motion.h1 className="motion-safe" custom={1} variants={item} initial="hidden" animate="visible">
-          Learning &amp; Development, end to end — and the systems to scale it.
-        </motion.h1>
+        <AnimatedHeadline />
         {/* Lampu status: recruiter tidak boleh harus menebak apakah ini
              portofolio pelamar atau penawaran jasa freelance. */}
         <motion.ul className="status-lamps mono motion-safe" custom={2} variants={item} initial="hidden" animate="visible">
