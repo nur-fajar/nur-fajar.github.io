@@ -4,11 +4,17 @@ import { motion, type Variants } from 'framer-motion';
 import FlipCard from './FlipCard';
 import StatCountUp from './motion/StatCountUp';
 
+// The L&D-delivery numbers and the "trusted to lead, performed under
+// scrutiny" numbers, together in one hero zone (design brief §4a) — the
+// last two are the same Kampus Merdeka placements the Credibility module
+// covers in full underneath.
 const STATS = [
   ['350+', 'Learners trained'],
   ['9.0/10', 'Satisfaction'],
   ['9', 'AI agents deployed'],
   ['3.94', 'GPA · best graduate'],
+  ['Top 10%', 'Bangkit Academy · ML path'],
+  ['Top 5', 'Terra AI apprenticeship'],
 ] as const;
 
 // One quick entrance on mount, staggered — the hero is visible immediately
@@ -24,12 +30,10 @@ export default function Hero() {
     <section className="hero">
       <div className="hero-copy">
         <motion.p className="eyebrow mono motion-safe" custom={0} variants={item} initial="hidden" animate="visible">
-          PORTFOLIO / NUR FAJAR — TANGERANG, ID
+          Nur Fajar — Tangerang, Indonesia
         </motion.p>
         <motion.h1 className="motion-safe" custom={1} variants={item} initial="hidden" animate="visible">
-          FULL-STACK
-          <br />
-          LEARNING &amp; DEVELOPMENT.
+          Learning &amp; Development, end to end — and the systems to scale it.
         </motion.h1>
         {/* Lampu status: recruiter tidak boleh harus menebak apakah ini
              portofolio pelamar atau penawaran jasa freelance. */}
@@ -39,7 +43,7 @@ export default function Hero() {
           <li className="lit">Remote OK</li>
         </motion.ul>
         <motion.p className="lede motion-safe" custom={3} variants={item} initial="hidden" animate="visible">
-          End-to-end — curriculum, marketing, delivery, evaluation. All in one person.
+          Curriculum, delivery, content, evaluation. Built the automation underneath it too.
         </motion.p>
         <motion.div className="stats motion-safe" custom={4} variants={item} initial="hidden" animate="visible">
           {STATS.map(([n, l]) => (

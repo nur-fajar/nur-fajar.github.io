@@ -1,17 +1,15 @@
 import Nav from '@/components/Nav';
-import HomeBackdrop from '@/components/HomeBackdrop';
 import RocketButton from '@/components/RocketButton';
 import Hero from '@/components/Hero';
 import References from '@/components/References';
 import { WorkSignals, OrganizationSignals } from '@/components/Signals';
 import Skills from '@/components/Skills';
-import Education from '@/components/Education';
+import Credibility from '@/components/Credibility';
 import Contact from '@/components/Contact';
 
 export default function HomePage() {
   return (
     <>
-      <HomeBackdrop />
       <RocketButton />
 
       <div className="wrap">
@@ -19,10 +17,10 @@ export default function HomePage() {
 
         <main id="top">
           <Hero />
+          <Credibility />
           <WorkSignals />
           <OrganizationSignals />
           <Skills />
-          <Education />
           <References />
         </main>
 

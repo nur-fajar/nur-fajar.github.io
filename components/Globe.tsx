@@ -49,7 +49,7 @@ export default function Globe() {
 
     const root = document.documentElement;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-    const colors = { line: '#33352A', accent: '#FFB93C', text: '#9C9A87' };
+    const colors = { line: '#C9C4B6', accent: '#A85A2A', text: '#4E574F' };
     const gMouse = { x: -1, y: -1 };
     let gW = 0;
     let gH = 0;

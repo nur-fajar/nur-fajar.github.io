@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { motion } from 'framer-motion';
+import type { Accent } from '@/content/skills';
 import { getDetailKindForTag, getRelatedProjects, type DetailKind } from '@/lib/relatedProjects';
 import CurriculumDetail from './skill-details/CurriculumDetail';
 import InstructionalDesignDetail from './skill-details/InstructionalDesignDetail';
@@ -10,11 +12,16 @@ import LabPipelineDetail from './skill-details/LabPipelineDetail';
 /* ── Skill popup ───────────────────────────────────────────────────────────
    Every tag in the skill grid is a button (see Skills.tsx); this is what
    opens on click. Portalled to document.body so it always sits above the
-   page regardless of any transformed ancestor (Reveal's Framer Motion
-   wrappers create their own containing blocks once animated), and closes on
-   Escape, backdrop click, or the close button — never navigates or scrolls
-   the page on its own; only a deliberate click on a link inside it does
-   that.
+   page regardless of any transformed ancestor, and closes on Escape,
+   backdrop click, or the close button — never navigates or scrolls the
+   page on its own; only a deliberate click on a link inside it does that.
+
+   This is the page's one orchestrated motion moment (design brief §3,
+   motion): Framer Motion animates the open/close, and the accent — warmth
+   or signal, whichever the source skill group belongs to — animates in
+   with it via the --popup-accent custom property, set here from the
+   `accent` prop and read by every accent-colored rule in globals.css
+   (.skill-popup, .skill-popup-eyebrow, .skill-detail-label, …).
 
    Three tags — Curriculum development, Instructional design, AI agents —
    render a full detail view (the content that used to be its own page
@@ -35,7 +42,12 @@ const DETAIL_COMPONENT: Record<DetailKind, React.ComponentType> = {
   lab: LabPipelineDetail,
 };
 
-export default function SkillPopup({ tag, onClose }: { tag: string; onClose: () => void }) {
+const ACCENT_VAR: Record<Accent, string> = {
+  warmth: 'var(--accent)',
+  signal: 'var(--accent-2)',
+};
+
+export default function SkillPopup({ tag, accent, onClose }: { tag: string; accent: Accent; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const initialDetail = getDetailKindForTag(tag);
   const [detailKind, setDetailKind] = useState<DetailKind | null>(initialDetail);
@@ -60,13 +72,25 @@ export default function SkillPopup({ tag, onClose }: { tag: string; onClose: () 
   const title = detailKind ? DETAIL_TITLE[detailKind] : tag;
 
   return createPortal(
-    <div className="skill-popup-backdrop" onMouseDown={onClose}>
-      <div
+    <motion.div
+      className="skill-popup-backdrop motion-safe"
+      onMouseDown={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.18, ease: 'easeOut' }}
+    >
+      <motion.div
         className={`panel skill-popup${showingDetail ? ' skill-popup--wide' : ''}`}
+        style={{ '--popup-accent': ACCENT_VAR[accent] } as React.CSSProperties}
         role="dialog"
         aria-modal="true"
         aria-labelledby="skill-popup-title"
         onMouseDown={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.96, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 6 }}
+        transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
       >
         <button type="button" className="skill-popup-close" ref={closeRef} onClick={onClose} aria-label="Close">
           ✕
@@ -78,7 +102,7 @@ export default function SkillPopup({ tag, onClose }: { tag: string; onClose: () 
           </button>
         )}
 
-        <p className="mono skill-popup-eyebrow">RELATED PROJECT</p>
+        <p className="mono skill-popup-eyebrow">Related project</p>
         <h3 id="skill-popup-title">{title}</h3>
 
         {DetailComponent ? (
@@ -107,8 +131,8 @@ export default function SkillPopup({ tag, onClose }: { tag: string; onClose: () 
         ) : (
           <p className="skill-popup-empty">No linked project documented on this site yet.</p>
         )}
-      </div>
-    </div>,
+      </motion.div>
+    </motion.div>,
     document.body
   );
 }
