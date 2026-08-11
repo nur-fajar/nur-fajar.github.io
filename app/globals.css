@@ -112,7 +112,12 @@ a:hover {
 .wrap {
   position: relative;
   z-index: 1;
-  max-width: 1060px;
+  /* Fluid instead of a hard 1060px: scales with the viewport so wide
+     monitors don't sit on a narrow centered column with huge empty
+     gutters, but caps out at 1440px so line lengths and the hero grid
+     stay readable on ultra-wide screens. Floor matches the old fixed
+     width so nothing shrinks below what the page was designed at. */
+  max-width: clamp(1060px, 78vw, 1440px);
   margin: 0 auto;
   padding: 0 24px;
 }
