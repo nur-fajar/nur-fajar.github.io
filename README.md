@@ -29,16 +29,11 @@ two targets from one codebase:
   (`cal.com/nurfajar/15min`) to book a call, and a "drop a message" form
   that (no backend on this static site) opens the visitor's email client
   with the fields pre-filled via a `mailto:` link.
-- **Starfield** — `<canvas>` constellation background (ambient dust + real
-  RA/Dec data, `content/constellations.ts`), mounted full-page via
-  `HomeBackdrop`; the component and its geometry lib (`lib/sky-geometry.ts`)
-  are also used standalone by the hero's zodiac globe widget. Respects
-  `prefers-reduced-motion`.
-- **Widgets** — hero flip-card carousel (photo / draggable zodiac globe /
-  sudoku / chess / book quotes), all client components under `components/`.
-  The sudoku generator and the hand-rolled chess engine live in `lib/` with
-  their own logic separated from rendering; the chess engine has a Vitest
-  suite (`lib/chess-engine.test.ts`).
+- **Hero visual** — an Ikigai-style orbit diagram (`IkigaiVenn.tsx`, data in
+  `content/ikigai.ts`): six role circles clockwise around a small centered
+  portrait, hover on desktop / tap on touch to see that role's skill list.
+  Positioning is `em`-based off one clamp()'d font-size so the whole cluster
+  scales as a unit; collapses to a 2x3 chip grid under 820px.
 - **No-JS safety net** — every Framer Motion element that starts hidden for a
   scroll/mount reveal carries a `.motion-safe` class; a `<noscript>` rule in
   the root layout forces it visible when JavaScript never runs, so the
@@ -54,7 +49,7 @@ two targets from one codebase:
 ```bash
 npm install
 npm run dev      # http://localhost:3000
-npm test         # vitest — chess engine test suite
+npm test         # vitest
 npm run build    # production build (Vercel mode)
 NEXT_STATIC_EXPORT=true npm run build   # static export (GitHub Pages mode) → out/
 ```

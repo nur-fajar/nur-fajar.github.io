@@ -275,7 +275,7 @@ a:hover {
   padding: 64px 0 56px;
 }
 .hero-copy,
-.hero-globe {
+.hero-visual {
   position: relative;
   z-index: 1;
 }
@@ -436,453 +436,152 @@ a:hover {
   }
 }
 
-/* hero flip card viewport */
-.hero-globe {
-  perspective: 1400px;
+/* ── Hero visual: Ikigai-style orbit diagram (see IkigaiVenn.tsx) ────────
+   Six role circles clockwise around a small centered portrait — not a
+   mathematically precise 6-way Venn (six mutually-overlapping circles reads
+   as mud), but a radial cluster where every circle touches the center and
+   its two neighbors. --tx/--ty (set per nth-child below) are each circle's
+   offset from center; everything — circle size, offset, label text — is
+   sized in `em` off .ikigai's own font-size, so the whole cluster scales as
+   one unit instead of three separately-tuned breakpoints.
+
+   Colors are the site's existing warmth/signal accents only, alternated per
+   circle via --role-accent (set inline from content/ikigai.ts) so no two
+   neighbors share a hue. Overlaps are plain stacked alpha, no
+   mix-blend-mode — multiply reads muddy against the dark theme's near-black
+   background — so two translucent circles overlapping just reads as a
+   deeper tone, and the opaque center photo sits above all of it (z-index)
+   as the literal point of convergence. */
+.ikigai-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
-.globe-box {
+.ikigai {
   position: relative;
-  width: 100%;
-  max-width: 340px;
-  aspect-ratio: 1 / 1;
+  width: 32em;
+  height: 32em;
+  max-width: 100%;
+  font-size: clamp(9px, 1.7vw, 13px);
   margin: 0 auto;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--panel);
-  transition: border-color 0.2s ease;
 }
-.globe-box:hover {
-  border-color: var(--line-strong);
-}
-.globe-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-  cursor: grab;
-  touch-action: none;
-}
-.globe-canvas:active {
-  cursor: grabbing;
-}
-
-/* flip card: 5 pages cycled by one button — photo, zodiac globe, sudoku,
-   chess, and a book quote. */
-.flip-controls {
+.ikigai-role {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.flip-count {
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: var(--text-dim);
-}
-.flip-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius);
-  flex-shrink: 0;
-  border: 1px solid var(--line-strong);
-  background: var(--panel-2);
-  color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition:
-    border-color 0.18s ease,
-    color 0.18s ease;
-}
-.flip-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.flip-pages {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  perspective: 1200px;
-}
-/* Rotation/opacity are owned by Framer Motion (see FlipCard.tsx) — it writes
-   transform/opacity as inline styles every frame, so a CSS transition on the
-   same properties here would just fight it. This rule only sets the static
-   plumbing: position, shape, and the flip's backface. */
-.flip-page {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background: var(--panel);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* flip tooltip: a short line about this page, on hover/focus of the card */
-.flip-tooltip {
-  position: absolute;
+  top: 50%;
   left: 50%;
-  bottom: calc(100% + 12px);
-  z-index: 6;
-  width: 280px;
-  max-width: 78vw;
-  margin: 0;
-  padding: 12px 14px;
-  border-radius: var(--radius);
-  border: 1px solid var(--line);
-  background: var(--panel-2);
-  box-shadow: var(--shadow-modal);
-  font-size: 11.5px;
-  line-height: 1.55;
-  color: var(--text-secondary);
-  text-align: left;
-  text-transform: none;
-  letter-spacing: normal;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, 6px);
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease;
-}
-.flip-tooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  margin-left: -5px;
-  margin-top: -5px;
-  background: var(--panel-2);
-  border-right: 1px solid var(--line-strong);
-  border-bottom: 1px solid var(--line-strong);
-  transform: rotate(45deg);
-}
-.globe-box:hover .flip-tooltip,
-.globe-box:focus-within .flip-tooltip {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-@media (prefers-reduced-motion: reduce) {
-  .flip-tooltip {
-    transition: none;
-  }
-}
-
-/* photo page */
-.flip-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* book-quote page */
-.quote-page {
-  height: 100%;
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 14px;
-}
-.quote-page-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text-primary);
-  max-width: 30ch;
-}
-.quote-page-text::before {
-  content: '\201C';
-  color: var(--accent);
-}
-.quote-page-text::after {
-  content: '\201D';
-  color: var(--accent);
-}
-.quote-page-meta {
-  font-size: 10.5px;
-  color: var(--text-dim);
-  letter-spacing: 0.04em;
-}
-.quote-more {
-  margin-top: 4px;
-  padding: 5px 16px;
-  border: 1px solid var(--line-strong);
-  background: none;
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease;
-}
-.quote-more:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-/* sudoku */
-.sudoku {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 12px;
-  gap: 8px;
-}
-/* padding-right clears the flip controls (page counter + button), which
-   sit absolutely at the card's top-right corner above this row */
-.sudoku-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-right: 66px;
-}
-.sudoku-levels {
-  display: flex;
-  gap: 4px;
-}
-.sudoku-levels button {
-  width: 22px;
-  height: 22px;
-  border-radius: 4px;
-  padding: 0;
-  border: 1px solid var(--line-strong);
-  background: none;
-  color: var(--text-dim);
-  font: inherit;
-  font-size: 11px;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease,
-    background 0.15s ease;
-}
-.sudoku-levels button[aria-pressed='true'] {
-  background: var(--accent-soft);
-  color: var(--accent);
-  border-color: var(--accent);
-}
-.sudoku-timer {
-  font-size: 11px;
-  color: var(--text-dim);
-}
-
-.sudoku-grid {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  grid-template-rows: repeat(9, 1fr);
-  background: var(--line-strong);
-  border: 1.5px solid var(--line-strong);
-  border-radius: 3px;
-  gap: 1px;
-  overflow: hidden;
-}
-.sudoku-cell {
-  background: var(--panel-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: var(--text-primary);
-  font-weight: 600;
-}
-.sudoku-cell.b-right {
-  border-right: 1.5px solid var(--line-strong);
-}
-.sudoku-cell.b-bottom {
-  border-bottom: 1.5px solid var(--line-strong);
-}
-.sudoku-cell input {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  background: none;
-  text-align: center;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--accent);
-  outline: none;
-  padding: 0;
-}
-.sudoku-cell.correct {
-  background: var(--accent-soft);
-}
-.sudoku-cell.wrong input {
-  color: var(--red);
-}
-
-.sudoku-actions {
-  display: flex;
-  gap: 6px;
-}
-.sudoku-actions button {
-  flex: 1;
-  padding: 5px 0;
-  border-radius: 5px;
-  border: 1px solid var(--line-strong);
-  background: none;
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease;
-}
-.sudoku-actions button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.sudoku-msg {
-  min-height: 14px;
-  margin: 0;
-  font-size: 10.5px;
-  color: var(--accent);
-  text-align: center;
-}
-
-/* chess */
-.chess {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 12px;
-  gap: 8px;
-}
-.chess-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-right: 66px;
-  gap: 8px;
-}
-.chess-levels {
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
-}
-.chess-levels button {
-  width: 22px;
-  height: 22px;
-  border-radius: 4px;
-  padding: 0;
-  border: 1px solid var(--line-strong);
-  background: none;
-  color: var(--text-dim);
-  font: inherit;
-  font-size: 11px;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease,
-    background 0.15s ease;
-}
-.chess-levels button[aria-pressed='true'] {
-  background: var(--accent-soft);
-  color: var(--accent);
-  border-color: var(--accent);
-}
-.chess-status {
-  font-size: 10.5px;
-  color: var(--text-dim);
-  text-align: right;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.chess-board {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(8, 1fr);
-  border: 1.5px solid var(--line-strong);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.chess-cell {
-  border: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--text-primary);
-  transition: background 0.12s ease;
-}
-.chess-cell:disabled {
-  cursor: default;
-}
-.chess-cell.light {
-  background: var(--panel-2);
-}
-.chess-cell.dark {
-  background: color-mix(in srgb, var(--panel) 65%, var(--line) 35%);
-}
-.chess-cell.selected {
-  box-shadow: inset 0 0 0 2px var(--accent);
-}
-.chess-cell.in-check {
-  background: color-mix(in srgb, var(--red) 30%, transparent);
-}
-.chess-cell.move-hint::after {
-  content: '';
-  width: 22%;
-  height: 22%;
+  width: 11.5em;
+  height: 11.5em;
+  transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty)));
   border-radius: 50%;
-  background: var(--accent-soft);
-  box-shadow: 0 0 0 2px var(--accent) inset;
-}
-.chess-cell.capture-hint {
-  box-shadow: inset 0 0 0 2px var(--accent);
-}
-.chess-actions {
   display: flex;
-  gap: 6px;
-}
-.chess-actions button {
-  flex: 1;
-  padding: 5px 0;
-  border-radius: 5px;
-  border: 1px solid var(--line-strong);
-  background: none;
-  color: var(--text-secondary);
+  align-items: center;
+  justify-content: center;
+  padding: 1.2em;
+  text-align: center;
   font: inherit;
-  font-size: 10.5px;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--role-accent) 14%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--role-accent) 45%, var(--line) 55%);
+  z-index: 1;
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+/* Six fixed positions, clockwise from the top — order matches
+   content/ikigai.ts (index 0 = top, then +60deg per step). */
+.ikigai-role:nth-child(1) {
+  --tx: 0em;
+  --ty: -9.5em;
+}
+.ikigai-role:nth-child(2) {
+  --tx: 8.23em;
+  --ty: -4.75em;
+}
+.ikigai-role:nth-child(3) {
+  --tx: 8.23em;
+  --ty: 4.75em;
+}
+.ikigai-role:nth-child(4) {
+  --tx: 0em;
+  --ty: 9.5em;
+}
+.ikigai-role:nth-child(5) {
+  --tx: -8.23em;
+  --ty: 4.75em;
+}
+.ikigai-role:nth-child(6) {
+  --tx: -8.23em;
+  --ty: -4.75em;
+}
+.ikigai-role:hover,
+.ikigai-role.is-active {
+  background: color-mix(in srgb, var(--role-accent) 26%, transparent);
+  border-color: var(--role-accent);
+  transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.07);
+  z-index: 5;
+}
+.ikigai-role.is-dimmed {
+  opacity: 0.45;
+}
+.ikigai-role-label {
+  font-size: 0.92em;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+/* The one non-interactive element in the diagram — a halo of --bg cuts it
+   cleanly out of whatever role circles sit behind it, so it stays legible
+   as the "point of convergence" regardless of how much overlap is under it. */
+.ikigai-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10em;
+  height: 10em;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 10;
+  border: 0.35em solid var(--bg);
+  box-shadow: 0 0 0 1px var(--line-strong);
+}
+.ikigai-panel {
+  width: 100%;
+  max-width: 30em;
+  min-height: 9.5em;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.ikigai-panel-eyebrow {
+  font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease;
+  margin-bottom: 10px;
 }
-.chess-actions button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.chess-msg {
-  min-height: 14px;
+.ikigai-panel-list {
+  list-style: none;
+  padding: 0;
   margin: 0;
-  font-size: 10.5px;
-  color: var(--accent);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ikigai-panel-list li {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 4px 10px;
+}
+.ikigai-panel-hint {
+  font-size: 13px;
+  color: var(--text-dim);
   text-align: center;
 }
 
@@ -2109,17 +1808,46 @@ a:hover {
     grid-template-columns: 1fr;
     padding-top: 56px;
   }
-  .hero-globe {
+  .hero-visual {
     order: -1;
   }
-  .globe-box {
-    max-width: 240px;
+  /* Six overlapping circles read as clutter at this width, and there's no
+     hover here anyway — collapse the orbit into a 2x3 grid of plain chips,
+     photo pinned above as the still-obvious "point of convergence". Tap
+     replaces hover (see IkigaiVenn.tsx's matchMedia check) so the circle
+     shape wasn't buying anything but crampedness. */
+  .ikigai {
+    width: auto;
+    height: auto;
+    font-size: clamp(12px, 3vw, 14px);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
-  .chess-cell {
-    font-size: 16px;
+  .ikigai-center {
+    /* Stays relative (not static) — next/image's `fill` positions itself
+       absolutely against this element, and needs a positioned ancestor to
+       do it against even though the grid no longer needs the offset. */
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    order: -1;
+    grid-column: 1 / -1;
+    width: 7em;
+    height: 7em;
+    margin: 0 auto 4px;
   }
-  .chess-status {
-    font-size: 9.5px;
+  .ikigai-role {
+    position: static;
+    transform: none;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius-lg);
+  }
+  .ikigai-role:hover,
+  .ikigai-role.is-active {
+    transform: none;
   }
   .stats {
     grid-template-columns: repeat(2, 1fr);
@@ -2212,23 +1940,6 @@ a:hover {
     width: 40px;
     height: 40px;
     font-size: 18px;
-  }
-  /* hero-globe sits right under the nav on mobile (order: -1), so there's
-     no headroom above the card for the tooltip — flip it to open downward
-     instead of getting clipped by the top of the viewport. */
-  .flip-tooltip {
-    bottom: auto;
-    top: calc(100% + 12px);
-  }
-  .flip-tooltip::after {
-    top: 0;
-    bottom: auto;
-    margin-top: -5px;
-    margin-bottom: 0;
-    border-right: 0;
-    border-bottom: 0;
-    border-left: 1px solid var(--line-strong);
-    border-top: 1px solid var(--line-strong);
   }
 }
 
