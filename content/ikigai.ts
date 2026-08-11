@@ -7,13 +7,13 @@
    lists, and the four neighbor-overlap captions, in the exact wording
    confirmed for the hero (do not rephrase/add/remove without checking).
 
-   `corner` drives placement (see CORNER_POS in IkigaiDiagram.tsx) and
-   `accent` is one of the two page accents (warmth/amber, signal/teal) —
-   assigned checkerboard-style (opposite corners share an accent) so every
-   neighbor overlap blends both accents. */
+   `corner` drives placement (see CORNER_POS in IkigaiDiagram.tsx). Each
+   role's circle color is a CSS custom property keyed by `id`
+   (--ikigai-ld/ai/pm/community in globals.css) — all four mixed from just
+   the page's two accents (--accent/--accent-2), so every role reads as its
+   own tint without introducing a color outside that palette. */
 
 export type IkigaiCorner = 'tl' | 'tr' | 'br' | 'bl';
-export type IkigaiAccent = 'warmth' | 'signal';
 
 export interface IkigaiRole {
   id: string;
@@ -22,7 +22,6 @@ export interface IkigaiRole {
   /** Full name, used for the detail panel heading and aria-label. */
   fullName: string;
   corner: IkigaiCorner;
-  accent: IkigaiAccent;
   skills: string[];
 }
 
@@ -35,7 +34,6 @@ export const IKIGAI_ROLES: IkigaiRole[] = [
     labelLines: ['L&D'],
     fullName: 'L&D (Learning & Development)',
     corner: 'tl',
-    accent: 'warmth',
     skills: [
       'Curriculum Development',
       'Instructional Design',
@@ -50,7 +48,6 @@ export const IKIGAI_ROLES: IkigaiRole[] = [
     labelLines: ['AI / Automation', 'Engineering'],
     fullName: 'AI / Automation Engineering',
     corner: 'tr',
-    accent: 'signal',
     skills: [
       'CRM Automation',
       'Prompt Engineering (Claude, Gemini, ChatGPT)',
@@ -64,7 +61,6 @@ export const IKIGAI_ROLES: IkigaiRole[] = [
     labelLines: ['Program', 'Manager'],
     fullName: 'Program Manager',
     corner: 'br',
-    accent: 'warmth',
     skills: [
       'Program Planning & Coordination',
       'Team Leadership',
@@ -78,7 +74,6 @@ export const IKIGAI_ROLES: IkigaiRole[] = [
     labelLines: ['Community &', 'Social Media'],
     fullName: 'Community & Social Media',
     corner: 'bl',
-    accent: 'signal',
     skills: [
       'Community Management',
       'Follower/Audience Communication (untuk ai4impact dan Terra AI)',
