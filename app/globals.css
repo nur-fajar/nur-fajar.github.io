@@ -1808,9 +1808,11 @@ a:hover {
     grid-template-columns: 1fr;
     padding-top: 56px;
   }
-  .hero-visual {
-    order: -1;
-  }
+  /* No order: -1 here (unlike the old photo card) — this diagram + its
+     panel run ~450px tall, more than the whole first mobile screen on some
+     phones. Pushing it above the name/headline/stats would bury the one
+     thing a recruiter glancing at this page on a phone actually needs
+     first; it stays in source order, right after hero-copy. */
   /* Six overlapping circles read as clutter at this width, and there's no
      hover here anyway — collapse the orbit into a 2x3 grid of plain chips,
      photo pinned above as the still-obvious "point of convergence". Tap
