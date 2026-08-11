@@ -18,9 +18,13 @@
    not UA-sniffed) drives the active/dimmed state; focus (keyboard) and
    click/tap always do, on every device, so touch and keyboard both reach
    the exact same state hover produces on desktop — one visual language,
-   not a separate mobile layout. */
+   not a separate mobile layout. Hover also drives a pointer-tracked 3D tilt
+   on the hovered circle (--tilt-rx/--tilt-ry, written straight to the DOM
+   in onPointerMove rather than through React state — the same "skip the
+   render loop for a value that repaints every frame" call SpotlightPanel
+   makes for its cursor glow). */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IKIGAI_ROLES, IKIGAI_OVERLAPS, type IkigaiCorner, type IkigaiRole } from '@/content/ikigai';
@@ -30,12 +34,14 @@ import { IKIGAI_ROLES, IKIGAI_OVERLAPS, type IkigaiCorner, type IkigaiRole } fro
 // (2) no circle's own center gets swallowed by a neighbor's, which would
 // make that neighbor "win" pointer events right where the role's own label
 // sits (needs R < 2*offset), and (3) there's enough clearance past the
-// center point for the avatar photo. R = 1.8*offset sits mid-range on both.
+// center point for the avatar photo — maximized by sitting R just under the
+// 2*offset ceiling.
 const CENTER = 300;
 const OFFSET = 100;
-const R = 180;
-const AVATAR_R = 32;
+const R = 185;
+const AVATAR_R = 40;
 const LABEL_DIST = 100;
+const MAX_TILT = 9; // degrees
 
 const CORNER_POS: Record<IkigaiCorner, [number, number]> = {
   tl: [CENTER - OFFSET, CENTER - OFFSET],
@@ -53,6 +59,7 @@ const CORNER_DIR: Record<IkigaiCorner, [number, number]> = {
 };
 
 const ROLE_BY_ID = Object.fromEntries(IKIGAI_ROLES.map((r) => [r.id, r])) as Record<string, IkigaiRole>;
+const roleColor = (id: string) => `var(--ikigai-${id})`;
 
 function roleLabelPos(corner: IkigaiCorner): [number, number] {
   const [cx, cy] = CORNER_POS[corner];
@@ -66,7 +73,7 @@ function roleLabelPos(corner: IkigaiCorner): [number, number] {
 // outside the other two, i.e. exactly the lens it's labeling — then get
 // nudged further out along the same center→midpoint line, clear of the
 // avatar photo sitting at the diagram's exact center.
-const OVERLAP_PUSH = 34;
+const OVERLAP_PUSH = 36;
 
 function overlapPos(between: [string, string]): [number, number] {
   const [ax, ay] = CORNER_POS[ROLE_BY_ID[between[0]].corner];
@@ -104,7 +111,22 @@ function MultiLineText({
   );
 }
 
-const ACCENT_VAR = { warmth: 'var(--accent)', signal: 'var(--accent-2)' } as const;
+// Pointer-tracked tilt: rotate the hovered circle a few degrees toward
+// wherever inside it the cursor currently sits, like tilting a physical
+// disc under your finger. Written directly to the element's style (no
+// setState) so it can run every pointermove without triggering a re-render.
+function handleTilt(e: ReactPointerEvent<SVGGElement>) {
+  if (e.pointerType !== 'mouse') return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const px = (e.clientX - rect.left) / rect.width - 0.5;
+  const py = (e.clientY - rect.top) / rect.height - 0.5;
+  e.currentTarget.style.setProperty('--tilt-rx', `${(-py * MAX_TILT).toFixed(2)}deg`);
+  e.currentTarget.style.setProperty('--tilt-ry', `${(px * MAX_TILT).toFixed(2)}deg`);
+}
+function resetTilt(e: ReactPointerEvent<SVGGElement>) {
+  e.currentTarget.style.removeProperty('--tilt-rx');
+  e.currentTarget.style.removeProperty('--tilt-ry');
+}
 
 export default function IkigaiDiagram() {
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -153,6 +175,8 @@ export default function IkigaiDiagram() {
                 aria-label={`${role.fullName}: ${role.skills.join(', ')}`}
                 onMouseEnter={canHover ? () => setActiveId(role.id) : undefined}
                 onMouseLeave={canHover ? () => setActiveId((cur) => (cur === role.id ? null : cur)) : undefined}
+                onPointerMove={canHover ? handleTilt : undefined}
+                onPointerLeave={canHover ? resetTilt : undefined}
                 onFocus={() => setActiveId(role.id)}
                 onBlur={() => setActiveId((cur) => (cur === role.id ? null : cur))}
                 onClick={() => toggle(role.id)}
@@ -167,7 +191,7 @@ export default function IkigaiDiagram() {
                   cx={cx}
                   cy={cy}
                   r={R}
-                  className={`ikigai-circle ikigai-circle--${role.accent}`}
+                  className={`ikigai-circle ikigai-circle--${role.id}`}
                   style={{ transformOrigin: `${cx}px ${cy}px` }}
                 />
                 <MultiLineText
@@ -192,15 +216,15 @@ export default function IkigaiDiagram() {
           {/* Definition ring behind the HTML avatar photo (see .ikigai-avatar,
               positioned by percentage over this same viewBox) — without it the
               photo's edge gets lost against four stacked, translucent fills. */}
-          <circle cx={CENTER} cy={CENTER} r={AVATAR_R + 6} className="ikigai-avatar-ring" />
+          <circle cx={CENTER} cy={CENTER} r={AVATAR_R + 7} className="ikigai-avatar-ring" />
         </svg>
 
         <div className="ikigai-avatar">
-          <Image src="/foto-profile-nf.jpg" alt="Nur Fajar" fill sizes="120px" priority />
+          <Image src="/foto-profile-nf.jpg" alt="Nur Fajar" fill sizes="140px" priority />
         </div>
       </div>
 
-      <div className="ikigai-panel" style={activeRole ? ({ '--role-accent': ACCENT_VAR[activeRole.accent] } as React.CSSProperties) : undefined}>
+      <div className="ikigai-panel" style={activeRole ? ({ '--role-accent': roleColor(activeRole.id) } as React.CSSProperties) : undefined}>
         <AnimatePresence mode="wait">
           {activeRole ? (
             <motion.div
@@ -229,7 +253,7 @@ export default function IkigaiDiagram() {
               <p className="ikigai-hint">Hover a circle — tap on mobile — for the skill set behind each role.</p>
               <ul className="ikigai-legend mono">
                 {IKIGAI_ROLES.map((r) => (
-                  <li key={r.id} style={{ '--role-accent': ACCENT_VAR[r.accent] } as React.CSSProperties}>
+                  <li key={r.id} style={{ '--role-accent': roleColor(r.id) } as React.CSSProperties}>
                     <i aria-hidden="true" />
                     {r.fullName}
                   </li>
