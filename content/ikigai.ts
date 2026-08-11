@@ -7,16 +7,15 @@ export interface IkigaiRole {
   skills: string[];
 }
 
-// Hero Venn/orbit diagram (see components/IkigaiVenn.tsx) — six professional
-// identities converging on one point (the center photo). Order here is the
-// visual order too: index 0 sits at the top of the diagram and the rest
-// follow clockwise, alternating warmth/signal so no two neighboring circles
-// share a hue. Paired by theme going around — L&D+AI (content/technical),
-// Program Manager+Leadership (org), Community+Social (audience-facing).
+// Hero radial diagram (see components/IkigaiVenn.tsx) — five professional
+// identities arranged clockwise around a center photo, each overlapping its
+// two neighbors. Order here IS the visual order (index 0 at the top,
+// clockwise) and it's load-bearing, not aesthetic: IKIGAI_INTERSECTIONS[i]
+// labels the overlap between IKIGAI_ROLES[i] and IKIGAI_ROLES[i+1], so
+// reordering this array without updating that one breaks the pairing.
 //
-// L&D and AI / Automation Engineering skill lists are confirmed. The other
-// four are placeholders inferred from the resume/experience content already
-// on this site — flagged `// TODO: confirm` and awaiting the real list.
+// All five skill lists below are final, confirmed by Nur Fajar — copied
+// verbatim, not paraphrased or resized.
 export const IKIGAI_ROLES: IkigaiRole[] = [
   {
     id: 'ld',
@@ -34,28 +33,29 @@ export const IKIGAI_ROLES: IkigaiRole[] = [
     id: 'program-manager',
     label: 'Program Manager',
     accent: 'warmth',
-    // TODO: confirm — placeholder, not yet reviewed against the real skill set.
-    skills: ['Program Planning & Execution', 'Stakeholder Management', 'Timeline & Resource Management', 'Program Evaluation', 'Cross-functional Coordination'],
-  },
-  {
-    id: 'leadership',
-    label: 'Leadership',
-    accent: 'signal',
-    // TODO: confirm — placeholder, not yet reviewed against the real skill set.
-    skills: ['Team Management', 'Decision Making', 'Mentoring & Coaching', 'Strategic Planning', 'Conflict Resolution'],
+    skills: ['Program Planning & Coordination', 'Team Leadership', 'Cross-functional Stakeholder Management', 'Program Execution', 'Tools: Notion, Google Sheets'],
   },
   {
     id: 'community-manager',
     label: 'Community Manager',
-    accent: 'warmth',
-    // TODO: confirm — placeholder, not yet reviewed against the real skill set.
-    skills: ['Community Engagement & Growth', 'Content Moderation', 'Event Coordination', 'Member Support & Onboarding', 'Feedback Collection & Reporting'],
+    accent: 'signal',
+    skills: ['Community Management', 'Follower/Audience Communication (untuk ai4impact dan Terra AI)'],
   },
   {
     id: 'social-media',
     label: 'Social Media Specialist',
-    accent: 'signal',
-    // TODO: confirm — placeholder, not yet reviewed against the real skill set.
-    skills: ['Content Creation', 'Social Media Strategy', 'Video Production', 'Analytics & Reporting', 'Community Growth'],
+    accent: 'warmth',
+    skills: ['Content Production (Canva, CapCut, Premiere)'],
   },
+];
+
+// Labels the overlap lens between each role and the next one clockwise
+// (index i <-> IKIGAI_ROLES[i] + IKIGAI_ROLES[(i + 1) % length]); the last
+// entry wraps back to index 0. Final, confirmed wording — verbatim.
+export const IKIGAI_INTERSECTIONS: string[] = [
+  'AI-powered training design', // L&D + AI / Automation Engineering
+  'Automation program delivery', // AI / Automation Engineering + Program Manager
+  'Community program management', // Program Manager + Community Manager
+  'Audience content engagement', // Community Manager + Social Media Specialist
+  'Educational content creation', // Social Media Specialist + L&D
 ];

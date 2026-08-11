@@ -436,22 +436,28 @@ a:hover {
   }
 }
 
-/* ── Hero visual: Ikigai-style orbit diagram (see IkigaiVenn.tsx) ────────
-   Six role circles clockwise around a small centered portrait — not a
-   mathematically precise 6-way Venn (six mutually-overlapping circles reads
-   as mud), but a radial cluster where every circle touches the center and
-   its two neighbors. --tx/--ty (set per nth-child below) are each circle's
-   offset from center; everything — circle size, offset, label text — is
-   sized in `em` off .ikigai's own font-size, so the whole cluster scales as
-   one unit instead of three separately-tuned breakpoints.
+/* ── Hero visual: Ikigai-style radial diagram (see IkigaiVenn.tsx) ───────
+   Five role circles clockwise around a small centered portrait — not a
+   mathematically precise 5-way Venn (mutually-overlapping circles reads as
+   mud past three or four), but a radial cluster where every circle touches
+   the center and its two neighbors, and each neighbor-overlap carries its
+   own label. --tx/--ty are each circle/label's offset from center, computed
+   in the component (polar → em) rather than hand-derived per role count
+   here — this diagram's role count has already changed once between
+   revisions. Circle/photo *sizes* below don't depend on count, so they stay
+   plain CSS. Everything is sized in `em` off .ikigai's own font-size, so
+   the whole cluster scales as one unit — same structure at every
+   breakpoint, see the mobile override further down, which only touches
+   that one font-size.
 
    Colors are the site's existing warmth/signal accents only, alternated per
-   circle via --role-accent (set inline from content/ikigai.ts) so no two
-   neighbors share a hue. Overlaps are plain stacked alpha, no
-   mix-blend-mode — multiply reads muddy against the dark theme's near-black
-   background — so two translucent circles overlapping just reads as a
-   deeper tone, and the opaque center photo sits above all of it (z-index)
-   as the literal point of convergence. */
+   circle via --role-accent (set inline from content/ikigai.ts); five is odd
+   so exactly one neighbor pair shares a hue (unavoidable 2-coloring an odd
+   cycle — not worth a third color for one seam). Overlaps are plain stacked
+   alpha, no mix-blend-mode — multiply reads muddy against the dark theme's
+   near-black background — so two translucent circles overlapping just
+   reads as a deeper tone, and the opaque center photo sits above all of it
+   (z-index) as the literal point of convergence. */
 .ikigai-wrap {
   display: flex;
   flex-direction: column;
@@ -460,8 +466,8 @@ a:hover {
 }
 .ikigai {
   position: relative;
-  width: 32em;
-  height: 32em;
+  width: 30em;
+  height: 30em;
   max-width: 100%;
   font-size: clamp(9px, 1.7vw, 13px);
   margin: 0 auto;
@@ -470,8 +476,8 @@ a:hover {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 11.5em;
-  height: 11.5em;
+  width: 12em;
+  height: 12em;
   transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty)));
   border-radius: 50%;
   display: flex;
@@ -490,32 +496,6 @@ a:hover {
     background-color 0.25s ease,
     border-color 0.25s ease;
 }
-/* Six fixed positions, clockwise from the top — order matches
-   content/ikigai.ts (index 0 = top, then +60deg per step). */
-.ikigai-role:nth-child(1) {
-  --tx: 0em;
-  --ty: -9.5em;
-}
-.ikigai-role:nth-child(2) {
-  --tx: 8.23em;
-  --ty: -4.75em;
-}
-.ikigai-role:nth-child(3) {
-  --tx: 8.23em;
-  --ty: 4.75em;
-}
-.ikigai-role:nth-child(4) {
-  --tx: 0em;
-  --ty: 9.5em;
-}
-.ikigai-role:nth-child(5) {
-  --tx: -8.23em;
-  --ty: 4.75em;
-}
-.ikigai-role:nth-child(6) {
-  --tx: -8.23em;
-  --ty: -4.75em;
-}
 .ikigai-role:hover,
 .ikigai-role.is-active {
   background: color-mix(in srgb, var(--role-accent) 26%, transparent);
@@ -532,6 +512,37 @@ a:hover {
   letter-spacing: 0.02em;
   color: var(--text-primary);
 }
+/* Intersection captions — sit at the same radius as the role circles but at
+   the angle exactly between two neighbors, which lands inside the lens
+   their overlap makes without computing that lens's actual geometry.
+   pointer-events: none so they never steal a tap/hover from the role
+   circles underneath; always visible (not tied to activeId) like a real
+   Ikigai diagram's overlap labels. */
+.ikigai-label {
+  /* Positioning only — no font-size here. --tx/--ty are `em`, and `em`
+     resolves against whichever element it's used on; putting the text
+     size on this same (transformed) element would shrink the radius along
+     with the text. Text sizing lives on .ikigai-label-text instead. */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty)));
+  z-index: 3;
+  max-width: 5.2em;
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  border: 1px solid var(--line);
+  pointer-events: none;
+}
+.ikigai-label-text {
+  display: block;
+  font-size: 0.6em;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+  text-align: center;
+}
 /* The one non-interactive element in the diagram — a halo of --bg cuts it
    cleanly out of whatever role circles sit behind it, so it stays legible
    as the "point of convergence" regardless of how much overlap is under it. */
@@ -540,8 +551,8 @@ a:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 10em;
-  height: 10em;
+  width: 9em;
+  height: 9em;
   border-radius: 50%;
   overflow: hidden;
   z-index: 10;
@@ -1813,43 +1824,13 @@ a:hover {
      phones. Pushing it above the name/headline/stats would bury the one
      thing a recruiter glancing at this page on a phone actually needs
      first; it stays in source order, right after hero-copy. */
-  /* Six overlapping circles read as clutter at this width, and there's no
-     hover here anyway — collapse the orbit into a 2x3 grid of plain chips,
-     photo pinned above as the still-obvious "point of convergence". Tap
-     replaces hover (see IkigaiVenn.tsx's matchMedia check) so the circle
-     shape wasn't buying anything but crampedness. */
+  /* Same radial layout as desktop, just smaller — the whole cluster is
+     `em`-sized off this one font-size (see the base .ikigai rule), so
+     shrinking it is the entire mobile adaptation. No grid fallback: five
+     overlapping circles is what the diagram is, at every width; only the
+     input mode changes (tap instead of hover, handled in IkigaiVenn.tsx). */
   .ikigai {
-    width: auto;
-    height: auto;
-    font-size: clamp(12px, 3vw, 14px);
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-  .ikigai-center {
-    /* Stays relative (not static) — next/image's `fill` positions itself
-       absolutely against this element, and needs a positioned ancestor to
-       do it against even though the grid no longer needs the offset. */
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-    order: -1;
-    grid-column: 1 / -1;
-    width: 7em;
-    height: 7em;
-    margin: 0 auto 4px;
-  }
-  .ikigai-role {
-    position: static;
-    transform: none;
-    width: auto;
-    height: auto;
-    border-radius: var(--radius-lg);
-  }
-  .ikigai-role:hover,
-  .ikigai-role.is-active {
-    transform: none;
+    font-size: clamp(7.5px, 2.9vw, 12px);
   }
   .stats {
     grid-template-columns: repeat(2, 1fr);
