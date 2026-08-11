@@ -77,9 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Collapses every Framer Motion animation in the tree to an instant,
             no-op transition under prefers-reduced-motion — the one central
             guard motion.js used to reimplement per-effect with an early
-            `if (reduced.matches) return`. The hero flip card's canvas Globe
-            widget still checks it itself since it drives its own RAF loop
-            rather than Motion's animate engine. */}
+            `if (reduced.matches) return`. */}
         <MotionConfig reducedMotion="user">{children}</MotionConfig>
       </body>
     </html>

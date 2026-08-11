@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, type Variants } from 'framer-motion';
-import FlipCard from './FlipCard';
+import IkigaiDiagram from './IkigaiDiagram';
 import StatCountUp from './motion/StatCountUp';
 
 // The L&D-delivery numbers and the "trusted to lead, performed under
@@ -108,7 +108,7 @@ export default function Hero() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.9, ease: 'easeOut', delay: 0.15 }}
       >
-        <FlipCard />
+        <IkigaiDiagram />
       </motion.div>
     </section>
   );

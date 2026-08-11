@@ -436,454 +436,206 @@ a:hover {
   }
 }
 
-/* hero flip card viewport */
-.hero-globe {
-  perspective: 1400px;
-}
-.globe-box {
-  position: relative;
+/* hero visual: the ikigai diagram (see IkigaiDiagram.tsx) — four
+   overlapping circles above a detail panel that swaps in the active role's
+   skill list. .hero-globe (Hero.tsx) is just the grid-column wrapper; the
+   card itself is .ikigai-box. */
+.ikigai-box {
   width: 100%;
-  max-width: 340px;
-  aspect-ratio: 1 / 1;
+  max-width: 460px;
   margin: 0 auto;
+  padding: 20px 20px 22px;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  overflow: hidden;
   background: var(--panel);
   transition: border-color 0.2s ease;
 }
-.globe-box:hover {
+.ikigai-box:hover {
   border-color: var(--line-strong);
 }
-.globe-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-  cursor: grab;
-  touch-action: none;
-}
-.globe-canvas:active {
-  cursor: grabbing;
-}
-
-/* flip card: 5 pages cycled by one button — photo, zodiac globe, sudoku,
-   chess, and a book quote. */
-.flip-controls {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.flip-count {
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: var(--text-dim);
-}
-.flip-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius);
-  flex-shrink: 0;
-  border: 1px solid var(--line-strong);
-  background: var(--panel-2);
-  color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition:
-    border-color 0.18s ease,
-    color 0.18s ease;
-}
-.flip-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.flip-pages {
+.ikigai-figure {
   position: relative;
   width: 100%;
-  height: 100%;
-  perspective: 1200px;
+  aspect-ratio: 1 / 1;
 }
-/* Rotation/opacity are owned by Framer Motion (see FlipCard.tsx) — it writes
-   transform/opacity as inline styles every frame, so a CSS transition on the
-   same properties here would just fight it. This rule only sets the static
-   plumbing: position, shape, and the flip's backface. */
-.flip-page {
+.ikigai-svg {
   position: absolute;
   inset: 0;
-  overflow: hidden;
-  background: var(--panel);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ikigai-role {
+  cursor: pointer;
+  outline: none;
+}
+.ikigai-circle {
+  fill-opacity: 0.56;
+  stroke-width: 2;
+  stroke-opacity: 1;
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    fill-opacity 0.25s ease,
+    stroke-opacity 0.25s ease,
+    stroke-width 0.25s ease;
+}
+.ikigai-circle--warmth {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+.ikigai-circle--signal {
+  fill: var(--accent-2);
+  stroke: var(--accent-2);
+}
+.ikigai-role.is-active .ikigai-circle {
+  fill-opacity: 0.78;
+  stroke-width: 3;
+  transform: scale(1.045);
+}
+.ikigai-role.is-dimmed .ikigai-circle {
+  fill-opacity: 0.2;
+  stroke-opacity: 0.4;
+}
+.ikigai-role:focus-visible .ikigai-circle {
+  stroke-width: 3;
+}
+/* Text halo (stroke the panel color, then paint the glyph on top) instead
+   of a fixed light/dark fill — legible regardless of which two accents are
+   blended underneath, and in both themes. */
+.ikigai-role-label {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  fill: var(--text-primary);
+  stroke: var(--panel);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.ikigai-role-label--solo {
+  font-size: 30px;
+}
+.ikigai-role.is-dimmed .ikigai-role-label {
+  opacity: 0.55;
+}
+.ikigai-overlap-label {
+  font-family: var(--font-jbmono), monospace;
+  letter-spacing: 0.02em;
+  font-size: 14px;
+  fill: var(--text-secondary);
+  stroke: var(--panel);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+  pointer-events: none;
+  opacity: 0.92;
+  transition: opacity 0.25s ease;
+}
+.ikigai-overlap-label.is-active {
+  opacity: 1;
+  fill: var(--text-primary);
+}
+.ikigai-overlap-label.is-dimmed {
+  opacity: 0.3;
+}
+.ikigai-avatar-ring {
+  fill: var(--panel);
+  stroke: var(--line-strong);
+  stroke-width: 1.5;
 }
 
-/* flip tooltip: a short line about this page, on hover/focus of the card */
-.flip-tooltip {
+/* Profile photo at the exact point all four circles meet — plain HTML/Next
+   Image (not inline SVG) so it keeps Next's image optimization; positioned
+   by percentage over the same 0-600 viewBox the SVG uses, so it lines up
+   with the avatar ring drawn there regardless of the card's rendered size. */
+.ikigai-avatar {
   position: absolute;
   left: 50%;
-  bottom: calc(100% + 12px);
-  z-index: 6;
-  width: 280px;
-  max-width: 78vw;
-  margin: 0;
-  padding: 12px 14px;
-  border-radius: var(--radius);
-  border: 1px solid var(--line);
-  background: var(--panel-2);
-  box-shadow: var(--shadow-modal);
-  font-size: 11.5px;
-  line-height: 1.55;
-  color: var(--text-secondary);
-  text-align: left;
-  text-transform: none;
-  letter-spacing: normal;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, 6px);
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease;
+  top: 50%;
+  width: 10.6667%;
+  height: 10.6667%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--panel);
 }
-.flip-tooltip::after {
+.ikigai-avatar img {
+  object-fit: cover;
+}
+
+.ikigai-panel {
+  margin-top: 18px;
+  min-height: 168px;
+}
+.ikigai-eyebrow {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.ikigai-hint {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.ikigai-skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.ikigai-skill-list li {
+  padding-left: 14px;
+  position: relative;
+}
+.ikigai-skill-list li::before {
   content: '';
   position: absolute;
-  top: 100%;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  margin-left: -5px;
-  margin-top: -5px;
-  background: var(--panel-2);
-  border-right: 1px solid var(--line-strong);
-  border-bottom: 1px solid var(--line-strong);
-  transform: rotate(45deg);
+  left: 0;
+  top: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--role-accent, var(--accent));
 }
-.globe-box:hover .flip-tooltip,
-.globe-box:focus-within .flip-tooltip {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-@media (prefers-reduced-motion: reduce) {
-  .flip-tooltip {
-    transition: none;
-  }
-}
-
-/* photo page */
-.flip-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* book-quote page */
-.quote-page {
-  height: 100%;
-  padding: 28px 24px;
+.ikigai-legend {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 14px;
-}
-.quote-page-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text-primary);
-  max-width: 30ch;
-}
-.quote-page-text::before {
-  content: '\201C';
-  color: var(--accent);
-}
-.quote-page-text::after {
-  content: '\201D';
-  color: var(--accent);
-}
-.quote-page-meta {
-  font-size: 10.5px;
-  color: var(--text-dim);
-  letter-spacing: 0.04em;
-}
-.quote-more {
-  margin-top: 4px;
-  padding: 5px 16px;
-  border: 1px solid var(--line-strong);
-  background: none;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  font-size: 10px;
+  letter-spacing: 0.03em;
   color: var(--text-secondary);
-  font: inherit;
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease;
 }
-.quote-more:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-/* sudoku */
-.sudoku {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 12px;
-  gap: 8px;
-}
-/* padding-right clears the flip controls (page counter + button), which
-   sit absolutely at the card's top-right corner above this row */
-.sudoku-head {
+.ikigai-legend li {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding-right: 66px;
-}
-.sudoku-levels {
-  display: flex;
-  gap: 4px;
-}
-.sudoku-levels button {
-  width: 22px;
-  height: 22px;
-  border-radius: 4px;
-  padding: 0;
-  border: 1px solid var(--line-strong);
-  background: none;
-  color: var(--text-dim);
-  font: inherit;
-  font-size: 11px;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease,
-    background 0.15s ease;
-}
-.sudoku-levels button[aria-pressed='true'] {
-  background: var(--accent-soft);
-  color: var(--accent);
-  border-color: var(--accent);
-}
-.sudoku-timer {
-  font-size: 11px;
-  color: var(--text-dim);
-}
-
-.sudoku-grid {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  grid-template-rows: repeat(9, 1fr);
-  background: var(--line-strong);
-  border: 1.5px solid var(--line-strong);
-  border-radius: 3px;
-  gap: 1px;
-  overflow: hidden;
-}
-.sudoku-cell {
-  background: var(--panel-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: var(--text-primary);
-  font-weight: 600;
-}
-.sudoku-cell.b-right {
-  border-right: 1.5px solid var(--line-strong);
-}
-.sudoku-cell.b-bottom {
-  border-bottom: 1.5px solid var(--line-strong);
-}
-.sudoku-cell input {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  background: none;
-  text-align: center;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--accent);
-  outline: none;
-  padding: 0;
-}
-.sudoku-cell.correct {
-  background: var(--accent-soft);
-}
-.sudoku-cell.wrong input {
-  color: var(--red);
-}
-
-.sudoku-actions {
-  display: flex;
   gap: 6px;
 }
-.sudoku-actions button {
-  flex: 1;
-  padding: 5px 0;
-  border-radius: 5px;
-  border: 1px solid var(--line-strong);
-  background: none;
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease;
-}
-.sudoku-actions button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.sudoku-msg {
-  min-height: 14px;
-  margin: 0;
-  font-size: 10.5px;
-  color: var(--accent);
-  text-align: center;
-}
-
-/* chess */
-.chess {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 12px;
-  gap: 8px;
-}
-.chess-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-right: 66px;
-  gap: 8px;
-}
-.chess-levels {
-  display: flex;
-  gap: 4px;
+.ikigai-legend i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--role-accent, var(--accent));
   flex-shrink: 0;
 }
-.chess-levels button {
-  width: 22px;
-  height: 22px;
-  border-radius: 4px;
-  padding: 0;
-  border: 1px solid var(--line-strong);
-  background: none;
-  color: var(--text-dim);
-  font: inherit;
-  font-size: 11px;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease,
-    background 0.15s ease;
-}
-.chess-levels button[aria-pressed='true'] {
-  background: var(--accent-soft);
-  color: var(--accent);
-  border-color: var(--accent);
-}
-.chess-status {
-  font-size: 10.5px;
-  color: var(--text-dim);
-  text-align: right;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.chess-board {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(8, 1fr);
-  border: 1.5px solid var(--line-strong);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.chess-cell {
-  border: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--text-primary);
-  transition: background 0.12s ease;
-}
-.chess-cell:disabled {
-  cursor: default;
-}
-.chess-cell.light {
-  background: var(--panel-2);
-}
-.chess-cell.dark {
-  background: color-mix(in srgb, var(--panel) 65%, var(--line) 35%);
-}
-.chess-cell.selected {
-  box-shadow: inset 0 0 0 2px var(--accent);
-}
-.chess-cell.in-check {
-  background: color-mix(in srgb, var(--red) 30%, transparent);
-}
-.chess-cell.move-hint::after {
-  content: '';
-  width: 22%;
-  height: 22%;
-  border-radius: 50%;
-  background: var(--accent-soft);
-  box-shadow: 0 0 0 2px var(--accent) inset;
-}
-.chess-cell.capture-hint {
-  box-shadow: inset 0 0 0 2px var(--accent);
-}
-.chess-actions {
-  display: flex;
-  gap: 6px;
-}
-.chess-actions button {
-  flex: 1;
-  padding: 5px 0;
-  border-radius: 5px;
-  border: 1px solid var(--line-strong);
-  background: none;
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease;
-}
-.chess-actions button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.chess-msg {
-  min-height: 14px;
-  margin: 0;
-  font-size: 10.5px;
-  color: var(--accent);
-  text-align: center;
+@media (prefers-reduced-motion: reduce) {
+  .ikigai-circle,
+  .ikigai-role-label,
+  .ikigai-overlap-label {
+    transition: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2112,14 +1864,12 @@ a:hover {
   .hero-globe {
     order: -1;
   }
-  .globe-box {
-    max-width: 240px;
+  .ikigai-box {
+    max-width: 340px;
+    padding: 16px 16px 18px;
   }
-  .chess-cell {
-    font-size: 16px;
-  }
-  .chess-status {
-    font-size: 9.5px;
+  .ikigai-panel {
+    min-height: 0;
   }
   .stats {
     grid-template-columns: repeat(2, 1fr);
@@ -2212,23 +1962,6 @@ a:hover {
     width: 40px;
     height: 40px;
     font-size: 18px;
-  }
-  /* hero-globe sits right under the nav on mobile (order: -1), so there's
-     no headroom above the card for the tooltip — flip it to open downward
-     instead of getting clipped by the top of the viewport. */
-  .flip-tooltip {
-    bottom: auto;
-    top: calc(100% + 12px);
-  }
-  .flip-tooltip::after {
-    top: 0;
-    bottom: auto;
-    margin-top: -5px;
-    margin-bottom: 0;
-    border-right: 0;
-    border-bottom: 0;
-    border-left: 1px solid var(--line-strong);
-    border-top: 1px solid var(--line-strong);
   }
 }
 
