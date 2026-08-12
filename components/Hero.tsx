@@ -1,7 +1,6 @@
 'use client';
 
 import { motion, type Variants } from 'framer-motion';
-import IkigaiDiagram from './IkigaiDiagram';
 import StatCountUp from './motion/StatCountUp';
 
 // The L&D-delivery numbers and the "trusted to lead, performed under
@@ -101,15 +100,6 @@ export default function Hero() {
           Learners cumulative since 2023 · satisfaction is a self-reported Kirkpatrick L1 mean across most cohorts
         </motion.p>
       </div>
-
-      <motion.div
-        className="hero-globe motion-safe"
-        initial={{ opacity: 0, scale: 0.94 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.9, ease: 'easeOut', delay: 0.15 }}
-      >
-        <IkigaiDiagram />
-      </motion.div>
     </section>
   );
 }
