@@ -73,10 +73,14 @@ export function IslandMap({ done, onEnterArea }: { done: ReadonlySet<number>; on
           aria-label={`Open ${area.sectionLabel}${done.has(area.id) ? ' (completed)' : ''}`}
           transform={`translate(${area.mapPos[0]},${area.mapPos[1]})`}
           className="cursor-pointer focus-visible:outline focus-visible:outline-4 focus-visible:outline-[var(--gold)]"
-          onClick={() => onEnterArea(area.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onEnterArea(area.id);
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
+              e.stopPropagation();
               onEnterArea(area.id);
             }
           }}

@@ -34,16 +34,17 @@ const NEXT_HINT = '**SCROLL / CLICK** to continue · scroll up to go back';
 function buildPanelData(cursor: StepCursor, done: ReadonlySet<number>): PanelData {
   if (cursor.area === null) {
     if (done.size >= AREAS.length) {
+      const email = CONTACT[0];
       return {
         eyebrow: 'DONE · 5/5 AREAS',
         title: "THE ISLAND'S FULLY EXPLORED.",
         body: [
           'Organizations, work, projects, skills, contact — all open now. One thing left: **word from you**.',
-          'Click any area to replay it, or __hello@nurfajar.com__ to start a real conversation.',
+          `Click any area to replay it, or __${email.value}__ to start a real conversation.`,
         ],
         tags: [
           ['STATUS', 'OPEN TO WORK'],
-          ['EMAIL', 'hello@nurfajar.com'],
+          ['EMAIL', email.value],
         ],
         hint: 'Click an area on the map to replay it',
       };
@@ -83,7 +84,7 @@ function buildPanelData(cursor: StepCursor, done: ReadonlySet<number>): PanelDat
       return {
         eyebrow: `BLOCK ${contactStep}/${CONTACT.length} LOCKING IN`,
         title: `${c.tag} — ${c.value}`,
-        body: [c.blurb, `[Open ${c.tag.toLowerCase()}](${c.href})`],
+        body: [c.blurb],
         hint: NEXT_HINT,
       };
     }
@@ -148,15 +149,26 @@ export function IslandGame() {
   const [done, setDone] = useState<ReadonlySet<number>>(new Set());
   const [soundOn, setSoundOn] = useState(true);
   const [cvOpen, setCvOpen] = useState(false);
-  const [forceFallback, setForceFallback] = useState(false);
+  // 'auto' defers to the OS prefers-reduced-motion setting; 'game'/'fallback'
+  // are explicit user overrides that win regardless of that setting, so the
+  // "try the animated version"/"switch to text-only" toggles always work.
+  const [motionMode, setMotionMode] = useState<'auto' | 'game' | 'fallback'>('auto');
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const sfxRef = useRef(createRetroSfx());
   const lockRef = useRef(0);
+  const touchStartRef = useRef<number | null>(null);
 
-  const prefersReducedMotion = useMemo(
-    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    [],
-  );
-  const useFallback = forceFallback || prefersReducedMotion;
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mq.matches);
+    function onChange(e: MediaQueryListEvent) {
+      setPrefersReducedMotion(e.matches);
+    }
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  const useFallback = motionMode === 'fallback' || (motionMode === 'auto' && prefersReducedMotion);
 
   useEffect(() => {
     sfxRef.current.setEnabled(soundOn);
@@ -214,21 +226,44 @@ export function IslandGame() {
         if (e.key === 'Escape') setCvOpen(false);
         return;
       }
-      if (['ArrowDown', 'ArrowRight', ' ', 'Enter', 'PageDown'].includes(e.key)) {
-        e.preventDefault();
-        applyStep(1);
-      }
-      if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) {
-        e.preventDefault();
-        applyStep(-1);
+      // Don't hijack Enter/Space/arrows when a focusable control is the actual
+      // target — otherwise this cancels activation of HUD/Track/map buttons
+      // and both skip links.
+      const target = e.target as HTMLElement | null;
+      const onInteractive = !!target?.closest('a,button,[role="button"],input,textarea,select');
+      if (!onInteractive) {
+        if (['ArrowDown', 'ArrowRight', ' ', 'Enter', 'PageDown'].includes(e.key)) {
+          e.preventDefault();
+          applyStep(1);
+        }
+        if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) {
+          e.preventDefault();
+          applyStep(-1);
+        }
       }
       if (e.key === 'Escape' && cursor.area !== null) setCursor({ area: null, step: 0 });
     }
+    function onTouchStart(e: TouchEvent) {
+      touchStartRef.current = e.touches[0]?.clientY ?? null;
+    }
+    function onTouchEnd(e: TouchEvent) {
+      if (cvOpen || touchStartRef.current === null) return;
+      const endY = e.changedTouches[0]?.clientY;
+      if (endY === undefined) return;
+      const diff = touchStartRef.current - endY; // swipe up (finger moves up) == scroll down == forward
+      touchStartRef.current = null;
+      if (Math.abs(diff) < 24) return;
+      applyStep(diff > 0 ? 1 : -1);
+    }
     window.addEventListener('wheel', onWheel, { passive: true });
     window.addEventListener('keydown', onKeydown);
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchend', onTouchEnd, { passive: true });
     return () => {
       window.removeEventListener('wheel', onWheel);
       window.removeEventListener('keydown', onKeydown);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchend', onTouchEnd);
     };
   }, [applyStep, cvOpen, cursor.area]);
 
@@ -244,7 +279,7 @@ export function IslandGame() {
         <div className="flex justify-end p-3">
           <button
             type="button"
-            onClick={() => setForceFallback(false)}
+            onClick={() => setMotionMode('game')}
             className="border-2 border-[var(--ink)] px-2 py-1 text-xs"
           >
             Try the animated version instead
@@ -293,15 +328,13 @@ export function IslandGame() {
       <Track areas={AREAS} done={done} cursor={cursor} onJumpToArea={enterArea} />
       <CvOverlay open={cvOpen} onClose={() => setCvOpen(false)} />
 
-      {!prefersReducedMotion && (
-        <button
-          type="button"
-          onClick={() => setForceFallback(true)}
-          className="sr-only focus:not-sr-only focus:fixed focus:bottom-16 focus:right-3 focus:z-50 focus:border-2 focus:border-[var(--ink)] focus:bg-[var(--cream)] focus:px-2 focus:py-1 focus:text-xs"
-        >
-          Switch to text-only version
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={() => setMotionMode('fallback')}
+        className="sr-only focus:not-sr-only focus:fixed focus:bottom-16 focus:right-3 focus:z-50 focus:border-2 focus:border-[var(--ink)] focus:bg-[var(--cream)] focus:px-2 focus:py-1 focus:text-xs"
+      >
+        Switch to text-only version
+      </button>
     </div>
   );
 }
