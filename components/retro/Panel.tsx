@@ -13,6 +13,7 @@ export interface PanelData {
   body: string[];
   tags?: [string, string][];
   hint: string;
+  link?: { label: string; href: string };
 }
 
 const panelVariants: Variants = {
@@ -36,7 +37,10 @@ export function Panel({ data }: { data: PanelData }) {
           exit="exit"
         >
           <div className="mb-2 flex flex-wrap items-center gap-2 font-pixel text-[8px] text-[var(--ink-2)]">
-            <i className="not-italic bg-[var(--accent)] px-1.5 py-0.5 text-[var(--ink)]">{data.eyebrow}</i>
+            {/* bg uses --accent-text (a lightened tint of --accent), not raw --accent —
+                the purple SKILLS area color (#8b5fe0) fails 4.5:1 against dark --ink text,
+                see final-review I3. */}
+            <i className="not-italic bg-[var(--accent-text)] px-1.5 py-0.5 text-[var(--ink)]">{data.eyebrow}</i>
           </div>
           <h2 className="mb-2 font-pixel text-[13px] leading-relaxed text-[var(--ink)] md:text-[15px]">
             {data.title}
@@ -59,6 +63,14 @@ export function Panel({ data }: { data: PanelData }) {
                 </span>
               ))}
             </div>
+          )}
+          {data.link && (
+            <a
+              href={data.link.href}
+              className="mt-2.5 inline-block border-2 border-[var(--ink)] bg-[var(--accent-text)] px-2 py-1 font-pixel text-[8px] text-[var(--ink)] hover:opacity-90"
+            >
+              {data.link.label} →
+            </a>
           )}
           <div className="mt-2.5 flex items-center gap-1.5 font-pixel text-[8px] text-[var(--ink-2)]">
             <RichText text={data.hint} />

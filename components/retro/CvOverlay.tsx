@@ -2,6 +2,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 import { CONTACT, ORG, PROJECTS, SKILLS, WORK } from '@/lib/retro/content';
 import { RichText } from './RichText';
 
@@ -15,14 +16,26 @@ function CvSection({ heading, children }: { heading: string; children: React.Rea
 }
 
 export function CvOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Moves focus into the dialog whenever it opens — needed both for the usual
+  // "VIEW CV" HUD button and for the skip-link button in IslandGame.tsx (I4),
+  // which opens the CV instead of anchor-linking to it and relies on this
+  // effect to land focus somewhere useful.
+  useEffect(() => {
+    if (open) dialogRef.current?.focus();
+  }, [open]);
+
   return (
     <AnimatePresence>
       {open && (
         <motion.div
+          ref={dialogRef}
+          tabIndex={-1}
           role="dialog"
           aria-modal="true"
           aria-label="Full CV"
-          className="fixed inset-0 z-80 overflow-y-auto bg-[var(--cream)] px-4.5 pb-16 pt-5 text-[var(--ink)]"
+          className="fixed inset-0 z-80 overflow-y-auto bg-[var(--cream)] px-4.5 pb-16 pt-5 text-[var(--ink)] focus:outline-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
