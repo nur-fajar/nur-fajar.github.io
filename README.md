@@ -16,29 +16,21 @@ two targets from one codebase:
   `next.config.mjs`). No server, so no image optimization and no HTTP
   headers there — see "Deploy" below.
 
-- **Theme** — spacecraft HUD: Dayside/Nightside orbital-terminator palette
-  (navy/teal/gold sunlit ↔ cyan/green/red dark-side, the dark/light toggle
-  is the two halves of one orbit), chamfered console-plate panels instead of
-  rounded cards, blueprint-grid backdrop, Space Grotesk headings + JetBrains
-  Mono for every label/ID/readout. All colors via CSS variables per
-  `data-mode`. The bulk of the visual system (`app/globals.css`) is
-  hand-written CSS rather than translated into Tailwind utilities
-  one-for-one; Tailwind and Framer Motion do the rest (layout utilities,
-  scroll reveals, page transitions).
-- **Contact** — two console panels: a live Cal.com embed
-  (`cal.com/nurfajar/15min`) to book a call, and a "drop a message" form
-  that (no backend on this static site) opens the visitor's email client
-  with the fields pre-filled via a `mailto:` link.
-- **Starfield** — `<canvas>` constellation background (ambient dust + real
-  RA/Dec data, `content/constellations.ts`), mounted full-page via
-  `HomeBackdrop`; the component and its geometry lib (`lib/sky-geometry.ts`)
-  are also used standalone by the hero's zodiac globe widget. Respects
-  `prefers-reduced-motion`.
-- **Widgets** — hero flip-card carousel (photo / draggable zodiac globe /
-  sudoku / chess / book quotes), all client components under `components/`.
-  The sudoku generator and the hand-rolled chess engine live in `lib/` with
-  their own logic separated from rendering; the chess engine has a Vitest
-  suite (`lib/chess-engine.test.ts`).
+- **Theme** — a from-scratch reverse-engineering of
+  [brittanychiang.com v4](https://v4.brittanychiang.com/)
+  ([source](https://github.com/bchiang7/v4)): single dark-navy palette
+  (`#0a192f` navy / `#64ffda` green accent), a fixed header plus two fixed
+  side rails (social icons left, email right) that vacate below `768px`,
+  mono numbered section headings, a tabbed job-history panel, an
+  alternating "featured work" list, and a noteworthy-projects grid — same
+  visual language, content is Nur Fajar's own (`content/*.ts`). The bulk of
+  the visual system (`app/globals.css`) is hand-written CSS rather than
+  translated into Tailwind utilities one-for-one; Tailwind and Framer
+  Motion do the rest (layout utilities, scroll reveals).
+- **Contact** — two panels, restyled to the theme above but functionally
+  unchanged: a live Cal.com embed (`cal.com/nurfajar/15min`) to book a
+  call, and a "drop a message" form that posts straight to Web3Forms (no
+  backend on this static site).
 - **No-JS safety net** — every Framer Motion element that starts hidden for a
   scroll/mount reveal carries a `.motion-safe` class; a `<noscript>` rule in
   the root layout forces it visible when JavaScript never runs, so the

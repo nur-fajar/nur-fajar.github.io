@@ -33,13 +33,13 @@ export default function Reveal({
 }: {
   children: ReactNode;
   index?: number;
-  as?: 'div' | 'article' | 'li' | 'figure';
+  as?: 'div' | 'article' | 'li' | 'figure' | 'p';
   className?: string;
 }) {
   const MotionTag = motion[as];
   return (
     <MotionTag
-      className={className}
+      className={className ? `${className} motion-safe` : 'motion-safe'}
       custom={index}
       variants={variants}
       initial="hidden"

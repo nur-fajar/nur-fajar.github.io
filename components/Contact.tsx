@@ -1,6 +1,6 @@
 'use client';
 
-/* ── Contact: two bento boxes ────────────────────────────────────────────
+/* ── Contact: two panels ──────────────────────────────────────────────────
    Left  — a live Cal.com embed (cal.com/nurfajar/15min) so a visitor can
            book straight off the page, no email round-trip needed.
    Right — a "drop a message" form. This is a static site with no backend
@@ -16,11 +16,7 @@
    created for. Nothing to hide, nothing in an env var. */
 
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import YearNow from './YearNow';
 import Reveal from './motion/Reveal';
-import BorderBeam from './motion/BorderBeam';
-import SpotlightPanel from './motion/SpotlightPanel';
-import { getMode, MODE_CHANGE_EVENT, type Mode } from '@/lib/theme';
 
 const CONTACT_EMAIL = 'hi.nurfajar@gmail.com';
 const WEB3FORMS_ACCESS_KEY = '95e8d354-0a97-4000-8798-0e12285f9251';
@@ -90,18 +86,6 @@ const TOAST_DURATION = 5000;
 type Status = 'idle' | 'sending' | 'error';
 
 export default function Contact() {
-  // Same pattern as ThemeToggle: SSR default 'light', corrected from the DOM
-  // once mounted, kept in sync so the Cal.com iframe re-mounts with the
-  // matching theme whenever the visitor flips dark/light.
-  const [mode, setModeState] = useState<Mode>('light');
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setModeState(getMode());
-    const onChange = (e: Event) => setModeState((e as CustomEvent<Mode>).detail);
-    window.addEventListener(MODE_CHANGE_EVENT, onChange);
-    return () => window.removeEventListener(MODE_CHANGE_EVENT, onChange);
-  }, []);
-
   const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
@@ -157,77 +141,75 @@ export default function Contact() {
   }
 
   return (
-    <footer id="contact" className="section">
-      <Reveal as="div" className="contact-intro">
-        <h2 className="section-label">Let&apos;s talk.</h2>
-        <p>Available for AI L&amp;D programs, GenAI curriculum work, and automation projects.</p>
+    <section id="contact" className="contact">
+      <Reveal as="div">
+        <p className="f-overline mono">What&apos;s Next?</p>
+        <h2 className="contact-title">Let&apos;s Build Something</h2>
+        <p className="contact-lede">
+          Available for AI L&amp;D programs, GenAI curriculum work, and automation projects. Grab time on my
+          calendar, or drop a message below.
+        </p>
       </Reveal>
 
       <div className="contact-grid">
-        <SpotlightPanel className="panel contact-box">
-          <Reveal as="div" index={0}>
-            <div className="contact-box-head">
-              <span className="contact-box-icon" aria-hidden="true">
-                <CalendarIcon />
-              </span>
-              <div>
-                <h3>Let&apos;s talk live</h3>
-                <p>Grab 15 minutes on my calendar.</p>
-              </div>
+        <Reveal as="div" className="contact-box">
+          <div className="contact-box-head">
+            <span className="contact-box-icon" aria-hidden="true">
+              <CalendarIcon />
+            </span>
+            <div>
+              <h3>Let&apos;s talk live</h3>
+              <p>Grab 15 minutes on my calendar.</p>
             </div>
-            <div className="cal-embed">
-              <iframe
-                key={mode}
-                src={`https://cal.com/nurfajar/15min?embed=true&theme=${mode}`}
-                title="Book a 15-minute call with Nur Fajar on Cal.com"
-                loading="lazy"
-              />
-            </div>
-          </Reveal>
-        </SpotlightPanel>
+          </div>
+          <div className="cal-embed">
+            <iframe
+              src="https://cal.com/nurfajar/15min?embed=true&theme=dark"
+              title="Book a 15-minute call with Nur Fajar on Cal.com"
+              loading="lazy"
+            />
+          </div>
+        </Reveal>
 
-        <SpotlightPanel className="panel contact-box">
-          <Reveal as="div" index={1}>
-            <div className="contact-box-head">
-              <span className="contact-box-icon" aria-hidden="true">
-                <MessageIcon />
-              </span>
-              <div>
-                <h3>Drop a message</h3>
-                <p>I&apos;ll get back within a day or two.</p>
-              </div>
+        <Reveal as="div" className="contact-box" index={1}>
+          <div className="contact-box-head">
+            <span className="contact-box-icon" aria-hidden="true">
+              <MessageIcon />
+            </span>
+            <div>
+              <h3>Drop a message</h3>
+              <p>I&apos;ll get back within a day or two.</p>
             </div>
-            <form className="contact-form" onSubmit={handleSubmit}>
-              <input type="checkbox" name="botcheck" className="hp-field" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-              <div className="contact-form-row">
-                <label className="contact-field">
-                  <UserIcon />
-                  <input required name="firstName" placeholder="First name" autoComplete="given-name" {...field('firstName')} />
-                </label>
-                <label className="contact-field">
-                  <UserIcon />
-                  <input required name="lastName" placeholder="Last name" autoComplete="family-name" {...field('lastName')} />
-                </label>
-              </div>
+          </div>
+          <form className="contact-form" onSubmit={handleSubmit}>
+            <input type="checkbox" name="botcheck" className="hp-field" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+            <div className="contact-form-row">
               <label className="contact-field">
-                <AtIcon />
-                <input required type="email" name="email" placeholder="Your email" autoComplete="email" {...field('email')} />
+                <UserIcon />
+                <input required name="firstName" placeholder="First name" autoComplete="given-name" {...field('firstName')} />
               </label>
-              <label className="contact-field contact-field-textarea">
-                <NoteIcon />
-                <textarea required name="message" placeholder="Your message…" rows={5} {...field('message')} />
+              <label className="contact-field">
+                <UserIcon />
+                <input required name="lastName" placeholder="Last name" autoComplete="family-name" {...field('lastName')} />
               </label>
-              <button type="submit" className="contact-send" disabled={status === 'sending'}>
-                <BorderBeam />
-                <SendIcon />
-                {status === 'sending' ? 'Sending…' : 'Send message'}
-              </button>
-              <p className={`contact-form-hint${status === 'error' ? ' is-error' : ''}`}>
-                {status === 'error' ? error : `Goes straight to ${CONTACT_EMAIL}.`}
-              </p>
-            </form>
-          </Reveal>
-        </SpotlightPanel>
+            </div>
+            <label className="contact-field">
+              <AtIcon />
+              <input required type="email" name="email" placeholder="Your email" autoComplete="email" {...field('email')} />
+            </label>
+            <label className="contact-field contact-field-textarea">
+              <NoteIcon />
+              <textarea required name="message" placeholder="Your message…" rows={5} {...field('message')} />
+            </label>
+            <button type="submit" className="contact-send" disabled={status === 'sending'}>
+              <SendIcon />
+              {status === 'sending' ? 'Sending…' : 'Send message'}
+            </button>
+            <p className={`contact-form-hint${status === 'error' ? ' is-error' : ''}`}>
+              {status === 'error' ? error : `Goes straight to ${CONTACT_EMAIL}.`}
+            </p>
+          </form>
+        </Reveal>
       </div>
 
       <div className="contact-links mono">
@@ -240,9 +222,6 @@ export default function Contact() {
           CV.PDF ↓
         </a>
       </div>
-      <p className="foot mono">
-        © <YearNow /> Nur Fajar
-      </p>
 
       {toastVisible && (
         <div className="toast" role="status" aria-live="polite">
@@ -258,6 +237,6 @@ export default function Contact() {
           </button>
         </div>
       )}
-    </footer>
+    </section>
   );
 }
