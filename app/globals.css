@@ -223,9 +223,14 @@ main {
   background-color: var(--line);
 }
 
+/* v4's own sections are flush-left in their container (no margin: auto) —
+   fine on its dark background, where the leftover space on wide viewports
+   reads as roominess rather than an empty half-page on white. Centered and
+   widened here so the light theme doesn't look lopsided on wide screens. */
 section {
   padding: 100px 0;
-  max-width: 900px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 @media (max-width: 768px) {
   section {
@@ -805,6 +810,10 @@ section {
     gap: 60px;
   }
 }
+/* Every project reads the same direction — visual on the left, copy on the
+   right — instead of v4's alternating zig-zag; with 5 items in the list
+   now (the pipeline + all 4 programs), one consistent direction reads
+   tidier than a zig-zag would. */
 .featured-item {
   position: relative;
   display: grid;
@@ -814,30 +823,21 @@ section {
 }
 .featured-item .f-content {
   position: relative;
-  grid-column: 1 / 7;
-}
-.featured-item .f-visual {
-  grid-column: 6 / -1;
-  position: relative;
-}
-.featured-item:nth-of-type(even) .f-content {
   grid-column: 7 / -1;
   text-align: right;
 }
-.featured-item:nth-of-type(even) .f-visual {
+.featured-item .f-visual {
   grid-column: 1 / 8;
+  position: relative;
 }
-.featured-item:nth-of-type(even) .f-tags {
+.featured-item .f-tags {
   justify-content: flex-end;
 }
-.featured-item:nth-of-type(even) .f-links {
+.featured-item .f-links {
   justify-content: flex-end;
 }
 @media (max-width: 1080px) {
   .featured-item .f-content {
-    grid-column: 1 / 9;
-  }
-  .featured-item:nth-of-type(even) .f-content {
     grid-column: 5 / -1;
   }
 }
@@ -845,18 +845,16 @@ section {
   .featured-item {
     display: block;
   }
-  .featured-item .f-content,
-  .featured-item:nth-of-type(even) .f-content {
+  .featured-item .f-content {
     grid-column: unset;
     text-align: left;
     padding: 30px 0 0;
   }
-  .featured-item .f-visual,
-  .featured-item:nth-of-type(even) .f-visual {
+  .featured-item .f-visual {
     grid-column: unset;
   }
-  .featured-item:nth-of-type(even) .f-tags,
-  .featured-item:nth-of-type(even) .f-links {
+  .featured-item .f-tags,
+  .featured-item .f-links {
     justify-content: flex-start;
   }
 }
@@ -958,13 +956,18 @@ section {
 }
 
 /* ── Testimonials ──────────────────────────────────────────────────────── */
+/* Flexbox rather than a CSS grid on purpose: with 5 cards, a grid's last
+   row would leave one column empty (blank gap on the right instead of a
+   filled row) — flex-wrap lets the trailing row's cards grow to fill it
+   instead. */
 .testimonial-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
   margin-top: 10px;
 }
 .testimonial-card {
+  flex: 1 1 340px;
   padding: 1.75rem;
   border: 1px solid var(--line);
   border-radius: var(--border-radius);
