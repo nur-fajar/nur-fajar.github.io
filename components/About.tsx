@@ -32,10 +32,10 @@ export default function About() {
             <p>
               That habit of leading and building in parallel carried straight into work. As a Machine Learning
               Mentor at <span className="inline-link">Bangkit Academy</span> I coached 50+ students to a 90%+
-              graduation rate; at Terra AI I trained 100+ professionals on generative AI with a 9.0/10 satisfaction
-              score. These days, at Terra Weather, I still design and deliver the curriculum — but I also built the
-              B2B outreach automation running underneath it, a 9-agent pipeline that cut per-prospect prep time by
-              83%.
+              graduation rate, then joined Terra Weather, where I&apos;ve trained 100+ professionals on generative AI
+              with a 9.0/10 satisfaction score and still design and deliver the curriculum today — but I also built
+              the B2B outreach automation running underneath it, a 9-agent pipeline that cut per-prospect prep time
+              by 83%.
             </p>
             <p>Here are a few things I work with day to day:</p>
           </div>

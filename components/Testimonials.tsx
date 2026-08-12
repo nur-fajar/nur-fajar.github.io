@@ -6,7 +6,7 @@ export default function Testimonials() {
     <section id="testimonials">
       <Reveal as="div">
         <h2 className="numbered-heading">
-          <span className="num mono">07.</span> What People Say
+          <span className="num mono">06.</span> What People Say
         </h2>
       </Reveal>
 

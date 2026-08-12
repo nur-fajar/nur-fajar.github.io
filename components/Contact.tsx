@@ -1,14 +1,13 @@
 'use client';
 
-/* ── Contact: two panels ──────────────────────────────────────────────────
-   Left  — a live Cal.com embed (cal.com/nurfajar/15min) so a visitor can
-           book straight off the page, no email round-trip needed.
-   Right — a "drop a message" form. This is a static site with no backend
-           of its own (it ships to both Vercel and a GitHub Pages export,
-           the latter with no server at all), so submission goes straight
-           from the browser to Web3Forms (web3forms.com) — free tier,
-           250 submissions/month, no signup required from the visitor —
-           which relays it to CONTACT_EMAIL as a normal email.
+/* ── Contact: one panel ───────────────────────────────────────────────────
+   A "drop a message" form. This is a static site with no backend of its
+   own (it ships to both Vercel and a GitHub Pages export, the latter with
+   no server at all), so submission goes straight from the browser to
+   Web3Forms (web3forms.com) — free tier, 250 submissions/month, no signup
+   required from the visitor — which relays it to CONTACT_EMAIL as a
+   normal email. (The Cal.com booking panel that used to sit next to this
+   was dropped — message-only, by request.)
 
    The access key below is not a secret: Web3Forms' whole model is a
    public key meant to sit in client-side code (same idea as a reCAPTCHA
@@ -27,14 +26,6 @@ const CONTACT_LINKS = [
   ['https://github.com/nur-fajar', 'github/nur-fajar'],
 ] as const;
 
-function CalendarIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="5" width="18" height="16" rx="3" />
-      <path d="M3 10h18M8 3v4M16 3v4" />
-    </svg>
-  );
-}
 function MessageIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -146,32 +137,12 @@ export default function Contact() {
         <p className="f-overline mono">What&apos;s Next?</p>
         <h2 className="contact-title">Let&apos;s Build Something</h2>
         <p className="contact-lede">
-          Available for AI L&amp;D programs, GenAI curriculum work, and automation projects. Grab time on my
-          calendar, or drop a message below.
+          Available for AI L&amp;D programs, GenAI curriculum work, and automation projects. Drop a message below.
         </p>
       </Reveal>
 
-      <div className="contact-grid">
+      <div className="contact-grid contact-grid-single">
         <Reveal as="div" className="contact-box">
-          <div className="contact-box-head">
-            <span className="contact-box-icon" aria-hidden="true">
-              <CalendarIcon />
-            </span>
-            <div>
-              <h3>Let&apos;s talk live</h3>
-              <p>Grab 15 minutes on my calendar.</p>
-            </div>
-          </div>
-          <div className="cal-embed">
-            <iframe
-              src="https://cal.com/nurfajar/15min?embed=true&theme=dark"
-              title="Book a 15-minute call with Nur Fajar on Cal.com"
-              loading="lazy"
-            />
-          </div>
-        </Reveal>
-
-        <Reveal as="div" className="contact-box" index={1}>
           <div className="contact-box-head">
             <span className="contact-box-icon" aria-hidden="true">
               <MessageIcon />

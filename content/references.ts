@@ -13,10 +13,10 @@ export const REFERENCES: Reference[] = [
   {
     tag: 'Manager',
     quote:
-      'I managed Nur Fajar directly at Terra AI. He mentored more than 100 students and consistently earned outstanding satisfaction scores from them — 9.8 out of 10. What stood out to me most was his organizational skill and his initiative: he took it upon himself to build a chatbot that helped students track their own learning progress. I’d recommend him without hesitation.',
+      'I managed Nur Fajar directly at Terra Weather. He mentored more than 100 students and consistently earned outstanding satisfaction scores from them — 9.8 out of 10. What stood out to me most was his organizational skill and his initiative: he took it upon himself to build a chatbot that helped students track their own learning progress. I’d recommend him without hesitation.',
     initial: 'C',
     name: 'Christian Jonathan',
-    role: 'Manager · Terra AI',
+    role: 'Manager · Terra Weather',
   },
   {
     tag: 'L&D Practitioner',

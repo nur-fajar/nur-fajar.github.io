@@ -12,7 +12,7 @@ export const WORK_EXPERIENCE: Signal[] = [
   {
     id: '01',
     name: 'Learning & Development Specialist',
-    sub: 'Terra Weather Pte. Ltd. · Singapore (Remote) · Jul 2025 – Jul 2026',
+    sub: 'Terra Weather · Singapore (Remote) · Jul 2025 – Jul 2026',
     fill: 5,
     open: true,
     bullets: [
@@ -27,7 +27,7 @@ export const WORK_EXPERIENCE: Signal[] = [
   {
     id: '02',
     name: 'AI Training Specialist',
-    sub: 'Terra AI · Singapore (Remote) · Feb 2024 – Jun 2025',
+    sub: 'Terra Weather · Singapore (Remote) · Feb 2024 – Jun 2025',
     fill: 4,
     open: true,
     bullets: [
