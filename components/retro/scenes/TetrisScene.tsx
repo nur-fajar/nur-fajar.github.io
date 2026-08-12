@@ -43,9 +43,24 @@ export function TetrisScene({ data, step }: { data: ContactMethod[]; step: numbe
         );
       })}
       <g ref={clearedRef} opacity={0}>
-        <rect x={10} y={10 + ROW_Y * CELL} width={COLUMN_X.length * CELL} height={CELL * 2} fill="#6cc24a" />
-        <text x={10 + (COLUMN_X.length * CELL) / 2} y={10 + ROW_Y * CELL + 48} fill="#20182e" fontSize={12} textAnchor="middle">
-          LINE CLEAR — READY TO TALK
+        {/* Positioned to span exactly the 4 block columns (x = 10 + COLUMN_X[0]*CELL,
+            width = COLUMN_X.length*CELL) instead of sitting left of the row, and the
+            copy shortened so it fits at this width (final-review I8). */}
+        <rect
+          x={10 + COLUMN_X[0] * CELL}
+          y={10 + ROW_Y * CELL}
+          width={COLUMN_X.length * CELL}
+          height={CELL * 2}
+          fill="#6cc24a"
+        />
+        <text
+          x={10 + COLUMN_X[0] * CELL + (COLUMN_X.length * CELL) / 2}
+          y={10 + ROW_Y * CELL + 48}
+          fill="#20182e"
+          fontSize={10}
+          textAnchor="middle"
+        >
+          LINE CLEAR!
         </text>
       </g>
     </svg>

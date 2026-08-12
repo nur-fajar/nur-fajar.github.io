@@ -31,11 +31,43 @@ export function PacmanScene({
   const pacRef = useRef<SVGGElement>(null);
   const index = step <= 0 ? -1 : Math.floor((step - 1) / 2);
   const phase = step <= 0 ? -1 : (step - 1) % 2;
+  // Tracks the WAY index the avatar is currently sitting at, so the next tween
+  // can walk every intermediate corridor point instead of cutting a straight
+  // line to the destination (final-review I7). null on first render — WAY[0] is
+  // "empty" (untweened), so the mount tween below is a single hop, same as before.
+  const prevWayIndexRef = useRef<number | null>(null);
+
+  // STOPS[i] always sits at WAY[2*i + 1] — see the STOPS/WAY constants above.
+  const stopToWayIndex = (i: number) => (i < 0 ? 0 : 2 * i + 1);
 
   useGSAP(() => {
-    const dest = index < 0 ? WAY[0] : STOPS[index];
-    const [x, y] = cellCenter(dest);
-    gsap.to(pacRef.current, { x, y, duration: 0.5, ease: 'power1.inOut' });
+    const destWayIndex = stopToWayIndex(index);
+    const startWayIndex = prevWayIndexRef.current;
+    prevWayIndexRef.current = destWayIndex;
+
+    const path: [number, number][] =
+      startWayIndex === null
+        ? [WAY[destWayIndex]]
+        : (() => {
+            const dir = destWayIndex >= startWayIndex ? 1 : -1;
+            const pts: [number, number][] = [];
+            for (let i = startWayIndex; i !== destWayIndex; i += dir) pts.push(WAY[i + dir]);
+            return pts;
+          })();
+
+    if (path.length === 0) return;
+
+    const tl = gsap.timeline();
+    const perSegment = Math.max(0.5 / path.length, 0.16);
+    path.forEach((point, i) => {
+      const [x, y] = cellCenter(point);
+      tl.to(pacRef.current, {
+        x,
+        y,
+        duration: perSegment,
+        ease: i === path.length - 1 ? 'power1.inOut' : 'none',
+      });
+    });
   }, [index]);
 
   return (

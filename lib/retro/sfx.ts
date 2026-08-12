@@ -28,6 +28,11 @@ export function createRetroSfx(): RetroSfx {
         return;
       }
     }
+    // The context is typically first created from a `wheel` event, which Chrome
+    // doesn't always treat as a reliable user-activation gesture — without this,
+    // it can get stuck 'suspended' forever and no sound ever plays (final-review I6).
+    if (ctx.state === 'suspended') void ctx.resume();
+
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = type;
