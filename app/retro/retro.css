@@ -1,0 +1,43 @@
+/* Palet & tipografi pixel-art untuk /retro, di-port dari :root{...} milik
+   nurfajar-island-v7.html. Di-scope ke .retro-root (bukan :root global)
+   supaya tidak bentrok dengan token desain situs utama di app/globals.css —
+   semua komponen di components/retro/* mewarisi variabel ini lewat CSS
+   cascade biasa, karena mereka selalu dirender sebagai descendant elemen
+   ini (lihat app/retro/page.tsx).
+
+   Ditemukan hilang saat manual verification Task 18: semua komponen sudah
+   mereferensikan var(--ink)/var(--cream)/dst. dan className="font-pixel"
+   sejak Task 7-16, tapi tidak ada satu task pun yang mendefinisikan
+   variabel-variabel ini — sehingga judul/teks render nyaris tak terlihat
+   (warna fallback browser, bukan warna yang dimaksud). */
+.retro-root {
+  --sea: #2f6fbf;
+  --sea-d: #1d4f96;
+  --sea-l: #54a0e0;
+  --grass: #6cc24a;
+  --grass-d: #3e8f3c;
+  --grass-l: #96db6e;
+  --sand: #efd79b;
+  --sand-d: #c9a86a;
+  --ink: #20182e;
+  --ink-2: #3b2f52;
+  --cream: #fdf6e8;
+  --cream-d: #e9dcc0;
+  --gold: #ffcb2e;
+  --red: #e05a4e;
+  --purple: #8b5fe0;
+  --pink: #e0557f;
+  --u: 4px;
+
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font-pixelify), ui-sans-serif, system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.font-pixel {
+  font-family: var(--font-press-start), monospace;
+  letter-spacing: 0.02em;
+}

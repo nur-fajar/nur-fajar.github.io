@@ -40,7 +40,7 @@ export function CvOverlay({ open, onClose }: { open: boolean; onClose: () => voi
             <p className="mb-4.5 text-[var(--ink-2)]">
               Learning &amp; Development · Instructional Design · Program Management · AI Automation
               <br />
-              Indonesia — hello@nurfajar.com — linkedin.com/in/nurfajar
+              Indonesia — {CONTACT[0].value} — {CONTACT[1].value}
             </p>
             <p>
               Designs learning programs end to end, from analysis to evaluation, and builds the automation that
