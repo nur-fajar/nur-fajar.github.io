@@ -5,23 +5,15 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  AREAS,
-  CONTACT,
-  ORG,
-  PROJECT_CATEGORIES,
-  PROJECTS,
-  SKILLS,
-  WORK,
-  dataForArea,
-} from '@/lib/retro/content';
+import { AREAS, CONTACT, ORG, PROJECT_CATEGORIES, PROJECTS, SKILLS, WORK } from '@/lib/retro/content';
 import { advanceCursor, nextUndoneArea, type StepCursor } from '@/lib/retro/gameState';
+import { buildPanelData } from '@/lib/retro/panelData';
 import { createRetroSfx } from '@/lib/retro/sfx';
 import { CvOverlay } from './CvOverlay';
 import { FallbackList } from './FallbackList';
 import { Hud } from './Hud';
 import { IslandMap } from './IslandMap';
-import { Panel, type PanelData } from './Panel';
+import { Panel } from './Panel';
 import { PacmanScene } from './scenes/PacmanScene';
 import { PlatformerScene } from './scenes/PlatformerScene';
 import { PuzzleScene } from './scenes/PuzzleScene';
@@ -29,118 +21,19 @@ import { TetrisScene } from './scenes/TetrisScene';
 import { TitleOverlay } from './TitleOverlay';
 import { Track } from './Track';
 
-const NEXT_HINT = '**SCROLL / CLICK** to continue · scroll up to go back';
-
-function buildPanelData(cursor: StepCursor, done: ReadonlySet<number>): PanelData {
-  if (cursor.area === null) {
-    if (done.size >= AREAS.length) {
-      const email = CONTACT[0];
-      return {
-        eyebrow: 'DONE · 5/5 AREAS',
-        title: "THE ISLAND'S FULLY EXPLORED.",
-        body: [
-          'Organizations, work, projects, skills, contact — all open now. One thing left: **word from you**.',
-          `Click any area to replay it, or __${email.value}__ to start a real conversation.`,
-        ],
-        tags: [
-          ['STATUS', 'OPEN TO WORK'],
-          ['EMAIL', email.value],
-        ],
-        hint: 'Click an area on the map to replay it',
-      };
-    }
-    return {
-      eyebrow: `MAP · ${done.size}/5 AREAS DONE`,
-      title: 'PICK AN AREA — OR KEEP SCROLLING',
-      body: [
-        'Five areas, five ways to play. Click one, or **keep scrolling** and I will take you to the next one myself.',
-        'Everything can be opened any time, and scrolling up always takes you back one step.',
-      ],
-      tags: AREAS.map((a) => [a.sectionLabel, done.has(a.id) ? 'DONE' : 'OPEN'] as [string, string]),
-      hint: NEXT_HINT,
-    };
-  }
-
-  const area = AREAS[cursor.area];
-  const data = dataForArea(area.key);
-
-  if (cursor.step === 0) {
-    return {
-      eyebrow: `AREA ${area.id + 1}/5 · ${area.name} · GENRE: ${area.genre.toUpperCase()}`,
-      title: area.sectionLabel,
-      body: [area.intro],
-      tags: [
-        ['STEPS', String(area.steps)],
-        ['ITEMS', `${data.length} ITEMS`],
-      ],
-      hint: NEXT_HINT,
-    };
-  }
-
-  if (area.key === 'hire') {
-    const contactStep = cursor.step;
-    if (contactStep <= CONTACT.length) {
-      const c = CONTACT[contactStep - 1];
-      return {
-        eyebrow: `BLOCK ${contactStep}/${CONTACT.length} LOCKING IN`,
-        title: `${c.tag} — ${c.value}`,
-        body: [c.blurb],
-        hint: NEXT_HINT,
-      };
-    }
-    return {
-      eyebrow: 'LINE CLEAR · DOUBLE',
-      title: "THE ROW'S FULL. THE GAME ISN'T OVER.",
-      body: [
-        'Those four blocks are every way to reach me. The last two columns were already there: **open to work**.',
-        "If you're looking for someone who can design the program __and__ build the tooling that runs it — send one line.",
-      ],
-      tags: [
-        ['STATUS', 'OPEN TO WORK'],
-        ['BASED', 'INDONESIA'],
-      ],
-      hint: '**SCROLL** to go back to the map',
-    };
-  }
-
-  const itemIndex = Math.floor((cursor.step - 1) / 2);
-  const phase = (cursor.step - 1) % 2;
-
-  if (area.key === 'skill') {
-    const s = SKILLS[itemIndex];
-    if (phase === 0) {
-      return {
-        eyebrow: `PIECE ${itemIndex + 1}/4 · ${s.plainName}`,
-        title: s.plainName.toUpperCase(),
-        body: [s.blurb],
-        hint: NEXT_HINT,
-      };
-    }
-    return {
-      eyebrow: `PIECE ${itemIndex + 1}/4 · PLACED`,
-      title: s.plainName.toUpperCase(),
-      body: [s.blurb],
-      tags: s.items.map((item) => [item, ''] as [string, string]),
-      hint: NEXT_HINT,
-    };
-  }
-
-  const d = (area.key === 'proj' ? PROJECTS : area.key === 'org' ? ORG : WORK)[itemIndex];
-  if (phase === 0) {
-    return {
-      eyebrow: `${area.sectionLabel} · ${itemIndex + 1}/${data.length}`,
-      title: `TOWARD ${d.tag}`,
-      body: ['One more step to open it up.'],
-      hint: NEXT_HINT,
-    };
-  }
-  return {
-    eyebrow: `${area.sectionLabel} · ${itemIndex + 1}/${data.length} · ${d.sub}`,
-    title: d.title,
-    body: [d.problem, d.resolution],
-    tags: d.stats,
-    hint: NEXT_HINT,
-  };
+// Lightens an area's accent color by blending in 25% white, used for --accent-text.
+// Some accent colors (notably the purple SKILLS color, #8b5fe0) fall under the
+// 4.5:1 AA contrast ratio when used as small text against --ink or as a
+// dark-text background — see final-review I3. Blending toward white raises the
+// luminance enough to clear AA for all 5 area colors while keeping the
+// per-area color identity.
+function accentTextColor(hex: string): string {
+  const n = parseInt(hex.slice(1), 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  const mix = (c: number) => Math.round(c * 0.75 + 255 * 0.25);
+  return `#${[mix(r), mix(g), mix(b)].map((c) => c.toString(16).padStart(2, '0')).join('')}`;
 }
 
 export function IslandGame() {
@@ -153,14 +46,19 @@ export function IslandGame() {
   // are explicit user overrides that win regardless of that setting, so the
   // "try the animated version"/"switch to text-only" toggles always work.
   const [motionMode, setMotionMode] = useState<'auto' | 'game' | 'fallback'>('auto');
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  // Lazily initialized (not set synchronously inside an effect body — that trips
+  // react-hooks/set-state-in-effect, final-review C1) and SSR-guarded, since this
+  // is a page-level component with no guarantee it only ever mounts client-side.
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
   const sfxRef = useRef(createRetroSfx());
   const lockRef = useRef(0);
   const touchStartRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mq.matches);
     function onChange(e: MediaQueryListEvent) {
       setPrefersReducedMotion(e.matches);
     }
@@ -215,10 +113,31 @@ export function IslandGame() {
   );
 
   useEffect(() => {
+    // In fallback (reduced-motion/text-only) mode nothing here should ever run:
+    // the game never renders, so hijacking arrow/space/PageUp/PageDown or
+    // wheel/touch would only break native scroll and silently mutate game
+    // state behind a page the user can't see (final-review C2).
+    if (useFallback) return;
+
+    // Whether the panel (#retro-panel) should keep this wheel/touch gesture for
+    // its own native scroll instead of it advancing the game step. Mirrors
+    // island-v7.html's panelEats(d, target): the panel keeps the gesture while
+    // it still has more content to reveal in that direction, and only lets the
+    // gesture "escape" into game-step advancement once it's already scrolled to
+    // the edge (final-review I1).
+    function panelBlocksGesture(target: EventTarget | null, forward: boolean): boolean {
+      const panel = (target as Element | null)?.closest('#retro-panel') as HTMLElement | null;
+      if (!panel || panel.scrollHeight <= panel.clientHeight) return false;
+      const atTop = panel.scrollTop <= 0;
+      const atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
+      return forward ? !atBottom : !atTop;
+    }
+
     function onWheel(e: WheelEvent) {
       if (cvOpen) return;
       const delta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
       if (Math.abs(delta) < 3) return;
+      if (panelBlocksGesture(e.target, delta > 0)) return;
       applyStep(delta > 0 ? 1 : -1);
     }
     function onKeydown(e: KeyboardEvent) {
@@ -253,6 +172,7 @@ export function IslandGame() {
       const diff = touchStartRef.current - endY; // swipe up (finger moves up) == scroll down == forward
       touchStartRef.current = null;
       if (Math.abs(diff) < 24) return;
+      if (panelBlocksGesture(e.target, diff > 0)) return;
       applyStep(diff > 0 ? 1 : -1);
     }
     window.addEventListener('wheel', onWheel, { passive: true });
@@ -265,7 +185,7 @@ export function IslandGame() {
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchend', onTouchEnd);
     };
-  }, [applyStep, cvOpen, cursor.area]);
+  }, [applyStep, cvOpen, cursor.area, useFallback]);
 
   const panelData = useMemo(() => buildPanelData(cursor, done), [cursor, done]);
   const currentArea = cursor.area !== null ? AREAS[cursor.area] : null;
@@ -292,11 +212,23 @@ export function IslandGame() {
     );
   }
 
+  const accentColor = currentArea?.color ?? '#ffcb2e';
+
   return (
-    <div className="flex h-dvh w-full flex-col" style={{ ['--accent' as string]: currentArea?.color ?? '#ffcb2e' }}>
-      <a href="#retro-panel" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-[var(--gold)] focus:p-3">
-        Skip game, jump to CV summary
-      </a>
+    <div
+      className="flex h-dvh w-full flex-col"
+      style={{ ['--accent' as string]: accentColor, ['--accent-text' as string]: accentTextColor(accentColor) }}
+    >
+      {/* A real button (not an anchor to #retro-panel, which was neither the CV nor
+          moved focus) that opens the CV overlay and moves focus into it — see
+          CvOverlay.tsx's focus effect and final-review I4. */}
+      <button
+        type="button"
+        onClick={() => setCvOpen(true)}
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-[var(--gold)] focus:p-3"
+      >
+        Skip game, open full CV
+      </button>
 
       <Hud
         areaName={currentArea?.name ?? 'FAJAR ISLAND'}
@@ -306,6 +238,8 @@ export function IslandGame() {
         onBackToMap={() => setCursor({ area: null, step: 0 })}
         onOpenCv={() => setCvOpen(true)}
         mapVisible={cursor.area === null}
+        motionMode={motionMode}
+        onToggleMotionMode={() => setMotionMode(useFallback ? 'game' : 'fallback')}
       />
 
       <div className="relative min-h-0 flex-1 overflow-hidden bg-[#0d0a1c]" onClick={() => applyStep(1)}>

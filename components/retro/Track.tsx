@@ -15,10 +15,9 @@ export function Track(props: {
   const g = globalStep(cursor, areas);
   const pct = total > 0 ? (g / total) * 100 : 0;
 
-  let acc = 0;
-  const checkpoints = areas.map((a) => {
-    acc += a.steps;
-    return { area: a, pct: ((acc - a.steps / 2) / total) * 100 };
+  const checkpoints = areas.map((a, i) => {
+    const before = areas.slice(0, i).reduce((s, x) => s + x.steps, 0);
+    return { area: a, pct: ((before + a.steps / 2) / total) * 100 };
   });
 
   return (
@@ -43,7 +42,7 @@ export function Track(props: {
             />
             <span
               className={`absolute top-[26px] hidden whitespace-nowrap font-pixel text-[6px] sm:block ${
-                cursor.area === area.id ? 'text-[var(--accent)]' : 'text-[var(--ink-2)]'
+                cursor.area === area.id ? 'text-[var(--accent-text)]' : 'text-[var(--cream-d)]'
               }`}
             >
               {area.sectionLabel}
@@ -51,7 +50,8 @@ export function Track(props: {
           </button>
         ))}
       </div>
-      <span className="absolute right-3 top-3 hidden bg-[var(--ink)] px-1 font-pixel text-[7px] text-[var(--ink-2)] sm:block">
+      {/* text-[var(--cream-d)] (not --ink-2): --ink-2 on --ink is ~1.4:1, unreadable — see final-review I3. */}
+      <span className="absolute right-3 top-3 hidden bg-[var(--ink)] px-1 font-pixel text-[7px] text-[var(--cream-d)] sm:block">
         {String(g).padStart(2, '0')}/{total}
       </span>
     </div>
