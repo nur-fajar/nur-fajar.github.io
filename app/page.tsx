@@ -7,7 +7,6 @@ import Experience from '@/components/Experience';
 import TrackRecord from '@/components/TrackRecord';
 import Skills from '@/components/Skills';
 import Work from '@/components/Work';
-import OtherPrograms from '@/components/OtherPrograms';
 import Testimonials from '@/components/Testimonials';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
@@ -27,7 +26,6 @@ export default function HomePage() {
           <TrackRecord />
           <Skills />
           <Work />
-          <OtherPrograms />
           <Testimonials />
           <Contact />
         </main>

@@ -10,8 +10,8 @@ describe('splitSub', () => {
   });
 
   it('handles a two-part sub with no location segment', () => {
-    expect(splitSub('Terra AI · Feb 2024 – Jun 2025')).toEqual({
-      company: 'Terra AI',
+    expect(splitSub('Acme Corp · Feb 2024 – Jun 2025')).toEqual({
+      company: 'Acme Corp',
       range: 'Feb 2024 – Jun 2025',
     });
   });

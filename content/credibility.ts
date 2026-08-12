@@ -18,7 +18,7 @@ export const CREDIBILITY = {
   },
   terra: {
     num: 'Top 5',
-    label: 'Terra AI apprenticeship',
+    label: 'Terra Weather apprenticeship',
     body: 'Project-team placement in the MSIB (Kampus Merdeka) apprenticeship track — a separate, competitive credential from the paid L&D role that came after it.',
   },
   certifications: [

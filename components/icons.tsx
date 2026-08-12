@@ -1,12 +1,14 @@
 // Small shared line-icon set (24x24, stroke currentColor) — the side social
-// rail, the "other programs" grid, and the featured-work links all draw from
-// here instead of each redefining the same handful of SVGs.
+// rail and the featured-work links draw from here instead of each
+// redefining the same handful of SVGs.
 
+// Blue outline + red core dot — armor plate and camera-eye, the mecha
+// palette's two most-used accents in one small mark.
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 40 40" aria-hidden="true">
-      <polygon points="20,3 34,12 34,28 20,37 6,28 6,12" fill="none" stroke="currentColor" strokeWidth="2.5" />
-      <circle cx="20" cy="20" r="6" fill="var(--green)" />
+      <polygon points="20,3 34,12 34,28 20,37 6,28 6,12" fill="none" stroke="var(--blue)" strokeWidth="2.5" />
+      <circle cx="20" cy="20" r="6" fill="var(--red)" />
     </svg>
   );
 }
@@ -23,14 +25,6 @@ export function LinkedInIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.62 0 4.28 2.38 4.28 5.48v6.26ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.8 0 0 .78 0 1.75v20.5C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.75V1.75C24 .78 23.2 0 22.22 0Z" />
-    </svg>
-  );
-}
-
-export function FolderIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" />
     </svg>
   );
 }
