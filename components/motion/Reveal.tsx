@@ -33,7 +33,7 @@ export default function Reveal({
 }: {
   children: ReactNode;
   index?: number;
-  as?: 'div' | 'article' | 'li' | 'figure' | 'p';
+  as?: 'div' | 'article' | 'li' | 'figure' | 'p' | 'ul' | 'ol';
   className?: string;
 }) {
   const MotionTag = motion[as];

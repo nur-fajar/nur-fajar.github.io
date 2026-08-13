@@ -55,3 +55,57 @@ export function CloseIcon() {
     </svg>
   );
 }
+
+// ── About's highlight-chip icon set (24x24, stroke currentColor) ──────────
+export function LayersIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+      <path d="m3 13 9 5 9-5" />
+    </svg>
+  );
+}
+export function SparkleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8" />
+    </svg>
+  );
+}
+export function UsersIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" />
+      <path d="M16 9a2.8 2.8 0 1 0 0-5.6" />
+      <path d="M21.5 19c0-3-2-5-5-5.5" />
+    </svg>
+  );
+}
+export function CodeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m9 8-5 4 5 4M15 8l5 4-5 4" />
+    </svg>
+  );
+}
+export function BotIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="4" y="9" width="16" height="11" rx="2" />
+      <path d="M12 9V5M9 4.5h6" />
+      <circle cx="9" cy="14.5" r="1.2" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="14.5" r="1.2" fill="currentColor" stroke="none" />
+      <path d="M2 13v3M22 13v3" />
+    </svg>
+  );
+}
+export function TargetIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="12" r="0.6" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
