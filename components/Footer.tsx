@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { GitHubIcon, LinkedInIcon } from './icons';
 import YearNow from './YearNow';
 
@@ -18,6 +19,9 @@ export default function Footer() {
       </div>
       <p className="footer-credit">
         Designed &amp; built by Nur Fajar · © <YearNow />
+      </p>
+      <p className="footer-easter-egg">
+        <Link href="/playground">✨ a day in my life, scroll-parallax style</Link>
       </p>
     </footer>
   );

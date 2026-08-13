@@ -1,0 +1,180 @@
+/* Easter-egg only — scoped to /playground, never touches the main theme's
+   globals.css. Own tiny palette/type scale, independent of --ink/--blue/etc. */
+
+.root {
+  background: #0b0f1a;
+  color: #fff6e8;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+
+.intro {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 32px 20px;
+}
+.introBack {
+  color: #ffd9a0;
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  text-decoration: none;
+  opacity: 0.8;
+}
+.introBack:hover {
+  opacity: 1;
+}
+.introTitle {
+  font-size: clamp(28px, 5vw, 44px);
+  margin: 0;
+}
+.introSub {
+  max-width: 46ch;
+  color: #cfd6e6;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.scrollHint {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  color: #ffd9a0;
+  opacity: 0.7;
+}
+
+/* Track = the tall scroll distance driving useScroll's progress. Height is
+   set inline per scene count (see component). */
+.track {
+  position: relative;
+}
+
+/* Pinned background canvas: sticks for the whole track height, painted
+   entirely by scroll-driven transforms. */
+.pinned {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+.skyLayer {
+  position: absolute;
+  inset: 0;
+}
+.hill {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: 0;
+  height: 34%;
+}
+.hillBack {
+  opacity: 0.55;
+}
+.sun {
+  position: absolute;
+  font-size: clamp(32px, 6vw, 56px);
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 24px rgba(255, 200, 120, 0.5));
+}
+.cloud {
+  position: absolute;
+  font-size: clamp(24px, 4vw, 40px);
+  opacity: 0.85;
+}
+
+/* Foreground scene cards, laid out in normal flow on top of the sticky
+   background — each 100vh so its dwell time matches one "chapter" of the
+   scroll-linked progress used for the background above. */
+.scenes {
+  position: relative;
+}
+.scene {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.card {
+  max-width: 480px;
+  background: rgba(11, 15, 26, 0.55);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 28px 30px;
+  text-align: center;
+}
+.cardTime {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: #ffd9a0;
+  margin: 0 0 8px;
+}
+.cardEmoji {
+  font-size: 40px;
+  display: block;
+  margin-bottom: 6px;
+}
+.cardTitle {
+  font-size: 22px;
+  margin: 0 0 10px;
+}
+.cardBody {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #dfe4f0;
+  margin: 0;
+}
+
+.outro {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+  padding: 40px 20px;
+}
+.outroTitle {
+  font-size: clamp(22px, 4vw, 30px);
+  margin: 0;
+}
+.outroSub {
+  max-width: 44ch;
+  color: #cfd6e6;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.ctaRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  text-decoration: none;
+  border: 1px solid #ffd9a0;
+  color: #ffd9a0;
+}
+.btnSolid {
+  background: #ffd9a0;
+  color: #0b0f1a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sun,
+  .cloud,
+  .hill {
+    transition: none !important;
+  }
+}

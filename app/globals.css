@@ -1272,6 +1272,18 @@ section {
   font-family: var(--font-mono);
   font-size: var(--fz-xxs);
 }
+.footer-easter-egg {
+  font-family: var(--font-mono);
+  font-size: var(--fz-xxs);
+}
+.footer-easter-egg a {
+  color: var(--ink-dim);
+  text-decoration: none;
+  transition: var(--transition);
+}
+.footer-easter-egg a:hover {
+  color: var(--blue);
+}
 
 /* ── Reduced motion ──────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
