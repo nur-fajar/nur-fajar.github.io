@@ -385,11 +385,17 @@ section {
 
 /* ── Hero ────────────────────────────────────────────────────────────── */
 .hero {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: calc(100vh - var(--nav-height));
   padding: 40px 0 60px;
+  overflow: hidden;
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
 }
 .hero .hero-eyebrow {
   margin: 0 0 20px 4px;
@@ -398,13 +404,33 @@ section {
   font-size: clamp(var(--fz-sm), 5vw, var(--fz-md));
   font-weight: 400;
 }
+.hero-name-wrap {
+  position: relative;
+  display: inline-block;
+}
 .hero .hero-name {
   margin: 0;
   font-size: clamp(40px, 8vw, 80px);
   color: var(--ink-strong);
 }
+/* Kinetic underline — an SVG path under the name that draws itself in via
+   `pathLength` once the name has landed (see Hero.tsx). */
+.hero-name-underline {
+  position: absolute;
+  left: 2px;
+  bottom: -2px;
+  width: 88%;
+  height: 6px;
+  overflow: visible;
+}
+.hero-name-underline path {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
 .hero .hero-tagline {
-  margin-top: 5px;
+  margin-top: 14px;
   font-size: clamp(32px, 7vw, 70px);
   color: var(--ink-mid);
   line-height: 1.1;
@@ -433,23 +459,135 @@ section {
   align-items: center;
   gap: 6px;
 }
-.hero .status-lamps li:before {
-  content: '';
+/* Pulsing lamp dot — a real element (not a pseudo) so it can host its own
+   `::after` ping ring without fighting the li's flex layout. */
+.hero .lamp-dot {
+  position: relative;
+  display: inline-block;
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: var(--blue);
   box-shadow: 0 0 8px var(--blue);
 }
+.hero .lamp-dot:after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: lamp-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes lamp-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  75%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero .lamp-dot:after {
+    animation: none;
+  }
+}
 /* Three lamps, three accents — the one deliberately "use all the colors"
    moment, right above the fold. */
-.hero .status-lamps li:nth-child(2):before {
+.hero .status-lamps li:nth-child(2) .lamp-dot {
   background: var(--red);
   box-shadow: 0 0 8px var(--red);
 }
-.hero .status-lamps li:nth-child(3):before {
+.hero .status-lamps li:nth-child(3) .lamp-dot {
   background: var(--yellow);
   box-shadow: 0 0 8px var(--yellow);
+}
+
+/* Word-by-word mask reveal (RevealWords) — each word sits in an
+   overflow-hidden mask so it slides up from underneath instead of fading
+   in flat. */
+.reveal-word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.reveal-word {
+  display: inline-block;
+  white-space: pre;
+}
+
+/* Background field — faint grid + a few slow-drifting nodes, a quieter
+   echo of the node-diagram visuals used for Work's project cards. */
+.hero-field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-field:before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  opacity: 0.4;
+  -webkit-mask-image: radial-gradient(ellipse 70% 55% at 25% 30%, black, transparent 72%);
+  mask-image: radial-gradient(ellipse 70% 55% at 25% 30%, black, transparent 72%);
+}
+.hero-field-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero-field-lines line {
+  stroke: var(--line-strong);
+  stroke-width: 0.15;
+  vector-effect: non-scaling-stroke;
+}
+.hero-field-node {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 12px var(--blue-tint);
+  opacity: 0.5;
+}
+@media (max-width: 768px) {
+  .hero-field {
+    display: none;
+  }
+}
+
+/* Scroll-down cue — bounces gently, fades out as soon as the page moves. */
+.hero-scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 1;
+  display: flex;
+  padding: 8px;
+  color: var(--ink-dim);
+  transform: translateX(-50%);
+}
+.hero-scroll-cue svg {
+  width: 20px;
+  height: 20px;
+}
+.hero-scroll-cue:hover,
+.hero-scroll-cue:focus-visible {
+  color: var(--blue);
+  outline: none;
+}
+@media (max-width: 600px) {
+  .hero-scroll-cue {
+    display: none;
+  }
 }
 
 /* ── About ───────────────────────────────────────────────────────────── */
