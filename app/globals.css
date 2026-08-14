@@ -65,6 +65,7 @@ html {
 }
 body {
   position: relative;
+  overflow-x: hidden;
   background: var(--bg);
   color: var(--ink-soft);
   font-family: var(--font-sans);
@@ -277,7 +278,13 @@ section {
   justify-content: space-between;
   gap: 4px;
   width: 100%;
-  max-width: 980px;
+  /* Flex items default to `min-width: auto` (their content's max-content
+     size), which wins over `width: 100%` whenever the content is wider
+     than the container — this is what let the pill balloon past the
+     viewport on narrow phones, shoving the Resume button off-screen.
+     min-width: 0 lets it actually shrink to the 100% we asked for. */
+  min-width: 0;
+  max-width: 1120px;
   padding: 8px 8px 8px 20px;
   pointer-events: auto;
   background-color: rgba(255, 255, 255, 0.72);
@@ -297,6 +304,7 @@ section {
   white-space: nowrap;
 }
 .nav .logo-mark {
+  flex-shrink: 0;
   width: 32px;
   height: 32px;
 }
@@ -354,6 +362,21 @@ section {
   .nav-links {
     display: none;
   }
+  /* Below this, it's just logo vs. Resume competing for the pill's width
+     (the six section links are already gone) — let the logo shrink and
+     its wordmark truncate with an ellipsis rather than either forcing the
+     pill wider than the viewport or pushing Resume off-screen. Scoped to
+     this breakpoint on purpose: above it, plenty of nav links are still
+     sharing the row and the logo should never be the one sacrificed. */
+  .nav .logo {
+    min-width: 0;
+  }
+  .logo-text {
+    overflow: hidden;
+    min-width: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 @media (max-width: 768px) {
   .nav {
@@ -361,6 +384,17 @@ section {
   }
   .nav-pill {
     padding: 6px 6px 6px 14px;
+  }
+}
+/* Below this, logo text + Resume button no longer both fit a floating
+   pill without either overflowing or looking cramped — drop the
+   wordmark and keep just the icon. */
+@media (max-width: 420px) {
+  .logo-text {
+    display: none;
+  }
+  .nav .logo {
+    gap: 0;
   }
 }
 
@@ -500,11 +534,21 @@ section {
    section instead of playing second fiddle to a separate name line. */
 .hero .hero-tagline {
   margin: 0;
-  max-width: 15ch;
-  font-size: clamp(40px, 8vw, 84px);
+  max-width: 100%;
+  font-size: clamp(30px, 9vw, 84px);
   font-weight: 700;
   color: var(--ink-strong);
   line-height: 1.05;
+}
+/* Each RevealWords call is one forced line — "block" is what actually
+   creates the break, on every viewport, regardless of how much room the
+   text would otherwise have to sit on one line. overflow-wrap is a
+   backstop so a single long line still wraps within its column instead of
+   pushing the page into horizontal scroll on narrow viewports. */
+.hero-tagline-line {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 .hero-roles-marquee {
   margin: 26px 0 0;

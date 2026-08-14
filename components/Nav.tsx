@@ -33,7 +33,11 @@ export default function Nav() {
       <div className="nav-pill" onMouseLeave={() => setHovered(null)}>
         <Link className="logo" href="#top">
           <LogoMark className="logo-mark" />
-          Nur Fajar
+          {/* Dropped below ~420px (see globals.css) — on the narrowest
+              phones the icon alone plus the Resume button already fills
+              the pill; keeping the wordmark too was shoving Resume off
+              the edge of the viewport instead of actually shrinking. */}
+          <span className="logo-text">Nur Fajar</span>
         </Link>
         <nav className="nav-links">
           {NAV_LINKS.map(([href, num, label]) => (

@@ -68,7 +68,14 @@ export default function Hero() {
           <span>! I&apos;m Nur Fajar</span>
         </motion.p>
 
-        <RevealWords as="h1" className="hero-tagline motion-safe" text="I Build People, Not Just Curricula." delay={0.15} />
+        {/* Two explicit lines (not just a wide h1 that happens to wrap) —
+            "Not Just Curricula." always starts its own line, desktop and
+            mobile alike, instead of wherever the viewport width forces a
+            break. */}
+        <h1 className="hero-tagline">
+          <RevealWords as="span" className="hero-tagline-line motion-safe" text="I Build People," delay={0.15} />
+          <RevealWords as="span" className="hero-tagline-line motion-safe" text="Not Just Curricula." delay={0.36} />
+        </h1>
 
         <motion.div className="hero-roles-marquee motion-safe" custom={1.2} variants={item} initial="hidden" animate="visible">
           <Marquee items={ROLES} />
