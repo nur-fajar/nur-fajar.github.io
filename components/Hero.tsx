@@ -1,27 +1,32 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform, type Variants } from 'framer-motion';
 import RevealWords from './motion/RevealWords';
 import MagneticButton from './motion/MagneticButton';
 import HeroField from './motion/HeroField';
+import TypewriterGreeting from './motion/TypewriterGreeting';
+import Marquee from './motion/Marquee';
 
-// v4's hero pattern: five lines/blocks, staggered fade-up on mount. Content
-// is Nur Fajar's own positioning (see content/signals.ts, credibility.ts)
-// condensed to the "hi, my name is / tagline / one paragraph / CTA" shape.
-// Name + tagline get a word-by-word mask reveal (RevealWords) instead —
-// they're the two lines meant to land hardest — everything else below
-// still uses the plain fade-up.
+// Content is Nur Fajar's own positioning (see content/signals.ts,
+// credibility.ts) condensed to the "hi! I'm / tagline / roles / paragraph /
+// CTA" shape. The name now only appears inline in the small eyebrow line —
+// the tagline is the one giant headline carrying the hero, so it's the
+// element that gets the word-by-word mask reveal (RevealWords); everything
+// else uses the plain fade-up.
 const item: Variants = {
   hidden: { opacity: 0, y: 18 },
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut', delay: i } }),
 };
 
-function timeGreeting(hour: number) {
-  if (hour < 12) return 'Good morning, my name is';
-  if (hour < 18) return 'Good afternoon, my name is';
-  return 'Good evening, my name is';
-}
+// "a"/"an" prefixed per role (matches the mockup's spoken-aloud phrasing) —
+// "an" only for the one that starts on a vowel sound.
+const ROLES = [
+  'a Learning and Development Specialist',
+  'a Curriculum Developer',
+  'an Instructional Designer',
+  'a Program Manager',
+];
 
 function ScrollCue() {
   const { scrollY } = useScroll();
@@ -44,13 +49,6 @@ function ScrollCue() {
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
-  const [greeting, setGreeting] = useState('Hi, my name is');
-
-  // Time-based greeting: SSR/first paint renders the neutral default so
-  // there's nothing to hydrate-mismatch on; the client swaps it in right
-  // after mount, before the eyebrow's own reveal animation has finished.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => setGreeting(timeGreeting(new Date().getHours())), []);
 
   // Scroll-linked parallax exit: as the hero scrolls past, its content
   // fades, lifts, and shrinks slightly faster than the scroll itself, so
@@ -65,31 +63,23 @@ export default function Hero() {
       <HeroField />
 
       <motion.div className="hero-content" style={{ opacity: exitOpacity, y: exitY, scale: exitScale }}>
-        <motion.p className="hero-eyebrow mono motion-safe" custom={0} variants={item} initial="hidden" animate="visible">
-          {greeting}
+        <motion.p className="hero-eyebrow motion-safe" custom={0} variants={item} initial="hidden" animate="visible">
+          <TypewriterGreeting className="hero-greeting-typed" />
+          <span>! I&apos;m Nur Fajar</span>
         </motion.p>
 
-        <div className="hero-name-wrap">
-          <RevealWords as="h1" className="hero-name motion-safe" text="Nur Fajar." delay={0.15} />
-          {/* Kinetic underline — draws itself in once the name has landed.
-              Anchored under the name (never wraps) rather than the longer
-              tagline, which does on narrow viewports. */}
-          <motion.svg
-            className="hero-name-underline"
-            viewBox="0 0 160 6"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <motion.path
-              d="M2,3 L158,3"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 0.7, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            />
-          </motion.svg>
-        </div>
+        {/* Two explicit lines (not just a wide h1 that happens to wrap) —
+            "Not Just Curricula." always starts its own line, desktop and
+            mobile alike, instead of wherever the viewport width forces a
+            break. */}
+        <h1 className="hero-tagline">
+          <RevealWords as="span" className="hero-tagline-line motion-safe" text="I Build People," delay={0.15} />
+          <RevealWords as="span" className="hero-tagline-line motion-safe" text="Not Just Curricula." delay={0.36} />
+        </h1>
 
-        <RevealWords as="h2" className="hero-tagline motion-safe" text="I build people, not just curricula." delay={0.5} />
+        <motion.div className="hero-roles-marquee motion-safe" custom={1.2} variants={item} initial="hidden" animate="visible">
+          <Marquee items={ROLES} />
+        </motion.div>
 
         <motion.p className="hero-desc motion-safe" custom={1.5} variants={item} initial="hidden" animate="visible">
           I&apos;m a Learning &amp; Development specialist based in Tangerang, Indonesia, currently designing GenAI
