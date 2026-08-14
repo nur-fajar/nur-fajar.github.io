@@ -1,52 +1,88 @@
-// v2-only content. Facts here are drawn from content/credibility.ts and
-// content/signals.ts but re-cut into the chip/logo shape "The Path" needs —
-// intentionally not merged back into those shared files, since the root
-// page renders the same underlying facts in prose, not as chips.
+/* ── Data khusus /v2 ─────────────────────────────────────────────────────
+   Cuma dipakai halaman /v2. Copy-nya persis kalimat yang diminta di brief
+   — tidak ada angka/fakta yang diulang di section lain halaman itu.
 
-export interface InstitutionLogo {
-  name: string;
-  /** Public path to an official SVG mark, monochrome / single-path so it
-      can be recolored with `currentColor`. Omitted where no official asset
-      could be sourced in this environment — those chips render a plain
-      text wordmark instead of a re-drawn logo. */
-  src?: string;
+   Soal logo: semua file di /public/logos diambil dari asset resmi
+   (bukan digambar ulang) —
+     - unsil.png            → unsil.ac.id (situs resmi Universitas Siliwangi)
+     - bri.svg              → Wikimedia Commons "BANK BRI logo.svg" (logo korporat resmi)
+     - bank-indonesia.png   → Wikimedia "BI Logo.png" (logo resmi Bank Indonesia)
+     - google-developers.svg→ Wikimedia "Google Developers logo.svg" (mark resmi
+                              program Google Developers, induk dari GDSC)
+     - bangkit.png          → Wikimedia "Bangkit-logo.png"
+     - anthropic.svg / gemini.svg → sudah ada di repo sejak versi /v2
+                              sebelumnya (brand mark resmi, single-path)
+     - openai.svg           → brand mark resmi OpenAI, mengisi satu-satunya
+                              logo AI yang dulu terpaksa tampil sebagai teks
+   Terra AI tidak punya asset publik yang bisa diverifikasi, jadi chip-nya
+   sengaja teks saja daripada menggambar logo palsu. */
+
+export interface PathLogo {
+  src: string;
+  alt: string;
+  /** Ratio dipakai untuk menghitung lebar render dari tinggi tetap. */
+  w: number;
+  h: number;
 }
 
 export interface PathChip {
-  id: string;
-  logo?: InstitutionLogo;
   name: string;
   stat: string;
+  logo?: PathLogo;
 }
 
-// Kalimat 1's anchor sentence carries its own small attribution row — the
-// university plus the two scholarships that funded it.
-export const ANCHOR_CREDENTIALS: InstitutionLogo[] = [
-  { name: 'Universitas Siliwangi' },
-  { name: 'BRI' },
-  { name: 'Bank Indonesia' },
-];
+export const LOGOS: Record<string, PathLogo> = {
+  unsil: { src: '/logos/unsil.png', alt: 'Universitas Siliwangi', w: 300, h: 300 },
+  bri: { src: '/logos/bri.svg', alt: 'BRI', w: 512, h: 176 },
+  bankIndonesia: { src: '/logos/bank-indonesia.png', alt: 'Bank Indonesia', w: 2201, h: 697 },
+  googleDevelopers: { src: '/logos/google-developers.svg', alt: 'Google Developers', w: 512, h: 78 },
+  bangkit: { src: '/logos/bangkit.png', alt: 'Bangkit Academy', w: 600, h: 141 },
+  claude: { src: '/logos/anthropic.svg', alt: 'Claude', w: 24, h: 24 },
+  openai: { src: '/logos/openai.svg', alt: 'OpenAI', w: 24, h: 24 },
+  gemini: { src: '/logos/gemini.svg', alt: 'Google Gemini', w: 24, h: 24 },
+};
 
-// Kalimat 2, broken into one chip per entity.
+/** Logo mono (single-path, warna ikut currentColor kalau di-invert) —
+    dibedakan karena treatment dark mode-nya beda dari logo berwarna. */
+export const MONO_LOGOS = new Set(['/logos/anthropic.svg', '/logos/openai.svg', '/logos/gemini.svg']);
+
+/** Kalimat 1 — anchor text, plus baris atribusi kecil di bawahnya. */
+export const PATH_OPENING =
+  'It started at Universitas Siliwangi, where I graduated as the best graduate of the Faculty of Engineering with a 3.94 GPA — on scholarship from BRI and Bank Indonesia.';
+
+export const PATH_OPENING_LOGOS: PathLogo[] = [LOGOS.unsil, LOGOS.bri, LOGOS.bankIndonesia];
+
+/** Kalimat 2 — dipecah jadi chip per entitas. */
 export const PATH_CHIPS: PathChip[] = [
-  { id: 'gdsc', logo: { name: 'GDSC' }, name: 'Google Developer Student Clubs', stat: 'Founder, first campus chapter' },
-  { id: 'dhuha', name: 'Kuliah Dhuha', stat: '2,000+ attendees · 30+ committee' },
-  { id: 'kkn', name: 'Village service program', stat: '16-person team' },
+  {
+    name: 'Google Developer Student Clubs',
+    stat: 'founder — first chapter on campus',
+    logo: LOGOS.googleDevelopers,
+  },
+  {
+    name: 'Kuliah Dhuha',
+    stat: '2,000+ attendees · 30+ committee',
+    logo: LOGOS.unsil,
+  },
+  {
+    name: 'Village service program (KKN)',
+    stat: '16-person team',
+    logo: LOGOS.unsil,
+  },
 ];
 
-// Kalimat 3's closing attribution — same wordmark treatment as the chips
-// above, sized down to sit inline with the narrative paragraph.
-export const PATH_TRAIL: InstitutionLogo[] = [{ name: 'Bangkit Academy' }, { name: 'Terra AI' }];
+/** Teks penghubung antar chip, supaya kalimat 2 tetap terbaca sebagai kalimat. */
+export const PATH_CHIPS_LEAD = 'Along the way, I founded, led, and coordinated:';
+export const PATH_CHIPS_TAIL =
+  'Kuliah Dhuha was a one-day online welcome program for incoming Muslim students; I ran it as chief organizer.';
 
-export interface AiTool {
-  name: string;
-  logo?: InstitutionLogo;
-}
+/** Kalimat 3 — kembali ke narasi utuh. */
+export const PATH_CLOSING =
+  'Twice, I was selected for Kampus Merdeka: first as a Machine Learning mentor at Bangkit Academy, then as an apprentice-turned-Training Specialist at Terra AI — a role that grew into my current one: Learning & Development Specialist.';
 
-// Underlying models behind "LLM APIs" / "AI agents" in the Skills grid —
-// shown as a small logo row, not a duplicate of the skill tags themselves.
-export const AI_TOOLS: AiTool[] = [
-  { name: 'Claude', logo: { name: 'Anthropic', src: '/logos/anthropic.svg' } },
-  { name: 'ChatGPT', logo: { name: 'OpenAI' } },
-  { name: 'Gemini', logo: { name: 'Google', src: '/logos/gemini.svg' } },
+export const PATH_CLOSING_CHIPS: PathChip[] = [
+  { name: 'Bangkit Academy', stat: 'Machine Learning mentor', logo: LOGOS.bangkit },
+  { name: 'Terra AI', stat: 'apprentice → Training Specialist' },
 ];
+
+export const PATH_TRANSITION = 'What I bring to your team is this versatile skillset.';

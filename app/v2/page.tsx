@@ -1,22 +1,27 @@
-import V2Hero from './components/V2Hero';
-import V2WhoIAm from './components/V2WhoIAm';
-import V2Path from './components/V2Path';
-import V2Skills from './components/V2Skills';
-import V2Testimonials from './components/V2Testimonials';
-import V2Closing from './components/V2Closing';
+// app/v2/page.tsx
+// Satu alur scroll dari atas ke bawah, tanpa nav dan tanpa label section
+// ("01", "02", "HERO"). Halaman root ("/") tidak disentuh: yang dipakai
+// bareng cuma data (content/skills.ts, content/references.ts) dan konten
+// yang jadi bahan proof di Skills (content/programs, signals, pipeline,
+// credibility — lihat skillProof.ts).
+//
+// Metadata + import v2.css ada di layout.tsx, bukan di sini.
+import HeroV2 from './components/HeroV2';
+import WhoIAm from './components/WhoIAm';
+import ThePath from './components/ThePath';
+import SkillsV2 from './components/SkillsV2';
+import TestimonialsV2 from './components/TestimonialsV2';
+import ClosingV2 from './components/ClosingV2';
 
-// Single top-to-bottom scroll flow, deliberately no visible section labels
-// ("01", "02", "HERO") — the numbered-heading convention from the root
-// page ("/") is intentionally not reused here.
 export default function V2Page() {
   return (
     <main className="v2-flow">
-      <V2Hero />
-      <V2WhoIAm />
-      <V2Path />
-      <V2Skills />
-      <V2Testimonials />
-      <V2Closing />
+      <HeroV2 />
+      <WhoIAm />
+      <ThePath />
+      <SkillsV2 />
+      <TestimonialsV2 />
+      <ClosingV2 />
     </main>
   );
 }
