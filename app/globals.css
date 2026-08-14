@@ -114,6 +114,19 @@ button {
 .mono {
   font-family: var(--font-mono);
 }
+/* Visually hidden but still reachable by screen readers — stands in for
+   decorative, aria-hidden animated text (e.g. TypewriterGreeting). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* An inline text-link that grows an underline, used in body copy. */
 .inline-link {
@@ -238,7 +251,13 @@ section {
   }
 }
 
-/* ── Nav ─────────────────────────────────────────────────────────────── */
+/* ── Nav — floating pill ─────────────────────────────────────────────────
+   Modeled on Framer's "Neo Pill Nav": the whole nav lives inside one
+   rounded, glassy capsule that floats free of the viewport edges instead
+   of a full-width bar pinned flush to the top. The outer `.nav` is just a
+   transparent, pointer-events-none positioning shell (centers + vertically
+   centers the pill within --nav-height, so the rest of the layout's
+   spacing math doesn't change); `.nav-pill` is the actual visible chrome. */
 .nav {
   position: fixed;
   top: 0;
@@ -247,22 +266,26 @@ section {
   z-index: 11;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   height: var(--nav-height);
-  padding: 0 50px;
-  background-color: rgba(255, 255, 255, 0.85);
-  border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(10px);
+  padding: 0 20px;
+  pointer-events: none;
 }
-@media (max-width: 1080px) {
-  .nav {
-    padding: 0 40px;
-  }
-}
-@media (max-width: 768px) {
-  .nav {
-    padding: 0 25px;
-  }
+.nav-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  width: 100%;
+  max-width: 980px;
+  padding: 8px 8px 8px 20px;
+  pointer-events: auto;
+  background-color: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 10px 30px var(--shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 .nav .logo {
   display: flex;
@@ -271,25 +294,47 @@ section {
   color: var(--blue);
   font-family: var(--font-mono);
   font-weight: 600;
+  white-space: nowrap;
 }
 .nav .logo-mark {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
 }
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 .nav-links a {
-  padding: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 9px 14px;
+  border-radius: 999px;
   color: var(--ink-mid);
   font-family: var(--font-mono);
   font-size: var(--fz-xs);
+  white-space: nowrap;
+  overflow: hidden;
 }
 .nav-links a:hover,
 .nav-links a:focus-visible {
   color: var(--blue);
+}
+.nav-link-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+/* Sliding hover indicator — a single shared layoutId (Nav.tsx) tweens its
+   position/size between links instead of each link owning its own pill. */
+.nav-pill-indicator {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 999px;
+  background-color: var(--blue-tint);
 }
 .nav-links .idx {
   margin-right: 5px;
@@ -297,11 +342,25 @@ section {
   font-size: var(--fz-xxs);
 }
 .nav-resume {
-  margin-left: 15px;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+@media (max-width: 1080px) {
+  .nav-pill {
+    padding: 8px 8px 8px 16px;
+  }
 }
 @media (max-width: 900px) {
   .nav-links {
     display: none;
+  }
+}
+@media (max-width: 768px) {
+  .nav {
+    padding: 0 16px;
+  }
+  .nav-pill {
+    padding: 6px 6px 6px 14px;
   }
 }
 
@@ -399,10 +458,44 @@ section {
 }
 .hero .hero-eyebrow {
   margin: 0 0 20px 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.35ch;
   color: var(--blue);
   font-family: var(--font-mono);
   font-size: clamp(var(--fz-sm), 5vw, var(--fz-md));
   font-weight: 400;
+}
+/* Fixed-width slot so the typed word growing/shrinking char-by-char
+   doesn't shove "! my name is" sideways every keystroke. */
+.hero-greeting-typed {
+  display: inline-block;
+  min-width: 4.5ch;
+}
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.95em;
+  margin-left: 2px;
+  background: currentColor;
+  vertical-align: -0.15em;
+  animation: caret-blink 1s step-end infinite;
+}
+@keyframes caret-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .typewriter-cursor {
+    animation: none;
+    opacity: 0.6;
+  }
 }
 .hero-name-wrap {
   position: relative;
@@ -434,6 +527,20 @@ section {
   font-size: clamp(32px, 7vw, 70px);
   color: var(--ink-mid);
   line-height: 1.1;
+}
+.hero-roles-marquee {
+  margin: 22px 0 0;
+  max-width: 620px;
+}
+.hero-roles-marquee .marquee-group li {
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: var(--fz-xs);
+}
+.hero-roles-marquee .marquee-group li:after {
+  content: '•';
+  margin: 0 18px;
+  color: var(--blue);
 }
 .hero .hero-desc {
   margin: 20px 0 0;
@@ -516,6 +623,47 @@ section {
 .reveal-word {
   display: inline-block;
   white-space: pre;
+}
+
+/* Infinite marquee (Marquee.tsx) — the track holds two back-to-back
+   copies of the item list and slides left by exactly one copy's width
+   (-50%) on an infinite linear loop, so the seam is invisible. Edges fade
+   via mask instead of a hard clip. */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll var(--marquee-duration, 26s) linear infinite;
+}
+.marquee-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.marquee-group li {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  .marquee {
+    overflow-x: auto;
+  }
 }
 
 /* Background field — faint grid + a few slow-drifting nodes, a quieter
