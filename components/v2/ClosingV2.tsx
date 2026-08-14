@@ -11,7 +11,7 @@
        yang menggambar sendiri
      - sign-off weekday/weekend fade in paling akhir, tenang */
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useSyncExternalStore } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import useMediaQuery from './useMediaQuery';
 
@@ -58,15 +58,20 @@ function MagneticEmail() {
   );
 }
 
+// Hari lokal browser pengunjung. Dibaca lewat useSyncExternalStore, bukan
+// useState + useEffect: server snapshot-nya "day" (kalimatnya tetap masuk
+// akal kalau JS tidak jalan sama sekali dan tidak bikin hydration mismatch),
+// client snapshot-nya hari asli. Tanggal bukan store yang berubah-ubah, jadi
+// subscribe-nya no-op.
+const NO_SUBSCRIBE = () => () => {};
+const localDayLabel = () => {
+  const d = new Date().getDay();
+  return d === 0 || d === 6 ? 'weekend' : 'weekday';
+};
+const SERVER_DAY_LABEL = () => 'day';
+
 export default function ClosingV2() {
-  // Hari lokal browser pengunjung — dihitung setelah mount supaya markup
-  // server dan client tidak beda (hydration). Sebelum itu tampil "day",
-  // kalimatnya tetap masuk akal kalau JS tidak jalan sama sekali.
-  const [when, setWhen] = useState('day');
-  useEffect(() => {
-    const d = new Date().getDay();
-    setWhen(d === 0 || d === 6 ? 'weekend' : 'weekday');
-  }, []);
+  const when = useSyncExternalStore(NO_SUBSCRIBE, localDayLabel, SERVER_DAY_LABEL);
 
   return (
     <section className="v2-section v2-closing">
