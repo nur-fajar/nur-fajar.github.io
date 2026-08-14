@@ -457,20 +457,18 @@ section {
   z-index: 1;
 }
 .hero .hero-eyebrow {
-  margin: 0 0 20px 4px;
+  margin: 0 0 14px 2px;
   display: flex;
   align-items: center;
   gap: 0.35ch;
-  color: var(--blue);
-  font-family: var(--font-mono);
-  font-size: clamp(var(--fz-sm), 5vw, var(--fz-md));
-  font-weight: 400;
+  color: var(--ink-mid);
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(var(--fz-md), 3vw, var(--fz-xl));
 }
-/* Fixed-width slot so the typed word growing/shrinking char-by-char
-   doesn't shove "! my name is" sideways every keystroke. */
 .hero-greeting-typed {
   display: inline-block;
-  min-width: 4.5ch;
 }
 .typewriter-cursor {
   display: inline-block;
@@ -497,50 +495,31 @@ section {
     opacity: 0.6;
   }
 }
-.hero-name-wrap {
-  position: relative;
-  display: inline-block;
-}
-.hero .hero-name {
-  margin: 0;
-  font-size: clamp(40px, 8vw, 80px);
-  color: var(--ink-strong);
-}
-/* Kinetic underline — an SVG path under the name that draws itself in via
-   `pathLength` once the name has landed (see Hero.tsx). */
-.hero-name-underline {
-  position: absolute;
-  left: 2px;
-  bottom: -2px;
-  width: 88%;
-  height: 6px;
-  overflow: visible;
-}
-.hero-name-underline path {
-  fill: none;
-  stroke: var(--blue);
-  stroke-width: 3;
-  stroke-linecap: round;
-}
+/* The tagline is the hero's one giant headline now (the name moved into
+   the small italic eyebrow above it) — sized and weighted to dominate the
+   section instead of playing second fiddle to a separate name line. */
 .hero .hero-tagline {
-  margin-top: 14px;
-  font-size: clamp(32px, 7vw, 70px);
-  color: var(--ink-mid);
-  line-height: 1.1;
+  margin: 0;
+  max-width: 15ch;
+  font-size: clamp(40px, 8vw, 84px);
+  font-weight: 700;
+  color: var(--ink-strong);
+  line-height: 1.05;
 }
 .hero-roles-marquee {
-  margin: 22px 0 0;
-  max-width: 620px;
+  margin: 26px 0 0;
+  max-width: 640px;
 }
 .hero-roles-marquee .marquee-group li {
   color: var(--ink-soft);
-  font-family: var(--font-mono);
-  font-size: var(--fz-xs);
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--fz-md);
 }
 .hero-roles-marquee .marquee-group li:after {
-  content: '•';
-  margin: 0 18px;
-  color: var(--blue);
+  content: '';
+  margin: 0 22px;
 }
 .hero .hero-desc {
   margin: 20px 0 0;

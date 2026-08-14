@@ -1,10 +1,10 @@
 'use client';
 
 /* ── Typewriter greeting ───────────────────────────────────────────────────
-   Types out "Hi" in one language, holds, deletes, then types the next —
+   Types out "hi" in one language, holds, deletes, then types the next —
    looping through twelve languages. Purely decorative (the swap doesn't
    convey information beyond "hello"), so the animated span is aria-hidden
-   and a single static "Hi" stands in for it in the accessibility tree —
+   and a single static "hi" stands in for it in the accessibility tree —
    nothing announces on every keystroke or every language change.
    Under prefers-reduced-motion the per-character typing is skipped in
    favor of a slower plain cross-fade between whole words. */
@@ -13,18 +13,18 @@ import { useEffect, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 
 const GREETINGS = [
-  'Hi', // English
-  'Hai', // Indonesian
-  'Hola', // Spanish
-  'Salut', // French
+  'hi', // English
+  'hai', // Indonesian
+  'hola', // Spanish
+  'salut', // French
   'مرحبا', // Arabic
   '안녕', // Korean
   'こんにちは', // Japanese
-  'Hallo', // German
+  'hallo', // German
   '你好', // Chinese
-  'Hai', // Malay
+  'hai', // Malay
   'नमस्ते', // Hindi (India)
-  'Olá', // Portuguese
+  'olá', // Portuguese
 ] as const;
 
 const TYPE_MS = 90;
@@ -81,7 +81,7 @@ export default function TypewriterGreeting({ className }: { className?: string }
         {text}
         <span className="typewriter-cursor" aria-hidden="true" />
       </span>
-      <span className="sr-only">Hi</span>
+      <span className="sr-only">hi</span>
     </span>
   );
 }

@@ -8,22 +8,24 @@ import HeroField from './motion/HeroField';
 import TypewriterGreeting from './motion/TypewriterGreeting';
 import Marquee from './motion/Marquee';
 
-// v4's hero pattern: five lines/blocks, staggered fade-up on mount. Content
-// is Nur Fajar's own positioning (see content/signals.ts, credibility.ts)
-// condensed to the "hi, my name is / tagline / roles / paragraph / CTA"
-// shape. Name + tagline get a word-by-word mask reveal (RevealWords)
-// instead — they're the two lines meant to land hardest — everything else
-// below still uses the plain fade-up.
+// Content is Nur Fajar's own positioning (see content/signals.ts,
+// credibility.ts) condensed to the "hi! I'm / tagline / roles / paragraph /
+// CTA" shape. The name now only appears inline in the small eyebrow line —
+// the tagline is the one giant headline carrying the hero, so it's the
+// element that gets the word-by-word mask reveal (RevealWords); everything
+// else uses the plain fade-up.
 const item: Variants = {
   hidden: { opacity: 0, y: 18 },
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut', delay: i } }),
 };
 
+// "a"/"an" prefixed per role (matches the mockup's spoken-aloud phrasing) —
+// "an" only for the one that starts on a vowel sound.
 const ROLES = [
-  'Learning and Development Specialist',
-  'Curriculum Developer',
-  'Instructional Designer',
-  'Program Manager',
+  'a Learning and Development Specialist',
+  'a Curriculum Developer',
+  'an Instructional Designer',
+  'a Program Manager',
 ];
 
 function ScrollCue() {
@@ -61,32 +63,12 @@ export default function Hero() {
       <HeroField />
 
       <motion.div className="hero-content" style={{ opacity: exitOpacity, y: exitY, scale: exitScale }}>
-        <motion.p className="hero-eyebrow mono motion-safe" custom={0} variants={item} initial="hidden" animate="visible">
+        <motion.p className="hero-eyebrow motion-safe" custom={0} variants={item} initial="hidden" animate="visible">
           <TypewriterGreeting className="hero-greeting-typed" />
-          <span>! my name is</span>
+          <span>! I&apos;m Nur Fajar</span>
         </motion.p>
 
-        <div className="hero-name-wrap">
-          <RevealWords as="h1" className="hero-name motion-safe" text="Nur Fajar." delay={0.15} />
-          {/* Kinetic underline — draws itself in once the name has landed.
-              Anchored under the name (never wraps) rather than the longer
-              tagline, which does on narrow viewports. */}
-          <motion.svg
-            className="hero-name-underline"
-            viewBox="0 0 160 6"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <motion.path
-              d="M2,3 L158,3"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 0.7, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            />
-          </motion.svg>
-        </div>
-
-        <RevealWords as="h2" className="hero-tagline motion-safe" text="I Build People, Not Just Curricula." delay={0.5} />
+        <RevealWords as="h1" className="hero-tagline motion-safe" text="I Build People, Not Just Curricula." delay={0.15} />
 
         <motion.div className="hero-roles-marquee motion-safe" custom={1.2} variants={item} initial="hidden" animate="visible">
           <Marquee items={ROLES} />
