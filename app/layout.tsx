@@ -47,9 +47,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             opacity:0 until JS runs the animation that brings them to 1. If
             JS never runs, this rule (only present when there's no JS to run
             it) forces every such element visible instead of permanently
-            hidden. */}
+            hidden. clip-path is included alongside the original three
+            properties for About's photo reveal (PhotoFrame.tsx), which
+            ships clipped to nothing server-side. */}
         <noscript>
-          <style>{'.motion-safe{opacity:1 !important;transform:none !important;filter:none !important;}'}</style>
+          <style>
+            {'.motion-safe{opacity:1 !important;transform:none !important;filter:none !important;clip-path:none !important;}'}
+          </style>
         </noscript>
       </head>
       <body>

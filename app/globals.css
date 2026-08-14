@@ -129,28 +129,6 @@ button {
   border: 0;
 }
 
-/* An inline text-link that grows an underline, used in body copy. */
-.inline-link {
-  display: inline-block;
-  position: relative;
-  color: var(--blue);
-}
-.inline-link:after {
-  content: '';
-  display: block;
-  width: 0;
-  height: 1px;
-  position: relative;
-  bottom: 0.37em;
-  background-color: var(--blue);
-  opacity: 0.6;
-  transition: var(--transition);
-}
-.inline-link:hover:after,
-.inline-link:focus-visible:after {
-  width: 100%;
-}
-
 /* Flat, bordered "v4" button: hover lifts and drops a hard offset shadow. */
 .btn {
   display: inline-block;
@@ -765,6 +743,7 @@ section {
 .about-grid {
   display: grid;
   grid-template-columns: 3fr 2fr;
+  align-items: start;
   gap: 50px;
 }
 @media (max-width: 768px) {
@@ -775,29 +754,154 @@ section {
 .about-text p {
   color: var(--ink-soft);
 }
+
+/* Reading-progress rail (ReadingRail.tsx) — thin fill-as-you-scroll bar in
+   the text column's left margin. */
+.reading-rail-wrap {
+  position: relative;
+  padding-left: 22px;
+}
+.reading-rail {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: 2px;
+  background: var(--blue);
+  opacity: 0.5;
+  transform-origin: top;
+  border-radius: 2px;
+}
+@media (max-width: 600px) {
+  .reading-rail-wrap {
+    padding-left: 16px;
+  }
+}
+
+/* Keyword sweep (Keyword.tsx) — replaces the old always-underlined
+   .inline-link with a draw-in-on-scroll underline. */
+.keyword {
+  display: inline-block;
+  position: relative;
+  color: var(--blue);
+}
+.keyword-sweep {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.32em;
+  height: 1px;
+  background-color: var(--blue);
+  opacity: 0.6;
+  transform-origin: left;
+}
+
+/* Stat callouts (STATS) — the numbers already in the prose above, pulled
+   out so a skim catches them. */
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 26px 0 0;
+}
+.about-stat {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--border-radius);
+  background-color: var(--panel);
+}
+.about-stat-num {
+  display: block;
+  color: var(--blue);
+  font-size: var(--fz-xl);
+  font-weight: 600;
+}
+.about-stat-label {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink-soft);
+  font-size: var(--fz-xxs);
+}
+
+/* Mini journey timeline (JOURNEY) — a quiet callback to the node-diagram
+   visuals used elsewhere (Work.tsx), scaled down to a single row. */
+.about-journey {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 26px 0 0;
+  font-size: var(--fz-xxs);
+}
+.about-journey li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 22px 0 0;
+  margin-right: 22px;
+}
+.about-journey li:not(:last-child):after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 0;
+  width: 14px;
+  height: 1px;
+  background: var(--line-strong);
+}
+.about-journey li:before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+.about-journey-place {
+  color: var(--ink);
+}
+.about-journey-detail {
+  color: var(--ink-dim);
+  font-size: 10px;
+}
+
 .about-skills {
   display: grid;
   grid-template-columns: repeat(2, minmax(140px, 200px));
-  gap: 0 10px;
+  gap: 10px;
   margin: 20px 0 0 0;
-  overflow: hidden;
 }
 .about-skills li {
-  position: relative;
-  margin-bottom: 10px;
-  padding-left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius);
   font-family: var(--font-mono);
   font-size: var(--fz-xs);
   color: var(--ink-soft);
+  transition: var(--transition);
 }
-.about-skills li:before {
-  content: '▹';
-  position: absolute;
-  left: 0;
+.about-skills li svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
   color: var(--blue);
-  font-size: var(--fz-sm);
-  line-height: 12px;
+  transition: var(--transition);
 }
+.about-skills li:hover {
+  border-color: var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+.about-skills li:hover svg {
+  color: var(--red);
+}
+
+/* Photo — no more offset blue box; the frame is a HUD-style corner
+   bracket (PhotoFrame.tsx) and the main "interactive" cue is the photo
+   itself swapping from grayscale to color. */
 .about-photo {
   position: relative;
   max-width: 300px;
@@ -808,49 +912,62 @@ section {
     width: 70%;
   }
 }
-.about-photo .frame {
+@media (min-width: 769px) {
+  .about-photo {
+    position: sticky;
+    top: calc(var(--nav-height) + 40px);
+  }
+}
+.photo-watch {
   display: block;
+}
+.photo-reveal {
+  display: block;
+  clip-path: inset(0% 0% 0% 100%);
+  transition: clip-path 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.photo-reveal.is-in-view {
+  clip-path: inset(0% 0% 0% 0%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-reveal {
+    transition: none;
+  }
+}
+.photo-tilt {
   position: relative;
-  width: 100%;
-  border-radius: var(--border-radius);
-  background-color: var(--blue);
-  transition: var(--transition);
+  transform-style: preserve-3d;
+  perspective: 800px;
   box-shadow: 0 10px 30px -15px var(--shadow);
-}
-.about-photo .frame:hover,
-.about-photo .frame:focus-visible {
-  outline: 0;
-  transform: translate(-4px, -4px);
-}
-.about-photo .frame:hover:after,
-.about-photo .frame:focus-visible:after {
-  transform: translate(8px, 8px);
-}
-.about-photo .frame:hover img,
-.about-photo .frame:focus-visible img {
-  filter: none;
-  mix-blend-mode: normal;
+  border-radius: var(--border-radius);
 }
 .about-photo img {
   position: relative;
+  display: block;
   width: 100%;
   border-radius: var(--border-radius);
   mix-blend-mode: multiply;
   filter: grayscale(100%) contrast(1);
-  transition: var(--transition);
+  transition: filter 0.4s ease, mix-blend-mode 0.4s ease;
 }
-.about-photo .frame:after {
-  content: '';
-  display: block;
+.photo-tilt:hover img,
+.photo-tilt:focus-within img {
+  filter: none;
+  mix-blend-mode: normal;
+}
+.photo-hud {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: var(--border-radius);
-  transition: var(--transition);
-  border: 2px solid var(--blue);
-  top: 14px;
-  left: 14px;
-  z-index: -1;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  pointer-events: none;
+}
+.photo-hud path {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
 }
 
 /* ── Experience (job tabs) ──────────────────────────────────────────── */
