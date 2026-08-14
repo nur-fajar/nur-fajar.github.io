@@ -1,0 +1,632 @@
+/* ── /v2 — kinetic typography single-scroll ──────────────────────────────
+   Cuma dipakai route /v2 (di-import dari app/v2/page.tsx). Semua warna,
+   font, radius diambil dari token yang sudah ada di app/globals.css — file
+   ini tidak mendefinisikan palette baru, hanya tipografi yang jauh lebih
+   besar dan ritme spasi yang lebih lega, karena halaman ini dibaca sambil
+   scroll, bukan dipindai seperti halaman root.
+
+   Semua animasi jalan di transform/opacity/clip-path (composited), tidak
+   ada yang menganimasikan width/height/top/left. blur() dipakai sangat
+   terbatas dan hanya pada elemen kecil, karena mahal di device mid-range. */
+
+.v2-page {
+  /* Kolom baca lebih sempit dari .wrap halaman root: 65–72 karakter per
+     baris pada ukuran teks besar di sini. */
+  max-width: min(1100px, 92vw);
+  margin: 0 auto;
+  padding: 0 20px 12vh;
+  overflow-x: clip;
+}
+
+.v2-section {
+  padding: clamp(72px, 14vh, 160px) 0;
+}
+
+/* Elemen yang dianimasikan dengan transform diberi lapisan sendiri —
+   mencegah repaint teks besar tiap frame. */
+.v2-split-char,
+.v2-chip,
+.v2-chip-track,
+.v2-transition-text,
+.v2-email {
+  will-change: transform;
+}
+
+/* ── Primitif split text ─────────────────────────────────────────────── */
+.v2-split {
+  display: inline;
+}
+.v2-split-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+/* Clip mask: huruf/kata naik dari bawah garis dasarnya, bukan sekadar
+   fade — ini yang bikin reveal-nya terbaca sebagai gerakan. */
+.v2-split-clip {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.v2-split-char {
+  display: inline-block;
+}
+.v2-split-space {
+  display: inline-block;
+}
+
+/* ── HERO ────────────────────────────────────────────────────────────── */
+.v2-hero {
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 14vh 0 10vh;
+  position: relative;
+}
+.v2-hero-name {
+  font-family: var(--font-display), serif;
+  font-size: clamp(38px, 7.4vw, 92px);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  max-width: 14ch;
+}
+.v2-hero-alias {
+  margin-top: 14px;
+  font-family: var(--font-jbmono), monospace;
+  font-size: clamp(13px, 1.5vw, 16px);
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+}
+.v2-nf {
+  font: inherit;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  padding: 0 2px;
+  cursor: pointer;
+  border-bottom: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.v2-nf:hover,
+.v2-nf:focus-visible {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-primary);
+}
+.v2-hero-tagline {
+  margin-top: clamp(28px, 5vh, 56px);
+  font-family: var(--font-display), serif;
+  font-size: clamp(26px, 4.6vw, 58px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--text-secondary);
+  max-width: 18ch;
+}
+/* Satu-satunya kata di halaman yang dapat warna + weight beda. */
+.v2-emph {
+  color: var(--accent);
+  font-weight: 700;
+  font-style: italic;
+}
+.v2-scroll-cue {
+  position: absolute;
+  bottom: 4vh;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.v2-scroll-cue-line {
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--line-strong), transparent);
+}
+
+/* ── Modal "NF" ──────────────────────────────────────────────────────── */
+.v2-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(4px);
+}
+.v2-modal {
+  width: min(420px, 100%);
+  padding: 26px 26px 20px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-modal);
+}
+.v2-modal-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.v2-modal-body {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.v2-modal-body strong {
+  color: var(--text-primary);
+}
+.v2-modal-close {
+  margin-top: 18px;
+  font-family: var(--font-jbmono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 7px 14px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.v2-modal-close:hover,
+.v2-modal-close:focus-visible {
+  color: var(--text-primary);
+  border-color: var(--line-strong);
+}
+
+/* ── Tipografi isi ───────────────────────────────────────────────────── */
+.v2-lede {
+  font-family: var(--font-display), serif;
+  font-size: clamp(22px, 3.1vw, 40px);
+  line-height: 1.24;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  max-width: 22ch;
+}
+.v2-path .v2-lede {
+  max-width: 26ch;
+}
+.v2-body {
+  margin-top: clamp(22px, 4vh, 44px);
+  font-size: clamp(16px, 1.6vw, 21px);
+  line-height: 1.65;
+  color: var(--text-secondary);
+  max-width: 62ch;
+}
+.v2-note {
+  margin-top: 22px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-dim);
+  max-width: 58ch;
+}
+.v2-stat {
+  font-family: var(--font-jbmono), monospace;
+  font-weight: 600;
+  color: var(--accent-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Logo pihak ketiga ───────────────────────────────────────────────── */
+.v2-logo {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+.v2-logo img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  /* Grayscale mengikuti palette site; warna asli balik saat di-hover
+     supaya brand-nya tetap bisa diverifikasi mata. */
+  filter: grayscale(1) contrast(1.05);
+  opacity: 0.78;
+  transition:
+    filter 0.25s ease,
+    opacity 0.25s ease;
+}
+.v2-chip:hover .v2-logo img,
+.v2-logo-row:hover .v2-logo img,
+.v2-toolbelt:hover .v2-logo img {
+  filter: grayscale(0);
+  opacity: 1;
+}
+/* Logo mono (single-path hitam) hilang di background gelap kalau cuma
+   di-grayscale — di dark mode dibalik jadi terang. */
+html[data-mode='dark'] .v2-logo--mono img {
+  filter: grayscale(1) invert(1);
+}
+/* Logo berwarna tidak boleh di-invert (rusak), jadi di dark mode dikasih
+   plate terang tipis supaya kontrasnya tetap aman. */
+html[data-mode='dark'] .v2-logo:not(.v2-logo--mono) {
+  background: #f2f0ea;
+  border-radius: 3px;
+  padding: 3px 5px;
+}
+.v2-logo-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 3vw, 34px);
+  flex-wrap: wrap;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  max-width: 44ch;
+}
+
+/* ── THE PATH: chips ─────────────────────────────────────────────────── */
+.v2-chips-block {
+  margin-top: clamp(48px, 9vh, 104px);
+}
+.v2-chips-lead {
+  margin-top: 0;
+}
+.v2-chips {
+  list-style: none;
+  padding: 0;
+  margin: 28px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.v2-chip-track {
+  display: flex;
+}
+/* Baris ganjil digeser ke kanan — bikin kolom chip terbaca berselang-seling
+   sebelum parallax-nya jalan sama sekali. */
+.v2-chip-track:nth-child(even) {
+  justify-content: flex-end;
+}
+.v2-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel-2);
+  max-width: min(100%, 560px);
+  transition: border-color 0.25s ease;
+}
+.v2-chip:hover {
+  border-color: var(--line-strong);
+}
+.v2-chip-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.v2-chip-name {
+  font-size: clamp(14px, 1.5vw, 17px);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+.v2-chip-stat {
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+.v2-chips--inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 26px;
+}
+.v2-chip--sm {
+  padding: 9px 15px;
+  gap: 11px;
+}
+.v2-path-closing {
+  margin-top: clamp(56px, 10vh, 120px);
+}
+
+/* ── THE PATH: transisi large-type ───────────────────────────────────── */
+.v2-transition {
+  position: relative;
+  margin-top: clamp(80px, 18vh, 200px);
+  min-height: 46vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.v2-transition-ghost,
+.v2-transition-text {
+  grid-area: 1 / 1;
+  font-family: var(--font-display), serif;
+  font-size: clamp(28px, 5.6vw, 68px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  max-width: 16ch;
+}
+/* Bayangan teks di belakang lapisan ber-clip: menjamin kalimatnya tetap
+   ada walau scroll-linked-nya tidak sempat jalan. */
+.v2-transition-ghost {
+  color: color-mix(in srgb, var(--text-primary) 14%, var(--bg) 86%);
+}
+.v2-transition-text {
+  color: var(--text-primary);
+}
+
+/* ── SKILLS ──────────────────────────────────────────────────────────── */
+/* Dua kolom, bukan auto-fit: 4 grup di 3 kolom menyisakan satu kartu
+   yatim di baris kedua. 2×2 juga bikin daftar skill yang panjang tetap
+   satu kolom baca, tidak terpotong-potong. */
+.v2-skill-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  align-items: start;
+}
+@media (min-width: 760px) {
+  .v2-skill-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+}
+.v2-skill-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  padding: 22px 20px 18px;
+}
+.v2-skill-group {
+  font-family: var(--font-jbmono), monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--group-accent, var(--accent));
+  margin-bottom: 14px;
+}
+.v2-skill-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.v2-skill-row {
+  border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+.v2-skill-row:first-child {
+  border-top: 0;
+}
+.v2-skill-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-size: 15px;
+  color: var(--text-secondary);
+  background: none;
+  border: 0;
+  padding: 9px 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.v2-skill-row--static .v2-skill-name {
+  cursor: default;
+  color: var(--text-dim);
+}
+.v2-skill-row:hover .v2-skill-name,
+.v2-skill-name:focus-visible {
+  color: var(--text-primary);
+}
+/* Titik kecil = penanda "baris ini punya proof di baliknya". */
+.v2-skill-cue {
+  margin-left: auto;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--row-accent, var(--accent));
+  opacity: 0.45;
+  transition: opacity 0.2s ease;
+}
+.v2-skill-row:hover .v2-skill-cue,
+.v2-skill-name[aria-expanded='true'] .v2-skill-cue {
+  opacity: 1;
+}
+.v2-skill-proof {
+  overflow: hidden;
+}
+.v2-proof-title {
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--row-accent, var(--accent));
+  padding-top: 2px;
+}
+.v2-proof-blurb {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-dim);
+  padding: 6px 0 12px;
+  border-left: 2px solid color-mix(in srgb, var(--row-accent, var(--accent)) 40%, transparent);
+  padding-left: 12px;
+  margin-top: 6px;
+}
+.v2-toolbelt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.v2-toolbelt-label {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-right: 2px;
+}
+
+/* ── TESTIMONIALS ────────────────────────────────────────────────────── */
+.v2-quotes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.v2-quote-stage {
+  display: grid;
+  width: 100%;
+  max-width: 62ch;
+  min-height: 320px;
+  align-items: center;
+}
+.v2-quote {
+  grid-area: 1 / 1;
+  margin: 0;
+}
+.v2-quote-text {
+  font-family: var(--font-display), serif;
+  font-size: clamp(19px, 2.5vw, 30px);
+  line-height: 1.38;
+  letter-spacing: -0.012em;
+  color: var(--text-primary);
+}
+.v2-quote-by {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.v2-quote-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.v2-quote-role {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+}
+.v2-quote-nav {
+  display: flex;
+  gap: 10px;
+  margin-top: 32px;
+}
+.v2-quote-dot {
+  width: 28px;
+  height: 3px;
+  border: 0;
+  padding: 0;
+  border-radius: 2px;
+  background: var(--line-strong);
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    width 0.25s ease;
+}
+.v2-quote-dot.is-active {
+  background: var(--accent);
+  width: 48px;
+}
+
+/* ── CLOSING ─────────────────────────────────────────────────────────── */
+.v2-closing {
+  padding-bottom: clamp(80px, 16vh, 180px);
+}
+.v2-closing-line {
+  font-family: var(--font-display), serif;
+  font-size: clamp(30px, 6vw, 76px);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  max-width: 15ch;
+}
+.v2-closing-lead,
+.v2-puzzle,
+.v2-diamond {
+  display: inline;
+}
+.v2-puzzle-piece {
+  display: inline-block;
+  color: var(--accent);
+}
+.v2-diamond {
+  color: var(--accent-2);
+  font-style: italic;
+  display: inline-block;
+}
+.v2-email {
+  position: relative;
+  display: inline-block;
+  margin-top: clamp(40px, 7vh, 80px);
+  font-family: var(--font-jbmono), monospace;
+  font-size: clamp(15px, 2vw, 22px);
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  text-decoration: none;
+  padding-bottom: 6px;
+}
+.v2-email:hover {
+  text-decoration: none;
+}
+/* Underline yang menggambar sendiri dari kiri saat hover/fokus. */
+.v2-email-underline {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.v2-email:hover .v2-email-underline,
+.v2-email:focus-visible .v2-email-underline {
+  transform: scaleX(1);
+}
+.v2-signoff {
+  margin-top: clamp(48px, 9vh, 96px);
+  font-size: 15px;
+  color: var(--text-dim);
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .v2-hero {
+    min-height: 88vh;
+  }
+  .v2-chip-track:nth-child(even) {
+    justify-content: flex-start;
+  }
+  .v2-chip {
+    width: 100%;
+  }
+  .v2-transition {
+    min-height: 38vh;
+  }
+  /* blur() di teks besar mahal di GPU mobile — dimatikan, reveal-nya
+     tetap jalan lewat translate + opacity. */
+  .v2-diamond,
+  .v2-chip {
+    filter: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-transition-text {
+    clip-path: none !important;
+  }
+  .v2-email-underline {
+    transition: none;
+  }
+}
