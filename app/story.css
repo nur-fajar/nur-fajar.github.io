@@ -95,6 +95,11 @@ html:has(.story-root) body {
   /* Ruang scroll untuk menyingkap footer di baliknya. */
   margin-bottom: 100vh;
   margin-bottom: 100svh;
+  /* `StoryScrollerFrame` menyusutkan elemen ini lewat `scale` di jatah scroll
+     terakhir. Origin di tepi bawah supaya sisi yang menyusut adalah sisi yang
+     sudah tergulung menjauh, bukan sisi yang baru terlihat — dan supaya
+     jahitan dengan footer di baliknya tidak ikut bergeser. */
+  transform-origin: 50% 100%;
 }
 .story-main {
   position: relative;
