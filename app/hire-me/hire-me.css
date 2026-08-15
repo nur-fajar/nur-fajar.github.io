@@ -1,0 +1,780 @@
+/* ==========================================================================
+   `/hire-me` — halaman konversi.
+
+   Tidak mendeklarasikan satu pun token warna: page.tsx mengimpor story.css
+   lebih dulu dan membungkus halaman dengan `.story-root`, jadi seluruh palet
+   (`--ink`, `--paper`, `--accent`, …), kedua muka huruf, dan style navbar
+   sudah tersedia — termasuk varian light lewat `[data-story-theme='light']`
+   di `<html>`. File ini murni layout dan komponen halaman ini sendiri.
+
+   story.css memberi `.story-section` `min-height: 100vh` (satu section = satu
+   layar, benar untuk scroll-story). Halaman ini tidak memakai kelas itu sama
+   sekali: di sini section-nya harus mengalir rapat supaya bukti berikutnya
+   selalu tampak menyembul di tepi bawah — itulah yang membuat orang terus
+   menggulung sampai CTA terakhir.
+   ========================================================================== */
+
+.hire {
+  background: var(--ink);
+  min-height: 100vh;
+}
+
+.hire-main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+/* Sisakan ruang di bawah untuk dock CTA yang fixed di layar sempit. */
+@media (max-width: 720px) {
+  .hire-main {
+    padding-bottom: 92px;
+  }
+}
+
+/* ── Primitif dipakai ulang lintas section ─────────────────────────────── */
+
+.hire-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  margin: 0 0 14px;
+}
+
+.hire-h2 {
+  font-family: var(--serif);
+  font-size: clamp(27px, 4.2vw, 44px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  max-width: 20ch;
+  margin: 0 0 clamp(32px, 5vw, 52px);
+}
+.hire-h2 em {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.hire-section {
+  padding: clamp(64px, 11vh, 116px) 0;
+  border-top: 1px solid var(--line);
+}
+
+.hire-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 14px 24px;
+  border-radius: 100px;
+  border: 1px solid transparent;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+.hire-btn--primary {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+.hire-btn--ghost {
+  border-color: var(--line);
+  color: var(--paper);
+  background: rgba(var(--paper-rgb), 0.04);
+}
+.hire-btn:hover {
+  transform: translateY(-2px);
+}
+.hire-btn--primary:hover {
+  background: var(--accent-dim);
+  color: var(--paper);
+}
+.hire-btn--ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.hire-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hire-btn {
+    transition: none;
+  }
+  .hire-btn:hover {
+    transform: none;
+  }
+}
+
+.hire-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+
+.hire-hero {
+  padding: clamp(96px, 16vh, 168px) 0 clamp(56px, 9vh, 96px);
+}
+
+.hire-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 22px;
+  padding: 7px 14px 7px 11px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--paper-dim);
+  background: rgba(var(--paper-rgb), 0.04);
+}
+.hire-status__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.5);
+  animation: hire-pulse 2.4s ease-out infinite;
+}
+@keyframes hire-pulse {
+  70% {
+    box-shadow: 0 0 0 8px rgba(var(--accent-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hire-status__dot {
+    animation: none;
+  }
+}
+
+.hire-hero__h1 {
+  font-family: var(--serif);
+  font-size: clamp(36px, 7vw, 76px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 26px;
+}
+.hire-hero__h1 em {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.hire-hero__sub {
+  max-width: 60ch;
+  margin: 0 0 32px;
+  font-size: clamp(15.5px, 1.7vw, 18px);
+  line-height: 1.68;
+  color: var(--paper-dim);
+}
+
+.hire-hero__reassure {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: var(--paper-dim);
+  opacity: 0.85;
+}
+
+.hire-stats {
+  list-style: none;
+  margin: clamp(44px, 7vh, 72px) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.hire-stats li {
+  background: var(--ink-2);
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.hire-stats__value {
+  font-family: var(--serif);
+  font-size: clamp(24px, 3.2vw, 34px);
+  line-height: 1;
+  color: var(--accent);
+}
+.hire-stats__label {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--paper-dim);
+}
+@media (max-width: 720px) {
+  .hire-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Trust bar ─────────────────────────────────────────────────────────── */
+
+.hire-logos {
+  padding: clamp(40px, 6vh, 64px) 0;
+  border-top: 1px solid var(--line);
+}
+.hire-logos__row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(18px, 3.4vw, 40px);
+  align-items: center;
+}
+.hire-logos__row li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--paper-dim);
+}
+.hire-logos__row img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border-radius: 8px;
+  /* Sebagian mark ini digambar untuk background terang; alasnya sama dengan
+     `--chip-bg` yang dipakai node orbit di homepage. */
+  background: var(--chip-bg);
+  padding: 4px;
+}
+
+/* ── Problem ───────────────────────────────────────────────────────────── */
+
+.hire-fail {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+  gap: 18px;
+}
+.hire-fail__item {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 26px 24px;
+  background: var(--ink-2);
+  display: flex;
+  flex-direction: column;
+}
+.hire-fail__problem {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.32;
+  margin: 0 0 12px;
+}
+.hire-fail__because {
+  margin: 0 0 20px;
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: var(--paper-dim);
+}
+.hire-fail__fix {
+  margin: auto 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 14.5px;
+  line-height: 1.62;
+}
+.hire-fail__fixlabel {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ── Services ──────────────────────────────────────────────────────────── */
+
+/* Dua kolom yang dipatok, BUKAN auto-fit: layanannya ada empat, dan auto-fit
+   di lebar penuh memecahnya jadi 3 + 1 — satu kartu yatim di baris kedua yang
+   terbaca seperti sisa, bukan seperti penawaran keempat. */
+.hire-services {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+@media (max-width: 720px) {
+  .hire-services {
+    grid-template-columns: 1fr;
+  }
+}
+.hire-service {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 28px 26px;
+  background: var(--ink-2);
+  display: flex;
+  flex-direction: column;
+}
+.hire-service__n {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--accent-dim);
+}
+.hire-service__name {
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 10px 0 10px;
+}
+.hire-service__promise {
+  margin: 0 0 20px;
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: var(--paper-dim);
+}
+.hire-service__list {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 9px;
+}
+.hire-service__list li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.hire-service__list li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--accent);
+  opacity: 0.8;
+}
+.hire-service__proof {
+  margin: auto 0 0;
+  padding: 15px 16px;
+  border-radius: 12px;
+  background: rgba(var(--accent-rgb), 0.09);
+  border: 1px solid rgba(var(--accent-rgb), 0.22);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* ── Evidence ──────────────────────────────────────────────────────────── */
+
+.hire-cases {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 18px;
+}
+.hire-case {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: clamp(20px, 4vw, 44px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 30px clamp(24px, 3.5vw, 36px);
+  background: var(--ink-2);
+}
+.hire-case__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hire-case__value {
+  font-family: var(--serif);
+  font-size: clamp(38px, 5vw, 54px);
+  line-height: 1;
+  color: var(--accent);
+}
+.hire-case__mlabel {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--paper-dim);
+}
+.hire-case__title {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0 0 12px;
+}
+.hire-case__context {
+  margin: 0 0 18px;
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: var(--paper-dim);
+}
+.hire-case__did {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.hire-case__did li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.hire-case__did li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+.hire-case__result {
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 14.5px;
+  line-height: 1.62;
+}
+@media (max-width: 720px) {
+  .hire-case {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.hire-midcta {
+  margin-top: 34px;
+  padding: 26px clamp(22px, 3.5vw, 34px);
+  border: 1px solid rgba(var(--accent-rgb), 0.28);
+  border-radius: 18px;
+  background: rgba(var(--accent-rgb), 0.07);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.hire-midcta p {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(18px, 2.4vw, 23px);
+  line-height: 1.35;
+}
+
+/* ── Testimonials ──────────────────────────────────────────────────────── */
+
+.hire-refs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 18px;
+}
+.hire-ref {
+  break-inside: avoid;
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 26px 24px;
+  background: var(--ink-2);
+}
+.hire-ref__tag {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.hire-ref blockquote {
+  margin: 0 0 20px;
+  font-size: 15px;
+  line-height: 1.66;
+}
+.hire-ref blockquote::before {
+  content: '\201C';
+}
+.hire-ref blockquote::after {
+  content: '\201D';
+}
+.hire-ref__by {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.hire-ref__by > span:last-child {
+  display: grid;
+  gap: 3px;
+}
+.hire-ref__by strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+.hire-ref__avatar {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(var(--accent-rgb), 0.16);
+  color: var(--accent);
+  font-family: var(--serif);
+  font-size: 17px;
+}
+.hire-ref__role {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--paper-dim);
+}
+.hire-refs__more {
+  margin: 26px 0 0;
+  font-size: 14px;
+}
+.hire-refs__more a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.hire-refs__more a:hover {
+  border-color: var(--accent);
+}
+@media (max-width: 860px) {
+  .hire-refs {
+    columns: 1;
+  }
+}
+
+/* ── Process ───────────────────────────────────────────────────────────── */
+
+.hire-process {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+.hire-step {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: clamp(14px, 2.5vw, 28px);
+  padding: 24px 0;
+  border-top: 1px solid var(--line);
+}
+.hire-step:first-child {
+  border-top: 0;
+}
+.hire-step__n {
+  font-family: var(--serif);
+  font-size: 26px;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.75;
+}
+.hire-step__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 600;
+}
+.hire-step__when {
+  padding: 3px 9px;
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+.hire-step__detail {
+  margin: 0;
+  max-width: 68ch;
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: var(--paper-dim);
+}
+
+/* ── FAQ ───────────────────────────────────────────────────────────────── */
+
+.hire-faq {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.hire-faq__item {
+  border-top: 1px solid var(--line);
+}
+.hire-faq li:last-child .hire-faq__item {
+  border-bottom: 1px solid var(--line);
+}
+.hire-faq__item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 21px 2px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  list-style: none;
+}
+.hire-faq__item summary::-webkit-details-marker {
+  display: none;
+}
+.hire-faq__item summary:hover {
+  color: var(--accent);
+}
+.hire-faq__item summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+/* Tanda +/− digambar dari dua garis, jadi tidak ada aset atau font ikon. */
+.hire-faq__mark {
+  position: relative;
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+}
+.hire-faq__mark::before,
+.hire-faq__mark::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto 0;
+  height: 1.5px;
+  background: var(--accent);
+  transition: transform 0.24s ease;
+}
+.hire-faq__mark::after {
+  transform: rotate(90deg);
+}
+.hire-faq__item[open] .hire-faq__mark::after {
+  transform: rotate(0deg);
+}
+.hire-faq__item p {
+  margin: 0;
+  padding: 0 2px 24px;
+  max-width: 74ch;
+  font-size: 14.5px;
+  line-height: 1.68;
+  color: var(--paper-dim);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hire-faq__mark::before,
+  .hire-faq__mark::after {
+    transition: none;
+  }
+}
+
+/* ── Final CTA ─────────────────────────────────────────────────────────── */
+
+.hire-final {
+  padding: clamp(72px, 13vh, 132px) 0 clamp(64px, 10vh, 104px);
+  border-top: 1px solid var(--line);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hire-final__h {
+  font-family: var(--serif);
+  font-size: clamp(30px, 5.4vw, 56px);
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+  margin: 0 0 22px;
+}
+.hire-final__h em {
+  color: var(--accent);
+  font-style: italic;
+}
+.hire-final__sub {
+  max-width: 58ch;
+  margin: 0 0 32px;
+  font-size: clamp(15px, 1.7vw, 17.5px);
+  line-height: 1.68;
+  color: var(--paper-dim);
+}
+.hire-final .hire-ctas {
+  justify-content: center;
+}
+.hire-final__links {
+  list-style: none;
+  margin: clamp(44px, 7vh, 68px) 0 0;
+  padding: 26px 0 0;
+  border-top: 1px solid var(--line);
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(18px, 4vw, 40px);
+}
+.hire-final__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--paper-dim);
+  text-decoration: none;
+}
+.hire-final__links a:hover {
+  color: var(--accent);
+}
+
+/* ── Dock CTA (layar sempit saja) ──────────────────────────────────────── */
+
+.hire-dock {
+  display: none;
+}
+@media (max-width: 720px) {
+  .hire-dock {
+    position: fixed;
+    z-index: 90;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    gap: 10px;
+    padding: 9px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: rgba(var(--ink-2-rgb), 0.9);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  }
+  .hire-dock .hire-btn--primary {
+    flex: 1;
+  }
+  .hire-dock .hire-btn--ghost {
+    padding: 14px 18px;
+  }
+}

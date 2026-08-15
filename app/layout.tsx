@@ -84,11 +84,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             script-src CSP di next.config.mjs sudah mengizinkan
             'unsafe-inline' (dipakai juga oleh payload hydrasi RSC bawaan
             Next), jadi tidak perlu nonce di sini.
-            Dipagari path `/` karena tema ini scoped ke homepage saja —
-            lihat komentar token warna di app/story.css. */}
+            Dipagari daftar path karena tema ini scoped ke rute yang memakai
+            palet `.story-root` saja — `/` dan `/hire-me` — lihat komentar
+            token warna di app/story.css. Varian ber-slash ikut didaftar
+            karena build static export (GitHub Pages) menyajikan halaman
+            yang sama di `/hire-me/`. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{if(location.pathname!=='/')return;var t=localStorage.getItem('story-theme')==='light'?'light':'dark';document.documentElement.setAttribute('data-story-theme',t);}catch(e){}})();`,
+            __html: `(function(){try{var p=location.pathname;if(p!=='/'&&p!=='/hire-me'&&p!=='/hire-me/')return;var t=localStorage.getItem('story-theme')==='light'?'light':'dark';document.documentElement.setAttribute('data-story-theme',t);}catch(e){}})();`,
           }}
         />
       </head>

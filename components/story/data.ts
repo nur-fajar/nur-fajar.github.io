@@ -167,6 +167,12 @@ export const SOCIAL = {
   linkedin: 'https://www.linkedin.com/in/nurfajar/',
   email: 'hi.nurfajar@gmail.com',
   resume: '/nf.pdf',
+  // CTA utama `/hire-me`. Slot booking yang sama yang dulu ditanam sebagai
+  // embed Cal.com di section Contact versi lama situs ini — di sini cuma
+  // ditaut biasa, jadi tidak ada iframe pihak ketiga yang perlu dipercaya
+  // (frame-src di next.config.mjs sudah mengizinkannya kalau suatu saat
+  // embed-nya mau dipakai lagi).
+  cal: 'https://cal.com/nurfajar/15min',
 };
 
 // Kata yang berputar di kalimat penutup (§ permintaan Fajar).
