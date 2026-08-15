@@ -19,7 +19,9 @@ import StoryClosing from '@/components/story/StoryClosing';
  *                     terasa "menutup" alih-alih footer di baliknya cuma
  *                     kelihatan merayap naik dari tepi bawah layar.
  *   .story-footer   — fixed di dasar layar, satu layar penuh, tersingkap saat
- *                     scroller-nya habis tergulung ke atas.
+ *                     scroller-nya habis tergulung ke atas — dan baru ikut
+ *                     digambar saat itu juga, lihat `.story-footer` di
+ *                     `story.css`.
  *
  * `StoryNav` dipasang sebagai saudara scroller, BUKAN di dalamnya — lihat
  * komentar di `StoryScrollerFrame` soal kenapa navbar fixed tidak boleh jadi

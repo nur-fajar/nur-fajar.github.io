@@ -1209,6 +1209,19 @@ html:has(.story-root) body {
   background:
     radial-gradient(ellipse 60% 50% at 50% 62%, rgba(var(--accent-rgb), 0.11), transparent 70%),
     linear-gradient(180deg, var(--footer-grad-1), var(--footer-grad-2));
+  /* Tidak digambar sama sekali sampai jatah reveal-nya dimulai. Selama scroller
+     masih menutupinya, footer ini tidak menambah apa pun ke layar — yang ia
+     tambahkan cuma satu lapisan seukuran layar yang siap bocor begitu scroller
+     telat di-raster. `data-story-revealing` dipasang `StoryScrollerFrame` tepat
+     saat tepi bawah scroller menyentuh tepi bawah viewport (lihat komentarnya),
+     jadi pergantiannya jatuh saat lebar singkapannya masih 0px.
+     Sengaja `opacity`, bukan `visibility`/`display`: keduanya akan mengubah
+     kapan `whileInView` di dalamnya menyala dan mencabut link kontaknya dari
+     accessibility tree — di sini yang perlu berubah cuma soal digambar. */
+  opacity: 0;
+}
+html[data-story-revealing] .story-footer {
+  opacity: 1;
 }
 /* Lebarnya harus memuat kalimat kedua PLUS ruang kata terpanjang di roller
    ("business"); kalau mepet, roller-nya terlempar ke baris sendiri. */
@@ -1381,10 +1394,13 @@ html:has(.story-root) body {
   .story-scroller {
     margin-bottom: 0;
   }
+  /* Tanpa jatah reveal, footer di sini cuma section terakhir yang di-scroll
+     biasa — tidak ada yang perlu digating. */
   .story-footer {
     position: static;
     height: auto;
     min-height: 100vh;
+    opacity: 1;
   }
 }
 
