@@ -617,7 +617,7 @@ html:has(.story-root) body {
 /* ===== INTRO ============================================================= */
 .story-intro-pin {
   position: relative;
-  height: 320vh;
+  height: 200vh;
 }
 .story-intro {
   flex-direction: column;
@@ -886,7 +886,7 @@ html:has(.story-root) body {
 /* ===== SKILLS / IKIGAI ================================================== */
 .story-skills-pin {
   position: relative;
-  height: 640vh;
+  height: 380vh;
 }
 .story-skills__heading {
   font-family: var(--serif);

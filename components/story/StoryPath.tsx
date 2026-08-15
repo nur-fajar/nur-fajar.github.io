@@ -111,7 +111,7 @@ export default function StoryPath() {
   }
 
   return (
-    <section ref={ref} style={{ height: '460vh', position: 'relative' }} aria-label="The Path">
+    <section ref={ref} style={{ height: '300vh', position: 'relative' }} aria-label="The Path">
       <div ref={stickyRef} className="story-pin__sticky">
         <div className="story-atom">
           {PATH_STEPS.map((s, i) => (
