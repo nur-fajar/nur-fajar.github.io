@@ -1092,19 +1092,27 @@ html:has(.story-root) body {
   text-align: center;
   max-width: min(900px, 92vw);
 }
+/* Ukuran default (`--gem-max`, dari prop `size`) cuma dipakai di layar lebar.
+   Di bawahnya lebarnya ikut vw, supaya puzzle dan berlian di footer tidak
+   memenuhi separuh layar di HP — svg di dalamnya sudah width/height 100%,
+   jadi tinggal wrapper ini yang perlu menyempit. */
 .story-gem {
   display: block;
   flex: 0 0 auto;
   line-height: 0;
+  width: clamp(96px, 30vw, var(--gem-max, 196px));
 }
 /* Berlian berayun dan miring di ruang 3D. `perspective` HARUS berada di elemen
    induk, bukan di elemen yang berputar — dipasang pada dirinya sendiri, titik
    hilangnya ikut berputar dan rotasinya kembali terlihat datar. */
 .story-gem--3d {
   perspective: 760px;
+  width: clamp(104px, 32vw, var(--gem-max, 208px));
 }
 .story-gem__tilt,
 .story-gem__spin {
+  width: 100%;
+  height: 100%;
   transform-style: preserve-3d;
 }
 /* Berlian bereaksi pada kursor, jadi ia harus benar-benar menerima event —

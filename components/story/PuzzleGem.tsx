@@ -165,14 +165,14 @@ export function PuzzleCluster({ size = 196, reduce }: { size?: number; reduce?: 
   return (
     <motion.span
       className="story-gem"
-      style={{ width: size, height: (size * VB_H) / VB_W }}
+      style={{ ['--gem-max' as string]: `${size}px`, aspectRatio: `${VB_W} / ${VB_H}` }}
       initial={reduce ? false : 'hidden'}
       whileInView="show"
       viewport={{ once: true, amount: 0.3 }}
       onViewportEnter={onEnter}
       onHoverStart={replay}
     >
-      <svg viewBox={VIEW_BOX} width={size} height={(size * VB_H) / VB_W} aria-hidden="true">
+      <svg viewBox={VIEW_BOX} width="100%" height="100%" aria-hidden="true">
         <defs>
           <linearGradient id="pz-body" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#F7D089" />
@@ -354,13 +354,10 @@ export function Diamond({ size = 208, reduce }: { size?: number; reduce?: boolea
     rawY.set(0);
   };
 
-  const VB = 152;
-  const H = (size * 156) / VB;
-
   return (
     <motion.div
       className="story-gem story-gem--3d"
-      style={{ width: size, height: H }}
+      style={{ ['--gem-max' as string]: `${size}px`, aspectRatio: '152 / 156' }}
       initial={reduce ? false : 'hidden'}
       whileInView="show"
       viewport={{ once: true, amount: 0.3 }}
@@ -374,7 +371,7 @@ export function Diamond({ size = 208, reduce }: { size?: number; reduce?: boolea
           animate={reduce ? undefined : { rotateY: [-32, 32, -32] }}
           transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <svg viewBox="-16 -14 152 156" width={size} height={H} aria-hidden="true">
+          <svg viewBox="-16 -14 152 156" width="100%" height="100%" aria-hidden="true">
             <defs>
               <linearGradient id="dm-base" x1="0" y1="0" x2="0.3" y2="1">
                 <stop offset="0%" stopColor="#FFE2A8" />
