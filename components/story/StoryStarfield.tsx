@@ -77,10 +77,18 @@ export default function StoryStarfield() {
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const root = document.documentElement;
     const mouse = { x: -1, y: -1 };
-    // Warna dikunci ke palet story (ink/gold). Versi lama membacanya dari
-    // custom property :root karena situsnya punya toggle light/dark; toggle
-    // itu sudah tidak ada, dan halaman ini memang dark-only.
-    const colors = { dust: '#6F7791', accent: '#E8A33D' };
+    // Warna TIDAK dibaca dari custom property CSS (`--accent` dkk. di
+    // story.css) — canvas 2D redraw tiap frame lewat rAF, dan
+    // `getComputedStyle` tiap frame cukup mahal untuk kanvas seukuran
+    // dokumen ini. Paletnya di-mirror manual di sini, dipilih dari
+    // `data-story-theme` di `<html>` (yang sama dipakai `StoryThemeToggle`)
+    // dan diperbarui lewat MutationObserver saat togglenya dipencet —
+    // bukan tiap frame.
+    const PALETTE = {
+      dark: { dust: '#6F7791', accent: '#2DD4BF' },
+      light: { dust: '#5B6B78', accent: '#0D9488' },
+    };
+    const colors = { ...PALETTE[root.getAttribute('data-story-theme') === 'light' ? 'light' : 'dark'] };
 
     let W = 0;
     let docH = 0;
@@ -289,11 +297,23 @@ export default function StoryStarfield() {
     });
     resizeObserver.observe(document.body);
 
+    // `StoryThemeToggle` cuma menulis satu atribut ke `<html>`; dengar
+    // perubahannya di sini dan tukar palet + gambar ulang sekali saat itu
+    // terjadi, bukan tiap frame (lihat komentar `colors` di atas).
+    const themeObserver = new MutationObserver(() => {
+      const next = PALETTE[root.getAttribute('data-story-theme') === 'light' ? 'light' : 'dark'];
+      colors.dust = next.dust;
+      colors.accent = next.accent;
+      draw();
+    });
+    themeObserver.observe(root, { attributes: true, attributeFilter: ['data-story-theme'] });
+
     return () => {
       cancelAnimationFrame(rafId);
       clearTimeout(resizeTimer);
       clearTimeout(obsTimer);
       resizeObserver.disconnect();
+      themeObserver.disconnect();
       removeEventListener('resize', onResize);
       removeEventListener('load', onLoad);
       removeEventListener('mousemove', onMouseMove);

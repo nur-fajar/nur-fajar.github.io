@@ -128,8 +128,8 @@ export default function StoryClosing() {
               >
                 <path
                   d="M2 1.6 L2 13.2 L5.1 10.3 L7.2 15 L9.4 14 L7.3 9.4 L11.6 9.2 Z"
-                  fill="#0F1420"
-                  stroke="#E8A33D"
+                  fill="var(--ink)"
+                  stroke="var(--accent)"
                   strokeWidth="1.3"
                   strokeLinejoin="round"
                 />

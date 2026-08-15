@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { SOCIAL } from './data';
 import { DownloadIcon, LinkedInIcon, MailIcon } from './icons';
+import StoryThemeToggle from './StoryThemeToggle';
 
 // Menu radial dibuka ke BAWAH karena navbar-nya menempel di atas layar.
 // Sudut dalam derajat, 90° = lurus ke bawah.
@@ -153,6 +154,8 @@ export default function StoryNav() {
             perhatian di navbar tanpa harus jadi animasi yang bergerak terus. */}
         <span className="story-nav__shine" aria-hidden="true" />
       </a>
+
+      <StoryThemeToggle />
     </nav>
   );
 }

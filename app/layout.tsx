@@ -57,6 +57,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       className={`${publicSans.variable} ${plexMono.variable} ${fraunces.variable} ${spaceGrotesk.variable}`}
+      // Skrip anti-FOUC di bawah menulis `data-story-theme` ke elemen ini
+      // sebelum React sempat hydrate — mismatch yang disengaja dan aman
+      // (atribut itu bukan sesuatu yang pernah dirender RootLayout sendiri),
+      // jadi cuma warning ini yang perlu dibungkam, bukan sesuatu yang
+      // perlu "diperbaiki" di JSX.
+      suppressHydrationWarning
     >
       <head>
         {/* CSP, Referrer-Policy, X-Frame-Options etc. are real HTTP headers
@@ -70,6 +76,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <noscript>
           <style>{'.motion-safe{opacity:1 !important;transform:none !important;filter:none !important;}'}</style>
         </noscript>
+        {/* Anti-FOUC untuk toggle tema dark/light di scroll-story homepage
+            (`StoryThemeToggle`, `/`). Harus jalan lewat blocking inline
+            <script> di <head>, sebelum React hydrate dan sebelum paint
+            pertama — kalau ditunda ke useEffect, pengunjung yang sebelumnya
+            memilih light akan sempat melihat kedipan tema dark dulu.
+            script-src CSP di next.config.mjs sudah mengizinkan
+            'unsafe-inline' (dipakai juga oleh payload hydrasi RSC bawaan
+            Next), jadi tidak perlu nonce di sini.
+            Dipagari path `/` karena tema ini scoped ke homepage saja —
+            lihat komentar token warna di app/story.css. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if(location.pathname!=='/')return;var t=localStorage.getItem('story-theme')==='light'?'light':'dark';document.documentElement.setAttribute('data-story-theme',t);}catch(e){}})();`,
+          }}
+        />
       </head>
       <body>
         {/* Collapses every Framer Motion animation in the tree to an instant,

@@ -139,7 +139,7 @@ const joinedVariants: Variants = {
 
 /**
  * Empat keping: tiga sudah menyatu dan digambar sebagai garis saja, satu lagi —
- * yang bergaya logam emas penuh — melayang masuk dan mengunci ke slot yang
+ * yang bergaya logam teal penuh — melayang masuk dan mengunci ke slot yang
  * tersisa.
  *
  * Perbedaan bahan itu yang memikul artinya. Tiga keping bergaris adalah keadaan
@@ -175,13 +175,13 @@ export function PuzzleCluster({ size = 196, reduce }: { size?: number; reduce?: 
       <svg viewBox={VIEW_BOX} width={size} height={(size * VB_H) / VB_W} aria-hidden="true">
         <defs>
           <linearGradient id="pz-body" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#F7D089" />
-            <stop offset="42%" stopColor="#E8A33D" />
-            <stop offset="100%" stopColor="#A66B1F" />
+            <stop offset="0%" stopColor="#A8F0E4" />
+            <stop offset="42%" stopColor="#2DD4BF" />
+            <stop offset="100%" stopColor="#0F6B62" />
           </linearGradient>
           <linearGradient id="pz-sheen" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#FFF6E2" stopOpacity="0.85" />
-            <stop offset="45%" stopColor="#FFF6E2" stopOpacity="0" />
+            <stop offset="0%" stopColor="#E8FFFA" stopOpacity="0.85" />
+            <stop offset="45%" stopColor="#E8FFFA" stopOpacity="0" />
           </linearGradient>
           <filter id="pz-shadow" x="-40%" y="-40%" width="180%" height="180%">
             <feDropShadow dx="0" dy="6" stdDeviation="7" floodColor="#000" floodOpacity="0.55" />
@@ -190,9 +190,9 @@ export function PuzzleCluster({ size = 196, reduce }: { size?: number; reduce?: 
 
         {/* Tiga keping yang sudah menyatu.
             Isiannya tidak boleh sepenuhnya kosong. Knob keping kiri-atas
-            menjorok MASUK ke soket keping emas, jadi kalau isiannya sehitam
+            menjorok MASUK ke soket keping teal, jadi kalau isiannya sehitam
             latar, tonjolan itu terbaca sebagai lubang yang dilubangkan pada
-            keping emas — bukan sebagai keping tetangga yang duduk di dalamnya.
+            keping teal — bukan sebagai keping tetangga yang duduk di dalamnya.
             Isian hangat tipis plus garis yang lebih terang mengembalikan
             bacaannya. */}
         <motion.g variants={joinedVariants} style={{ transformOrigin: '52px 56px' }}>
@@ -200,8 +200,8 @@ export function PuzzleCluster({ size = 196, reduce }: { size?: number; reduce?: 
             <path
               key={d}
               d={d}
-              fill="rgba(232, 163, 61, 0.13)"
-              stroke="#B98A3E"
+              fill="rgba(45, 212, 191, 0.13)"
+              stroke="#2E8F82"
               strokeWidth="1.7"
               strokeLinejoin="round"
             />
@@ -213,7 +213,7 @@ export function PuzzleCluster({ size = 196, reduce }: { size?: number; reduce?: 
         <path
           d={HERO}
           fill="none"
-          stroke="#8A6A34"
+          stroke="#0D9488"
           strokeWidth="1.4"
           strokeDasharray="5 5"
           opacity="0.5"
@@ -229,7 +229,7 @@ export function PuzzleCluster({ size = 196, reduce }: { size?: number; reduce?: 
             <path d={HERO} fill="url(#pz-body)" />
             {/* Bevel dalam — garis terang di dalam tepi bikin permukaannya
                 terbaca punya ketebalan, bukan siluet datar. */}
-            <path d={HERO} fill="none" stroke="#FFE7B8" strokeWidth="1.4" opacity="0.55" />
+            <path d={HERO} fill="none" stroke="#CFF7EE" strokeWidth="1.4" opacity="0.55" />
             <path d={HERO} fill="url(#pz-sheen)" />
           </motion.g>
         </motion.g>
@@ -377,20 +377,20 @@ export function Diamond({ size = 208, reduce }: { size?: number; reduce?: boolea
           <svg viewBox="-16 -14 152 156" width={size} height={H} aria-hidden="true">
             <defs>
               <linearGradient id="dm-base" x1="0" y1="0" x2="0.3" y2="1">
-                <stop offset="0%" stopColor="#FFE2A8" />
-                <stop offset="55%" stopColor="#E8A33D" />
-                <stop offset="100%" stopColor="#8A5A18" />
+                <stop offset="0%" stopColor="#B9F3EA" />
+                <stop offset="55%" stopColor="#2DD4BF" />
+                <stop offset="100%" stopColor="#0C5A52" />
               </linearGradient>
               <clipPath id="dm-clip">
                 <polygon points={outline} />
               </clipPath>
               <linearGradient id="dm-sweep" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0" />
-                <stop offset="50%" stopColor="#FFFDF5" stopOpacity="0.75" />
+                <stop offset="50%" stopColor="#F2FFFC" stopOpacity="0.75" />
                 <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
               </linearGradient>
               <filter id="dm-glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feDropShadow dx="0" dy="4" stdDeviation="8" floodColor="#E8A33D" floodOpacity="0.45" />
+                <feDropShadow dx="0" dy="4" stdDeviation="8" floodColor="#2DD4BF" floodOpacity="0.45" />
               </filter>
             </defs>
 
@@ -406,9 +406,9 @@ export function Diamond({ size = 208, reduce }: { size?: number; reduce?: boolea
                   <polygon
                     key={i}
                     points={poly(f.pts)}
-                    fill={f.o >= 0.6 ? '#FFF6E2' : '#5E3A0E'}
+                    fill={f.o >= 0.6 ? '#E8FFFA' : '#0B3A35'}
                     opacity={f.o >= 0.6 ? f.o * 0.5 : (1 - f.o) * 0.42}
-                    stroke="#FFEFCC"
+                    stroke="#D3FBF3"
                     strokeWidth="0.5"
                     strokeOpacity="0.5"
                   />
@@ -435,16 +435,16 @@ export function Diamond({ size = 208, reduce }: { size?: number; reduce?: boolea
                 )}
               </g>
 
-              <polygon points={outline} fill="none" stroke="#FFE7B8" strokeWidth="1.3" opacity="0.8" />
+              <polygon points={outline} fill="none" stroke="#CFF7EE" strokeWidth="1.3" opacity="0.8" />
               <polyline
                 points={`${girdle[0][0]},${G} ${girdle[6][0]},${G}`}
-                stroke="#FFF3DA"
+                stroke="#E3FFF9"
                 strokeWidth="1.1"
                 opacity="0.7"
               />
               <polyline
                 points={`${table[0][0]},${T} ${table[4][0]},${T}`}
-                stroke="#FFF3DA"
+                stroke="#E3FFF9"
                 strokeWidth="1.1"
                 opacity="0.85"
               />
@@ -475,8 +475,8 @@ function Sparkle({ x, y, s, d, dur }: { x: number; y: number; s: number; d: numb
       transition={{ duration: dur, repeat: Infinity, repeatDelay: 0.6 + d * 0.35, delay: d, ease: 'easeInOut' }}
       style={{ transformOrigin: `${x}px ${y}px` }}
     >
-      <circle r={s * 1.5} fill="#FFE7B8" opacity="0.12" />
-      <path d={star(s)} fill="#FFF6E2" />
+      <circle r={s * 1.5} fill="#CFF7EE" opacity="0.12" />
+      <path d={star(s)} fill="#E8FFFA" />
     </motion.g>
   );
 }
