@@ -1,16 +1,13 @@
 /* ==========================================================================
    Scroll-story homepage (`/`)
-   Halaman ini dark-only: toggle tema global sengaja tidak berlaku di sini.
+   Halaman ini punya tema sendiri, terpisah dari `/process` — dark secara
+   default, dengan varian light yang di-toggle lewat `StoryThemeToggle`
+   (lihat komentar warna di bawah). Togglenya cuma berlaku di sini: semua
+   token warnanya digantung di `html:has(.story-root)`, jadi tidak pernah
+   bocor ke rute lain.
    ========================================================================== */
 
 .story-root {
-  --ink: #0f1420;
-  --ink-2: #161c2c;
-  --paper: #f2efe9;
-  --paper-dim: #c9c4b8;
-  --gold: #e8a33d;
-  --gold-dim: #8a6a34;
-  --line: rgba(242, 239, 233, 0.14);
   --serif: var(--font-serif), 'Fraunces', serif;
   --sans: var(--font-story-sans), 'Space Grotesk', sans-serif;
 
@@ -49,19 +46,75 @@
   padding-top: 0;
 }
 
-/* Body ikut gelap supaya area overscroll (rubber-band) tidak memperlihatkan
-   background terang dari globals.css. Dipagari `:has(.story-root)` supaya
-   aturan ini tidak ikut terbawa ke rute lain kalau CSS-nya masih termuat
-   setelah navigasi antar-halaman. */
+/* ── Token tema ────────────────────────────────────────────────────────
+   Digantung di `html:has(.story-root)`, BUKAN di `.story-root`: `body` perlu
+   ikut membaca token yang sama (lihat aturan `body` di bawah), dan custom
+   property tidak mengalir ke atas dari child ke ancestor. Nilai dasar di
+   sini adalah tema dark — tema light menimpanya lewat atribut
+   `[data-story-theme='light']` yang diset `StoryThemeToggle` di elemen
+   `<html>` (plus skrip anti-FOUC di `app/layout.tsx` yang mengembalikan
+   pilihan tersimpan sebelum React hydrate).
+
+   `--ink`/`--ink-2` selalu berperan sebagai warna PERMUKAAN (background),
+   `--paper`/`--paper-dim` selalu sebagai warna TEKS — bukan "ink = gelap"
+   secara harfiah, jadi tema light membalik nilainya (nilai `--paper` tema
+   dark dipakai lagi sebagai `--ink` tema light, dan sebaliknya) alih-alih
+   mengganti nama variabelnya di seluruh file. Dua pengecualian sengaja:
+   `--accent-contrast` (teks di atas chip ber-background `--accent` — arah
+   kontrasnya harus ikut menyesuaikan terang/gelapnya `--accent` tiap tema,
+   bukan ikut `--ink`/`--paper`) dan `--chip-bg` (dasar logo yang memang
+   dibuat untuk background terang, lihat komentar di `.story-node__chip`).
+
+   Varian `-rgb` cuma dipakai di tempat yang butuh alpha custom
+   (`rgba(var(--x-rgb), 0.2)` dst.) yang tidak muat di satu token hex. */
 html:has(.story-root) {
+  --ink: #0f1420;
+  --ink-2: #161c2c;
+  --ink-rgb: 15, 20, 32;
+  --ink-2-rgb: 22, 28, 44;
+  --paper: #f2efe9;
+  --paper-dim: #c9c4b8;
+  --paper-rgb: 242, 239, 233;
+  --accent: #2dd4bf;
+  --accent-dim: #0d9488;
+  --accent-rgb: 45, 212, 191;
+  --accent-contrast: #08201c;
+  --line: rgba(242, 239, 233, 0.14);
+  --footer-grad-1: #121828;
+  --footer-grad-2: #0b0f18;
+  --chip-bg: #ece8e0;
+
   color-scheme: dark;
   /* Pinned section pakai position:sticky, yang tidak akur dengan smooth-scroll
      global — scroll jadi terasa melayang saat scrub. */
   scroll-behavior: auto;
 }
+html:has(.story-root)[data-story-theme='light'] {
+  --ink: #f4f1ea;
+  --ink-2: #e9e2d2;
+  --ink-rgb: 244, 241, 234;
+  --ink-2-rgb: 233, 226, 210;
+  --paper: #16211f;
+  --paper-dim: #57645f;
+  --paper-rgb: 22, 33, 31;
+  --accent: #0f766e;
+  --accent-dim: #115e59;
+  --accent-rgb: 15, 118, 110;
+  --accent-contrast: #f5fffd;
+  --line: rgba(22, 33, 31, 0.12);
+  --footer-grad-1: #fbf8f1;
+  --footer-grad-2: #f0e9d8;
+  --chip-bg: #ffffff;
+
+  color-scheme: light;
+}
+/* Body ikut warna tema aktif supaya area overscroll (rubber-band) tidak
+   memperlihatkan warna dari tema lain. Dipagari `:has(.story-root)` supaya
+   aturan ini tidak ikut terbawa ke rute lain kalau CSS-nya masih termuat
+   setelah navigasi antar-halaman. */
 html:has(.story-root) body {
-  background: #0f1420;
-  color: #f2efe9;
+  background: var(--ink);
+  color: var(--paper);
 }
 
 /* Kanvas rasi bintang. Absolute dan setinggi dokumen (tingginya diatur dari
@@ -77,11 +130,11 @@ html:has(.story-root) body {
 }
 
 .story-root ::selection {
-  background: var(--gold);
-  color: var(--ink);
+  background: var(--accent);
+  color: var(--accent-contrast);
 }
 .story-root :focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -111,7 +164,7 @@ html:has(.story-root) body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse 70% 45% at 50% 50%, rgba(15, 20, 32, 0.86), transparent 78%);
+  background: radial-gradient(ellipse 70% 45% at 50% 50%, rgba(var(--ink-rgb), 0.86), transparent 78%);
 }
 
 .story-section {
@@ -145,7 +198,7 @@ html:has(.story-root) body {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(22, 28, 44, 0.85);
+  background: rgba(var(--ink-2-rgb), 0.85);
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border: 1px solid var(--line);
@@ -209,14 +262,14 @@ html:has(.story-root) body {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.4px;
-  fill: var(--gold-dim);
+  fill: var(--accent-dim);
 }
 .story-avatar__ring[data-spin='true'] {
   animation: story-spin 18s linear infinite;
 }
 .story-avatar__btn:hover .story-avatar__ring text,
 .story-avatar__btn[aria-expanded='true'] .story-avatar__ring text {
-  fill: var(--gold);
+  fill: var(--accent);
 }
 @keyframes story-spin {
   to {
@@ -228,7 +281,7 @@ html:has(.story-root) body {
   position: absolute;
   inset: 4px;
   border-radius: 50%;
-  border: 1px solid var(--gold);
+  border: 1px solid var(--accent);
   opacity: 0;
   pointer-events: none;
   animation: story-avatar-pulse 3.4s ease-out infinite;
@@ -266,7 +319,7 @@ html:has(.story-root) body {
   height: 38px;
   border-radius: 50%;
   color: var(--paper);
-  background: rgba(22, 28, 44, 0.96);
+  background: rgba(var(--ink-2-rgb), 0.96);
   border: 1px solid var(--line);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
   -webkit-backdrop-filter: blur(10px);
@@ -277,9 +330,9 @@ html:has(.story-root) body {
     background-color 0.2s ease;
 }
 .story-radial__item:hover {
-  color: var(--ink);
-  background: var(--gold);
-  border-color: var(--gold);
+  color: var(--accent-contrast);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 .story-nav__name {
@@ -319,8 +372,10 @@ html:has(.story-root) body {
   }
 }
 
-/* Tombol resume: satu-satunya elemen gold pekat di navbar, jadi ia yang
-   pertama ditangkap mata. */
+/* Tombol resume: satu-satunya elemen accent pekat di navbar, jadi ia yang
+   pertama ditangkap mata. Gradiennya sengaja pakai literal tetap (bukan
+   `var(--accent)`, yang jauh lebih redup di tema light) supaya tombolnya
+   selalu sama mencoloknya di kedua tema. */
 .story-nav__resume {
   position: relative;
   overflow: hidden;
@@ -331,21 +386,21 @@ html:has(.story-root) body {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #241703;
+  color: #062420;
   text-decoration: none;
-  background: linear-gradient(135deg, #f4c069, var(--gold) 55%, #cf8a23);
-  border: 1px solid rgba(255, 226, 168, 0.5);
+  background: linear-gradient(135deg, #5eead4, #14b8a6 55%, #0f766e);
+  border: 1px solid rgba(204, 251, 241, 0.55);
   border-radius: 100px;
   padding: 9px 15px;
   white-space: nowrap;
-  box-shadow: 0 4px 16px rgba(232, 163, 61, 0.32);
+  box-shadow: 0 4px 16px rgba(var(--accent-rgb), 0.32);
   transition:
     box-shadow 0.25s ease,
     transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .story-nav__resume:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(232, 163, 61, 0.52);
+  box-shadow: 0 6px 22px rgba(var(--accent-rgb), 0.52);
 }
 .story-nav__shine {
   position: absolute;
@@ -366,6 +421,56 @@ html:has(.story-root) body {
   }
 }
 
+/* --- Toggle tema, sepasang matahari/bulan di kanan Resume --- */
+.story-theme-toggle,
+.story-theme-toggle--placeholder {
+  flex: 0 0 auto;
+  width: 50px;
+  height: 27px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  background: rgba(var(--ink-2-rgb), 0.7);
+}
+.story-theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  cursor: pointer;
+}
+/* Bola geser duduk DI BAWAH ikon tema yang sedang aktif — matahari di kiri
+   untuk light, bulan di kanan untuk dark (urutan render ikonnya di JSX).
+   Posisinya cuma dua nilai tetap, jadi transform biasa sudah cukup — tidak
+   perlu layout animation framer-motion seperti indikator hover nav pill di
+   `Nav.tsx`. */
+.story-theme-toggle__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.story-theme-toggle[data-theme='dark'] .story-theme-toggle__thumb {
+  transform: translateX(23px);
+}
+.story-theme-toggle__icon {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  color: var(--paper-dim);
+  transition: color 0.25s ease;
+}
+/* Ikon yang sedang "ditindih" bola geser jadi kontras terhadapnya (lewat
+   `--accent-contrast`), bukan ikut warna redup default. */
+.story-theme-toggle[data-theme='dark'] .story-theme-toggle__icon--moon,
+.story-theme-toggle[data-theme='light'] .story-theme-toggle__icon--sun {
+  color: var(--accent-contrast);
+}
+
 @media (max-width: 700px) {
   .story-nav {
     gap: 8px;
@@ -378,6 +483,22 @@ html:has(.story-root) body {
   .story-nav__resume {
     padding: 8px 12px;
     letter-spacing: 0.03em;
+  }
+  .story-theme-toggle,
+  .story-theme-toggle--placeholder {
+    width: 42px;
+    height: 24px;
+  }
+  .story-theme-toggle__thumb {
+    width: 18px;
+    height: 18px;
+  }
+  .story-theme-toggle[data-theme='dark'] .story-theme-toggle__thumb {
+    transform: translateX(16px);
+  }
+  .story-theme-toggle__icon {
+    width: 10px;
+    height: 10px;
   }
 }
 @media (max-width: 400px) {
@@ -445,7 +566,7 @@ html:has(.story-root) body {
   font-weight: 500;
 }
 .story-hero__thesis em {
-  color: var(--gold);
+  color: var(--accent);
   font-style: italic;
 }
 .story-scrollcue {
@@ -526,8 +647,8 @@ html:has(.story-root) body {
     to bottom,
     transparent 0,
     transparent calc(1.5em - 1px),
-    rgba(242, 239, 233, 0.16) calc(1.5em - 1px),
-    rgba(242, 239, 233, 0.16) 1.5em
+    rgba(var(--paper-rgb), 0.16) calc(1.5em - 1px),
+    rgba(var(--paper-rgb), 0.16) 1.5em
   );
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
   mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
@@ -540,7 +661,7 @@ html:has(.story-root) body {
   top: 0;
   bottom: 0;
   width: 1px;
-  background: rgba(232, 163, 61, 0.22);
+  background: rgba(var(--accent-rgb), 0.22);
 }
 .story-intro p {
   position: relative;
@@ -560,10 +681,10 @@ html:has(.story-root) body {
   opacity: 1;
 }
 .story-intro .em {
-  color: var(--gold);
+  color: var(--accent);
   font-style: italic;
 }
-/* Sapuan stabilo: pita gold translusen, baru menyapu masuk SETELAH kata di
+/* Sapuan stabilo: pita accent translusen, baru menyapu masuk SETELAH kata di
    bawahnya selesai diketik. */
 .story-intro .mark {
   position: relative;
@@ -580,7 +701,7 @@ html:has(.story-root) body {
   top: 0.08em;
   bottom: 0.06em;
   z-index: -1;
-  background: rgba(232, 163, 61, 0.3);
+  background: rgba(var(--accent-rgb), 0.3);
   border-radius: 3px 8px 4px 7px;
   transform: skewX(-3deg) scaleX(0);
   transform-origin: left center;
@@ -596,7 +717,7 @@ html:has(.story-root) body {
   width: 0;
   height: 0.95em;
   vertical-align: -0.12em;
-  border-left: 2px solid var(--gold);
+  border-left: 2px solid var(--accent);
   margin-right: -2px;
   animation: story-blink 1s steps(1) infinite;
 }
@@ -638,7 +759,7 @@ html:has(.story-root) body {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #ece8e0;
+  background: var(--chip-bg);
   border: 1px solid var(--line);
   display: grid;
   place-items: center;
@@ -653,7 +774,7 @@ html:has(.story-root) body {
 .story-nucleus[data-on='true'] {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
-  box-shadow: 0 0 34px 3px rgba(232, 163, 61, 0.22);
+  box-shadow: 0 0 34px 3px rgba(var(--accent-rgb), 0.22);
 }
 /* Yang dirotasi adalah wrapper ring-nya, bukan tiap node. */
 .story-ring {
@@ -704,7 +825,7 @@ html:has(.story-root) body {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #ece8e0;
+  background: var(--chip-bg);
   border: 1px solid var(--line);
   display: grid;
   place-items: center;
@@ -758,7 +879,7 @@ html:has(.story-root) body {
   color: var(--paper);
 }
 .story-seg b {
-  color: var(--gold);
+  color: var(--accent);
   font-weight: 500;
 }
 
@@ -780,7 +901,7 @@ html:has(.story-root) body {
   flex: 0 0 auto;
 }
 .story-skills__heading em {
-  color: var(--gold);
+  color: var(--accent);
   font-style: italic;
 }
 /* Label melengkung menonjol ~10% diameter di luar tepi lingkaran; lebar
@@ -802,14 +923,14 @@ html:has(.story-root) body {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 1px solid rgba(242, 239, 233, 0.22);
-  background: radial-gradient(circle at 50% 40%, rgba(232, 163, 61, 0.05), transparent 70%);
+  border: 1px solid rgba(var(--paper-rgb), 0.22);
+  background: radial-gradient(circle at 50% 40%, rgba(var(--accent-rgb), 0.05), transparent 70%);
   display: grid;
   place-items: center;
 }
 .story-circle[data-active='true'] {
-  border-color: rgba(232, 163, 61, 0.5);
-  box-shadow: 0 0 40px -6px rgba(232, 163, 61, 0.28);
+  border-color: rgba(var(--accent-rgb), 0.5);
+  box-shadow: 0 0 40px -6px rgba(var(--accent-rgb), 0.28);
 }
 /* SVG-nya 130% dari lingkaran, jadi teks selalu jatuh di luar tepi. */
 .story-circle__label {
@@ -834,7 +955,7 @@ html:has(.story-root) body {
   transition: fill 0.4s ease;
 }
 .story-circle[data-active='true'] .story-circle__label text {
-  fill: var(--gold);
+  fill: var(--accent);
 }
 .story-tags {
   --nudge: 16%;
@@ -857,8 +978,8 @@ html:has(.story-root) body {
   font-weight: 500;
   line-height: 1;
   color: var(--paper);
-  background: rgba(22, 28, 44, 0.92);
-  border: 1px solid rgba(232, 163, 61, 0.35);
+  background: rgba(var(--ink-2-rgb), 0.92);
+  border: 1px solid rgba(var(--accent-rgb), 0.35);
   border-radius: 100px;
   padding: 5px 9px;
   white-space: nowrap;
@@ -898,7 +1019,7 @@ html:has(.story-root) body {
   font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--accent);
   margin: 0 0 14px;
 }
 .story-skills__card .story-tags {
@@ -953,7 +1074,7 @@ html:has(.story-root) body {
   margin: 0;
 }
 .story-showcase__heading em {
-  color: var(--gold);
+  color: var(--accent);
   font-style: italic;
 }
 .story-marquee-block {
@@ -965,7 +1086,7 @@ html:has(.story-root) body {
   font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold-dim);
+  color: var(--accent-dim);
 }
 .story-marquee {
   overflow: hidden;
@@ -1018,7 +1139,7 @@ html:has(.story-root) body {
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--gold-dim);
+  color: var(--accent-dim);
 }
 .story-card__title {
   font-family: var(--serif);
@@ -1055,7 +1176,7 @@ html:has(.story-root) body {
 .story-card__name {
   font-size: 12px;
   font-weight: 600;
-  color: var(--gold);
+  color: var(--accent);
 }
 .story-card--quote .story-card__sub {
   margin-top: 0;
@@ -1064,11 +1185,11 @@ html:has(.story-root) body {
 .story-card--more {
   width: 258px;
   justify-content: center;
-  border-color: rgba(232, 163, 61, 0.4);
+  border-color: rgba(var(--accent-rgb), 0.4);
   transition: border-color 0.25s ease;
 }
 .story-card--more:hover {
-  border-color: var(--gold);
+  border-color: var(--accent);
 }
 
 /* ===== FOOTER REVEAL ==================================================== */
@@ -1085,8 +1206,8 @@ html:has(.story-root) body {
   padding: 6vh 6vw;
   overflow: hidden;
   background:
-    radial-gradient(ellipse 60% 50% at 50% 62%, rgba(232, 163, 61, 0.11), transparent 70%),
-    linear-gradient(180deg, #121828, #0b0f18);
+    radial-gradient(ellipse 60% 50% at 50% 62%, rgba(var(--accent-rgb), 0.11), transparent 70%),
+    linear-gradient(180deg, var(--footer-grad-1), var(--footer-grad-2));
 }
 /* Lebarnya harus memuat kalimat kedua PLUS ruang kata terpanjang di roller
    ("business"); kalau mepet, roller-nya terlempar ke baris sendiri. */
@@ -1134,7 +1255,7 @@ html:has(.story-root) body {
   width: min(260px, 42vw);
   height: 1px;
   margin: clamp(14px, 2.4vh, 24px) 0 0;
-  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
   transform-origin: center;
 }
 /* Kata berputar. Ghost mengunci lebarnya ke kata terpanjang, jadi sisa
@@ -1167,7 +1288,7 @@ html:has(.story-root) body {
   position: absolute;
   left: 0;
   top: 0;
-  color: var(--gold);
+  color: var(--accent);
   font-style: italic;
   white-space: nowrap;
 }
@@ -1178,13 +1299,13 @@ html:has(.story-root) body {
   margin-top: clamp(22px, 3.6vh, 40px);
   font-family: var(--sans);
   font-size: clamp(15px, 2vw, 19px);
-  color: var(--gold);
+  color: var(--accent);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 0.25s ease;
 }
 .story-closing__contact:hover {
-  border-color: var(--gold);
+  border-color: var(--accent);
 }
 /* Kursor berhenti DI ATAS teks emailnya, bukan di sebelahnya — ujung panah
    SVG ada di pojok kiri-atas, jadi titik ini yang jadi tempat "klik". */
@@ -1201,7 +1322,7 @@ html:has(.story-root) body {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 1px solid var(--gold);
+  border: 1px solid var(--accent);
 }
 
 .story-social {
@@ -1220,7 +1341,7 @@ html:has(.story-root) body {
   padding: 10px 18px;
   border-radius: 100px;
   border: 1px solid var(--line);
-  background: rgba(22, 28, 44, 0.7);
+  background: rgba(var(--ink-2-rgb), 0.7);
   color: var(--paper-dim);
   text-decoration: none;
   font-size: 12px;
@@ -1233,8 +1354,8 @@ html:has(.story-root) body {
     transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .story-social a:hover {
-  color: var(--gold);
-  border-color: var(--gold-dim);
+  color: var(--accent);
+  border-color: var(--accent-dim);
   transform: translateY(-2px);
 }
 .story-closing__thanks {

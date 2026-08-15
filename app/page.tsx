@@ -25,8 +25,10 @@ import StoryClosing from '@/components/story/StoryClosing';
  * komentar di `StoryScrollerFrame` soal kenapa navbar fixed tidak boleh jadi
  * descendant elemen yang di-transform.
  *
- * Halaman ini dark-only dan punya paletnya sendiri; versi portfolio yang
- * sebelumnya ada di sini pindah utuh ke `/process`.
+ * Halaman ini punya paletnya sendiri, dark secara default dengan varian
+ * light yang di-toggle lewat `StoryThemeToggle` di dalam `StoryNav` (lihat
+ * komentar token warna di `story.css`); versi portfolio yang sebelumnya ada
+ * di sini pindah utuh ke `/process`, yang tidak ikut punya toggle ini.
  */
 export default function HomePage() {
   return (
