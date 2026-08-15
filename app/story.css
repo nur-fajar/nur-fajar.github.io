@@ -1097,6 +1097,21 @@ html:has(.story-root) body {
   flex: 0 0 auto;
   line-height: 0;
 }
+/* Berlian berayun dan miring di ruang 3D. `perspective` HARUS berada di elemen
+   induk, bukan di elemen yang berputar — dipasang pada dirinya sendiri, titik
+   hilangnya ikut berputar dan rotasinya kembali terlihat datar. */
+.story-gem--3d {
+  perspective: 760px;
+}
+.story-gem__tilt,
+.story-gem__spin {
+  transform-style: preserve-3d;
+}
+/* Berlian bereaksi pada kursor, jadi ia harus benar-benar menerima event —
+   `.story-gem` lain di halaman ini murni dekoratif. */
+.story-gem--3d {
+  cursor: crosshair;
+}
 /* Berlian datang tepat sesudah kalimat kedua — tanpa jarak ini, ujung atas
    batunya nyaris menyentuh barisnya. */
 .story-closing__line + .story-gem {

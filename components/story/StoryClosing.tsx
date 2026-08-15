@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { CLOSING_WORDS, SOCIAL } from './data';
-import { Diamond, PuzzlePiece } from './PuzzleGem';
+import { Diamond, PuzzleCluster } from './PuzzleGem';
 import { DownloadIcon, LinkedInIcon, MailIcon } from './icons';
 
 const line = {
@@ -73,7 +73,7 @@ export default function StoryClosing() {
         viewport={{ once: true, amount: 0.3 }}
         transition={{ staggerChildren: 0.16 }}
       >
-        <PuzzlePiece reduce={reduce} />
+        <PuzzleCluster reduce={reduce} />
 
         <motion.h2
           className="story-closing__line"
