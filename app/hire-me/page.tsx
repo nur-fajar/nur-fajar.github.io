@@ -14,7 +14,7 @@ import {
 } from '@/components/story/data';
 import { DownloadIcon, LinkedInIcon, MailIcon } from '@/components/story/icons';
 import HudFrame from '@/components/hire/HudFrame';
-import MechaBlueprint from '@/components/hire/MechaBlueprint';
+import SystemBlueprint from '@/components/hire/SystemBlueprint';
 import Reveal from '@/components/hire/Reveal';
 import TargetWord from '@/components/hire/TargetWord';
 import { LAUNCH, SECTIONS, SORTIES, SUBSYSTEM_CODES, UNIT } from '@/content/hireMe';
@@ -119,7 +119,7 @@ export default function HireMePage() {
             <p className="hire-hero__reassure">{UNIT.reassure}</p>
           </div>
 
-          <MechaBlueprint />
+          <SystemBlueprint />
         </section>
 
         {/* ── SEC-01 · Sistem inti (StoryIntro) ────────────────────────── */}

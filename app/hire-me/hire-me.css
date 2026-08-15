@@ -407,30 +407,40 @@
   opacity: 0.34;
 }
 .bp__line--detail {
-  opacity: 0.5;
+  opacity: 0.55;
 }
-.bp__callouts {
+.bp__hatch {
+  color: var(--paper);
+}
+.bp__feedback {
   color: var(--accent);
 }
-.bp__dot {
-  fill: var(--accent);
-}
 .bp__badge {
-  fill: var(--ink);
+  fill: none;
   stroke: var(--accent);
 }
 .bp__num {
   fill: var(--accent);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.06em;
+}
+.bp__label {
+  fill: var(--paper);
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.bp__sub {
+  fill: var(--paper-dim);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
 }
 
 /* Menggambar sendiri. Semua path diberi `pathLength={1}` di komponennya, jadi
    satu aturan ini berlaku untuk garis sepanjang apa pun. */
-.bp__line,
-.bp__ground,
-.bp__callout path {
+.bp__line {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   animation: bp-draw 0.7s ease-out var(--d, 0s) forwards;
@@ -440,21 +450,31 @@
     stroke-dashoffset: 0;
   }
 }
-.bp__ground {
-  --d: 2.6s;
-  opacity: 0.4;
-}
-.bp__dot,
-.bp__badge,
-.bp__num,
+
+/* Sisanya tidak bisa "digambar": arsir dan teks bukan garis, dan garis umpan
+   balik memang putus-putus di keadaan akhirnya — dasharray sudah dipakai
+   sebagai gaya, jadi tidak bisa dipinjam lagi sebagai alat gambar. Semuanya
+   memudar masuk, dengan opacity akhir masing-masing lewat `--o` supaya arsir
+   tetap samar dan tidak berakhir sepekat teks. */
+.bp__hatch,
+.bp__feedback,
+.bp__labels g,
 .bp__specs li {
   opacity: 0;
   animation: bp-fade 0.45s ease-out var(--d, 0s) forwards;
 }
 @keyframes bp-fade {
   to {
-    opacity: 1;
+    opacity: var(--o, 1);
   }
+}
+.bp__hatch {
+  --d: 1.2s;
+  --o: 0.16;
+}
+.bp__feedback {
+  --d: 1.35s;
+  --o: 0.75;
 }
 
 .bp__specs {
@@ -1088,17 +1108,21 @@
   .tw__lock {
     animation: none;
   }
-  .bp__line,
-  .bp__ground,
-  .bp__callout path {
+  .bp__line {
     animation: none;
     stroke-dashoffset: 0;
   }
-  .bp__dot,
-  .bp__badge,
-  .bp__num,
+  .bp__labels g,
   .bp__specs li {
     animation: none;
     opacity: 1;
+  }
+  /* Arsir dan garis umpan balik langsung tampil di opacity akhirnya sendiri,
+     bukan di 1 — kalau dipukul rata jadi 1, arsir fondasinya berubah dari
+     samar menjadi bidang pekat yang menutupi label di atasnya. */
+  .bp__hatch,
+  .bp__feedback {
+    animation: none;
+    opacity: var(--o);
   }
 }
