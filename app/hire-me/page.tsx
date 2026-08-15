@@ -3,327 +3,325 @@ import Link from 'next/link';
 import '../story.css';
 import './hire-me.css';
 import StoryNav from '@/components/story/StoryNav';
-import { SOCIAL } from '@/components/story/data';
-import { REFERENCES } from '@/content/references';
-import { DownloadIcon, LinkedInIcon, MailIcon } from '@/components/story/icons';
 import {
-  CASES,
-  FAQS,
-  FAILURES,
-  FINAL_CTA,
-  HERO,
-  HERO_STATS,
-  LOGOS,
-  PROCESS,
-  SERVICES,
-} from '@/content/hireMe';
+  AWARDS,
+  NUCLEUS,
+  PATH_STEPS,
+  REFERENCE_CARDS,
+  SKILL_GROUPS,
+  SOCIAL,
+  WORK,
+} from '@/components/story/data';
+import { DownloadIcon, LinkedInIcon, MailIcon } from '@/components/story/icons';
+import HudFrame from '@/components/hire/HudFrame';
+import MechaBlueprint from '@/components/hire/MechaBlueprint';
+import Reveal from '@/components/hire/Reveal';
+import TargetWord from '@/components/hire/TargetWord';
+import { LAUNCH, SECTIONS, SORTIES, SUBSYSTEM_CODES, UNIT } from '@/content/hireMe';
 
 export const metadata: Metadata = {
   title: 'Hire me',
   description:
-    'Hire Nur Fajar — Learning & Development specialist. GenAI training programmes, instructional design, AI workflow automation, and Train the Trainers. 350+ learners trained, 9.0/10 mean satisfaction.',
+    'Hire Nur Fajar — Learning & Development specialist. The full cycle: design, delivery, evaluation, and the AI automation underneath. 350+ learners trained, 9.0/10 mean satisfaction.',
   alternates: { canonical: '/hire-me' },
   openGraph: {
     title: 'Hire Nur Fajar — Learning & Development Specialist',
-    description:
-      'Training your team actually applies: curriculum, delivery, evaluation, and the automation underneath it.',
+    description: 'Design → delivery → evaluation, plus the automation underneath it.',
     images: ['/og.png'],
   },
 };
 
 // Subject-nya diisi di depan supaya email masuk sudah terklasifikasi, dan
 // supaya pengunjung tidak menatap kolom kosong — friction terakhir sebelum
-// konversi biasanya justru "harus nulis apa".
+// konversi biasanya justru "harus nulis apa". Isinya sengaja tetap bahasa
+// kerja biasa: temanya mecha, emailnya sungguhan.
 const MAILTO = `mailto:${SOCIAL.email}?subject=${encodeURIComponent(
   'Hiring enquiry — L&D',
 )}&body=${encodeURIComponent(
   "Hi Fajar,\n\nWe're looking at:\n- The gap:\n- Who it's for:\n- Rough timeline:\n\nThanks,\n",
 )}`;
 
+/** Header kokpit — kode, nama, dan catatan pendek di kanan. */
+function SectionHead({ of }: { of: keyof typeof SECTIONS }) {
+  const s = SECTIONS[of];
+  return (
+    <header className="sec__head">
+      <span className="sec__code">{s.code}</span>
+      <h2 className="sec__name" id={`sec-${of}`}>
+        {s.name}
+      </h2>
+      <span className="sec__rule" aria-hidden="true" />
+      <span className="sec__note">{s.note}</span>
+    </header>
+  );
+}
+
 /**
- * `/hire-me` — halaman konversi.
+ * `/hire-me` — briefing pra-peluncuran.
  *
- * Sengaja BUKAN scroll-story seperti `/`. Homepage bekerja secara naratif dan
- * menahan ajakan bertindak sampai akhir; halaman ini kebalikannya — CTA muncul
- * di layar pertama, lalu diulang setelah tiap blok bukti, dan section-nya
- * berurut sebagai satu perjalanan: masalah → solusi → bukti → suara orang lain
- * → proses → bantahan keberatan → ajakan terakhir.
+ * ISINYA CERITA HOMEPAGE, BUKAN COPY TERSENDIRI. Section di bawah adalah
+ * urutan `/` yang dibingkai ulang: StoryHero → profil unit, StoryIntro →
+ * sistem inti, StoryPath → riwayat penempatan, StorySkills → subsistem,
+ * StoryShowcase → rekam jejak & transmisi, StoryClosing → peluncuran. Datanya
+ * diimpor langsung dari `components/story/data.ts`, jadi tidak ada satu pun
+ * fakta yang punya dua salinan yang bisa berselisih.
  *
- * Semua token warna, font, dan style navbar-nya menumpang `story.css` (yang
- * menggantung tokennya di `html:has(.story-root)`), jadi pembungkus di bawah
- * memakai kelas `.story-root` dan halaman ini otomatis ikut tema gelap/terang
- * yang sama — termasuk togglenya, karena `StoryNav` sudah membawa
- * `StoryThemeToggle`. Hero-nya memakai `id="story-hero"` karena itulah elemen
- * yang diamati `StoryNav` untuk memutuskan kapan navbar meluncur turun.
+ * Palet, font, dan navbarnya menumpang `story.css` (tokennya digantung di
+ * `html:has(.story-root)`), lalu `.hire` menimpa lapisan warnanya jadi warna
+ * trad mecha — override-nya ada di hire-me.css dan hanya berlaku di dalam
+ * `.hire`, jadi `/` tidak ikut berubah. Toggle terang/gelap tetap bekerja
+ * karena override-nya ditulis untuk kedua tema. Hero memakai `id="story-hero"`
+ * karena itulah elemen yang diamati `StoryNav` untuk memutuskan kapan navbar
+ * meluncur turun.
  *
- * Tidak ada Framer Motion di sini, dan itu disengaja: halaman ini seluruhnya
- * server component statis. Halaman yang tugasnya menutup kesepakatan tidak
- * boleh punya satu pun elemen yang menunggu JS untuk jadi terbaca.
+ * Halaman ini tetap server component. Yang butuh JS cuma tiga hal kecil dan
+ * semuanya opsional: reveal antar-section (`Reveal`, dengan penawar
+ * `.motion-safe`), kata berputar di penutup (`TargetWord`, yang merender kata
+ * pertama tanpa JS), dan navbar. Blueprint hero serta seluruh bingkai HUD
+ * digambar oleh CSS — jadi bagian yang membawa bukti tidak pernah menunggu
+ * JavaScript untuk jadi terbaca.
  */
 export default function HireMePage() {
   return (
     <div className="story-root hire">
+      <HudFrame />
       <StoryNav />
 
       <main className="hire-main">
-        {/* ── Hero ─────────────────────────────────────────────────────── */}
+        {/* ── Hero: profil unit ────────────────────────────────────────── */}
         <section className="hire-hero" id="story-hero">
-          <p className="hire-status">
-            <span className="hire-status__dot" aria-hidden="true" />
-            {HERO.status}
-          </p>
+          <div className="hire-hero__text">
+            <p className="hire-status">
+              <span className="hire-status__dot" aria-hidden="true" />
+              {UNIT.status}
+            </p>
 
-          <h1 className="hire-hero__h1">
-            {HERO.h1[0]}
-            <br />
-            <em>{HERO.h1[1]}</em>
-          </h1>
+            <p className="plate">
+              <span className="plate__desig">{UNIT.designation}</span>
+              <span className="plate__class">{UNIT.class}</span>
+            </p>
 
-          <p className="hire-hero__sub">{HERO.sub}</p>
+            <h1 className="hire-hero__h1">
+              {UNIT.callsign}
+              <em>{UNIT.tagline}</em>
+            </h1>
 
-          <div className="hire-ctas">
-            <a className="hire-btn hire-btn--primary" href={SOCIAL.cal} target="_blank" rel="noopener noreferrer">
-              {HERO.primaryCta}
-            </a>
-            <a className="hire-btn hire-btn--ghost" href={MAILTO}>
-              <MailIcon size={16} />
-              {HERO.secondaryCta}
-            </a>
+            <div className="hire-ctas">
+              <a className="hire-btn hire-btn--primary" href={SOCIAL.cal} target="_blank" rel="noopener noreferrer">
+                {UNIT.primaryCta}
+              </a>
+              <a className="hire-btn hire-btn--ghost" href={MAILTO}>
+                <MailIcon size={16} />
+                {UNIT.secondaryCta}
+              </a>
+            </div>
+
+            <p className="hire-hero__reassure">{UNIT.reassure}</p>
           </div>
 
-          <p className="hire-hero__reassure">{FINAL_CTA.reassure}</p>
-
-          <ul className="hire-stats">
-            {HERO_STATS.map((s) => (
-              <li key={s.label}>
-                <span className="hire-stats__value">{s.value}</span>
-                <span className="hire-stats__label">{s.label}</span>
-              </li>
-            ))}
-          </ul>
+          <MechaBlueprint />
         </section>
 
-        {/* ── Trust bar ────────────────────────────────────────────────── */}
-        <section className="hire-logos" aria-label="Organisations worked with">
-          <p className="hire-eyebrow">Programmes built, delivered, or led at</p>
-          <ul className="hire-logos__row">
-            {LOGOS.map((logo) => (
-              <li key={logo.alt}>
-                {/* eslint-disable-next-line @next/next/no-img-element -- aset lokal berukuran tetap,
-                    dan halaman ini juga di-build sebagai static export (next/image tanpa optimizer). */}
-                <img src={logo.src} alt={logo.alt} width={40} height={40} loading="lazy" />
-                <span>{logo.alt}</span>
-              </li>
-            ))}
-          </ul>
+        {/* ── SEC-01 · Sistem inti (StoryIntro) ────────────────────────── */}
+        <section className="sec" aria-labelledby="sec-core">
+          <SectionHead of="core" />
+          <Reveal>
+            {/* Dua kalimat ini milik StoryIntro di homepage. Penekanannya
+                tertanam di tengah kalimat, jadi ia hidup sebagai JSX di sini —
+                sama seperti di komponen aslinya — bukan sebagai data. */}
+            <p className="core">
+              I run the full cycle of Learning &amp; Development — end-to-end, from <em>design</em> to{' '}
+              <em>delivery</em> to <em>evaluation</em>.
+            </p>
+            <p className="core">
+              I also love building things with AI — like the AI agent I embedded into my company’s CRM, which now
+              does the work of <mark>1,000+ human-hours</mark>, automatically.
+            </p>
+          </Reveal>
         </section>
 
-        {/* ── Problem ──────────────────────────────────────────────────── */}
-        <section className="hire-section" aria-labelledby="hire-why-h">
-          <p className="hire-eyebrow">01 · The problem</p>
-          <h2 className="hire-h2" id="hire-why-h">
-            Why most training gets good reviews and <em>changes nothing.</em>
-          </h2>
-
-          <ul className="hire-fail">
-            {FAILURES.map((f) => (
-              <li key={f.problem} className="hire-fail__item">
-                <h3 className="hire-fail__problem">{f.problem}</h3>
-                <p className="hire-fail__because">{f.because}</p>
-                <p className="hire-fail__fix">
-                  <span className="hire-fail__fixlabel">How I handle it</span>
-                  {f.fix}
-                </p>
-              </li>
-            ))}
-          </ul>
+        {/* ── SEC-02 · Riwayat penempatan (StoryPath) ──────────────────── */}
+        <section className="sec" aria-labelledby="sec-sorties">
+          <SectionHead of="sorties" />
+          <ol className="sortie">
+            {SORTIES.map((s, i) => {
+              // Indeks 0 adalah nucleus orbit di homepage (Unsil); sisanya
+              // memakai node ring yang terbuka di step yang sama.
+              const nodes = i === 0 ? [NUCLEUS] : PATH_STEPS[i].nodes;
+              return (
+                <li key={s.code}>
+                  <Reveal className="sortie__row" delay={0.04 * i}>
+                    <div className="sortie__mark">
+                      <span className="sortie__code">{s.code}</span>
+                      <span className="sortie__phase">{s.phase}</span>
+                    </div>
+                    <div className="sortie__body">
+                      <ul className="sortie__chips">
+                        {nodes.map((n) => (
+                          <li key={n.src}>
+                            {/* eslint-disable-next-line @next/next/no-img-element -- aset lokal
+                                berukuran tetap, dan halaman ini juga di-build sebagai static
+                                export (next/image tanpa optimizer). */}
+                            <img src={n.src} alt={n.alt} width={34} height={34} loading="lazy" />
+                            <span>{n.alt}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="sortie__caption">{s.caption}</p>
+                    </div>
+                  </Reveal>
+                </li>
+              );
+            })}
+          </ol>
         </section>
 
-        {/* ── Services ─────────────────────────────────────────────────── */}
-        <section className="hire-section" aria-labelledby="hire-services-h">
-          <p className="hire-eyebrow">02 · What you can hire me for</p>
-          <h2 className="hire-h2" id="hire-services-h">
-            Four things, and the <em>proof each one works.</em>
-          </h2>
-
-          <ul className="hire-services">
-            {SERVICES.map((s) => (
-              <li key={s.n} className="hire-service">
-                <span className="hire-service__n">{s.n}</span>
-                <h3 className="hire-service__name">{s.name}</h3>
-                <p className="hire-service__promise">{s.promise}</p>
-                <ul className="hire-service__list">
-                  {s.deliverables.map((d) => (
-                    <li key={d}>{d}</li>
-                  ))}
-                </ul>
-                <p className="hire-service__proof">{s.proof}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* ── Evidence ─────────────────────────────────────────────────── */}
-        <section className="hire-section" aria-labelledby="hire-cases-h">
-          <p className="hire-eyebrow">03 · Evidence</p>
-          <h2 className="hire-h2" id="hire-cases-h">
-            Three engagements, <em>result first.</em>
-          </h2>
-
-          <ul className="hire-cases">
-            {CASES.map((c) => (
-              <li key={c.title} className="hire-case">
-                <div className="hire-case__metric">
-                  <span className="hire-case__value">{c.metric}</span>
-                  <span className="hire-case__mlabel">{c.metricLabel}</span>
-                </div>
-                <div className="hire-case__body">
-                  <h3 className="hire-case__title">{c.title}</h3>
-                  <p className="hire-case__context">{c.context}</p>
-                  <ul className="hire-case__did">
-                    {c.did.map((d) => (
-                      <li key={d}>{d}</li>
+        {/* ── SEC-03 · Subsistem (StorySkills) ─────────────────────────── */}
+        <section className="sec" aria-labelledby="sec-subsystems">
+          <SectionHead of="subsystems" />
+          <ul className="sys">
+            {SKILL_GROUPS.map((g, i) => (
+              <li key={g.name}>
+                <Reveal className="sys__card" delay={0.05 * i}>
+                  <span className="sys__code">{SUBSYSTEM_CODES[i]}</span>
+                  <h3 className="sys__name">{g.name}</h3>
+                  <ul className="sys__tags">
+                    {g.tags.map((t) => (
+                      <li key={t}>{t}</li>
                     ))}
                   </ul>
-                  <p className="hire-case__result">{c.result}</p>
-                </div>
+                </Reveal>
               </li>
             ))}
           </ul>
+        </section>
 
-          <div className="hire-midcta">
-            <p>Want the same shape of result for your team?</p>
-            <a className="hire-btn hire-btn--primary" href={SOCIAL.cal} target="_blank" rel="noopener noreferrer">
-              {HERO.primaryCta}
-            </a>
+        {/* ── SEC-04 · Rekam jejak (StoryShowcase) ─────────────────────── */}
+        <section className="sec" aria-labelledby="sec-record">
+          <SectionHead of="record" />
+          <div className="rec">
+            <Reveal className="rec__col">
+              <h3 className="rec__title">Commendations</h3>
+              <ul className="rec__list">
+                {AWARDS.map((a) => (
+                  <li key={a.title}>
+                    <span className="rec__tag">{a.tag}</span>
+                    <span className="rec__name">{a.title}</span>
+                    <span className="rec__sub">{a.sub}</span>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+
+            <Reveal className="rec__col" delay={0.08}>
+              <h3 className="rec__title">Mission log</h3>
+              <ul className="rec__list">
+                {WORK.map((w) => (
+                  <li key={w.title}>
+                    <span className="rec__tag">{w.tag}</span>
+                    <span className="rec__name">{w.title}</span>
+                    <span className="rec__sub">{w.sub}</span>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
           </div>
         </section>
 
-        {/* ── Testimonials ─────────────────────────────────────────────── */}
-        <section className="hire-section" aria-labelledby="hire-refs-h">
-          <p className="hire-eyebrow">04 · What people who worked with me say</p>
-          <h2 className="hire-h2" id="hire-refs-h">
-            Five perspectives — a manager, a teammate, <em>and three people I taught.</em>
-          </h2>
-
-          <ul className="hire-refs">
-            {REFERENCES.map((r) => (
-              <li key={r.name} className="hire-ref">
-                <span className="hire-ref__tag">{r.tag}</span>
-                <blockquote>{r.quote}</blockquote>
-                <div className="hire-ref__by">
-                  <span className="hire-ref__avatar" aria-hidden="true">
-                    {r.initial}
+        {/* ── SEC-05 · Transmisi masuk (StoryShowcase quotes) ──────────── */}
+        <section className="sec" aria-labelledby="sec-transmissions">
+          <SectionHead of="transmissions" />
+          <ul className="tx">
+            {REFERENCE_CARDS.map((r, i) => (
+              <li key={r.name}>
+                <Reveal className="tx__card" delay={0.04 * i}>
+                  <span className="tx__meta">
+                    <span className="tx__bars" aria-hidden="true">
+                      <i />
+                      <i />
+                      <i />
+                      <i />
+                    </span>
+                    incoming
                   </span>
-                  <span>
-                    <strong>{r.name}</strong>
-                    <span className="hire-ref__role">{r.role}</span>
-                  </span>
-                </div>
+                  <blockquote>{r.quote}</blockquote>
+                  <div className="tx__by">
+                    <span className="tx__avatar" aria-hidden="true">
+                      {r.name.charAt(0)}
+                    </span>
+                    <span>
+                      <strong>{r.name}</strong>
+                      <span className="tx__role">{r.role}</span>
+                    </span>
+                  </div>
+                </Reveal>
               </li>
             ))}
           </ul>
 
-          <p className="hire-refs__more">
+          <p className="tx__more">
             <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer">
+              {/* 11 adalah jumlah rekomendasi di LinkedIn, BUKAN jumlah yang
+                  ditampilkan di sini — `REFERENCE_CARDS` memuat 5 di antaranya
+                  (lihat catatan pemilihannya di content/references.ts). Menulis
+                  `.length` di sini akan mengubahnya jadi klaim yang salah. */}
               All 11 recommendations on LinkedIn →
             </a>
           </p>
         </section>
 
-        {/* ── Process ──────────────────────────────────────────────────── */}
-        <section className="hire-section" aria-labelledby="hire-process-h">
-          <p className="hire-eyebrow">05 · How working together goes</p>
-          <h2 className="hire-h2" id="hire-process-h">
-            No mystery, <em>no surprise invoice.</em>
-          </h2>
+        {/* ── SEC-06 · Peluncuran (StoryClosing) ───────────────────────── */}
+        <section className="sec sec--launch" aria-labelledby="sec-launch">
+          <SectionHead of="launch" />
 
-          <ol className="hire-process">
-            {PROCESS.map((s) => (
-              <li key={s.n} className="hire-step">
-                <span className="hire-step__n">{s.n}</span>
-                <div>
-                  <h3 className="hire-step__name">
-                    {s.name}
-                    <span className="hire-step__when">{s.when}</span>
-                  </h3>
-                  <p className="hire-step__detail">{s.detail}</p>
-                </div>
+          <div className="launch">
+            <span className="launch__stripe" aria-hidden="true" />
+            <h3 className="launch__line">{LAUNCH.line}</h3>
+            <p className="launch__line launch__line--roll">
+              {LAUNCH.lineBefore} <TargetWord />
+            </p>
+            <p className="launch__sub">{LAUNCH.sub}</p>
+
+            <div className="hire-ctas">
+              <a className="hire-btn hire-btn--primary" href={SOCIAL.cal} target="_blank" rel="noopener noreferrer">
+                {UNIT.primaryCta}
+              </a>
+              <a className="hire-btn hire-btn--ghost" href={MAILTO}>
+                <MailIcon size={16} />
+                {UNIT.secondaryCta}
+              </a>
+            </div>
+            <p className="hire-hero__reassure">{UNIT.reassure}</p>
+
+            <ul className="launch__links">
+              <li>
+                <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer">
+                  <LinkedInIcon size={17} />
+                  <span>LinkedIn</span>
+                </a>
               </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* ── Objections ───────────────────────────────────────────────── */}
-        <section className="hire-section" aria-labelledby="hire-faq-h">
-          <p className="hire-eyebrow">06 · Before you ask</p>
-          <h2 className="hire-h2" id="hire-faq-h">
-            The questions that usually come <em>right before a yes.</em>
-          </h2>
-
-          {/* <details> asli, bukan akordeon buatan sendiri: keyboard, screen
-              reader, dan Ctrl+F sudah benar tanpa satu baris JS pun. */}
-          <ul className="hire-faq">
-            {FAQS.map((f) => (
-              <li key={f.q}>
-                <details className="hire-faq__item">
-                  <summary>
-                    {f.q}
-                    <span className="hire-faq__mark" aria-hidden="true" />
-                  </summary>
-                  <p>{f.a}</p>
-                </details>
+              <li>
+                <a href={SOCIAL.resume} target="_blank" rel="noopener noreferrer">
+                  <DownloadIcon size={17} />
+                  <span>Resume</span>
+                </a>
               </li>
-            ))}
-          </ul>
-        </section>
+              <li>
+                <Link href="/">
+                  <span>← Back to the full story</span>
+                </Link>
+              </li>
+            </ul>
 
-        {/* ── Final CTA ────────────────────────────────────────────────── */}
-        <section className="hire-final" aria-labelledby="hire-final-h">
-          <h2 className="hire-final__h" id="hire-final-h">
-            {FINAL_CTA.heading[0]}
-            <br />
-            <em>{FINAL_CTA.heading[1]}</em>
-          </h2>
-          <p className="hire-final__sub">{FINAL_CTA.sub}</p>
-
-          <div className="hire-ctas">
-            <a className="hire-btn hire-btn--primary" href={SOCIAL.cal} target="_blank" rel="noopener noreferrer">
-              {HERO.primaryCta}
-            </a>
-            <a className="hire-btn hire-btn--ghost" href={MAILTO}>
-              <MailIcon size={16} />
-              {HERO.secondaryCta}
-            </a>
+            <p className="launch__thanks">{LAUNCH.thanks}</p>
           </div>
-          <p className="hire-hero__reassure">{FINAL_CTA.reassure}</p>
-
-          <ul className="hire-final__links">
-            <li>
-              <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer">
-                <LinkedInIcon size={17} />
-                <span>LinkedIn</span>
-              </a>
-            </li>
-            <li>
-              <a href={SOCIAL.resume} target="_blank" rel="noopener noreferrer">
-                <DownloadIcon size={17} />
-                <span>Resume</span>
-              </a>
-            </li>
-            <li>
-              <Link href="/">
-                <span>← Back to the full story</span>
-              </Link>
-            </li>
-          </ul>
         </section>
       </main>
 
       {/* Bar CTA yang menempel di dasar layar, HANYA di layar sempit: di
           desktop CTA hero masih terlihat lama, di ponsel ia hilang setelah
           satu ayunan jempol. */}
-      <div className="hire-dock" aria-hidden="false">
+      <div className="hire-dock">
         <a className="hire-btn hire-btn--primary" href={SOCIAL.cal} target="_blank" rel="noopener noreferrer">
           Book a 15-min call
         </a>
