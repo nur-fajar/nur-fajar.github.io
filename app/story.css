@@ -1,8 +1,8 @@
 /* ==========================================================================
    Scroll-story homepage (`/`)
-   Halaman ini punya tema sendiri, terpisah dari `/process` — dark secara
-   default, dengan varian light yang di-toggle lewat `StoryThemeToggle`
-   (lihat komentar warna di bawah). Togglenya cuma berlaku di sini: semua
+   Halaman ini punya tema sendiri — dark secara default, dengan varian light
+   yang di-toggle lewat `StoryThemeToggle` (lihat komentar warna di bawah).
+   Togglenya cuma berlaku di sini: semua
    token warnanya digantung di `html:has(.story-root)`, jadi tidak pernah
    bocor ke rute lain.
    ========================================================================== */
@@ -18,10 +18,11 @@
 
 /* globals.css menyetel sejumlah properti langsung di SELEKTOR ELEMEN — h1-h4
    diberi `color: var(--ink)`, `section` diberi `max-width: 1100px`, `main`
-   diberi padding setinggi navbar, dan seterusnya. Semua itu milik skin terang
-   di `/process`. Aturan pada elemen mengalahkan warna yang diwariskan dari
-   `.story-root`, jadi tanpa penawar ini heading halaman ini jadi berwarna ink
-   di ATAS background ink — hilang sama sekali.
+   diberi padding setinggi navbar, dan seterusnya — sisa dari skin terang
+   halaman lama (dulu di `/process`, rute itu sudah dihapus, tapi rule-rule
+   elemennya masih ada di globals.css). Aturan pada elemen mengalahkan warna
+   yang diwariskan dari `.story-root`, jadi tanpa penawar ini heading halaman
+   ini jadi berwarna ink di ATAS background ink — hilang sama sekali.
    Dibungkus `:where()` supaya spesifisitasnya tetap (0,1,0): cukup untuk
    menang atas selektor elemen di globals.css, tapi tetap kalah dari kelas
    `.story-*` mana pun yang dideklarasikan di bawah ini. */
