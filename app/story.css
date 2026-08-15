@@ -1,0 +1,1276 @@
+/* ==========================================================================
+   Scroll-story homepage (`/`)
+   Halaman ini dark-only: toggle tema global sengaja tidak berlaku di sini.
+   ========================================================================== */
+
+.story-root {
+  --ink: #0f1420;
+  --ink-2: #161c2c;
+  --paper: #f2efe9;
+  --paper-dim: #c9c4b8;
+  --gold: #e8a33d;
+  --gold-dim: #8a6a34;
+  --line: rgba(242, 239, 233, 0.14);
+  --serif: var(--font-serif), 'Fraunces', serif;
+  --sans: var(--font-story-sans), 'Space Grotesk', sans-serif;
+
+  color: var(--paper);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* globals.css menyetel sejumlah properti langsung di SELEKTOR ELEMEN — h1-h4
+   diberi `color: var(--ink)`, `section` diberi `max-width: 1100px`, `main`
+   diberi padding setinggi navbar, dan seterusnya. Semua itu milik skin terang
+   di `/process`. Aturan pada elemen mengalahkan warna yang diwariskan dari
+   `.story-root`, jadi tanpa penawar ini heading halaman ini jadi berwarna ink
+   di ATAS background ink — hilang sama sekali.
+   Dibungkus `:where()` supaya spesifisitasnya tetap (0,1,0): cukup untuk
+   menang atas selektor elemen di globals.css, tapi tetap kalah dari kelas
+   `.story-*` mana pun yang dideklarasikan di bawah ini. */
+.story-root :where(h1, h2, h3, h4) {
+  color: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  margin: 0;
+}
+.story-root :where(p) {
+  margin: 0;
+}
+.story-root :where(a) {
+  color: inherit;
+}
+.story-root :where(section) {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.story-root :where(main) {
+  padding-top: 0;
+}
+
+/* Body ikut gelap supaya area overscroll (rubber-band) tidak memperlihatkan
+   background terang dari globals.css. Dipagari `:has(.story-root)` supaya
+   aturan ini tidak ikut terbawa ke rute lain kalau CSS-nya masih termuat
+   setelah navigasi antar-halaman. */
+html:has(.story-root) {
+  color-scheme: dark;
+  /* Pinned section pakai position:sticky, yang tidak akur dengan smooth-scroll
+     global — scroll jadi terasa melayang saat scrub. */
+  scroll-behavior: auto;
+}
+html:has(.story-root) body {
+  background: #0f1420;
+  color: #f2efe9;
+}
+
+/* Kanvas rasi bintang. Absolute dan setinggi dokumen (tingginya diatur dari
+   StoryStarfield), BUKAN fixed: dengan absolute ia ikut lapisan yang di-scroll,
+   jadi compositor menggesernya tanpa menggambar ulang sama sekali. */
+.story-sky {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.story-root ::selection {
+  background: var(--gold);
+  color: var(--ink);
+}
+.story-root :focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ===== Dua lapis: scroller opaque di atas footer yang fixed ============== */
+.story-scroller {
+  position: relative;
+  z-index: 1;
+  background: var(--ink);
+  overflow-x: clip;
+  /* Ruang scroll untuk menyingkap footer di baliknya. */
+  margin-bottom: 100vh;
+  margin-bottom: 100svh;
+}
+.story-main {
+  position: relative;
+  z-index: 1;
+}
+/* Vignette tipis di atas kanvas rasi supaya teks selalu punya kontras. */
+.story-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 70% 45% at 50% 50%, rgba(15, 20, 32, 0.86), transparent 78%);
+}
+
+.story-section {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8vh 6vw;
+}
+
+.story-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===== ISLAND NAVBAR ===================================================== */
+.story-nav {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(22, 28, 44, 0.85);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 7px 10px 7px 7px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  transform: translateX(-50%) translateY(calc(-100% - 64px));
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.story-nav[data-show='true'] {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* --- Avatar sebagai tombol menu radial --- */
+.story-avatar {
+  position: relative;
+  flex: 0 0 auto;
+  width: 54px;
+  height: 54px;
+}
+.story-avatar__btn {
+  position: relative;
+  display: block;
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.story-avatar__img {
+  position: absolute;
+  inset: 11px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.story-avatar__btn:hover .story-avatar__img,
+.story-avatar__btn[aria-expanded='true'] .story-avatar__img {
+  transform: scale(1.08);
+}
+/* Cincin teks melingkar. Angkanya satuan user SVG (viewBox 0 0 100 100),
+   jadi ikut menskala bersama avatarnya. */
+.story-avatar__ring {
+  position: absolute;
+  inset: 0;
+  width: 54px;
+  height: 54px;
+  overflow: visible;
+  pointer-events: none;
+}
+/* Satuan user SVG (viewBox 0 0 100 100) — pada 54px, 13 unit ≈ 7px di layar,
+   yang masih terbaca. Teksnya sengaja satu putaran saja: dua putaran tidak
+   muat di keliling lingkaran seukuran ini. */
+.story-avatar__ring text {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  fill: var(--gold-dim);
+}
+.story-avatar__ring[data-spin='true'] {
+  animation: story-spin 18s linear infinite;
+}
+.story-avatar__btn:hover .story-avatar__ring text,
+.story-avatar__btn[aria-expanded='true'] .story-avatar__ring text {
+  fill: var(--gold);
+}
+@keyframes story-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* Denyut halus supaya avatar terbaca "bisa ditekan" tanpa perlu label. */
+.story-avatar__pulse {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  opacity: 0;
+  pointer-events: none;
+  animation: story-avatar-pulse 3.4s ease-out infinite;
+}
+@keyframes story-avatar-pulse {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.92);
+  }
+  60%,
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+.story-radial {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  z-index: 2;
+}
+.story-radial li {
+  position: absolute;
+  left: -19px;
+  top: -19px;
+}
+.story-radial__item {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: var(--paper);
+  background: rgba(22, 28, 44, 0.96);
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+.story-radial__item:hover {
+  color: var(--ink);
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.story-nav__name {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.story-nav__status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--paper-dim);
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.story-nav__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5ed88c;
+  box-shadow: 0 0 8px #5ed88c;
+  animation: story-pulse-dot 2.2s ease-in-out infinite;
+}
+@keyframes story-pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 8px #5ed88c;
+  }
+  50% {
+    opacity: 0.45;
+    box-shadow: 0 0 2px #5ed88c;
+  }
+}
+
+/* Tombol resume: satu-satunya elemen gold pekat di navbar, jadi ia yang
+   pertama ditangkap mata. */
+.story-nav__resume {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #241703;
+  text-decoration: none;
+  background: linear-gradient(135deg, #f4c069, var(--gold) 55%, #cf8a23);
+  border: 1px solid rgba(255, 226, 168, 0.5);
+  border-radius: 100px;
+  padding: 9px 15px;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(232, 163, 61, 0.32);
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.story-nav__resume:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(232, 163, 61, 0.52);
+}
+.story-nav__shine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 42px;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.62), transparent);
+  animation: story-shine 4.6s ease-in-out infinite;
+}
+@keyframes story-shine {
+  0%,
+  62% {
+    left: -60px;
+  }
+  86%,
+  100% {
+    left: 130%;
+  }
+}
+
+@media (max-width: 700px) {
+  .story-nav {
+    gap: 8px;
+    padding: 6px 8px 6px 6px;
+    max-width: calc(100vw - 20px);
+  }
+  .story-nav__status {
+    display: none;
+  }
+  .story-nav__resume {
+    padding: 8px 12px;
+    letter-spacing: 0.03em;
+  }
+}
+@media (max-width: 400px) {
+  .story-nav__name {
+    display: none;
+  }
+}
+
+/* ===== HERO ============================================================== */
+.story-hero {
+  flex-direction: column;
+  text-align: center;
+}
+.story-hero__greet {
+  position: relative;
+  font-family: var(--serif);
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 400;
+  color: var(--paper-dim);
+  margin: 0;
+}
+.story-hero__name {
+  position: relative;
+  display: inline-block;
+}
+/* Bubble duduk PERSIS di atas nama dengan ekor menunjuk turun — menempel
+   secara visual, tapi tidak menutupi satu huruf pun. */
+.story-bubble {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 14px);
+  transform-origin: 50% 120%;
+  background: var(--ink-2);
+  color: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 9px 15px;
+  font-family: var(--sans);
+  font-size: clamp(12px, 1.35vw, 15px);
+  line-height: 1.35;
+  white-space: nowrap;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  margin-left: -50%;
+}
+.story-bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  margin-left: -6px;
+  bottom: -6px;
+  width: 11px;
+  height: 11px;
+  background: var(--ink-2);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  transform: rotate(45deg);
+  border-bottom-right-radius: 3px;
+}
+.story-hero__thesis {
+  margin: 28px 0 0;
+  font-family: var(--serif);
+  font-size: clamp(32px, 6.4vw, 68px);
+  line-height: 1.15;
+  font-weight: 500;
+}
+.story-hero__thesis em {
+  color: var(--gold);
+  font-style: italic;
+}
+.story-scrollcue {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: var(--paper-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.story-scrollcue__line {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(var(--paper-dim), transparent);
+  animation: story-pulse 2s ease-in-out infinite;
+}
+@keyframes story-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ===== KERANGKA SECTION PINNED ========================================== */
+.story-pin__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* padding-top melewati island navbar yang mengambang (24px + tinggi pill). */
+  padding: 114px 5vw 5vh;
+}
+
+/* ===== INTRO ============================================================= */
+.story-intro-pin {
+  position: relative;
+  height: 320vh;
+}
+.story-intro {
+  flex-direction: column;
+  justify-content: center;
+}
+.story-intro__inner {
+  width: 100%;
+  max-width: 760px;
+}
+.story-intro__body {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+/* Kertas bergaris di belakang blok teks. Ukuran font di sini hanya alat: ia
+   mengunci 1.5em pola garis ke line-height paragraf, jadi garisnya benar-benar
+   duduk di baris tulisan. */
+.story-intro__paper {
+  position: absolute;
+  inset: -28px -32px;
+  z-index: 0;
+  pointer-events: none;
+  font-size: clamp(20px, 3vw, 30px);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(1.5em - 1px),
+    rgba(242, 239, 233, 0.16) calc(1.5em - 1px),
+    rgba(242, 239, 233, 0.16) 1.5em
+  );
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+}
+/* Garis margin merah-redup ala buku tulis, di kiri. */
+.story-intro__paper::before {
+  content: '';
+  position: absolute;
+  left: 26px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(232, 163, 61, 0.22);
+}
+.story-intro p {
+  position: relative;
+  z-index: 1;
+  font-family: var(--serif);
+  font-size: clamp(20px, 3vw, 30px);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--paper);
+  margin: 0;
+}
+.story-word {
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.story-word[data-on='true'] {
+  opacity: 1;
+}
+.story-intro .em {
+  color: var(--gold);
+  font-style: italic;
+}
+/* Sapuan stabilo: pita gold translusen, baru menyapu masuk SETELAH kata di
+   bawahnya selesai diketik. */
+.story-intro .mark {
+  position: relative;
+  isolation: isolate;
+  color: var(--paper);
+  font-style: italic;
+  white-space: nowrap;
+}
+.story-intro .mark::before {
+  content: '';
+  position: absolute;
+  left: -0.22em;
+  right: -0.22em;
+  top: 0.08em;
+  bottom: 0.06em;
+  z-index: -1;
+  background: rgba(232, 163, 61, 0.3);
+  border-radius: 3px 8px 4px 7px;
+  transform: skewX(-3deg) scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.story-intro .mark[data-on='true']::before {
+  transform: skewX(-3deg) scaleX(1);
+}
+/* Lebar 0 + border: kursornya terlihat tapi tidak menambah lebar sama sekali,
+   jadi menyisipkannya di tengah kalimat tidak menggeser kata di belakangnya. */
+.story-caret {
+  display: inline-block;
+  width: 0;
+  height: 0.95em;
+  vertical-align: -0.12em;
+  border-left: 2px solid var(--gold);
+  margin-right: -2px;
+  animation: story-blink 1s steps(1) infinite;
+}
+@keyframes story-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ===== PATH / ATOM ====================================================== */
+.story-atom {
+  position: relative;
+  width: min(520px, 76vw, 46vh);
+  aspect-ratio: 1 / 1;
+  flex: 0 0 auto;
+}
+.story-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.story-orbit[data-on='true'] {
+  opacity: 1;
+}
+.story-nucleus {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #ece8e0;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  z-index: 5;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.55);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.6s ease;
+}
+.story-nucleus[data-on='true'] {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  box-shadow: 0 0 34px 3px rgba(232, 163, 61, 0.22);
+}
+/* Yang dirotasi adalah wrapper ring-nya, bukan tiap node. */
+.story-ring {
+  position: absolute;
+  inset: 0;
+  animation: story-orbit-cw var(--orbit-duration, 50s) linear infinite;
+}
+.story-ring[data-dir='ccw'] {
+  animation-name: story-orbit-ccw;
+}
+.story-ring[data-paused='true'] {
+  animation-play-state: paused;
+}
+@keyframes story-orbit-cw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes story-orbit-ccw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+.story-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+/* Counter-rotate: node ikut mengelilingi pusat, logonya tetap tegak. */
+.story-node__spin {
+  animation: story-orbit-ccw var(--orbit-duration, 50s) linear infinite;
+}
+.story-ring[data-dir='ccw'] .story-node__spin {
+  animation-name: story-orbit-cw;
+}
+.story-ring[data-paused='true'] .story-node__spin {
+  animation-play-state: paused;
+}
+/* Chip berlatar terang: semua logo aslinya dibuat untuk background terang dan
+   praktis hilang di atas ink. */
+.story-node__chip {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ece8e0;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.story-node__chip[data-on='true'] {
+  opacity: 1;
+  transform: scale(1);
+}
+.story-node__chip img,
+.story-nucleus img {
+  width: 76%;
+  height: 76%;
+  object-fit: contain;
+}
+@media (max-width: 640px) {
+  .story-node__chip {
+    width: 38px;
+    height: 38px;
+  }
+  .story-nucleus {
+    width: 54px;
+    height: 54px;
+  }
+}
+.story-path__caption {
+  max-width: 760px;
+  margin: clamp(18px, 3.4vh, 36px) auto 0;
+  text-align: center;
+  flex: 0 1 auto;
+}
+.story-path__caption p {
+  font-family: var(--serif);
+  font-size: clamp(13px, 1.45vw, 17px);
+  line-height: 1.65;
+  color: var(--paper-dim);
+  margin: 0;
+}
+.story-seg {
+  opacity: 0.18;
+  transition:
+    opacity 0.5s ease,
+    color 0.5s ease;
+}
+.story-seg[data-on='true'] {
+  opacity: 1;
+  color: var(--paper);
+}
+.story-seg b {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ===== SKILLS / IKIGAI ================================================== */
+.story-skills-pin {
+  position: relative;
+  height: 640vh;
+}
+.story-skills__heading {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.7vw, 32px);
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+  max-width: 640px;
+  /* Jarak ini harus melebihi tonjolan label melengkung (~10% diameter
+     lingkaran teratas), kalau tidak "L&D" menabrak baris kedua heading. */
+  margin: 0 0 clamp(20px, 3.4vh, 40px);
+  flex: 0 0 auto;
+}
+.story-skills__heading em {
+  color: var(--gold);
+  font-style: italic;
+}
+/* Label melengkung menonjol ~10% diameter di luar tepi lingkaran; lebar
+   panggung dibatasi 82vw supaya total (panggung + label) tetap ≤ 90vw, yaitu
+   lebar isi sticky setelah padding 5vw. Tanpa ini, ujung kiri/kanan label
+   terpotong di layar sempit. */
+.story-stage {
+  position: relative;
+  width: min(560px, 82vw, 50vh);
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  flex: 0 0 auto;
+}
+.story-circle__slot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+.story-circle {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(242, 239, 233, 0.22);
+  background: radial-gradient(circle at 50% 40%, rgba(232, 163, 61, 0.05), transparent 70%);
+  display: grid;
+  place-items: center;
+}
+.story-circle[data-active='true'] {
+  border-color: rgba(232, 163, 61, 0.5);
+  box-shadow: 0 0 40px -6px rgba(232, 163, 61, 0.28);
+}
+/* SVG-nya 130% dari lingkaran, jadi teks selalu jatuh di luar tepi. */
+.story-circle__label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 130%;
+  height: 130%;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  pointer-events: none;
+}
+/* Satuan USER SVG (viewBox 0 0 100 100), bukan piksel layar — ikut menskala
+   dengan lingkarannya. */
+.story-circle__label text {
+  font-family: var(--sans);
+  font-size: 5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  fill: var(--paper-dim);
+  transition: fill 0.4s ease;
+}
+.story-circle[data-active='true'] .story-circle__label text {
+  fill: var(--gold);
+}
+.story-tags {
+  --nudge: 16%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 11%;
+  max-width: 100%;
+  /* --nx/--ny (-1/0/1) diset per-lingkaran dari JS; besarnya dari --nudge,
+     yang bisa dikecilkan di breakpoint sempit. Persen di translate dihitung
+     terhadap ukuran elemen ini sendiri, yaitu sebesar lingkarannya. */
+  transform: translate(calc(var(--nx, 0) * var(--nudge)), calc(var(--ny, 0) * var(--nudge)));
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.story-tag {
+  font-family: var(--sans);
+  font-size: clamp(8px, 1.05vw, 11px);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--paper);
+  background: rgba(22, 28, 44, 0.92);
+  border: 1px solid rgba(232, 163, 61, 0.35);
+  border-radius: 100px;
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+/* Saat keempat lingkaran menyatu lagi, tiap daftar tag digeser menjauh dari
+   titik tumpang tindih di tengah dan mengecil supaya semuanya tetap terbaca. */
+.story-tags[data-compact='true'] {
+  gap: 4px;
+  padding: 0 16%;
+}
+.story-tags[data-compact='true'] .story-tag {
+  font-size: clamp(7px, 0.82vw, 9.5px);
+  padding: 3px 6px;
+}
+
+/* Fallback reduced-motion: grid 2×2 statis. */
+.story-skills__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  width: min(860px, 92vw);
+  margin: 6vh auto 0;
+}
+@media (max-width: 640px) {
+  .story-skills__grid {
+    grid-template-columns: 1fr;
+  }
+}
+.story-skills__card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--ink-2);
+  padding: 22px;
+}
+.story-skills__card h3 {
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 14px;
+}
+.story-skills__card .story-tags {
+  justify-content: flex-start;
+  padding: 0;
+}
+
+/* Fallback reduced-motion Path: blok bertumpuk, scroll normal. */
+.story-path__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8vh;
+  width: min(680px, 92vw);
+  margin: 0 auto;
+  padding: 0;
+}
+.story-path__stack li {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+}
+.story-path__stack .story-node__chip {
+  opacity: 1;
+  transform: none;
+}
+.story-path__stackrow {
+  display: flex;
+  gap: 14px;
+}
+
+/* ===== SHOWCASE ========================================================= */
+/* Section ini isinya tiga baris kartu — tingginya sudah lebih dari satu layar.
+   Memaksanya `min-height: 100vh` dengan konten di tengah justru mendorong
+   heading ke atas sampai tertimpa navbar yang mengambang. */
+.story-showcase {
+  flex-direction: column;
+  gap: clamp(20px, 3.4vh, 36px);
+  min-height: auto;
+  padding: 132px 0 12vh;
+}
+.story-showcase__heading {
+  font-family: var(--serif);
+  font-size: clamp(22px, 3vw, 34px);
+  font-weight: 500;
+  line-height: 1.32;
+  text-align: center;
+  max-width: 780px;
+  padding: 0 6vw;
+  margin: 0;
+}
+.story-showcase__heading em {
+  color: var(--gold);
+  font-style: italic;
+}
+.story-marquee-block {
+  width: 100%;
+}
+.story-marquee__label {
+  margin: 0 0 10px;
+  padding: 0 6vw;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+.story-marquee {
+  overflow: hidden;
+  width: 100%;
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 7%, black 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 7%, black 93%, transparent);
+}
+.story-marquee__row {
+  display: flex;
+  gap: 18px;
+  width: max-content;
+  animation: story-scroll-left var(--marquee-duration, 44s) linear infinite;
+}
+.story-marquee__row[data-dir='right'] {
+  animation-name: story-scroll-right;
+}
+.story-marquee:hover .story-marquee__row {
+  animation-play-state: paused;
+}
+@keyframes story-scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes story-scroll-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.story-card {
+  flex: 0 0 auto;
+  width: 258px;
+  min-height: 152px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--ink-2);
+  padding: 17px;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+.story-card__tag {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+.story-card__title {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  margin-top: 8px;
+}
+.story-card__sub {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--paper-dim);
+  margin-top: auto;
+  padding-top: 10px;
+}
+.story-card--quote {
+  width: 330px;
+  margin: 0;
+}
+.story-card--quote blockquote {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--paper);
+}
+.story-card--quote figcaption {
+  margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.story-card__name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+}
+.story-card--quote .story-card__sub {
+  margin-top: 0;
+  padding-top: 0;
+}
+.story-card--more {
+  width: 258px;
+  justify-content: center;
+  border-color: rgba(232, 163, 61, 0.4);
+  transition: border-color 0.25s ease;
+}
+.story-card--more:hover {
+  border-color: var(--gold);
+}
+
+/* ===== FOOTER REVEAL ==================================================== */
+.story-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  height: 100vh;
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 6vh 6vw;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 62%, rgba(232, 163, 61, 0.11), transparent 70%),
+    linear-gradient(180deg, #121828, #0b0f18);
+}
+/* Lebarnya harus memuat kalimat kedua PLUS ruang kata terpanjang di roller
+   ("business"); kalau mepet, roller-nya terlempar ke baris sendiri. */
+.story-footer__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: min(900px, 92vw);
+}
+.story-gem {
+  display: block;
+  flex: 0 0 auto;
+  line-height: 0;
+}
+/* Berlian datang tepat sesudah kalimat kedua — tanpa jarak ini, ujung atas
+   batunya nyaris menyentuh barisnya. */
+.story-closing__line + .story-gem {
+  margin-top: clamp(8px, 1.8vh, 20px);
+}
+.story-closing__line {
+  font-family: var(--serif);
+  font-size: clamp(21px, 3.2vw, 38px);
+  font-weight: 400;
+  line-height: 1.3;
+  margin: clamp(12px, 2vh, 22px) 0 0;
+}
+.story-closing__rule {
+  display: block;
+  width: min(260px, 42vw);
+  height: 1px;
+  margin: clamp(14px, 2.4vh, 24px) 0 0;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  transform-origin: center;
+}
+/* Kata berputar. Ghost mengunci lebarnya ke kata terpanjang, jadi sisa
+   kalimat tidak ikut bergoyang tiap pergantian. */
+/* Ghost yang tak terlihat memesan ruang selebar kata terpanjang dan menjaga
+   tinggi barisnya; kata yang sedang tampil ditumpuk absolut di atasnya, jadi
+   pergantian kata tidak menggeser apa pun dan tidak memaksa baris baru. */
+.story-roller {
+  position: relative;
+  display: inline-block;
+  text-align: left;
+}
+.story-roller__ghost {
+  visibility: hidden;
+  font-style: italic;
+  display: inline-grid;
+  /* Sedikit ruang untuk juntai huruf miring supaya ujungnya tidak terpotong. */
+  padding-right: 0.08em;
+}
+.story-roller__ghost > span {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+}
+.story-roller__clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.story-roller__word {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--gold);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.story-closing__contact {
+  position: relative;
+  display: inline-block;
+  margin-top: clamp(22px, 3.6vh, 40px);
+  font-family: var(--sans);
+  font-size: clamp(15px, 2vw, 19px);
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s ease;
+}
+.story-closing__contact:hover {
+  border-color: var(--gold);
+}
+/* Kursor berhenti DI ATAS teks emailnya, bukan di sebelahnya — ujung panah
+   SVG ada di pojok kiri-atas, jadi titik ini yang jadi tempat "klik". */
+.story-cursor {
+  position: absolute;
+  left: 72%;
+  top: 52%;
+  pointer-events: none;
+}
+.story-cursor__ping {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+}
+
+.story-social {
+  display: flex;
+  gap: 10px;
+  list-style: none;
+  margin: clamp(18px, 3vh, 30px) 0 0;
+  padding: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.story-social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  background: rgba(22, 28, 44, 0.7);
+  color: var(--paper-dim);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    color 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.story-social a:hover {
+  color: var(--gold);
+  border-color: var(--gold-dim);
+  transform: translateY(-2px);
+}
+.story-closing__thanks {
+  margin: clamp(16px, 2.6vh, 26px) 0 0;
+  font-size: 12px;
+  color: var(--paper-dim);
+  letter-spacing: 0.05em;
+}
+
+/* Framer Motion sudah dijinakkan lewat <MotionConfig reducedMotion="user"> dan
+   cabang fallback eksplisit di tiap komponen. Yang tidak tersentuh keduanya
+   adalah animasi CSS murni: orbit atom, marquee, kilau tombol, cincin avatar,
+   kursor berkedip. Ini menghentikan semuanya. */
+@media (prefers-reduced-motion: reduce) {
+  .story-root *,
+  .story-root *::before,
+  .story-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .story-scroller {
+    margin-bottom: 0;
+  }
+  .story-footer {
+    position: static;
+    height: auto;
+    min-height: 100vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .story-section {
+    padding: 8vh 5vw;
+  }
+  .story-pin__sticky {
+    padding: 98px 5vw 4vh;
+  }
+  .story-card--quote {
+    width: 280px;
+  }
+}
+
+/* Di layar sempit lingkaran ikigai tinggal ~160px. Geseran dan lebar isi tag
+   harus ikut mengecil, kalau tidak baris teratas/terbawah tiap daftar keluar
+   dari lengkung lingkarannya di state menyatu. */
+@media (max-width: 700px) {
+  .story-tags {
+    --nudge: 10%;
+  }
+  .story-tags[data-compact='true'] {
+    gap: 3px;
+    padding: 0 24%;
+  }
+  .story-tags[data-compact='true'] .story-tag {
+    font-size: 6.8px;
+    padding: 2.5px 5px;
+  }
+}

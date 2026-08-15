@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Public_Sans, IBM_Plex_Mono } from 'next/font/google';
+import { Public_Sans, IBM_Plex_Mono, Fraunces, Space_Grotesk } from 'next/font/google';
 import { MotionConfig } from 'framer-motion';
 import './globals.css';
 
@@ -20,6 +20,22 @@ const plexMono = IBM_Plex_Mono({
   variable: '--font-plex-mono',
   display: 'swap',
 });
+// Dua muka berikut hanya dipakai scroll-story homepage (`/`), yang punya
+// paletnya sendiri: Fraunces sebagai serif display, Space Grotesk untuk label
+// dan tag. `weight` Fraunces sengaja tidak didaftar — ia variable font, dan
+// menyebut weight satu per satu gagal di-resolve Turbopack saat build.
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
+  display: 'swap',
+});
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-story-sans',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://nurfajar.com'),
@@ -38,7 +54,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${publicSans.variable} ${plexMono.variable}`}>
+    <html
+      lang="en"
+      className={`${publicSans.variable} ${plexMono.variable} ${fraunces.variable} ${spaceGrotesk.variable}`}
+    >
       <head>
         {/* CSP, Referrer-Policy, X-Frame-Options etc. are real HTTP headers
             (see next.config.mjs `headers()`) on the Vercel deploy.
