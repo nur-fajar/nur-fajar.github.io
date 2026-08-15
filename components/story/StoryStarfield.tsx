@@ -39,6 +39,13 @@ const FIGURE_SCALE = 6;
 const RA_CYCLE_MUL = 1.7;
 const EDGE_PAD = 140;
 const DEG_PER_SEC = 0.5;
+// Kanvas ini setinggi dokumen dan redraw-nya (clearRect + ratusan bintang +
+// tiap rasi yang live) bukan murah — jalan terus selama halaman terbuka,
+// bukan cuma saat scroll. Drift-nya cuma 0.5°/detik, jadi mata tidak bisa
+// membedakan 30fps dari 60fps di sini, tapi CPU/GPU-nya kerja separuh.
+// Berat di HP lawas datang dari sini, bukan dari 60fps-nya per se.
+const TARGET_FPS = 30;
+const FRAME_BUDGET_MS = 1000 / TARGET_FPS;
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
 const docHeight = () => Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
@@ -217,6 +224,14 @@ export default function StoryStarfield() {
     }
 
     function loop(t: number) {
+      // rAF masih diminta tiap refresh layar (perlu, untuk tetap disinkronkan
+      // ke compositor), tapi draw() — bagian yang mahal — dilewati sampai
+      // FRAME_BUDGET_MS terlampaui. dt dihitung dari waktu asli yang berlalu,
+      // jadi laju rotasi tetap benar walau frame-nya dilewati.
+      if (lastT && t - lastT < FRAME_BUDGET_MS) {
+        rafId = requestAnimationFrame(loop);
+        return;
+      }
       const dt = lastT ? Math.min(0.05, (t - lastT) / 1000) : 0;
       lastT = t;
       draw(dt);

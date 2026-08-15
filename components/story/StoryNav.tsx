@@ -71,8 +71,17 @@ export default function StoryNav() {
           aria-label={open ? 'Close contact menu' : 'Open contact menu — CV, LinkedIn, email'}
           onClick={() => setOpen((v) => !v)}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element -- ukuran tetap, aset lokal. */}
-          <img className="story-avatar__img" src="/foto-profile-nf.jpg" alt="Nur Fajar" width={32} height={32} />
+          {/* eslint-disable-next-line @next/next/no-img-element -- ukuran tetap, aset lokal.
+              Dedicated 128×128 crop, bukan foto 1280×1280 yang dipakai About —
+              di sini tampil 32px, jadi sumber tetap kecil biar tidak decode
+              gambar 1.6MP tiap kali navbar muncul. */}
+          <img
+            className="story-avatar__img"
+            src="/foto-profile-nf-avatar.jpg"
+            alt="Nur Fajar"
+            width={32}
+            height={32}
+          />
           {/* Teks melingkar di sekeliling foto. Cincinnya berputar pelan; saat
               menu terbuka putarannya berhenti supaya tidak berisik. */}
           <svg className="story-avatar__ring" data-spin={!open} viewBox="0 0 100 100" aria-hidden="true">
