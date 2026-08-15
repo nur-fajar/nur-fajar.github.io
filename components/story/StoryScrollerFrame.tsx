@@ -1,7 +1,7 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { motion, useMotionValueEvent, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 
 /**
  * Bungkus scroller cerita. `.story-scroller` sudah punya `margin-bottom: 100vh`
@@ -33,8 +33,33 @@ export default function StoryScrollerFrame({ children }: { children: React.React
   const { scrollYProgress } = useScroll({ target: ref, offset: ['end end', 'end start'] });
 
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
-  const brightness = useTransform(scrollYProgress, [0, 1], [1, 0.55]);
-  const filter = useTransform(brightness, (b) => `brightness(${b})`);
+  // `brightness(1)` BUKAN no-op buat browser: begitu ada properti `filter`,
+  // elemen setinggi dokumen ini jadi satu render surface yang harus di-raster
+  // utuh — sepanjang scroll, bukan cuma di jatah reveal. Di HP itu cukup untuk
+  // membuat raster ketinggalan waktu scroll cepat, dan setiap petak yang belum
+  // sempat digambar membocorkan footer di baliknya. Jadi selama belum meredup,
+  // jangan pasang filter sama sekali.
+  const filter = useTransform(scrollYProgress, (p) => (p === 0 ? 'none' : `brightness(${1 - p * 0.45})`));
+
+  // Footer-nya `position: fixed` satu layar penuh dan duduk DI BALIK scroller
+  // sepanjang halaman — jadi apa pun yang membuat scroller bolong sesaat
+  // (raster ketinggalan saat pengunjung baru scroll kencang di HP) langsung
+  // memperlihatkan footer di tengah cerita. Ia tidak perlu tergambar sebelum
+  // jatah reveal-nya dimulai: tandai <html> begitu progress-nya lepas dari 0
+  // — sama seperti `StoryThemeToggle` menandai tema — dan `story.css` yang
+  // menyembunyikannya sebelum itu. Kalau tandanya gagal dipasang, yang bocor
+  // cuma background `--ink` milik body: warna yang sama dengan scroller.
+  useMotionValueEvent(scrollYProgress, 'change', (p) => {
+    document.documentElement.toggleAttribute('data-story-revealing', p > 0);
+  });
+
+  // `change` cuma jalan kalau nilainya bergerak; halaman yang dibuka langsung
+  // di posisi bawah (reload) perlu disinkronkan sekali di mount.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.toggleAttribute('data-story-revealing', scrollYProgress.get() > 0);
+    return () => root.removeAttribute('data-story-revealing');
+  }, [scrollYProgress]);
 
   return (
     <motion.div ref={ref} className="story-scroller" style={reduce ? undefined : { scale, filter }}>
