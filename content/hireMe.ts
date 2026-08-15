@@ -1,196 +1,108 @@
-// Copy untuk halaman konversi `/hire-me`.
+// Konten `/hire-me` — berkas kesiapan satu unit, bertema mecha.
 //
-// Homepage (`/`) itu naratif — ia membangun rasa, bukan menutup kesepakatan.
-// Halaman ini kebalikannya: tiap section ditaruh untuk memindahkan pengunjung
-// satu langkah lebih dekat ke "kirim email / booking call", dengan urutan
-// masalah → solusi → bukti → proses → bantahan keberatan → ajakan.
+// TIDAK ADA CERITA BARU DI FILE INI. Seluruh isi halaman ini adalah cerita
+// homepage (`/`) yang dibingkai ulang sebagai briefing pra-peluncuran; yang
+// mecha cuma bingkainya, faktanya persis sama. Tiap blok menyebut sumbernya:
 //
-// Aturan isi: TIDAK ADA angka baru di file ini. Semua klaim ditarik dari
-// content/signals.ts, content/references.ts, content/designCaseStudy.ts, dan
-// components/story/data.ts yang sudah lebih dulu ada di repo — kalau sebuah
-// angka tidak bisa ditelusuri ke sana, ia tidak boleh muncul di halaman yang
-// tujuannya justru membangun kepercayaan.
+//   UNIT      ← StoryHero (sapaan + judul layar-pembaca)
+//   SPECS     ← components/story/data.ts (WORK milestones) + content/signals.ts
+//   SORTIES   ← StoryPath CAPTIONS + PATH_STEPS/NUCLEUS
+//   SUBSYSTEM ← data.ts SKILL_GROUPS (kode unit saja yang ditambahkan di sini)
+//   LAUNCH    ← StoryClosing
+//
+// Grup skill, penghargaan, log kerja, dan kutipan TIDAK disalin ke sini sama
+// sekali — halaman mengimpor `SKILL_GROUPS`, `AWARDS`, `WORK`, dan
+// `REFERENCE_CARDS` langsung dari `components/story/data.ts`, jadi satu
+// perubahan di sana ikut ke dua halaman dan keduanya tidak bisa berselisih.
+//
+// Aturan lama file ini tetap berlaku: tidak ada angka yang tidak bisa
+// ditelusuri ke `content/signals.ts`, `content/references.ts`, atau `data.ts`.
 
 export type Stat = { value: string; label: string };
-export type Failure = { problem: string; because: string; fix: string };
-export type Service = { n: string; name: string; promise: string; deliverables: string[]; proof: string };
-export type CaseStudy = { metric: string; metricLabel: string; title: string; context: string; did: string[]; result: string };
-export type Step = { n: string; name: string; detail: string; when: string };
-export type Faq = { q: string; a: string };
+export type Sortie = { code: string; phase: string; caption: string };
+export type Section = { code: string; name: string; note: string };
 
-export const HERO = {
+/** Pelat identitas unit. Nama & tagline dari StoryHero. */
+export const UNIT = {
+  designation: 'NF-01',
+  class: 'Learning & Development Specialist',
+  callsign: 'Nur Fajar',
+  // Judul layar-pembaca StoryHero, kata per kata.
+  tagline: 'I build people, not just curricula.',
   status: 'Open to work · Remote, UTC+7',
-  h1: ['Hire me to build training', 'your team actually applies.'],
-  sub: 'I am Nur Fajar — a Learning & Development specialist who designs the curriculum, delivers it, measures whether it changed behaviour, and automates the operational work underneath it. Four jobs most teams hire four people for.',
+  statusCode: 'All systems nominal',
   primaryCta: 'Book a 15-minute intro call',
   secondaryCta: 'Email me directly',
+  reassure: 'Usually replies within one business day.',
 };
 
-// Diambil dari signals.ts (Terra Weather, Bangkit) + data.ts WORK milestones.
-export const HERO_STATS: Stat[] = [
+/** Callout spesifikasi di blueprint hero. Empat angka, semua sudah ada di repo. */
+export const SPECS: Stat[] = [
   { value: '350+', label: 'learners trained' },
   { value: '9.0/10', label: 'mean satisfaction, Kirkpatrick L1' },
   { value: '1,250 hrs', label: 'manual work automated away' },
   { value: '90%+', label: 'cohort graduation rate' },
 ];
 
-export const LOGOS = [
-  { src: '/logos/story/terra-ai.png', alt: 'Terra Weather' },
-  { src: '/logos/story/bangkit.png', alt: 'Bangkit Academy' },
-  { src: '/logos/story/bank-indonesia.png', alt: 'Bank Indonesia' },
-  { src: '/logos/story/bri.png', alt: 'Bank BRI' },
-  { src: '/logos/story/gdsc.png', alt: 'Google Developer Student Clubs' },
-  { src: '/logos/story/genbi.png', alt: 'GenBI' },
-  { src: '/logos/story/unsil.png', alt: 'Universitas Siliwangi' },
-];
-
-// Bagian "kenapa kebanyakan gagal" — cermin dari framing template rujukan,
-// tapi dipindah ke domain yang benar-benar saya kerjakan: program L&D.
-export const FAILURES: Failure[] = [
+/**
+ * Rekam jejak penempatan — orbit StoryPath yang diluruskan jadi garis waktu.
+ *
+ * Urutan dan isinya sejajar 1:1 dengan `CAPTIONS` di StoryPath dan dengan
+ * `PATH_STEPS`, jadi logo tiap tahap diambil dari sana alih-alih didaftar
+ * ulang: indeks 0 memakai `NUCLEUS`, indeks 1-3 memakai `PATH_STEPS[i].nodes`.
+ * Caption di sana berupa JSX (ada penebalan di tengah kalimat); di sini
+ * versinya teks polos, dengan fakta yang sama.
+ */
+export const SORTIES: Sortie[] = [
   {
-    problem: 'The training gets great reviews and changes nothing.',
-    because: 'Attendance and a happy-sheet are the only things measured, so nobody finds out that the skill never reached the job.',
-    fix: 'Objectives are backward-designed from the artifact the learner must produce, then measured at Kirkpatrick L1–L3 — reaction, learning, and behaviour on the job.',
+    code: 'S-00',
+    phase: 'Origin',
+    caption:
+      'It started at Universitas Siliwangi, where I graduated as the best graduate of the Faculty of Engineering with a 3.94 GPA.',
   },
   {
-    problem: 'The content is built for the trainer, not the learner.',
-    because: 'A generic deck gets reused across audiences whose prior knowledge, motivation, and fears are completely different.',
-    fix: 'Every programme starts from a written learner profile — prior knowledge, motivation, fears — and the design follows from it. Sessions run 20% instruction, 80% practice.',
+    code: 'S-01',
+    phase: 'Support',
+    caption:
+      'Along the way, I received the Bank BRI scholarship for a semester, and the Bank Indonesia scholarship for a year.',
   },
   {
-    problem: 'The programme dies when the trainer leaves.',
-    because: 'The knowledge lives in one person and the operations are manual, so nothing survives their last day.',
-    fix: 'Facilitator guides, assessment instruments, and a Train-the-Trainers handover ship with the programme — plus automation for the repetitive operational work around it.',
-  },
-];
-
-export const SERVICES: Service[] = [
-  {
-    n: '01',
-    name: 'GenAI training programmes',
-    promise: 'A full programme for your team — from empty page to a cohort that can do the work.',
-    deliverables: [
-      'Curriculum, module outlines, and facilitator guides',
-      'Live delivery — webinar, workshop, or multi-week cohort',
-      'Project-based assessment with a real artifact per learner',
-      'Progress dashboard and post-programme evaluation report',
-    ],
-    proof: '4 GenAI modules built across business, education, and product tracks; 5 programmes led end to end for 200+ participants.',
+    code: 'S-02',
+    phase: 'National programmes',
+    caption:
+      'I joined two national programs by Indonesia’s Ministry of Education — Bangkit Academy in early 2022, graduating with distinction in the Machine Learning path, then Terra AI later that year, where my project team was selected as a top project in mental health.',
   },
   {
-    n: '02',
-    name: 'Instructional design & programme audit',
-    promise: 'You already have training. It underperforms. I take it apart and rebuild the parts that fail.',
-    deliverables: [
-      'Learner profile and design brief',
-      'Bloom-tagged objectives, backward-designed from the artifact',
-      'Session architecture — hook, concept, activity, checkpoint',
-      'Formative and summative assessment instruments',
-    ],
-    proof: 'A worked example is on this site: a 2-hour, 3-lesson course taken apart down to its assessment rationale.',
-  },
-  {
-    n: '03',
-    name: 'AI workflow automation',
-    promise: 'The repetitive work around your programme — or your pipeline — handled by agents, with a human still approving.',
-    deliverables: [
-      'Workflow mapping and automation scope',
-      'Python + LLM API pipeline built to your stack',
-      'Agents wired into your CRM or ops tooling',
-      'Human-in-the-loop approval before anything is sent',
-    ],
-    proof: '9 agents deployed across a CRM pipeline: ~3,000 leads processed, 600 qualified prospects surfaced, per-prospect prep cut 83%.',
-  },
-  {
-    n: '04',
-    name: 'Train the Trainers',
-    promise: 'Your own people run the programme after I leave. That is the point.',
-    deliverables: [
-      'Facilitation coaching for your internal trainers',
-      'Annotated facilitator guides and session runbooks',
-      'Observation, feedback, and certification cycle',
-      'Full handover of materials and evaluation instruments',
-    ],
-    proof: '6 university lecturers upskilled through a Train-the-Trainers cohort at Terra Weather.',
+    code: 'S-03',
+    phase: 'Command',
+    caption:
+      'On campus, I took on leadership early — serving as QRIS competition coordinator and media staff at GenBI at the same time, and becoming GDSC’s first-ever lead, building it from zero.',
   },
 ];
 
-export const CASES: CaseStudy[] = [
-  {
-    metric: '−83%',
-    metricLabel: 'time per prospect',
-    title: 'B2B outreach, rebuilt as an agent pipeline',
-    context: 'A 3-person build with the CEO and a software engineer at Terra Weather. Outreach prep was eating the team alive at roughly 30 minutes per prospect.',
-    did: [
-      'Co-engineered a Python + LLM API pipeline, live June–July 2026',
-      'Deployed 9 specialised agents across the CRM, each with a narrow job',
-      'Kept a human approval gate before any email left the system',
-    ],
-    result: '~3,000 leads processed and 600 qualified prospects surfaced. Prep fell from ~30 minutes to under 5 — a manual-equivalent workload of ~1,250 hours that never had to be staffed.',
-  },
-  {
-    metric: '9.0/10',
-    metricLabel: 'mean learner satisfaction',
-    title: 'GenAI curriculum for mixed audiences, startup to multinational',
-    context: 'Learners arrived with no shared baseline — some non-technical business owners, some engineers — and the same generic deck would have failed both.',
-    did: [
-      'Built 4 modules spanning foundational to production-ready',
-      'Ran a 20% instruction / 80% practice delivery framework',
-      'Iterated curriculum live from structured feedback loops each cohort',
-    ],
-    result: 'A 9.0/10 mean Kirkpatrick L1 score sustained across every cohort, with 100+ students and professionals trained and progress tracked per learner.',
-  },
-  {
-    metric: '90%+',
-    metricLabel: 'cohort graduation rate',
-    title: 'Mentoring 50+ students across 25 universities',
-    context: 'A Ministry of Education programme at Bangkit Academy, with mentees spread across Indonesia and no shared campus to fall back on.',
-    did: [
-      'Ran 40+ weekly sessions covering technical skills, soft skills, and engagement',
-      'Coordinated 20+ industry and academic experts as the liaison to the Bangkit team',
-      'Tracked individual progress rather than cohort averages',
-    ],
-    result: 'Graduation rate above 90%. Two mentees from that cohort are quoted further down this page — one now at Accenture, one at Mondelēz International.',
-  },
-];
+/**
+ * Kode unit untuk tiap grup skill, sejajar indeks dengan `SKILL_GROUPS` di
+ * `components/story/data.ts` — nama dan tag-nya diimpor dari sana, bukan
+ * disalin, jadi yang perlu hidup di sini hanya lapisan kode mecha-nya.
+ */
+export const SUBSYSTEM_CODES = ['SYS-A', 'SYS-B', 'SYS-C', 'SYS-D'];
 
-export const PROCESS: Step[] = [
-  { n: '01', name: 'Intro call', detail: '15 minutes. You describe the gap, I tell you plainly whether I am the right person for it.', when: 'Day 0' },
-  { n: '02', name: 'Scope & design brief', detail: 'Learner profile, objectives, success measures, and a fixed scope in writing before anything is built.', when: 'Week 1' },
-  { n: '03', name: 'Build & pilot', detail: 'Materials, assessments, and automation built, then piloted with a small group and revised on what the pilot exposes.', when: 'Weeks 2–4' },
-  { n: '04', name: 'Deliver & measure', detail: 'Live delivery, then evaluation at reaction, learning, and behaviour — not attendance.', when: 'Delivery' },
-  { n: '05', name: 'Handover', detail: 'Facilitator guides, instruments, and a Train-the-Trainers pass so your team can run it without me.', when: 'Close' },
-];
+/** Header kokpit tiap section. */
+export const SECTIONS: Record<string, Section> = {
+  core: { code: 'SEC-01', name: 'Core system', note: 'Primary function' },
+  sorties: { code: 'SEC-02', name: 'Deployment history', note: '4 phases logged' },
+  subsystems: { code: 'SEC-03', name: 'Subsystems', note: '4 arrays online' },
+  record: { code: 'SEC-04', name: 'Service record', note: 'Commendations & mission log' },
+  transmissions: { code: 'SEC-05', name: 'Incoming transmissions', note: '5 of 11 received' },
+  launch: { code: 'SEC-06', name: 'Launch', note: 'Awaiting clearance' },
+};
 
-export const FAQS: Faq[] = [
-  {
-    q: 'Where are you based, and does remote work?',
-    a: 'Indonesia, UTC+7. I spent two and a half years as a fully remote Learning & Development Specialist for a Singapore-based company, so remote delivery and async collaboration are the normal case for me, not an experiment.',
-  },
-  {
-    q: 'What kind of engagement are you open to?',
-    a: 'Full-time roles, contract engagements, and one-off workshops. If you are not sure which fits, the intro call is the fastest way to find out — I will say so if a smaller engagement would serve you better.',
-  },
-  {
-    q: 'Which languages do you deliver in?',
-    a: 'Bahasa Indonesia and English. Materials can ship bilingual if your cohort is mixed.',
-  },
-  {
-    q: 'Do you actually build the automation, or just specify it?',
-    a: 'I build it. The CRM pipeline described above was co-engineered in Python against LLM APIs, and I hold a TensorFlow Developer certificate and a Google Data Analytics certificate alongside the L&D work.',
-  },
-  {
-    q: 'How do you prove the training worked?',
-    a: 'Kirkpatrick levels 1 through 3 — reaction, learning, and on-the-job behaviour. Assessment is artifact-based: learners produce something real and explain the design decisions behind it, which is what separates understanding from rote completion.',
-  },
-  {
-    q: 'What does it cost?',
-    a: 'It depends entirely on scope, and I would rather quote something honest than post a number that fits nobody. Bring the gap to the intro call and you will get a scoped figure in writing.',
-  },
-];
-
-export const FINAL_CTA = {
-  heading: ['One call is enough to know', 'if this is a fit.'],
+/** Penutup — kalimat dan ajakan kontaknya dari StoryClosing. */
+export const LAUNCH = {
+  line: 'See me as your last puzzle piece,',
+  // Kalimat kedua StoryClosing dipecah supaya kata yang berputar
+  // (`CLOSING_WORDS` di data.ts) bisa disisipkan di tengahnya.
+  lineBefore: 'or the diamond that grows your',
   sub: 'Fifteen minutes, no deck, no pitch. Describe the gap in your team and I will tell you straight whether I can close it — and if I cannot, who or what would.',
-  reassure: 'Usually replies within one business day.',
+  thanks: 'Thank you for visiting my site.',
 };
