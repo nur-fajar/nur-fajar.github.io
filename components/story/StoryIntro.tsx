@@ -59,9 +59,11 @@ function buildModel() {
 const MODEL = buildModel();
 
 // Jendela progress tempat pengetikan berlangsung. Ada jeda di awal dan akhir
-// supaya kalimat terakhir sempat terbaca sebelum pin dilepas.
-const TYPE_START = 0.1;
-const TYPE_END = 0.82;
+// supaya kalimat terakhir sempat terbaca sebelum pin dilepas — dipersempit
+// (bukan dihilangkan) supaya section ini tidak buka dengan layar nyaris
+// kosong selama puluhan vh sebelum kata pertama muncul.
+const TYPE_START = 0.05;
+const TYPE_END = 0.88;
 
 export default function StoryIntro() {
   const reduce = useReducedMotion();
