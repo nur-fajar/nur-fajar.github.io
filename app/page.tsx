@@ -28,7 +28,8 @@ import StoryClosing from '@/components/story/StoryClosing';
  * Halaman ini punya paletnya sendiri, dark secara default dengan varian
  * light yang di-toggle lewat `StoryThemeToggle` di dalam `StoryNav` (lihat
  * komentar token warna di `story.css`); versi portfolio yang sebelumnya ada
- * di sini pindah utuh ke `/process`, yang tidak ikut punya toggle ini.
+ * di sini sempat pindah ke `/process`, yang kemudian dihapus sepenuhnya
+ * (bukan cuma tidak ditautkan) supaya tidak lagi bisa diakses publik.
  */
 export default function HomePage() {
   return (
