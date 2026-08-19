@@ -1,82 +1,122 @@
 import type { Metadata } from 'next';
-import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
-import Script from 'next/script';
-import { MotionConfig } from 'framer-motion';
+import { Bricolage_Grotesque, IBM_Plex_Mono, Instrument_Sans } from 'next/font/google';
+import MotionProvider from '@/components/ledger/MotionProvider';
+import { CONTACT } from '@/content/ledger';
 import './globals.css';
 
-// Self-hosted via next/font (downloaded at build time, served from /_next/static
-// on the same origin) instead of the old <link> to fonts.googleapis.com — one
-// less external host the CSP below needs to trust, and one less render-blocking
-// cross-origin request.
-const inter = Inter({
+/* Tiga keluarga, sesuai batas performance budget (spec §11). Semuanya
+   di-self-host lewat next/font — di-download saat build dan disajikan dari
+   origin yang sama, jadi `font-src 'self'` di CSP tetap cukup dan tidak ada
+   request render-blocking ke fonts.googleapis.com. */
+
+// Display — variable, jadi weight-nya tidak di-pin di sini.
+const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-// Headings only (h1-h4, sig-name, quote-name, agent-claim, …) — body copy
-// stays on Inter, which was never the "fairy" part of the old skin.
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['500', '600', '700'],
   variable: '--font-display',
   display: 'swap',
 });
-const jbmono = JetBrains_Mono({
+
+// Body.
+const instrument = Instrument_Sans({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-jbmono',
+  variable: '--font-body',
   display: 'swap',
 });
 
+// Data & utility — label, kicker, tanggal, semua angka di Proof.
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
+  display: 'swap',
+});
+
+/**
+ * Meta ini adalah teks yang muncul di preview LinkedIn dan WhatsApp — sering
+ * jadi hal PERTAMA yang dibaca hiring manager, sebelum situsnya sendiri. Karena
+ * itu ia harus 100% mencerminkan peran yang dilamar: L&D / Instructional Design
+ * / Curriculum Development. Tidak ada kata "AI" di title, description, og, atau
+ * twitter tags sama sekali (spec §10.1 + anti-checklist §16).
+ */
 export const metadata: Metadata = {
   metadataBase: new URL('https://nurfajar.com'),
   title: {
-    default: 'Nur Fajar — AI Learning & Development Specialist',
+    default: 'Nur Fajar — L&D Specialist · Instructional Design & Curriculum Development',
     template: '%s — Nur Fajar',
   },
   description:
-    'Nur Fajar — Learning & Development Specialist building GenAI curriculum and AI automation systems. 350+ learners trained, 9 AI agents deployed.',
+    'L&D Specialist. End-to-end program design, delivery, and evaluation — 5 programs, 300+ learners, 9.0/10 satisfaction, curriculum now taught by trainers I trained.',
+  alternates: { canonical: 'https://nurfajar.com' },
   openGraph: {
-    title: 'Nur Fajar — AI Learning & Development Specialist',
-    description: 'GenAI curriculum, AI automation systems, 350+ learners trained.',
-    images: ['/og.png'],
+    type: 'profile',
+    locale: 'en_US',
+    url: 'https://nurfajar.com',
+    title: 'Nur Fajar — L&D Specialist',
+    description:
+      'I run learning programs end to end — design, delivery, evaluation. 300+ learners trained, 5 programs, a curriculum now taught by others.',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nur Fajar — L&D Specialist',
+    description:
+      'I run learning programs end to end — design, delivery, evaluation. 300+ learners trained, 5 programs, a curriculum now taught by others.',
+  },
+};
+
+/* Situs kandidat ditemukan lewat NAMA PERAN, bukan nama orang — knowsAbout di
+   bawah ini adalah daftar peran/kompetensi yang dicari hiring manager. */
+const PERSON_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Nur Fajar',
+  jobTitle: 'Learning & Development Specialist',
+  email: CONTACT.email,
+  url: 'https://nurfajar.com',
+  sameAs: [CONTACT.linkedin],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Tangerang',
+    addressCountry: 'ID',
+  },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Siliwangi University' },
+  knowsAbout: [
+    'Instructional Design',
+    'Curriculum Development',
+    'ADDIE',
+    'Training Needs Analysis',
+    'Facilitation',
+    'Training Evaluation',
+    'Train the Trainers',
+    'Generative AI',
+    'Prompt Engineering',
+    'Python',
+  ],
+  seeks: { '@type': 'Demand', name: 'Learning & Development Specialist role' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-mode="light" className={`${inter.variable} ${spaceGrotesk.variable} ${jbmono.variable}`}>
+    <html
+      lang="en"
+      className={`${bricolage.variable} ${instrument.variable} ${plexMono.variable}`}
+    >
       <head>
-        {/* CSP, Referrer-Policy, X-Frame-Options etc. are real HTTP headers now
-            (see next.config.mjs `headers()`) — Vercel runs this as an actual
-            server, unlike the old GitHub Pages static export, which could only
-            fake CSP via a <meta http-equiv> tag and had no way to set
-            frame-ancestors or X-Frame-Options at all. */}
-        {/* Framer Motion bakes its `initial` (pre-animation) style into the
-            server-rendered HTML — reveal-on-scroll and reveal-on-mount
-            elements ship as opacity:0 until JS runs the animation that
-            brings them to 1. If JS never runs, they'd stay invisible
-            forever. The original build's motion.js treated "text hidden by
-            an unfinished animation" as a real loss, not a cosmetic bug, and
-            went to real lengths to guarantee it couldn't happen (deferred
-            tweens, clearProps, a timeout failsafe) — this is that same
-            guarantee for the JS-disabled case: every element Framer Motion
-            might render pre-hidden carries `.motion-safe`, and this rule
-            only exists when there is no JS to have run the animation. */}
+        {/* Framer Motion membakar state `initial` ke HTML server-rendered —
+            elemen reveal terkirim sebagai opacity:0 sampai JS menjalankan
+            animasinya. Kalau JS tidak pernah jalan, teksnya tidak akan pernah
+            muncul. Aturan ini hanya ada ketika memang tidak ada JS. */}
         <noscript>
           <style>{'.motion-safe{opacity:1 !important;transform:none !important;}'}</style>
         </noscript>
+        {/* JSON-LD statis, dibangun dari konstanta di repo ini — tidak ada
+            input pengguna yang bisa masuk ke sini. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_SCHEMA) }}
+        />
       </head>
       <body>
-        <Script src="/theme-init.js" strategy="beforeInteractive" />
-        {/* Collapses every Framer Motion animation in the tree to an instant,
-            no-op transition under prefers-reduced-motion — the one central
-            guard motion.js used to reimplement per-effect with an early
-            `if (reduced.matches) return`. The canvas widgets (Starfield,
-            Globe) still check it themselves since they drive their own RAF
-            loops rather than Motion's animate engine. */}
-        <MotionConfig reducedMotion="user">{children}</MotionConfig>
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );

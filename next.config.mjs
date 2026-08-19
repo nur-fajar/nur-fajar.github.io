@@ -48,6 +48,13 @@ const nextConfig = STATIC_EXPORT
       images: { unoptimized: true },
     }
   : {
+      // Situs lama menautkan resume sebagai /nf.pdf, dan URL itu sudah duduk di
+      // riwayat browser serta email orang. File-nya sendiri diganti versi
+      // terbaru dengan nama yang deskriptif, jadi tautan lamanya diarahkan ke
+      // sana alih-alih dibiarkan jadi 404.
+      async redirects() {
+        return [{ source: '/nf.pdf', destination: '/Nur-Fajar-LnD-Specialist-CV.pdf', permanent: true }];
+      },
       async headers() {
         return [
           {

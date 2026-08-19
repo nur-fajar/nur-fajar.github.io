@@ -1,0 +1,389 @@
+/**
+ * Single source of truth untuk seluruh angka & copy situs v2.
+ *
+ * Aturannya dari spec §3: angka di file ini adalah SATU-SATUNYA versi yang
+ * boleh muncul di situs, dan setiap angka wajib membawa konteks/metodenya di
+ * sebelahnya (prinsip P2). Kalau sebuah angka tidak punya baris `method`,
+ * angka itu tidak boleh dipakai.
+ *
+ * Semua nilai di bawah ini sudah dicocokkan baris-per-baris dengan
+ * Nur-Fajar-Resume-Learning-Development-Specialist.pdf (prinsip P3 — situs dan
+ * CV harus bisa dibaca berdampingan tanpa satu pertanyaan pun).
+ */
+
+export const CONTACT = {
+  email: 'hi.nurfajar@gmail.com',
+  linkedin: 'https://www.linkedin.com/in/nurfajar/',
+  cal: 'https://cal.com/nurfajar/15min',
+  location: 'Tangerang, Indonesia',
+  timezone: 'GMT+7',
+  /** Nama file sengaja deskriptif — file ini duduk di folder Downloads
+   *  hiring manager selama berminggu-minggu (spec §7 SECTION 8). */
+  cv: '/Nur-Fajar-LnD-Specialist-CV.pdf',
+  cvFilename: 'Nur-Fajar-LnD-Specialist-CV.pdf',
+} as const;
+
+/** Mailto dengan subject & body sudah terisi — mengurangi gesekan menulis
+ *  email pertama sampai nyaris nol. */
+export const MAILTO =
+  `mailto:${CONTACT.email}` +
+  '?subject=Role%20at%20%5Bcompany%5D' +
+  '&body=Hi%20Fajar%2C%0A%0A';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 1 — Hero
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface HeroStat {
+  value: string;
+  label: string;
+  /** Denominator / konteks. Wajib ada — P2. */
+  method: string;
+}
+
+/** Keempat sel adalah metrik L&D/kurikulum murni. Tidak ada angka AI di hero
+ *  (spec §16 anti-checklist). */
+export const HERO_STATS: HeroStat[] = [
+  { value: '300+', label: 'learners trained', method: 'across 3 roles, 2023 to 2026' },
+  { value: '5', label: 'programs run', method: 'end to end, design through evaluation' },
+  { value: '4', label: 'curriculum modules', method: 'business, education, product tracks' },
+  { value: '9.0/10', label: 'average satisfaction', method: 'all cohorts, post-program feedback' },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 2 — What I built
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface BuiltCard {
+  id: string;
+  title: string;
+  body: string;
+  /** Baris metrik mono di kaki kartu. */
+  metrics: string[];
+  /** Kartu 1 mendapat ruang lebih besar — urutan mencerminkan bobot. */
+  lead?: boolean;
+  /** Kartu 4 dipadatkan: tanpa jeda paragraf, metrik langsung menempel. */
+  compact?: boolean;
+}
+
+export const BUILT: BuiltCard[] = [
+  {
+    id: 'curriculum',
+    title: 'Chatbot development curriculum, owned end to end',
+    body:
+      "Four training modules across business, education, and product tracks — teaching people how to build a chatbot on Smojo, Terra AI's internal chatbot-development language. I owned the full lifecycle: needs breakdown, outlining, asset development, live delivery, and evaluation — with weekly progress reviews with the CEO. I also ran the marketing that filled the seats.",
+    metrics: ['4 modules', '5 programs', '25+ live sessions', '150+ participants', '9.0/10 satisfaction'],
+    lead: true,
+  },
+  {
+    id: 'train-the-trainers',
+    title: 'Train the Trainers',
+    body:
+      'Six university lecturers, two weeks. Four workshops, four consultations, weekly live check-ins, and daily WhatsApp support between sessions. They now deliver the chatbot development curriculum themselves — without me.',
+    metrics: ['6 lecturers', '8 sessions', '2 weeks'],
+  },
+  {
+    id: 'dashboard',
+    title: 'Learner progress dashboard',
+    body:
+      'Built in Sheets and Notion. Learners could see what they had built, how far along they were, and what was left. Mentors could see the whole cohort at once. Learning ops that removed the guesswork from a self-paced course.',
+    metrics: ['Sheets', 'Notion', 'cohort-wide visibility'],
+  },
+  {
+    id: 'marketing',
+    title: 'Program marketing & content',
+    body:
+      'Four alumni testimonial videos and the social media that drove enrollment across all five programs.',
+    metrics: ['CapCut', 'Premiere', 'Canva'],
+    compact: true,
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 3 — Selected work
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface WorkCard {
+  id: string;
+  title: string;
+  body: string;
+  href?: string;
+  /** Label mono yang menggantikan thumbnail sampai screenshot asli tersedia. */
+  kind: string;
+  /** Ditandai kalau artefaknya belum punya tautan publik. */
+  note?: string;
+}
+
+/** Aturan spec §7 SECTION 3: kartu tanpa tautan asli lebih baik dihapus
+ *  daripada dipajang. Ketiga course di bawah ini live dan publik — hiring
+ *  manager bisa membukanya sendiri, bukan cuma percaya ringkasan. */
+export const WORK: WorkCard[] = [
+  {
+    id: 'chatbot-business',
+    title: 'Chatbot for Business',
+    body: 'One of the four chatbot-development modules I owned end to end — outline, assets, and delivery.',
+    href: 'https://ai4impact.org/learn/detail?v=chatbots-for-business-id',
+    kind: 'Live course · ai4impact',
+  },
+  {
+    id: 'chatbot-education',
+    title: 'Chatbot for Education',
+    body: 'The same course engine, adapted for an education-sector audience.',
+    href: 'https://ai4impact.org/learn/detail?v=chatbots-for-education-id',
+    kind: 'Live course · ai4impact',
+  },
+  {
+    id: 'gen-ai-pm',
+    title: 'Gen AI Product Manager',
+    body:
+      'The Train the Trainers course. The material I used to hand the curriculum to six lecturers, so they could teach it themselves.',
+    href: 'https://ai4impact.org/learn/detail?v=gen-ai-product-manager-id',
+    kind: 'Live course · ai4impact',
+  },
+  {
+    id: 'dashboard-artifact',
+    title: 'Learner progress dashboard',
+    body:
+      'How 100+ learners tracked their own chatbot builds, and how mentors saw the whole cohort at once.',
+    kind: 'Internal artefact',
+    note: 'Learner names are private, so this one is walked through on a call rather than linked.',
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 4 — Experience
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface Role {
+  start: string;
+  end: string;
+  title: string;
+  org: string;
+  place: string;
+  detail: string;
+}
+
+/** Blok 4a — pekerjaan berbayar dengan jabatan resmi. Tanggal & jabatan
+ *  match persis dengan CV. */
+export const WORK_HISTORY: Role[] = [
+  {
+    start: '2025 JUL',
+    end: '2026 JUL',
+    title: 'Learning & Development Specialist',
+    org: 'Terra AI',
+    place: 'Singapore (Remote)',
+    detail: '5 programs end-to-end · 150+ participants · 25+ live sessions',
+  },
+  {
+    start: '2024 FEB',
+    end: '2025 JUN',
+    title: 'AI Training Specialist',
+    org: 'Terra AI',
+    place: 'Singapore (Remote)',
+    detail: '100+ students & professionals · 9.0/10 across all cohorts',
+  },
+  {
+    start: '2023 FEB',
+    end: '2024 JAN',
+    title: 'Machine Learning Mentor',
+    org: 'Bangkit Academy',
+    place: 'Indonesia (Remote)',
+    detail: '50+ mentees from 25+ universities · 90%+ graduation rate',
+  },
+];
+
+/** Blok 4b — kepemimpinan organisasi, bukan riwayat kerja berbayar. Dipisah
+ *  persis seperti di CV, dan divisualkan lebih ringan supaya tidak terbaca
+ *  setara dengan Blok 4a. */
+export const LEADERSHIP: Role[] = [
+  {
+    start: '2021 AUG',
+    end: '2022 JUL',
+    title: 'Chapter Lead (founding)',
+    org: 'Google Developer Student Clubs',
+    place: 'Siliwangi University',
+    detail: 'Founded from zero · 100+ members in year one · 4 national events',
+  },
+  {
+    start: '2021 MAY',
+    end: '2022 APR',
+    title: 'Competition Coordinator & Media Staff',
+    org: 'Generasi Baru Indonesia (GenBI)',
+    place: 'Bank Indonesia',
+    detail: 'Coordinated 50+ Bank Indonesia scholars across QRIS literacy campaigns',
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 5 — Proof
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface ProofCell {
+  value: string;
+  label: string;
+  method: string;
+}
+
+/** Enam sel, semuanya metrik L&D/kurikulum. Setiap angka membawa metodenya —
+ *  angka tanpa denominator adalah klaim, bukan bukti (P2). */
+export const PROOF: ProofCell[] = [
+  { value: '300+', label: 'learners trained', method: 'across 3 roles, 2023 to 2026' },
+  {
+    value: '5',
+    label: 'programs run end-to-end',
+    method: 'Chatbot for Business · Chatbot for Education · Smojothon · Career Talk · Train the Trainers',
+  },
+  { value: '4', label: 'curriculum modules owned', method: 'business, education, product tracks' },
+  { value: '9.0/10', label: 'average satisfaction', method: 'all cohorts, structured post-program feedback' },
+  { value: '25+', label: 'live sessions delivered', method: 'small-group Zoom to one public YouTube livestream' },
+  { value: '6', label: 'lecturers trained to teach it', method: '2-week Train the Trainers cohort' },
+];
+
+export interface Testimonial {
+  quote: string;
+  name: string;
+  role: string;
+  /** Caption opsional untuk menyelesaikan konflik instrumen pengukuran. */
+  caption?: string;
+}
+
+/** Tiga saja. Dua testimoni generik dari situs lama dibuang — pujian yang bisa
+ *  ditempel ke siapa pun menurunkan bobot rata-rata tiga yang spesifik ini. */
+export const TESTIMONIALS: Testimonial[] = [
+  {
+    quote: 'He mentored more than 100 students and consistently earned 9.8 out of 10 from them.',
+    name: 'Christian Jonathan',
+    role: 'Manager, Terra AI',
+    caption: 'Mentor rating — a separate measure from the 9.0 program satisfaction above.',
+  },
+  {
+    quote:
+      "He never let a mentee's progress go unnoticed — he recognized every milestone along the way.",
+    name: 'Kevin Naufal Eryogia',
+    role: 'People Team Coordinator, Mondelēz International',
+  },
+  {
+    quote: 'He had a way of making complex ideas accessible no matter where you were starting from.',
+    name: 'Andrew Benedictus Jamesie',
+    role: 'Senior Software Engineer, Accenture',
+  },
+];
+
+export const CREDENTIALS: string[] = [
+  'TensorFlow Developer (Google, 2024)',
+  'Google Data Analytics Professional Certificate (2023)',
+  'HRCI Human Resource Associate (Coursera, 2024)',
+  'BNSP Digital Marketing',
+  'Published in JOIV — ensemble ML + SMOTE for SDG sentiment analysis',
+];
+
+/**
+ * Kredensial teknis pendukung. Satu paragraf, visual paling ringan di seluruh
+ * situs, tanpa warna aksen dan tanpa angka besar — sengaja dibuat terlihat
+ * sekunder. 1,250 ditampilkan dengan aritmetikanya supaya pembaca bisa
+ * menghitung ulang sendiri (3.000 × 25 menit = 75.000 menit = 1.250 jam).
+ */
+export const TECHNICAL_FOOTNOTE =
+  'Also outside the L&D mandate: I led the AI side of a 9-agent Python pipeline for ' +
+  "Terra Weather's CRM — sales ops, ~3,000 prospects, ~1,250 hours of manual prep " +
+  'absorbed (3,000 × 25 min saved each). Not training, not curriculum; my title stayed ' +
+  'L&D Specialist throughout.';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 6 — Skills
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface SkillGroup {
+  label: string;
+  items: string[];
+}
+
+/** Semua grup netral — Skills bukan tempat menegaskan identitas track, jadi
+ *  setiap chip mendapat treatment visual yang sama. */
+export const SKILLS: SkillGroup[] = [
+  {
+    label: 'L&D & instructional design',
+    items: [
+      'Curriculum development',
+      'Instructional design (ADDIE)',
+      'Training needs analysis',
+      'Learning experience design',
+      'Facilitation & blended learning',
+      'Assessment design',
+      'Training evaluation',
+      'Train the Trainers',
+      'Program management',
+      'Stakeholder management',
+    ],
+  },
+  {
+    label: 'Learning ops & tools',
+    items: [
+      'Google Workspace',
+      'Notion',
+      'Miro',
+      'Discord',
+      'Moodle',
+      'Custom learner-progress tracking (Sheets/Notion)',
+    ],
+  },
+  {
+    label: 'Content & program',
+    items: [
+      'Video production',
+      'CapCut',
+      'Adobe Premiere',
+      'Canva',
+      'Community building',
+      'Design thinking',
+    ],
+  },
+];
+
+/** Bukan grup skill keempat — satu baris kecil di bawah rule tipis. */
+export const SKILLS_FOOTNOTE =
+  'Also: Python, LLM pipelines, and prompt engineering — from a production AI project ' +
+  'outside my L&D role. See Proof for details.';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 7 — Path
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const PATH_PARAGRAPHS: string[] = [
+  'Universitas Siliwangi, Informatics — best graduate of the Faculty of Engineering with a 3.94 GPA. Along the way: a one-semester Bank BRI scholarship and a one-year Bank Indonesia scholarship. Two national programs from Indonesia’s Ministry of Education: Bangkit Academy (graduated with distinction, Machine Learning path) and Terra AI, where my team’s mental-health project was picked as a top project.',
+  'That last program later became my employer. I joined Terra AI as an AI Training Specialist in 2024 and ran L&D there until July 2026. Before any of it, I founded GDSC at Siliwangi from zero and served as QRIS Creative Competition Coordinator and Media Staff at GenBI.',
+];
+
+export interface Institution {
+  name: string;
+  src: string;
+}
+
+/** Marquee dipakai HANYA di sini — ini logo, bukan data (P4). */
+export const INSTITUTIONS: Institution[] = [
+  { name: 'Universitas Siliwangi', src: '/logos/unsil.png' },
+  { name: 'Bank BRI', src: '/logos/bri.png' },
+  { name: 'Bank Indonesia', src: '/logos/bank-indonesia.png' },
+  { name: 'Bangkit Academy', src: '/logos/bangkit.png' },
+  { name: 'Terra AI', src: '/logos/terra-ai.png' },
+  { name: 'Generasi Baru Indonesia', src: '/logos/genbi.png' },
+  { name: 'Google Developer Student Clubs', src: '/logos/gdsc.png' },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 8 — What I'm looking for
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const LOOKING_FOR: Array<[string, string]> = [
+  [
+    'Roles',
+    'L&D Specialist · Instructional Designer · Learning Program Manager · Training Manager · hybrid L&D + AI enablement',
+  ],
+  ['Setup', 'Full-time · remote or hybrid'],
+  ['Based', `${CONTACT.location} (${CONTACT.timezone})`],
+  ['Available', 'Immediately'],
+  ['Not looking', 'Pure software engineering roles'],
+];
+
+/** Dibaca oleh footer dan JSON-LD. Diperbarui bersamaan dengan konten. */
+export const LAST_UPDATED = 'August 2026';
