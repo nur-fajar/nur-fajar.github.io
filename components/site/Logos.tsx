@@ -18,7 +18,8 @@ export default function Logos() {
     <section className="logos" aria-labelledby="logos-label">
       <div className="shell">
         <p className="logos__label" id="logos-label">
-          Trained, mentored and studied with
+          Where I studied, held scholarships, joined national programs, and led student
+          organisations
         </p>
         <ul className="logos__track">
           {INSTITUTIONS.map((institution) => (

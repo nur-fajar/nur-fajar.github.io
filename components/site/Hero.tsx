@@ -30,10 +30,12 @@ export default function Hero() {
 
         <h1 className="hero__title rise" style={rise(1)}>
           I run <span className="grad">the whole cycle.</span>
+          <br />
+          Not just the training day.
         </h1>
 
         <p className="hero__lede rise" style={rise(2)}>
-          Not just the training day. As L&amp;D Specialist I own programs the whole way:{' '}
+          As L&amp;D Specialist I own programs the whole way:{' '}
           <strong>ideation, design, development, marketing, delivery, and evaluation</strong>.
           This past year that meant <strong>5 programs and 4 curriculum modules</strong> built
           from scratch.

@@ -1,5 +1,11 @@
 import { CalendarBlank } from '@phosphor-icons/react/dist/ssr';
-import { LEADERSHIP, ORGS } from '@/content/ledger';
+import {
+  LEADERSHIP,
+  ORGS,
+  SKILLS,
+  SKILLS_FOOTNOTE,
+  TECHNICAL_FOOTNOTE,
+} from '@/content/ledger';
 import Reveal from './Reveal';
 
 /**
@@ -107,6 +113,32 @@ export default function Experience() {
               ))}
             </div>
           </div>
+        </Reveal>
+
+        {/* Peta kompetensi duduk SETELAH riwayat kerja, bukan sebelumnya.
+            Daftar skill sebelum ada bukti apa pun hanyalah tag soup; setelah
+            pembaca melihat di mana kemampuan itu dipakai, daftar yang sama
+            berubah jadi ringkasan. */}
+        <Reveal>
+          <div className="toolkit toolkit--after-exp">
+            {SKILLS.map((group) => (
+              <div className="toolkit__group" key={group.label}>
+                <h3 className="toolkit__label">{group.label}</h3>
+                <ul className="toolkit__chips">
+                  {group.items.map((item) => (
+                    <li className="chip" key={item}>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p className="footnote">{SKILLS_FOOTNOTE}</p>
+          {/* Satu-satunya tempat proyek 9 agent muncul di seluruh situs.
+              Tanpa card, tanpa angka besar, tanpa warna aksen: kredensial
+              pendukung, bukan pencapaian utama. */}
+          <p className="footnote">{TECHNICAL_FOOTNOTE}</p>
         </Reveal>
       </div>
     </section>

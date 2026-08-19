@@ -435,12 +435,97 @@ export const SKILLS_FOOTNOTE =
   'outside my L&D role.';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SECTION 7 , Path
+// SECTION 7 , Background
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const PATH_PARAGRAPHS: string[] = [
-  'Universitas Siliwangi, Informatics: best graduate of the Faculty of Engineering with a 3.94 GPA. Along the way: a one-semester Bank BRI scholarship and a one-year Bank Indonesia scholarship. Two national programs from Indonesia’s Ministry of Education: Bangkit Academy (graduated with distinction, Machine Learning path) and Terra AI, where my team’s mental-health project was picked as a top project.',
-  'That last program later became my employer. I joined Terra AI as an AI Training Specialist in 2024 and moved into Learning & Development there in 2025. Before any of it, I founded GDSC at Siliwangi from zero and served as QRIS Creative Competition Coordinator and Media Staff at GenBI.',
+export interface BackgroundCard {
+  id: string;
+  /** Label kecil di atas nama: apa peran institusi ini dalam ceritanya. */
+  kicker: string;
+  name: string;
+  logo: string;
+  body: string;
+  /** Lebar kolom di grid bento 4-kolom. Jumlah total harus habis dibagi 4
+   *  supaya tidak ada sel kosong menggantung di ujung. */
+  span: 1 | 2;
+  /** Sebagian logo membawa margin kosong besar di file-nya sendiri. */
+  scale?: number;
+}
+
+/**
+ * Latar belakang, disusun sebagai bento alih-alih dua paragraf.
+ *
+ * Tujuh kartu untuk tujuh institusi, dan span-nya berjumlah 12 di grid empat
+ * kolom (2+1+1, 2+2, 2+2), jadi tidak ada sel kosong yang menggantung. Bento
+ * dengan lubang di ujung adalah tanda grid-nya direncanakan asal, bukan gaya.
+ *
+ * Kartu Bangkit sengaja menyebut DUA momen sekaligus, peserta 2022 lalu mentor
+ * 2023. Tanpa itu, pembaca yang teliti akan melihat "Bangkit" muncul di sini
+ * sebagai pendidikan dan di Experience sebagai pekerjaan, lalu menyimpulkan
+ * salah satunya keliru.
+ */
+export const BACKGROUND: BackgroundCard[] = [
+  {
+    id: 'unsil',
+    kicker: 'Where it started',
+    name: 'Universitas Siliwangi',
+    logo: '/logos/unsil.png',
+    body: 'Informatics, 2018 to 2022. Graduated best of the Faculty of Engineering with a 3.94 GPA.',
+    span: 2,
+  },
+  {
+    id: 'bri',
+    kicker: 'Scholarship',
+    name: 'Bank BRI',
+    logo: '/logos/bri.png',
+    body: 'One semester.',
+    span: 1,
+  },
+  {
+    id: 'bi',
+    kicker: 'Scholarship',
+    name: 'Bank Indonesia',
+    logo: '/logos/bank-indonesia.png',
+    body: 'One full year.',
+    span: 1,
+  },
+  {
+    id: 'bangkit',
+    kicker: 'Ministry of Education program',
+    name: 'Bangkit Academy',
+    logo: '/logos/bangkit.png',
+    body:
+      'Joined in early 2022 and graduated with distinction on the Machine Learning path. A year later I came back to the same program from the other side, as a mentor.',
+    span: 2,
+  },
+  {
+    id: 'terra',
+    kicker: 'Ministry of Education program',
+    name: 'Terra AI',
+    logo: '/logos/terra-ai.png',
+    body:
+      'Joined later in 2022; my team’s mental-health project was picked as a top project. That same program became my employer in 2024.',
+    span: 2,
+    scale: 1.55,
+  },
+  {
+    id: 'genbi',
+    kicker: 'Student organisation',
+    name: 'Generasi Baru Indonesia',
+    logo: '/logos/genbi.png',
+    body:
+      'QRIS competition coordinator and media staff, coordinating 50+ Bank Indonesia scholars across digital-payment literacy campaigns.',
+    span: 2,
+  },
+  {
+    id: 'gdsc',
+    kicker: 'Student organisation',
+    name: 'Google Developer Student Clubs',
+    logo: '/logos/gdsc.png',
+    body:
+      'Siliwangi’s first ever chapter lead, built from zero to 100+ members and four national events in its first year.',
+    span: 2,
+  },
 ];
 
 export interface Institution {
@@ -494,57 +579,6 @@ export const LAST_UPDATED = 'August 2026';
 // satunya akan basi diam-diam, dan justru itu kelas bug yang seluruh dokumen
 // spec ini dibangun untuk mencegah.
 // ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Kalimat misi, dipakai sebagai pull-quote besar di section About.
- *
- * Sengaja mendeskripsikan PENDEKATAN, bukan hasil: "handover yang membuatnya
- * bertahan tanpa saya" adalah cara kerja yang memang dijalankan (Train the
- * Trainers, materi, struktur pendukung), bukan klaim bahwa keenam dosen sudah
- * mengajar. Lihat AMANDEMEN A2 di nurfajar-redesign-spec.md.
- */
-export const MISSION_QUOTE =
-  'My job isn’t the training day. It’s the needs analysis before it, the evaluation ' +
-  'after it, and a handover built so the program doesn’t depend on me.';
-
-export interface Principle {
-  id: string;
-  title: string;
-  body: string;
-}
-
-/**
- * Empat prinsip kerja. Setiap satu wajib menunjuk ke bukti yang sudah ada di
- * file ini, bukan ke sifat umum yang bisa diklaim siapa pun. Kalau sebuah
- * prinsip tidak bisa ditunjukkan buktinya di section lain, ia tidak boleh ada
- * di sini.
- */
-export const PRINCIPLES: Principle[] = [
-  {
-    id: 'ownership',
-    title: 'Ownership end to end',
-    body:
-      'Ideation, design, development, marketing, delivery, evaluation. I have run all six on the same program, which is why I know where a handoff usually breaks.',
-  },
-  {
-    id: 'handover',
-    title: 'Built to be handed over',
-    body:
-      'A curriculum only counts if someone else can teach it. Six university lecturers spent two weeks with me and the material precisely so it would not depend on me.',
-  },
-  {
-    id: 'measured',
-    title: 'Measured, not assumed',
-    body:
-      'Structured post-program feedback on every cohort, 9.0/10 across all of them, plus a progress view so no learner had to guess how far along they were.',
-  },
-  {
-    id: 'domain',
-    title: 'Fast into a new domain',
-    body:
-      'Machine learning mentor, then AI trainer, then L&D. Each step meant learning a field well enough to teach it, which is the only test of understanding I trust.',
-  },
-];
 
 /** Konteks per organisasi untuk kartu Experience. Bullet, jabatan, dan
  *  tanggalnya TIDAK ada di sini, semuanya diturunkan dari WORK_HISTORY. */

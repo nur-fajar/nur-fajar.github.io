@@ -3,8 +3,8 @@ import Hero from '@/components/site/Hero';
 import Logos from '@/components/site/Logos';
 import About from '@/components/site/About';
 import Experience from '@/components/site/Experience';
-import Testimonials from '@/components/site/Testimonials';
 import Work from '@/components/site/Work';
+import Testimonials from '@/components/site/Testimonials';
 import Contact from '@/components/site/Contact';
 
 /**
@@ -13,11 +13,15 @@ import Contact from '@/components/site/Contact';
  *
  *   Hero          siapa ini, dan apa klaim terbesarnya
  *   Logos         di mana dia benar-benar pernah ada
- *   About         kenapa percaya, dan apa yang bisa diserahkan hari pertama
- *   Experience    sudah berapa lama, di mana, dan peran mana yang mana
- *   References    apa kata orang yang pernah mengelolanya
+ *   About         dari mana asalnya: kuliah, beasiswa, program, organisasi
+ *   Experience    sudah berapa lama, di mana, peran mana yang mana, lalu skill
  *   Work          apa yang bisa dibuka dan dinilai sendiri
+ *   References    apa kata orang yang pernah mengelolanya
  *   Contact       peran apa yang dicari, dan cara menghubungi
+ *
+ * Work sengaja duduk SEBELUM References: testimoni bekerja lebih keras setelah
+ * pembaca sempat melihat sendiri barangnya, bukan sebelumnya. Urutan tautan di
+ * navbar mengikuti urutan ini persis.
  */
 export default function HomePage() {
   return (
@@ -39,8 +43,8 @@ export default function HomePage() {
         <Logos />
         <About />
         <Experience />
-        <Testimonials />
         <Work />
+        <Testimonials />
         <Contact />
       </main>
     </>

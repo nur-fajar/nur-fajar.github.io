@@ -42,11 +42,16 @@
   --blob-blue: #a8dcf7;
   --blob-pink: #f9c2e0;
 
-  /* Status */
-  --status: #ec4899;
+  /* Status ketersediaan kerja. Hijau, dan hanya dipakai di satu tempat:
+     badge "Open to work" di hero. Pill-nya nyaris putih dengan semburat
+     hijau, supaya titik dan teksnya yang membawa warna, bukan kotaknya. */
+  --ok: #15803d;
+  --ok-dot: #22c55e;
+  --ok-bg: #f0fdf4;
+  --ok-border: #bbf7d0;
 
   /* Tipografi */
-  --fs-display: clamp(2.75rem, 6.6vw, 6rem);
+  --fs-display: clamp(2.5rem, 5.6vw, 5rem);
   --fs-h2: clamp(2rem, 4vw, 3rem);
   --fs-h3: clamp(1.15rem, 1.6vw, 1.375rem);
   --fs-lede: clamp(1.0625rem, 1.5vw, 1.5rem);

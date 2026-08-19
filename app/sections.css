@@ -20,6 +20,7 @@
 }
 
 .nav__inner {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--s4);
@@ -65,11 +66,18 @@
   white-space: nowrap;
 }
 
+/* Absolut di tengah, bukan ikut arus flex. Nama di kiri dan tombol di kanan
+   tidak akan pernah sama panjang, jadi kalau tautan ini ikut flex ia hanya
+   akan tampak di tengah secara kebetulan dan bergeser begitu salah satu sisi
+   berubah panjang. */
 .nav__links {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   gap: var(--s1);
-  margin-left: var(--s6);
 }
 
 .nav__link {
@@ -194,8 +202,9 @@
   gap: var(--s2);
   padding: var(--s2) var(--s4);
   border-radius: var(--r-pill);
-  background: color-mix(in srgb, var(--status) 12%, transparent);
-  color: color-mix(in srgb, var(--status) 80%, var(--ink));
+  border: 1px solid var(--ok-border);
+  background: var(--ok-bg);
+  color: var(--ok);
   font-size: var(--fs-chip);
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -203,10 +212,10 @@
 }
 
 .hero__dot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: var(--status);
+  background: var(--ok-dot);
   flex-shrink: 0;
 }
 
@@ -214,7 +223,8 @@
   margin-top: var(--s6);
   font-size: var(--fs-display);
   line-height: 1.02;
-  max-width: 15ch;
+  /* Baris ditentukan <br/> di markup, bukan oleh lebar kotaknya. */
+  max-width: none;
 }
 
 .hero__lede {
@@ -308,36 +318,27 @@
 
 /* ═══ ABOUT ═════════════════════════════════════════════════════════════════ */
 
-.quote-card {
-  margin-top: var(--s10);
-  padding: clamp(var(--s6), 4vw, var(--s12));
-  border-radius: var(--r-lg);
-  border: 1px solid color-mix(in srgb, var(--blob-yellow) 45%, var(--rule));
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--blob-yellow) 22%, var(--card)),
-    var(--card) 65%
-  );
-}
-
-.quote-card p {
-  font-family: var(--font-display), sans-serif;
-  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
-  font-weight: 500;
-  font-style: italic;
-  line-height: 1.4;
-  letter-spacing: -0.015em;
-  max-width: 46ch;
-}
-
-.principles {
+/* Bento riwayat. Tujuh kartu, span-nya berjumlah 12 di grid empat kolom
+   (2+1+1, 2+2, 2+2), jadi tidak ada sel kosong menggantung di ujung. */
+.bento {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--s4);
   margin-top: var(--s4);
 }
 
-.principle {
+.bento__item {
+  display: flex;
+}
+
+.bento__item--2 {
+  grid-column: span 2;
+}
+
+.bento__card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   padding: var(--s6);
   border-radius: var(--r-lg);
   border: 1px solid var(--rule);
@@ -345,48 +346,45 @@
   box-shadow: var(--shadow-float);
 }
 
-.principle__head {
-  display: flex;
-  align-items: center;
-  gap: var(--s3);
-}
-
-.principle__icon {
+/* Kartu putih kecil di belakang logo, alasan yang sama dengan strip di bawah
+   hero: ketujuh logo dibuat untuk kertas putih dan memakai warna mereknya
+   sendiri, jadi masing-masing membawa latarnya alih-alih bergantung pada
+   warna halaman. */
+.bento__logo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 116px;
+  height: 52px;
+  margin-bottom: var(--s5);
+  padding: var(--s2) var(--s3);
   border-radius: var(--r-sm);
-  flex-shrink: 0;
+  border: 1px solid var(--rule);
+  background: #fff;
 }
 
-/* Empat warna ikon, satu per kartu. Ini satu-satunya tempat di situs yang
-   memakai warna aksen di luar keluarga gradient, dan itu disengaja: kartunya
-   sejajar, jadi warna yang berbeda membacanya sebagai empat hal setara, bukan
-   satu hal yang lebih penting. */
-.principle:nth-child(1) .principle__icon {
-  background: color-mix(in srgb, var(--g1) 12%, transparent);
-  color: var(--g1);
-}
-.principle:nth-child(2) .principle__icon {
-  background: color-mix(in srgb, var(--g2) 12%, transparent);
-  color: var(--g2);
-}
-.principle:nth-child(3) .principle__icon {
-  background: color-mix(in srgb, var(--g3) 12%, transparent);
-  color: var(--g3);
-}
-.principle:nth-child(4) .principle__icon {
-  background: color-mix(in srgb, #f59e0b 16%, transparent);
-  color: #b45309;
+.bento__img {
+  width: 96px;
+  height: 36px;
+  max-width: none;
+  object-fit: contain;
 }
 
-.principle__title {
+.bento__kicker {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.bento__name {
+  margin-top: var(--s2);
   font-size: var(--fs-h3);
+  line-height: 1.25;
 }
 
-.principle__body {
+.bento__body {
   margin-top: var(--s3);
   color: var(--ink-soft);
   font-size: var(--fs-sm);
@@ -449,6 +447,16 @@
   background: color-mix(in srgb, var(--card) 72%, transparent);
   backdrop-filter: blur(24px) saturate(1.4);
   -webkit-backdrop-filter: blur(24px) saturate(1.4);
+}
+
+/* Blok credentials di About: satu grup saja, jadi tidak perlu jarak sebesar
+   blok skill bertumpuk di Experience. */
+.toolkit--tight {
+  padding: var(--s6) clamp(var(--s6), 3vw, var(--s8));
+}
+
+.toolkit--after-exp {
+  margin-top: var(--s12);
 }
 
 .toolkit__group + .toolkit__group {
@@ -922,6 +930,17 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* Empat kolom jadi dua, dan setiap kartu jadi selebar satu kolom, jadi
+     tiga baris berisi 2+2+2+1. Kartu terakhir sendirian di barisnya, dan itu
+     lebih baik daripada satu kartu selebar dua kolom di tengah grid. */
+  .bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bento__item--2 {
+    grid-column: span 1;
+  }
+
   .quotes {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -932,10 +951,19 @@
 }
 
 @media (max-width: 760px) {
-  .principles,
   .early__grid,
   .org__bullets {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Bento runtuh jadi satu kolom, dan span dinolkan: `grid-column: span 2`
+     pada grid satu kolom membuat item meluber keluar track. */
+  .bento {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bento__item--2 {
+    grid-column: span 1;
   }
 
   .work {

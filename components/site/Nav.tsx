@@ -81,6 +81,11 @@ export default function Nav() {
           <span className="nav__name">Nur Fajar.</span>
         </a>
 
+        {/* Diposisikan absolut, bukan lewat flex, supaya titik tengahnya
+            benar-benar titik tengah navbar. Kalau ia ikut arus flex, lebarnya
+            digeser oleh nama di kiri dan tombol di kanan yang tidak pernah
+            sama panjang, jadi ia hanya akan tampak di tengah secara kebetulan.
+            Urutannya mengikuti urutan section di halaman. */}
         <nav className="nav__links" aria-label="Sections">
           {LINKS.map(({ id, label }) => (
             <a
