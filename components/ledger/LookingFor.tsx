@@ -31,7 +31,7 @@ export default function LookingFor() {
           <dl className="lookup">
             {LOOKING_FOR.map(([label, value]) => (
               <div className="lookup__row" key={label}>
-                <dt className="lookup__label mono">{label}</dt>
+                <dt className="lookup__label">{label}</dt>
                 <dd className="lookup__value">{value}</dd>
               </div>
             ))}

@@ -84,7 +84,7 @@ function RoleList({
               isWork && index === 0 ? 'exp__row exp__row--current' : 'exp__row'
             }
           >
-            <p className="exp__dates mono">
+            <p className="exp__dates">
               {role.start}
               <span className="exp__dash" aria-hidden="true">
                 {' — '}
@@ -98,12 +98,12 @@ function RoleList({
                 {role.title}
                 {/* Badge hanya di blok pekerjaan berbayar. Ia membawa label
                     teks, bukan cuma warna. */}
-                {isWork && <span className="exp__badge mono">Paid role</span>}
+                {isWork && <span className="exp__badge">Paid role</span>}
               </RoleHeading>
               <p className="exp__org">
                 {role.org} · {role.place}
               </p>
-              <p className="exp__detail mono">{role.detail}</p>
+              <p className="exp__detail">{role.detail}</p>
             </div>
           </Reveal>
         ))}

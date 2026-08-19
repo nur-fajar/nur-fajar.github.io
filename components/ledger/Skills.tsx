@@ -27,7 +27,7 @@ export default function Skills() {
         <div className="skills">
           {SKILLS.map((group, index) => (
             <Reveal key={group.label} delay={index * 0.05} className="skills__group">
-              <h3 className="skills__label mono">{group.label}</h3>
+              <h3 className="skills__label">{group.label}</h3>
               <ul className="skills__chips">
                 {group.items.map((item) => (
                   <li key={item} className="skills__chip">

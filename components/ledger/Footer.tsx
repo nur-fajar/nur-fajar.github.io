@@ -32,7 +32,7 @@ export default function Footer() {
           </a>
         </nav>
 
-        <p className="footer__colophon mono">
+        <p className="footer__colophon">
           Built with Next.js, Framer Motion, and a lot of Claude.
           <br />
           Last updated {LAST_UPDATED}.

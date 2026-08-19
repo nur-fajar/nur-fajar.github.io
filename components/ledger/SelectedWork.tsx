@@ -27,7 +27,7 @@ export default function SelectedWork() {
           {WORK.map((card, index) => {
             const body = (
               <>
-                <p className="worklist__kind mono">{card.kind}</p>
+                <p className="worklist__kind">{card.kind}</p>
                 <h3 className="worklist__title">{card.title}</h3>
                 <p className="worklist__body">{card.body}</p>
                 {card.note ? <p className="worklist__note">{card.note}</p> : null}

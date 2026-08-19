@@ -218,17 +218,45 @@
 
 .hero {
   padding-top: clamp(var(--s12), 8vw, var(--s16));
-  padding-bottom: clamp(var(--s12), 7vw, var(--s16));
+  /* Sengaja lebih rapat dari padding atas. Situs ini tidak memakai kata
+     "Scroll" di mana pun; yang menggantikannya adalah baris pertama section
+     berikutnya yang mengintip di bawah fold, dan itu cuma bekerja kalau jarak
+     ke bawahnya tidak terlalu longgar. */
+  padding-bottom: clamp(var(--s8), 4vw, var(--s12));
 }
 
 .hero__kicker {
   margin-bottom: var(--s6);
 }
 
+/* Entrance fold pertama, dijalankan CSS supaya ia mulai di paint pertama dan
+   tidak bergantung pada hydration sama sekali. `both` menahan keyframe awal
+   selama delay-nya; stagger totalnya 5 x 60ms + 420ms, masih di bawah batas
+   500ms yang dipatok untuk fold pertama. */
+.hero__rise {
+  animation: ledger-rise 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--rise-i, 0) * 60ms);
+}
+
+@keyframes ledger-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .hero__title {
   font-size: var(--fs-display);
   line-height: var(--lh-display);
-  max-width: 16ch;
+  /* Baris headline ditentukan <br/> di markup, bukan oleh lebar kotaknya —
+     jadi tidak ada max-width yang memaksa baris ketiga, dan `balance` dimatikan
+     supaya browser tidak menata ulang jeda yang sudah dipilih. */
+  max-width: none;
+  text-wrap: initial;
 }
 
 .hero__lede {
@@ -330,8 +358,10 @@
   border-block: var(--rule-w) solid var(--rule);
 }
 
+/* Judul terpanjang di situs. Pada 34ch ia jatuh jadi lima baris, yang membaca
+   sebagai paragraf alih-alih judul; 46ch memadatkannya jadi tiga. */
 .section-title--wide {
-  max-width: 34ch;
+  max-width: 46ch;
 }
 
 /* ═══ WHAT I BUILT ══════════════════════════════════════════════════════════ */
@@ -515,8 +545,11 @@
   background: var(--accent-bg);
   color: var(--accent);
   border-radius: 2px;
+  font-family: var(--font-mono), ui-monospace, monospace;
   font-size: var(--fs-mono);
+  font-weight: 500;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .exp__org {
@@ -851,11 +884,15 @@
   padding-right: clamp(var(--s8), 6vw, var(--s16));
 }
 
+/* Kotak seragam, bukan tinggi seragam. Ketujuh logo datang dengan rasio yang
+   sangat berbeda — ada wordmark lebar, ada lambang nyaris bujur sangkar — jadi
+   menyamakan tinggi saja membuat yang lebar mendominasi strip. `contain` di
+   dalam kotak yang sama memberi setiap institusi bobot optis yang setara. */
 .marquee__logo {
-  height: 34px;
-  width: auto;
+  width: 120px;
+  height: 36px;
   object-fit: contain;
-  opacity: 0.55;
+  opacity: 0.75;
   /* Logo institusi datang dengan warna merek yang berbeda-beda; grayscale
      menyatukannya jadi satu strip dan menjaga --accent tetap satu-satunya
      warna bermakna di halaman. */
@@ -864,7 +901,20 @@
 }
 
 .marquee:hover .marquee__logo {
-  opacity: 0.8;
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* Semua logo ini adalah mark gelap di atas latar transparan, dibuat untuk
+     kertas terang. Tanpa invert mereka praktis hilang di mode gelap. */
+  .marquee__logo {
+    filter: grayscale(1) invert(1);
+    opacity: 0.65;
+  }
+
+  .marquee:hover .marquee__logo {
+    opacity: 0.9;
+  }
 }
 
 @keyframes marquee-scroll {

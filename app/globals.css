@@ -34,7 +34,7 @@
   --focus: #16211d;
 
   /* Type scale — modular 1.25, di-clamp supaya fluid tanpa breakpoint kasar */
-  --fs-display: clamp(2.75rem, 7vw, 5.5rem);
+  --fs-display: clamp(2.25rem, 5.4vw, 4.5rem);
   --fs-h2: clamp(1.75rem, 3.5vw, 2.75rem);
   --fs-h3: clamp(1.15rem, 2vw, 1.4rem);
   --fs-body: clamp(1rem, 1.15vw, 1.0625rem);
@@ -179,6 +179,10 @@ ol {
   text-transform: uppercase;
   color: var(--ink-soft);
   margin: 0 0 var(--s3);
+  /* Menang atas batas 62ch pada <p>: kicker adalah label satu baris, dan
+     "L&D SPECIALIST · INSTRUCTIONAL DESIGN · CURRICULUM DEVELOPMENT" pecah jadi
+     dua baris kalau ikut aturan panjang paragraf. */
+  max-width: none;
 }
 
 .section-title {
@@ -331,6 +335,10 @@ ol {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    /* Delay ikut dinolkan, kalau tidak entrance ber-stagger tetap menahan
+       konten tidak terlihat selama delay-nya sebelum menjentik ke posisi
+       akhir — persis efek yang ingin dihindari pengguna. */
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;

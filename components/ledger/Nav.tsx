@@ -88,7 +88,7 @@ export default function Nav() {
         {/* Satu-satunya penggunaan --status di seluruh situs. Dot-nya
             berpasangan dengan teks, jadi warnanya bukan satu-satunya pembawa
             informasi. */}
-        <p className="nav__status mono">
+        <p className="nav__status">
           <span className="nav__dot" aria-hidden="true" />
           Open to work
         </p>

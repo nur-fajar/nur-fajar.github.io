@@ -59,7 +59,7 @@ export default function Proof() {
                     sekaligus memperlihatkan bahwa perbedaan instrumen
                     pengukuran memang diperhatikan. */}
                 {testimonial.caption ? (
-                  <p className="quote__caption mono">{testimonial.caption}</p>
+                  <p className="quote__caption">{testimonial.caption}</p>
                 ) : null}
               </figure>
             </Reveal>
