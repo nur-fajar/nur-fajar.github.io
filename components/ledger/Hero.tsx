@@ -65,7 +65,9 @@ export default function Hero() {
                 <dt className="sr-only">{stat.label}</dt>
                 <dd className="statstrip__cellbody">
                   <span className="statstrip__value">{stat.value}</span>
-                  <span className="statstrip__label">{stat.label}</span>
+                  <span className="statstrip__label" aria-hidden="true">
+                    {stat.label}
+                  </span>
                   <span className="statstrip__method">{stat.method}</span>
                 </dd>
               </div>

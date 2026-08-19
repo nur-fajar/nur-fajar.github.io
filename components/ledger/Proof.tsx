@@ -31,7 +31,9 @@ export default function Proof() {
                 <dt className="sr-only">{cell.label}</dt>
                 <dd className="proofgrid__cellbody">
                   <span className="proofgrid__value">{cell.value}</span>
-                  <span className="proofgrid__label">{cell.label}</span>
+                  <span className="proofgrid__label" aria-hidden="true">
+                    {cell.label}
+                  </span>
                   <span className="proofgrid__method">{cell.method}</span>
                 </dd>
               </div>
