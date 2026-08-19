@@ -15,3 +15,10 @@ next-env.d.ts
 *.jsx
 *module.md
 testimonials.md
+
+# Worktree dan scratch dari sesi agent — checkout penuh berisi test dan build
+# sendiri, yang kalau tidak diabaikan akan ikut terpungut vitest dan eslint
+# saat dijalankan dari root repo.
+/.claude/
+/.worktrees/
+/v2/
