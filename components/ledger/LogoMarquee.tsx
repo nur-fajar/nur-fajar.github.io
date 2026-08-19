@@ -22,13 +22,14 @@ export default function LogoMarquee() {
       <div className="marquee__track">
         <ul className="marquee__set">
           {INSTITUTIONS.map((institution) => (
-            <li key={institution.name}>
+            <li key={institution.name} className="marquee__card">
               <Image
                 src={institution.src}
                 alt={institution.name}
-                width={112}
+                width={120}
                 height={40}
                 className="marquee__logo"
+                style={institution.scale ? { scale: String(institution.scale) } : undefined}
                 loading="lazy"
               />
             </li>
@@ -36,13 +37,14 @@ export default function LogoMarquee() {
         </ul>
         <ul className="marquee__set" aria-hidden="true">
           {INSTITUTIONS.map((institution) => (
-            <li key={`clone-${institution.name}`} tabIndex={-1}>
+            <li key={`clone-${institution.name}`} className="marquee__card" tabIndex={-1}>
               <Image
                 src={institution.src}
                 alt=""
-                width={112}
+                width={120}
                 height={40}
                 className="marquee__logo"
+                style={institution.scale ? { scale: String(institution.scale) } : undefined}
                 loading="lazy"
               />
             </li>

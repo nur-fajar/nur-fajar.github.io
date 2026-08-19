@@ -70,6 +70,12 @@ describe('P3 — angka situs match dengan CV', () => {
     ]);
   });
 
+  it('setiap peran membawa uraiannya dari CV', () => {
+    for (const role of [...WORK_HISTORY, ...LEADERSHIP]) {
+      expect(role.bullets.length, `${role.title} tidak punya uraian`).toBeGreaterThan(0);
+    }
+  });
+
   it('pengalaman organisasi dipisah dari riwayat kerja berbayar', () => {
     // CV memisahkan WORK EXPERIENCE dari LEADERSHIP & ORGANIZATIONAL. Situs
     // harus memisahkannya juga, kalau tidak sinyal seniority peran berbayar
@@ -100,6 +106,11 @@ describe('framing — situs berbicara satu identitas: L&D / ID / CD', () => {
       ...WORK.map((card) => `${card.title} ${card.body}`),
       ...PROOF.map((cell) => `${cell.label} ${cell.method}`),
       ...SKILLS.flatMap((group) => group.items),
+      // Uraian peran disalin dari CV, dan CV memang memuat bullet
+      // "Beyond the L&D mandate" soal pipeline 9 agent. Bullet itu sengaja
+      // TIDAK ikut disalin: ia sudah punya tempatnya di Proof, dan spec
+      // hanya memberinya satu tempat di seluruh situs.
+      ...[...WORK_HISTORY, ...LEADERSHIP].flatMap((role) => role.bullets),
     ].join(' ');
 
     expect(everywhereElse).not.toMatch(/9-agent/i);

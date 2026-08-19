@@ -94,16 +94,29 @@ function RoleList({
             </p>
 
             <div className="exp__body">
-              <RoleHeading className="exp__title">
-                {role.title}
-                {/* Badge hanya di blok pekerjaan berbayar. Ia membawa label
-                    teks, bukan cuma warna. */}
-                {isWork && <span className="exp__badge">Paid role</span>}
-              </RoleHeading>
+              <RoleHeading className="exp__title">{role.title}</RoleHeading>
               <p className="exp__org">
                 {role.org} · {role.place}
               </p>
               <p className="exp__detail">{role.detail}</p>
+
+              {/* Uraian peran, kata per kata dari CV.
+                  <details> dipakai alih-alih state React karena tiga alasan
+                  yang semuanya penting di sini: isinya tetap ada di HTML
+                  (bisa di-Ctrl+F dan terindeks mesin pencari meski tertutup),
+                  ia bisa dibuka dengan keyboard tanpa satu baris JS, dan ia
+                  tidak menambah apa pun ke bundle. */}
+              <details className="exp__more">
+                <summary className="exp__summary">
+                  <span className="exp__summary-label">What this involved</span>
+                  <span className="exp__summary-mark" aria-hidden="true" />
+                </summary>
+                <ul className="exp__bullets">
+                  {role.bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
+              </details>
             </div>
           </Reveal>
         ))}

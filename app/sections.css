@@ -540,16 +540,100 @@
   gap: var(--s3);
 }
 
-.exp__badge {
-  padding: 2px var(--s2);
-  background: var(--accent-bg);
+/* ── Uraian peran (disclosure) ──────────────────────────────────────────── */
+
+.exp__more {
+  margin-top: var(--s4);
+}
+
+.exp__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  /* 44px target sentuh tanpa menambah kotak yang terlihat: padding vertikal
+     dibayar balik dengan margin negatif, jadi ritme baris tidak berubah. */
+  padding: var(--s3) 0;
+  margin-block: calc(var(--s3) * -1);
   color: var(--accent);
-  border-radius: 2px;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: var(--fs-mono);
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-mono);
   text-transform: uppercase;
+  /* Tanpa ini label mewarisi line-height body (1.6), dan penanda +/x jadi
+     terpusat pada kotak baris alih-alih pada tinggi hurufnya — terlihat
+     melorot. */
+  line-height: 1;
+  cursor: pointer;
+  list-style: none;
+}
+
+/* Segitiga bawaan browser dibuang di kedua mesin; penanda +/x di bawah yang
+   menggantikannya, supaya bentuknya ikut bahasa visual situs. */
+.exp__summary::-webkit-details-marker {
+  display: none;
+}
+
+.exp__summary::marker {
+  content: '';
+}
+
+.exp__summary-label {
+  border-bottom: 1px solid transparent;
+  transition: border-color 140ms ease;
+}
+
+.exp__summary:hover .exp__summary-label {
+  border-bottom-color: currentColor;
+}
+
+/* Tanda "+" dari dua garis. Saat terbuka ia berputar 45 derajat jadi "x" —
+   satu bentuk, dua state, tanpa file ikon. */
+.exp__summary-mark {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  transition: transform 160ms ease;
+}
+
+.exp__summary-mark::before,
+.exp__summary-mark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background: currentColor;
+}
+
+.exp__summary-mark::before {
+  width: 9px;
+  height: 1.5px;
+}
+
+.exp__summary-mark::after {
+  width: 1.5px;
+  height: 9px;
+}
+
+.exp__more[open] .exp__summary-mark {
+  transform: rotate(45deg);
+}
+
+.exp__bullets {
+  display: grid;
+  gap: var(--s3);
+  margin-top: var(--s4);
+  padding-left: var(--s4);
+  border-left: var(--rule-w) solid var(--rule);
+  max-width: var(--maxw-text);
+}
+
+.exp__bullets li {
+  position: relative;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.55;
 }
 
 .exp__org {
@@ -880,8 +964,31 @@
 .marquee__set {
   display: flex;
   align-items: center;
-  gap: clamp(var(--s8), 6vw, var(--s16));
-  padding-right: clamp(var(--s8), 6vw, var(--s16));
+  gap: clamp(var(--s4), 2.5vw, var(--s8));
+  padding-right: clamp(var(--s4), 2.5vw, var(--s8));
+}
+
+/* Setiap logo duduk di atas kartu putihnya sendiri.
+   Ketujuh logo ini dibuat untuk kertas putih dan memakai warna merek
+   masing-masing — beberapa gelap, beberapa berwarna penuh. Menaruhnya langsung
+   di atas --paper berarti mereka bergantung pada mode terang/gelap untuk bisa
+   terbaca. Kartu putih membuat setiap logo membawa latarnya sendiri, jadi ia
+   tampil persis seperti yang dimaksud pemiliknya di kedua mode. */
+.marquee__card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s3) var(--s4);
+  background: #fff;
+  border-radius: var(--radius);
+}
+
+/* Di mode terang, kartu putih di atas kertas bone butuh hairline supaya
+   tepinya terbaca. Di mode gelap kontrasnya sudah jauh lebih dari cukup. */
+@media (prefers-color-scheme: light) {
+  .marquee__card {
+    border: var(--rule-w) solid var(--rule);
+  }
 }
 
 /* Kotak seragam, bukan tinggi seragam. Ketujuh logo datang dengan rasio yang
@@ -890,31 +997,13 @@
    dalam kotak yang sama memberi setiap institusi bobot optis yang setara. */
 .marquee__logo {
   width: 120px;
-  height: 36px;
+  /* Kotaknya jauh lebih tinggi dari yang dibutuhkan wordmark lebar, dan itu
+     disengaja: mayoritas logo di sini berbentuk bujur sangkar, dan pada kotak
+     yang pendek mereka terkunci di lebar 40px sementara wordmark memakai
+     seluruh 120px. Kotak yang lebih tinggi menaikkan yang bujur sangkar
+     mendekati bobot optis yang sama. */
+  height: 52px;
   object-fit: contain;
-  opacity: 0.75;
-  /* Logo institusi datang dengan warna merek yang berbeda-beda; grayscale
-     menyatukannya jadi satu strip dan menjaga --accent tetap satu-satunya
-     warna bermakna di halaman. */
-  filter: grayscale(1);
-  transition: opacity 200ms ease;
-}
-
-.marquee:hover .marquee__logo {
-  opacity: 1;
-}
-
-@media (prefers-color-scheme: dark) {
-  /* Semua logo ini adalah mark gelap di atas latar transparan, dibuat untuk
-     kertas terang. Tanpa invert mereka praktis hilang di mode gelap. */
-  .marquee__logo {
-    filter: grayscale(1) invert(1);
-    opacity: 0.65;
-  }
-
-  .marquee:hover .marquee__logo {
-    opacity: 0.9;
-  }
 }
 
 @keyframes marquee-scroll {

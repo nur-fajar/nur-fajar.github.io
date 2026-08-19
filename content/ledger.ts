@@ -161,6 +161,14 @@ export interface Role {
   org: string;
   place: string;
   detail: string;
+  /**
+   * Uraian peran, disalin apa adanya dari bullet CV supaya situs dan CV bisa
+   * dibaca berdampingan tanpa satu pertanyaan pun (P3). Disembunyikan di balik
+   * disclosure: Experience harus tetap bisa dipindai dalam beberapa detik,
+   * dan detail sepanjang ini akan mengubur baris tanggal dan jabatan yang
+   * justru jadi alasan section ini ada.
+   */
+  bullets: string[];
 }
 
 /** Blok 4a — pekerjaan berbayar dengan jabatan resmi. Tanggal & jabatan
@@ -173,6 +181,12 @@ export const WORK_HISTORY: Role[] = [
     org: 'Terra AI',
     place: 'Singapore (Remote)',
     detail: '5 programs end-to-end · 150+ participants · 25+ live sessions',
+    bullets: [
+      'Delivered 5 end-to-end programs and 25+ live sessions to 150+ participants — from small-group Zoom workshops to a publicly livestreamed YouTube event (Chatbot for Business, Chatbot for Education, Smojothon, Career Talk, Train the Trainers).',
+      'Designed and led a 2-week Train the Trainers program for 6 university lecturers — 4 workshop sessions plus 4 consultation sessions, backed by weekly live consultations and daily WhatsApp support to keep participants unblocked between sessions.',
+      'Owned the full curriculum lifecycle for 4 GenAI training modules across business, education, and product management tracks — from needs breakdown and outlining to asset development and live delivery, with weekly progress reviews with the CEO.',
+      'Produced 4 alumni testimonial videos and ran program social media to drive enrollment across all 5 programs.',
+    ],
   },
   {
     start: '2024 FEB',
@@ -181,6 +195,12 @@ export const WORK_HISTORY: Role[] = [
     org: 'Terra AI',
     place: 'Singapore (Remote)',
     detail: '100+ students & professionals · 9.0/10 across all cohorts',
+    bullets: [
+      'Trained 100+ students and professionals on generative AI, prompt engineering, and chatbot development, delivering customized curriculum for partners ranging from startups to multinational companies.',
+      "Designed a learner progress dashboard (Google Sheets/Notion) mapping each participant's chatbot-development milestones — what they had completed, how far along they were, and what remained — giving learners self-service visibility into their own progress and mentors a shared view of cohort status.",
+      'Maintained 9.0/10 average satisfaction across all cohorts through structured feedback loops, real-time curriculum iteration, and responsive learner support.',
+      'Applied a 20% instruction / 80% practice model with project-based assessments across all cohorts.',
+    ],
   },
   {
     start: '2023 FEB',
@@ -189,6 +209,10 @@ export const WORK_HISTORY: Role[] = [
     org: 'Bangkit Academy',
     place: 'Indonesia (Remote)',
     detail: '50+ mentees from 25+ universities · 90%+ graduation rate',
+    bullets: [
+      'Mentored 50+ students from 25+ universities across Indonesia in a Ministry of Education–backed national program, with 90%+ of the cohort graduating.',
+      'Ran 40+ weekly sessions on technical and soft skills, and coordinated with 20+ industry and academic experts to deliver guest content and improve the online learning experience.',
+    ],
   },
 ];
 
@@ -203,6 +227,10 @@ export const LEADERSHIP: Role[] = [
     org: 'Google Developer Student Clubs',
     place: 'Siliwangi University',
     detail: 'Founded from zero · 100+ members in year one · 4 national events',
+    bullets: [
+      'Founded the first GDSC chapter at Siliwangi University, growing to 100+ active members within its inaugural year.',
+      'Co-organized 4 national events spanning webinars and hackathons, drawing 500+ participants across the developer community.',
+    ],
   },
   {
     start: '2021 MAY',
@@ -211,6 +239,9 @@ export const LEADERSHIP: Role[] = [
     org: 'Generasi Baru Indonesia (GenBI)',
     place: 'Bank Indonesia',
     detail: 'Coordinated 50+ Bank Indonesia scholars across QRIS literacy campaigns',
+    bullets: [
+      'Coordinated 50+ Bank Indonesia scholarship recipients across QRIS digital-payment literacy campaigns; produced event and promo video content.',
+    ],
   },
 ];
 
@@ -357,6 +388,15 @@ export const PATH_PARAGRAPHS: string[] = [
 export interface Institution {
   name: string;
   src: string;
+  /**
+   * Pengali ukuran per-logo, untuk aset yang membawa margin kosong besar di
+   * dalam file-nya sendiri. `object-fit: contain` memasukkan SELURUH gambar ke
+   * dalam kotak, termasuk margin kosongnya — jadi logo yang di file-nya sudah
+   * dikelilingi ruang kosong akan tampil jauh lebih kecil dari tetangganya
+   * meski kotaknya sama besar. Ini mengoreksi bobot optisnya, bukan mengubah
+   * kotaknya. Perbaikan yang sebenarnya adalah memangkas margin di file PNG-nya.
+   */
+  scale?: number;
 }
 
 /** Marquee dipakai HANYA di sini — ini logo, bukan data (P4). */
@@ -365,7 +405,8 @@ export const INSTITUTIONS: Institution[] = [
   { name: 'Bank BRI', src: '/logos/bri.png' },
   { name: 'Bank Indonesia', src: '/logos/bank-indonesia.png' },
   { name: 'Bangkit Academy', src: '/logos/bangkit.png' },
-  { name: 'Terra AI', src: '/logos/terra-ai.png' },
+  // Mark-nya cuma mengisi sekitar sepertiga tengah kanvas 800x800-nya.
+  { name: 'Terra AI', src: '/logos/terra-ai.png', scale: 1.55 },
   { name: 'Generasi Baru Indonesia', src: '/logos/genbi.png' },
   { name: 'Google Developer Student Clubs', src: '/logos/gdsc.png' },
 ];
@@ -382,7 +423,6 @@ export const LOOKING_FOR: Array<[string, string]> = [
   ['Setup', 'Full-time · remote or hybrid'],
   ['Based', `${CONTACT.location} (${CONTACT.timezone})`],
   ['Available', 'Immediately'],
-  ['Not looking', 'Pure software engineering roles'],
 ];
 
 /** Dibaca oleh footer dan JSON-LD. Diperbarui bersamaan dengan konten. */
