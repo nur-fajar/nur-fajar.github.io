@@ -293,9 +293,16 @@
   box-shadow: var(--shadow-float);
 }
 
+/* Kotak seragam yang sengaja mengabaikan rasio asli tiap file: `contain` yang
+   mengurus pas-nya di dalam. `max-width: none` membatalkan reset global
+   `img { max-width: 100% }`, yang kalau dibiarkan akan memangkas LEBAR saja
+   saat kartunya menyempit sementara tingginya tetap. Bagi next/image itu
+   terbaca sebagai "satu dimensi diubah CSS, satunya tidak", dan ia
+   memperingatkan soal rasio rusak sekali per logo di setiap page load. */
 .logos__img {
   width: 100px;
   height: 38px;
+  max-width: none;
   object-fit: contain;
 }
 
@@ -951,9 +958,13 @@
 }
 
 @media (max-width: 420px) {
+  /* Padding ikut mengecil bersama kartunya. Kalau tidak, 112px dikurangi
+     padding 16px di dua sisi hanya menyisakan 80px untuk logo selebar 84px,
+     dan logonya terpotong tepat di layar tersempit. */
   .logos__card {
     width: 112px;
     height: 56px;
+    padding: var(--s2) var(--s3);
   }
 
   .logos__img {
