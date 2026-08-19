@@ -321,18 +321,23 @@ export interface Testimonial {
  * Tiga saja. Dua testimoni generik dari situs lama dibuang: pujian yang bisa
  * ditempel ke siapa pun menurunkan bobot rata-rata tiga yang spesifik ini.
  *
- * Caption Christian Jonathan dikonfirmasi Fajar: 9.8/10 berasal dari
- * International AI Bootcamp by ai4impact, program terpisah dari 5 program
- * end-to-end tahun L&D di atas, jadi memang instrumen pengukuran yang
- * berbeda, bukan cuma angka yang kebetulan beda.
+ * Kutipan Christian Jonathan sengaja BUKAN baris "9.8 out of 10"-nya, meski
+ * itu bagian paling mudah dikutip dari rekomendasi LinkedIn-nya. Angka itu
+ * berasal dari International AI Bootcamp by ai4impact, program terpisah dari
+ * 5 program end-to-end di grid Proof, dan menaruhnya di sini berarti butuh
+ * caption penjelas supaya tidak terbaca sebagai konflik dengan 9.0 di
+ * sebelahnya. Caption defensif seperti itu justru menanam keraguan yang
+ * tidak perlu ada, jadi pilihan yang lebih baik adalah tidak memakai baris
+ * itu sama sekali. Kutipan yang dipakai adalah bagian lain rekomendasinya:
+ * anekdot konkret soal dashboard yang ia bangun sendiri berinisiatif, bukan
+ * angka yang butuh pembelaan.
  */
 export const TESTIMONIALS: Testimonial[] = [
   {
-    quote: 'He mentored more than 100 students and consistently earned 9.8 out of 10 from them.',
+    quote:
+      'His organizational skills and proactive approach stood out, especially in creating a chatbot to help students track progress.',
     name: 'Christian Jonathan',
     role: 'Manager, Terra AI',
-    caption:
-      'A separate rating from the 9.0 program satisfaction above: from the International AI Bootcamp by ai4impact, not the 5 end-to-end programs below.',
   },
   {
     quote:

@@ -161,9 +161,16 @@ describe('artefak & kontak', () => {
     expect(CONTACT.cv).toBe('/Nur-Fajar-LnD-Specialist-CV.pdf');
   });
 
-  it('konflik 9.8 vs 9.0 diselesaikan dengan caption, bukan dibiarkan', () => {
-    const nineEight = TESTIMONIALS.find((testimonial) => testimonial.quote.includes('9.8'));
-    expect(nineEight?.caption).toBeTruthy();
+  it('tidak ada testimoni yang mengutip angka rating, supaya tidak bentrok dengan 9.0 di Proof', () => {
+    // Percobaan pertama memakai kutipan "9.8 out of 10" dan menambahkan
+    // caption penjelas supaya tidak terbaca konflik dengan 9.0 di sebelahnya.
+    // Caption defensif begitu justru menanam keraguan yang tidak perlu ada.
+    // Perbaikannya bukan menjelaskan angkanya, tapi tidak mengutip angka sama
+    // sekali, testimoni ada untuk anekdot spesifik, bukan untuk statistik
+    // kedua.
+    for (const testimonial of TESTIMONIALS) {
+      expect(testimonial.quote, `${testimonial.name} mengutip angka rating`).not.toMatch(/\d(\.\d)?\s*(out of|\/)\s*10/i);
+    }
   });
 
   it('hanya tiga testimoni , yang generik sudah dipangkas', () => {
