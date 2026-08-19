@@ -111,6 +111,13 @@ describe('framing — situs berbicara satu identitas: L&D / ID / CD', () => {
     expect(TECHNICAL_FOOTNOTE).toMatch(/not training, not curriculum/i);
   });
 
+  it('Terra Weather disebut namanya, dengan hubungannya ke Terra AI', () => {
+    // Tanpa ini pembaca menyimpulkan proyeknya dikerjakan di employer yang
+    // sama dengan pekerjaan L&D-nya, yang bukan gambaran yang akurat.
+    expect(TECHNICAL_FOOTNOTE).toContain('Terra Weather');
+    expect(TECHNICAL_FOOTNOTE).toContain('parent company');
+  });
+
   it('Skills tidak memuat nama vendor LLM sebagai kompetensi terpisah', () => {
     const items = SKILLS.flatMap((group) => group.items);
     for (const vendor of ['Claude', 'Gemini', 'GPT', 'Perplexity']) {

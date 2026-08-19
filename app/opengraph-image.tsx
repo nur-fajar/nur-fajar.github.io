@@ -15,6 +15,12 @@ import { ImageResponse } from 'next/og';
  * timeline LinkedIn. Karena itu isinya cuma nama, peran, tiga angka, dan satu
  * rule aksen — tidak ada yang lain yang bisa dikorbankan saat mengecil.
  */
+/* Gambar ini sepenuhnya diturunkan dari konstanta di repo ini dan satu file di
+   /public, jadi ia bisa dirender sekali saat build. Penanda ini juga yang
+   membuat target kedua (static export ke GitHub Pages) tetap bisa di-build —
+   tanpanya, `output: 'export'` menolak route ini. */
+export const dynamic = 'force-static';
+
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 export const alt = 'Nur Fajar — L&D Specialist. 300+ learners, 5 programs, 9.0/10 satisfaction.';

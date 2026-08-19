@@ -284,10 +284,10 @@ export const CREDENTIALS: string[] = [
  * menghitung ulang sendiri (3.000 × 25 menit = 75.000 menit = 1.250 jam).
  */
 export const TECHNICAL_FOOTNOTE =
-  'Also outside the L&D mandate: I led the AI side of a 9-agent Python pipeline for ' +
-  "Terra Weather's CRM — sales ops, ~3,000 prospects, ~1,250 hours of manual prep " +
-  'absorbed (3,000 × 25 min saved each). Not training, not curriculum; my title stayed ' +
-  'L&D Specialist throughout.';
+  'Also outside the L&D mandate: I led the AI side of a 9-agent Python pipeline for the ' +
+  "CRM at Terra Weather, Terra AI's parent company — sales ops, ~3,000 prospects, ~1,250 " +
+  'hours of manual prep absorbed (3,000 × 25 min saved each). Not training, not ' +
+  'curriculum; my title stayed L&D Specialist throughout.';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SECTION 6 — Skills
