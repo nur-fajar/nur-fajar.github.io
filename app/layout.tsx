@@ -1,33 +1,26 @@
 import type { Metadata } from 'next';
-import { Bricolage_Grotesque, IBM_Plex_Mono, Instrument_Sans } from 'next/font/google';
-import MotionProvider from '@/components/ledger/MotionProvider';
+import { Plus_Jakarta_Sans, Space_Grotesk } from 'next/font/google';
+import MotionProvider from '@/components/site/MotionProvider';
 import { CONTACT } from '@/content/ledger';
 import './globals.css';
 
-/* Tiga keluarga, sesuai batas performance budget (spec §11). Semuanya
-   di-self-host lewat next/font, di-download saat build dan disajikan dari
-   origin yang sama, jadi `font-src 'self'` di CSP tetap cukup dan tidak ada
-   request render-blocking ke fonts.googleapis.com. */
+/* Dua keluarga saja. Keduanya di-self-host lewat next/font, di-download saat
+   build dan disajikan dari origin yang sama, jadi `font-src 'self'` di CSP
+   tetap cukup dan tidak ada request render-blocking ke fonts.googleapis.com. */
 
-// Display, variable, jadi weight-nya tidak di-pin di sini.
-const bricolage = Bricolage_Grotesque({
+// Display: headline, judul section, angka besar.
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
+  weight: ['500', '700'],
   variable: '--font-display',
   display: 'swap',
 });
 
-// Body.
-const instrument = Instrument_Sans({
+// Body: paragraf, chip, label, tombol.
+const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
+  weight: ['400', '600', '700'],
   variable: '--font-body',
-  display: 'swap',
-});
-
-// Data & utility, label, kicker, tanggal, semua angka di Proof.
-const plexMono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-mono',
   display: 'swap',
 });
 
@@ -103,7 +96,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${bricolage.variable} ${instrument.variable} ${plexMono.variable}`}
+      className={`${spaceGrotesk.variable} ${jakarta.variable}`}
     >
       <head>
         {/* Framer Motion membakar state `initial` ke HTML server-rendered,

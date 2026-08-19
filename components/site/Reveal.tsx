@@ -6,10 +6,9 @@ import type { ReactNode } from 'react';
 /**
  * Reveal fade + rise, satu kali saja.
  *
- * Aturan induk motion di situs ini: motion untuk narasi, tidak pernah untuk
- * fakta (spec §8). Komponen ini sengaja hanya bisa melakukan satu hal ,
- * memunculkan sebuah blok , supaya tidak ada godaan menggerakkan angka,
- * testimoni, atau sertifikasi.
+ * Komponen ini sengaja hanya bisa melakukan satu hal, memunculkan sebuah blok,
+ * supaya tidak ada godaan menggerakkan angka, testimoni, atau tanggal. Data
+ * tidak bergerak; yang bergerak hanya urutan munculnya.
  *
  * `once: true` penting: elemen yang muncul-hilang-muncul saat pengguna scroll
  * naik-turun terbaca sebagai bug, bukan sebagai polish.
@@ -17,8 +16,7 @@ import type { ReactNode } from 'react';
 export default function Reveal({
   children,
   delay = 0,
-  /** Berapa banyak elemen harus masuk viewport sebelum reveal dimulai. */
-  amount = 0.3,
+  amount = 0.25,
   as = 'div',
   className,
 }: {
@@ -29,7 +27,6 @@ export default function Reveal({
   className?: string;
 }) {
   const reduced = useReducedMotion();
-  // Proxy `motion` menerima nama tag apa pun; cast-nya cuma supaya TS puas.
   const MotionTag = m[as] as typeof m.div;
 
   if (reduced) return <MotionTag className={className}>{children}</MotionTag>;
@@ -37,10 +34,10 @@ export default function Reveal({
   return (
     <MotionTag
       className={className ? `${className} motion-safe` : 'motion-safe'}
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount }}
-      transition={{ duration: 0.44, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.55, delay, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </MotionTag>

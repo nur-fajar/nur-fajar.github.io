@@ -423,10 +423,16 @@ export const SKILLS: SkillGroup[] = [
   },
 ];
 
-/** Bukan grup skill keempat, satu baris kecil di bawah rule tipis. */
+/**
+ * Bukan grup skill keempat, satu baris kecil di bawah rule tipis.
+ *
+ * Pointer "See Proof for details" dihapus: di struktur baru tidak ada section
+ * bernama Proof lagi, dan TECHNICAL_FOOTNOTE duduk beberapa baris di bawahnya
+ * di section yang sama, jadi pointer itu menunjuk ke tempat yang tidak ada.
+ */
 export const SKILLS_FOOTNOTE =
   'Also: Python, LLM pipelines, and prompt engineering, from a production AI project ' +
-  'outside my L&D role. See Proof for details.';
+  'outside my L&D role.';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SECTION 7 , Path
@@ -479,3 +485,169 @@ export const LOOKING_FOR: Array<[string, string]> = [
 
 /** Dibaca oleh footer dan JSON-LD. Diperbarui bersamaan dengan konten. */
 export const LAST_UPDATED = 'August 2026';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Turunan untuk layout v3
+//
+// Semua yang di bawah ini DITURUNKAN dari data di atas, bukan diketik ulang.
+// Itu disengaja: begitu sebuah angka atau kalimat hidup di dua tempat, salah
+// satunya akan basi diam-diam, dan justru itu kelas bug yang seluruh dokumen
+// spec ini dibangun untuk mencegah.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Kalimat misi, dipakai sebagai pull-quote besar di section About.
+ *
+ * Sengaja mendeskripsikan PENDEKATAN, bukan hasil: "handover yang membuatnya
+ * bertahan tanpa saya" adalah cara kerja yang memang dijalankan (Train the
+ * Trainers, materi, struktur pendukung), bukan klaim bahwa keenam dosen sudah
+ * mengajar. Lihat AMANDEMEN A2 di nurfajar-redesign-spec.md.
+ */
+export const MISSION_QUOTE =
+  'My job isn’t the training day. It’s the needs analysis before it, the evaluation ' +
+  'after it, and a handover built so the program doesn’t depend on me.';
+
+export interface Principle {
+  id: string;
+  title: string;
+  body: string;
+}
+
+/**
+ * Empat prinsip kerja. Setiap satu wajib menunjuk ke bukti yang sudah ada di
+ * file ini, bukan ke sifat umum yang bisa diklaim siapa pun. Kalau sebuah
+ * prinsip tidak bisa ditunjukkan buktinya di section lain, ia tidak boleh ada
+ * di sini.
+ */
+export const PRINCIPLES: Principle[] = [
+  {
+    id: 'ownership',
+    title: 'Ownership end to end',
+    body:
+      'Ideation, design, development, marketing, delivery, evaluation. I have run all six on the same program, which is why I know where a handoff usually breaks.',
+  },
+  {
+    id: 'handover',
+    title: 'Built to be handed over',
+    body:
+      'A curriculum only counts if someone else can teach it. Six university lecturers spent two weeks with me and the material precisely so it would not depend on me.',
+  },
+  {
+    id: 'measured',
+    title: 'Measured, not assumed',
+    body:
+      'Structured post-program feedback on every cohort, 9.0/10 across all of them, plus a progress view so no learner had to guess how far along they were.',
+  },
+  {
+    id: 'domain',
+    title: 'Fast into a new domain',
+    body:
+      'Machine learning mentor, then AI trainer, then L&D. Each step meant learning a field well enough to teach it, which is the only test of understanding I trust.',
+  },
+];
+
+/** Konteks per organisasi untuk kartu Experience. Bullet, jabatan, dan
+ *  tanggalnya TIDAK ada di sini, semuanya diturunkan dari WORK_HISTORY. */
+const ORG_META: Record<string, { summary: string; chips: string[] }> = {
+  'Terra AI': {
+    summary:
+      'Two roles, two different jobs. As AI Training Specialist I delivered training other people had scoped. As L&D Specialist I owned programs outright, from the needs breakdown to the evaluation, with weekly progress reviews with the CEO.',
+    chips: [
+      'Curriculum development',
+      'Instructional design (ADDIE)',
+      'Training needs analysis',
+      'Facilitation',
+      'Assessment design',
+      'Training evaluation',
+      'Train the Trainers',
+      'Notion',
+      'Google Workspace',
+    ],
+  },
+  'Bangkit Academy': {
+    summary:
+      'A Ministry of Education-backed national program. My remit was mentoring rather than owning the curriculum: weekly sessions, cohort support, and coordination with the industry and academic experts who delivered guest content.',
+    chips: ['Mentoring', 'Machine learning', 'Cohort support', 'Stakeholder coordination'],
+  },
+};
+
+export interface OrgGroup {
+  id: string;
+  org: string;
+  place: string;
+  /** Rentang gabungan: dari start peran tertua sampai end peran terbaru. */
+  period: string;
+  summary: string;
+  chips: string[];
+  roles: Role[];
+}
+
+/**
+ * Experience dikelompokkan per organisasi, bukan per jabatan.
+ *
+ * Terra AI muncul sebagai SATU kartu dengan dua sub-jabatan di dalamnya, dan
+ * itu justru menguntungkan kejujuran: pembaca melihat langsung bahwa "AI
+ * Training Specialist" dan "L&D Specialist" adalah dua periode berbeda dengan
+ * tanggalnya masing-masing, bukan satu blok tiga tahun yang seolah semuanya
+ * end to end.
+ */
+export const ORGS: OrgGroup[] = (() => {
+  const order: string[] = [];
+  const grouped = new Map<string, Role[]>();
+
+  for (const role of WORK_HISTORY) {
+    if (!grouped.has(role.org)) {
+      grouped.set(role.org, []);
+      order.push(role.org);
+    }
+    grouped.get(role.org)!.push(role);
+  }
+
+  return order.map((org) => {
+    // WORK_HISTORY urut dari yang terbaru, jadi entri terakhir adalah yang tertua.
+    const roles = grouped.get(org)!;
+    const meta = ORG_META[org];
+    return {
+      id: org.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      org,
+      place: roles[0].place,
+      period: `${roles[roles.length - 1].start} - ${roles[0].end}`,
+      summary: meta.summary,
+      chips: meta.chips,
+      roles,
+    };
+  });
+})();
+
+export interface ProjectCard {
+  id: string;
+  title: string;
+  /** Label kategori di pojok kanan atas kartu. */
+  kind: string;
+  body: string;
+  chips: string[];
+  href?: string;
+}
+
+/**
+ * Grid karya, gabungan dari BUILT (yang dibangun sendiri) dan WORK (course
+ * yang bisa dibuka publik). Keduanya diturunkan, bukan disalin, supaya koreksi
+ * fakta di BUILT/WORK otomatis ikut ke sini.
+ */
+export const PROJECTS: ProjectCard[] = [
+  ...BUILT.map((card) => ({
+    id: card.id,
+    title: card.title,
+    kind: card.id === 'curriculum' ? 'Curriculum' : 'Program',
+    body: card.body,
+    chips: card.metrics,
+  })),
+  ...WORK.map((card) => ({
+    id: card.id,
+    title: card.title,
+    kind: 'Live course',
+    body: card.body,
+    chips: ['ai4impact', 'Public'],
+    href: card.href,
+  })),
+];

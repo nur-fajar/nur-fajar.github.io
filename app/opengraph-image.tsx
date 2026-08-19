@@ -34,11 +34,15 @@ export const alt = 'Nur Fajar, L&D Specialist. 300+ learners across 3 roles, 9.0
 
 // Token diambil dari mode terang design system (globals.css). Dipakai apa
 // adanya supaya preview link terlihat sebagai potongan dari situs yang sama.
-const PAPER = '#F1F3EE';
-const INK = '#16211D';
-const INK_SOFT = '#5A6660';
-const ACCENT = '#2C6A55';
-const RULE = '#C9CFC4';
+const PAPER = '#F7F8FB';
+const INK = '#0F1222';
+const INK_SOFT = '#5B6178';
+const ACCENT = '#9333EA';
+const RULE = '#E6E9F2';
+/* Gradient yang sama dengan tombol dan separuh headline di situs. Preview
+   link adalah potongan pertama situs yang dilihat orang, jadi ia harus
+   memakai keluarga warna yang sama, bukan palet lain yang kebetulan cocok. */
+const GRADIENT = 'linear-gradient(100deg, #3080FF, #9333EA 55%, #F6339A)';
 
 const STATS: Array<[string, string]> = [
   ['300+', 'learners trained'],
@@ -94,8 +98,8 @@ export default async function OpengraphImage() {
           />
         </div>
 
-        {/* Satu rule aksen, elemen grafis tunggal di gambar ini. */}
-        <div style={{ display: 'flex', height: 4, background: ACCENT, width: 180 }} />
+        {/* Satu rule bergradient, elemen grafis tunggal di gambar ini. */}
+        <div style={{ display: 'flex', height: 6, background: GRADIENT, width: 200, borderRadius: 999 }} />
 
         <div style={{ display: 'flex', gap: 72 }}>
           {STATS.map(([value, label]) => (

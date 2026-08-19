@@ -1,56 +1,44 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Section styles , dibangun di atas token yang didefinisikan di globals.css.
+   Section styles v3, dibangun di atas token di globals.css.
 
-   Tidak ada nilai warna mentah di file ini. Setiap warna datang dari token,
-   supaya dark mode tidak butuh satu pun aturan tambahan di sini dan supaya
-   aturan "satu aksen, satu makna" tidak bisa bocor tanpa terlihat.
+   Tidak ada nilai warna mentah di file ini kecuali putih murni pada permukaan
+   yang memang harus putih apa pun temanya (kartu logo institusi). Sisanya
+   lewat token, supaya satu perubahan palet cukup disentuh di satu tempat.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Utility ────────────────────────────────────────────────────────────── */
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
-
 /* ═══ NAV ═══════════════════════════════════════════════════════════════════
-   Island sticky yang hadir dari page load. Tingginya dikunci di --nav-h supaya
-   scroll-padding-top di <html> selalu benar dan anchor tidak pernah mendarat
-   di balik navbar. */
+   Island mengambang. Ia tidak menempel ke tepi layar: ada jarak di atas dan
+   samping, dan sudutnya penuh, jadi ia terbaca sebagai objek di atas halaman,
+   bukan sebagai bar yang memotong halaman. */
 
 .nav {
   position: sticky;
-  top: 0;
+  top: var(--s4);
   z-index: 50;
-  background: color-mix(in srgb, var(--paper) 82%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: var(--rule-w) solid var(--rule);
-}
-
-/* Browser tanpa backdrop-filter dapat latar solid, bukan panel setengah
-   transparan yang teksnya bertumpuk dengan konten di belakangnya. */
-@supports not (backdrop-filter: blur(12px)) {
-  .nav {
-    background: var(--paper);
-  }
+  padding-inline: var(--gutter);
+  margin-top: var(--s4);
 }
 
 .nav__inner {
-  height: var(--nav-h);
-  max-width: var(--maxw);
-  margin-inline: auto;
-  padding-inline: var(--gutter);
   display: flex;
   align-items: center;
   gap: var(--s4);
+  height: var(--nav-h);
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: 0 var(--s3) 0 var(--s3);
+  border-radius: var(--r-pill);
+  border: 1px solid color-mix(in srgb, #fff 60%, transparent);
+  background: color-mix(in srgb, var(--card) 55%, transparent);
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+  box-shadow: var(--shadow-float);
+}
+
+@supports not (backdrop-filter: blur(40px)) {
+  .nav__inner {
+    background: var(--card);
+  }
 }
 
 .nav__identity {
@@ -58,43 +46,163 @@
   align-items: center;
   gap: var(--s2);
   text-decoration: none;
-  min-width: 0;
-}
-
-.nav__avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: var(--rule-w) solid var(--rule);
+  padding-left: var(--s2);
   flex-shrink: 0;
 }
 
+.nav__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .nav__name {
-  font-weight: 600;
-  font-size: 0.9375rem;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 
-.nav__role {
-  color: var(--ink-soft);
-  white-space: nowrap;
-}
-
-.nav__status {
+.nav__links {
   display: flex;
   align-items: center;
-  gap: var(--s2);
-  margin: 0;
+  gap: var(--s1);
+  margin-left: var(--s6);
+}
+
+.nav__link {
+  padding: var(--s2) var(--s4);
+  border-radius: var(--r-pill);
+  font-size: 0.9375rem;
+  font-weight: 600;
   color: var(--ink-soft);
-  white-space: nowrap;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  letter-spacing: var(--tracking-mono);
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.nav__link:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink);
+}
+
+.nav__link[aria-current='true'] {
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink);
+}
+
+.nav__spacer {
+  margin-left: auto;
+}
+
+.nav__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.nav__icon:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink);
+}
+
+.nav__toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.nav__sheet {
+  max-width: var(--maxw);
+  margin: var(--s2) auto 0;
+  padding: var(--s3);
+  display: grid;
+  gap: var(--s1);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.nav__sheet a {
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.nav__sheet a:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+@media (max-width: 1020px) {
+  .nav__links {
+    display: none;
+  }
+
+  .nav__toggle {
+    display: inline-flex;
+  }
+
+  .nav__spacer {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  /* Ikon LinkedIn yang pergi, bukan tombolnya. Di layar sekecil ini ada
+     ruang untuk satu aksi saja di navbar, dan ajakan bicara mengalahkan
+     tautan profil, yang tetap ada di section Contact.
+
+     Selector-nya sengaja dua kelas: .btn di globals.css menetapkan
+     display:inline-flex dan file itu dimuat SETELAH file ini, jadi satu
+     kelas saja akan kalah spesifisitas dan aturannya diam-diam tidak
+     berlaku. */
+  .nav .nav__icon {
+    display: none;
+  }
+}
+
+/* ═══ HERO ═══════════════════════════════════════════════════════════════════
+   Rata kiri, ruang atas besar. Entrance-nya CSS (lihat .rise), bukan Framer
+   Motion, supaya fold pertama tidak menunggu hydration. */
+
+.hero {
+  padding-top: clamp(var(--s16), 11vw, var(--s24));
+  padding-bottom: clamp(var(--s12), 7vw, var(--s20));
+}
+
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s4);
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--status) 12%, transparent);
+  color: color-mix(in srgb, var(--status) 80%, var(--ink));
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.nav__dot {
+.hero__dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -102,146 +210,43 @@
   flex-shrink: 0;
 }
 
-.nav__anchors {
-  display: flex;
-  gap: var(--s4);
-  margin-left: auto;
+.hero__title {
+  margin-top: var(--s6);
+  font-size: var(--fs-display);
+  line-height: 1.02;
+  max-width: 15ch;
 }
 
-.nav__anchor {
-  text-decoration: none;
-  font-size: 0.875rem;
-  padding: var(--s2) 0;
-  border-bottom: 2px solid transparent;
-  transition: border-color 140ms ease, color 140ms ease;
+.hero__lede {
+  margin-top: var(--s6);
+  font-size: var(--fs-lede);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 46ch;
 }
 
-.nav__anchor:hover {
-  color: var(--accent);
-}
-
-.nav__anchor[aria-current='true'] {
-  border-bottom-color: var(--ink);
-}
-
-.nav__cv {
-  flex-shrink: 0;
-}
-
-.nav__toggle {
-  display: none;
-  width: 44px;
-  height: 44px;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: var(--rule-w) solid var(--rule);
-  border-radius: var(--radius);
-  cursor: pointer;
+.hero__lede strong {
   color: var(--ink);
+  font-weight: 700;
 }
 
-.nav__toggle-bars {
-  position: relative;
-  display: block;
-  width: 16px;
-  height: 1.5px;
-  background: currentColor;
-}
-
-.nav__toggle-bars::before,
-.nav__toggle-bars::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  display: block;
-  width: 16px;
-  height: 1.5px;
-  background: currentColor;
-}
-
-.nav__toggle-bars::before {
-  top: -5px;
-}
-
-.nav__toggle-bars::after {
-  top: 5px;
-}
-
-.nav__sheet {
+.hero__actions {
   display: flex;
-  flex-direction: column;
-  border-top: var(--rule-w) solid var(--rule);
-  background: var(--paper);
+  flex-wrap: wrap;
+  gap: var(--s3);
+  margin-top: var(--s10);
 }
 
-.nav__sheet a {
-  padding: var(--s4) var(--gutter);
-  text-decoration: none;
-  border-bottom: var(--rule-w) solid var(--rule);
-  font-size: 0.9375rem;
+/* Entrance stagger, dijalankan CSS supaya mulai di paint pertama. */
+.rise {
+  animation: rise 640ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
 }
 
-@media (max-width: 860px) {
-  .nav__role {
-    display: none;
-  }
-}
-
-@media (max-width: 700px) {
-  .nav__status {
-    display: none;
-  }
-}
-
-@media (max-width: 640px) {
-  .nav__anchors {
-    display: none;
-  }
-
-  .nav__toggle {
-    display: flex;
-    margin-left: auto;
-    order: 3;
-  }
-
-  /* Tombol Resume tetap terlihat di mobile , ia tidak pernah masuk ke sheet. */
-  .nav__cv {
-    order: 2;
-  }
-}
-
-/* ═══ HERO ═══════════════════════════════════════════════════════════════════
-   Rata kiri, bukan center. Semua yang dibutuhkan untuk memutuskan "lanjut baca
-   atau tidak" ada di sini, dan section berikutnya sengaja dibiarkan mengintip
-   di bawah fold sebagai affordance scroll. */
-
-.hero {
-  padding-top: clamp(var(--s12), 8vw, var(--s16));
-  /* Sengaja lebih rapat dari padding atas. Situs ini tidak memakai kata
-     "Scroll" di mana pun; yang menggantikannya adalah baris pertama section
-     berikutnya yang mengintip di bawah fold, dan itu cuma bekerja kalau jarak
-     ke bawahnya tidak terlalu longgar. */
-  padding-bottom: clamp(var(--s8), 4vw, var(--s12));
-}
-
-.hero__kicker {
-  margin-bottom: var(--s6);
-}
-
-/* Entrance fold pertama, dijalankan CSS supaya ia mulai di paint pertama dan
-   tidak bergantung pada hydration sama sekali. `both` menahan keyframe awal
-   selama delay-nya; stagger totalnya 5 x 60ms + 420ms, masih di bawah batas
-   500ms yang dipatok untuk fold pertama. */
-.hero__rise {
-  animation: ledger-rise 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: calc(var(--rise-i, 0) * 60ms);
-}
-
-@keyframes ledger-rise {
+@keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -249,562 +254,427 @@
   }
 }
 
-.hero__title {
-  font-size: var(--fs-display);
-  line-height: var(--lh-display);
-  /* Baris headline ditentukan <br/> di markup, bukan oleh lebar kotaknya ,
-     jadi tidak ada max-width yang memaksa baris ketiga, dan `balance` dimatikan
-     supaya browser tidak menata ulang jeda yang sudah dipilih. */
-  max-width: none;
-  text-wrap: initial;
+/* ═══ LOGO STRIP ════════════════════════════════════════════════════════════ */
+
+.logos {
+  padding-block: var(--s10);
 }
 
-.hero__lede {
-  margin-top: var(--s6);
-  color: var(--ink-soft);
-  max-width: var(--maxw-text);
+.logos__label {
+  text-align: center;
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: var(--s6);
 }
 
-.hero__actions {
+.logos__track {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--s3);
-  margin-top: var(--s8);
 }
 
-.hero__meta {
-  margin-top: var(--s4);
-  color: var(--ink-soft);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  letter-spacing: var(--tracking-mono);
-  text-transform: uppercase;
-  max-width: none;
+/* Kartu putih di belakang tiap logo. Ketujuh logo ini dibuat untuk kertas
+   putih dan memakai warna merek masing-masing; kartu putih membuat setiap
+   logo membawa latarnya sendiri alih-alih bergantung pada warna halaman. */
+.logos__card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 132px;
+  height: 62px;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--rule);
+  background: #fff;
+  box-shadow: var(--shadow-float);
 }
 
-/* Stat strip , empat sel dipisah rule vertikal hairline. */
-.statstrip {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin: var(--s12) 0 0;
-  border: var(--rule-w) solid var(--rule);
-  border-radius: var(--radius);
-  background: var(--paper-sunk);
-  overflow: hidden;
+.logos__img {
+  width: 100px;
+  height: 38px;
+  object-fit: contain;
 }
 
-.statstrip__cell {
-  padding: var(--s6) var(--s4);
-  border-left: var(--rule-w) solid var(--rule);
+/* ═══ ABOUT ═════════════════════════════════════════════════════════════════ */
+
+.quote-card {
+  margin-top: var(--s10);
+  padding: clamp(var(--s6), 4vw, var(--s12));
+  border-radius: var(--r-lg);
+  border: 1px solid color-mix(in srgb, var(--blob-yellow) 45%, var(--rule));
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--blob-yellow) 22%, var(--card)),
+    var(--card) 65%
+  );
 }
 
-.statstrip__cell:first-child {
-  border-left: 0;
-}
-
-.statstrip__cellbody,
-.proofgrid__cellbody {
-  margin: 0;
-  display: block;
-}
-
-.statstrip__value {
-  display: block;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: clamp(1.5rem, 3vw, 2.125rem);
+.quote-card p {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
   font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-}
-
-.statstrip__label {
-  display: block;
-  margin-top: var(--s3);
-  font-size: 0.875rem;
-  line-height: 1.35;
-}
-
-.statstrip__method {
-  display: block;
-  margin-top: var(--s2);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  line-height: 1.45;
-  letter-spacing: 0.02em;
-  color: var(--ink-soft);
-}
-
-@media (max-width: 760px) {
-  .statstrip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .statstrip__cell:nth-child(odd) {
-    border-left: 0;
-  }
-
-  .statstrip__cell:nth-child(n + 3) {
-    border-top: var(--rule-w) solid var(--rule);
-  }
-}
-
-/* ═══ SECTION SHELL ═════════════════════════════════════════════════════════ */
-
-/* Latar tenggelam bergantian memberi ritme vertikal tanpa mengganti tema ,
-   keduanya hidup di keluarga warna yang sama. */
-.section--sunk {
-  background: color-mix(in srgb, var(--paper-sunk) 55%, var(--paper));
-  border-block: var(--rule-w) solid var(--rule);
-}
-
-/* Judul terpanjang di situs. Pada 34ch ia jatuh jadi lima baris, yang membaca
-   sebagai paragraf alih-alih judul; 46ch memadatkannya jadi tiga. */
-.section-title--wide {
+  font-style: italic;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
   max-width: 46ch;
 }
 
-/* ═══ WHAT I BUILT ══════════════════════════════════════════════════════════ */
-
-.built {
+.principles {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--s4);
-  margin-top: var(--s12);
-}
-
-.built__title {
-  font-size: var(--fs-h3);
-  line-height: 1.25;
-  max-width: 30ch;
-}
-
-.built__body {
-  margin-top: var(--s4);
-  color: var(--ink-soft);
-}
-
-/* Kartu pertama adalah kartu terbesar: urutan dan ukuran sama-sama membawa
-   informasi bobot. */
-.built__item--lead .ledger-card {
-  padding: clamp(var(--s6), 4vw, var(--s12));
-}
-
-.built__item--lead .built__title {
-  font-size: clamp(1.35rem, 2.6vw, 1.85rem);
-}
-
-.ledger-card--compact .built__body {
-  margin-top: var(--s3);
-}
-
-.ledger-card--compact .metrics {
   margin-top: var(--s4);
 }
 
-/* ═══ SELECTED WORK ═════════════════════════════════════════════════════════ */
-
-/* 3 kartu, jadi 3 kolom, bukan 2: grid 2 kolom dengan 3 item selalu
-   meninggalkan satu sel kosong di kanan bawah. */
-.worklist {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--s4);
-  margin-top: var(--s12);
-}
-
-.worklist__item {
-  display: flex;
-}
-
-.worklist__card {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+.principle {
   padding: var(--s6);
-  background: var(--paper);
-  border: var(--rule-w) solid var(--rule);
-  border-radius: var(--radius);
-  text-decoration: none;
-  transition: border-color 140ms ease, transform 140ms ease;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-float);
 }
 
-.worklist__card--link:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
+.principle__head {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
 }
 
-.worklist__kind {
-  color: var(--ink-soft);
-  margin: 0;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  font-weight: 500;
-  letter-spacing: var(--tracking-mono);
-  text-transform: uppercase;
+.principle__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-sm);
+  flex-shrink: 0;
 }
 
-.worklist__title {
-  margin-top: var(--s3);
+/* Empat warna ikon, satu per kartu. Ini satu-satunya tempat di situs yang
+   memakai warna aksen di luar keluarga gradient, dan itu disengaja: kartunya
+   sejajar, jadi warna yang berbeda membacanya sebagai empat hal setara, bukan
+   satu hal yang lebih penting. */
+.principle:nth-child(1) .principle__icon {
+  background: color-mix(in srgb, var(--g1) 12%, transparent);
+  color: var(--g1);
+}
+.principle:nth-child(2) .principle__icon {
+  background: color-mix(in srgb, var(--g2) 12%, transparent);
+  color: var(--g2);
+}
+.principle:nth-child(3) .principle__icon {
+  background: color-mix(in srgb, var(--g3) 12%, transparent);
+  color: var(--g3);
+}
+.principle:nth-child(4) .principle__icon {
+  background: color-mix(in srgb, #f59e0b 16%, transparent);
+  color: #b45309;
+}
+
+.principle__title {
   font-size: var(--fs-h3);
-  line-height: 1.25;
 }
 
-.worklist__body {
+.principle__body {
   margin-top: var(--s3);
   color: var(--ink-soft);
-  font-size: 0.9375rem;
+  font-size: var(--fs-sm);
+  line-height: 1.65;
 }
 
-.worklist__note {
-  margin-top: var(--s3);
-  color: var(--ink-soft);
-  font-size: 0.875rem;
-  font-style: italic;
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s4);
+  margin: var(--s4) 0 0;
 }
 
-/* Didorong ke dasar kartu supaya semua CTA sejajar apa pun panjang teksnya. */
-.worklist__cta {
-  margin-top: auto;
+.stat {
+  padding: var(--s6);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-float);
+  text-align: center;
+}
+
+.stat__icon {
+  display: inline-flex;
+  color: var(--g1);
+  margin-bottom: var(--s3);
+}
+
+.stat__value {
+  display: block;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.stat__label {
+  display: block;
+  margin-top: var(--s2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+/* Baris metode. Ini yang mencegah empat angka ini terbaca sebagai satu
+   populasi yang sama; jangan pernah dihapus demi kerapian. */
+.stat__method {
+  display: block;
+  margin-top: var(--s2);
+  font-size: var(--fs-chip);
+  line-height: 1.5;
+  color: var(--ink-faint);
+}
+
+.toolkit {
+  margin-top: var(--s4);
+  padding: clamp(var(--s6), 3vw, var(--s10));
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+}
+
+.toolkit__group + .toolkit__group {
+  margin-top: var(--s6);
   padding-top: var(--s6);
-  color: var(--accent);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  letter-spacing: var(--tracking-mono);
-  text-transform: uppercase;
+  border-top: 1px solid var(--rule);
 }
 
-@media (max-width: 860px) {
-  .worklist {
-    grid-template-columns: minmax(0, 1fr);
-  }
+.toolkit__label {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: var(--s4);
+}
+
+.toolkit__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.footnote {
+  margin-top: var(--s6);
+  max-width: 72ch;
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+}
+
+.footnote + .footnote {
+  margin-top: var(--s3);
 }
 
 /* ═══ EXPERIENCE ════════════════════════════════════════════════════════════ */
 
-.exp {
-  position: relative;
-  margin-top: var(--s12);
-  padding-left: var(--s6);
-}
-
-.exp__spine {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--accent);
-  transform-origin: top;
-}
-
-.exp--leadership .exp__spine {
-  background: var(--rule);
-}
-
-.exp__list {
+.orgs {
   display: grid;
-}
-
-.exp__row {
-  display: grid;
-  grid-template-columns: 12rem minmax(0, 1fr);
   gap: var(--s6);
-  padding: var(--s6);
-  border-bottom: var(--rule-w) solid var(--rule);
+  margin-top: var(--s10);
 }
 
-.exp__row:last-child {
-  border-bottom: 0;
+.org {
+  padding: clamp(var(--s6), 3.5vw, var(--s10));
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
 }
 
-/* Penanda "paling baru" , hanya di blok pekerjaan berbayar. */
-.exp__row--current {
-  background: var(--paper-sunk);
-  border-radius: var(--radius) var(--radius) 0 0;
-}
-
-.exp__dates {
-  margin: 0;
-  color: var(--ink-soft);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono-lg);
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
-.exp__title {
-  font-size: 1.0625rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+.org__head {
   display: flex;
+  align-items: flex-start;
+  gap: var(--s4);
   flex-wrap: wrap;
-  align-items: center;
-  gap: var(--s3);
 }
 
-/* ── Uraian peran (disclosure) ──────────────────────────────────────────── */
-
-.exp__more {
-  margin-top: var(--s4);
+.org__name {
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
 }
 
-.exp__summary {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s2);
-  /* 44px target sentuh tanpa menambah kotak yang terlihat: padding vertikal
-     dibayar balik dengan margin negatif, jadi ritme baris tidak berubah. */
-  padding: var(--s3) 0;
-  margin-block: calc(var(--s3) * -1);
-  color: var(--accent);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  font-weight: 500;
-  letter-spacing: var(--tracking-mono);
-  text-transform: uppercase;
-  /* Tanpa ini label mewarisi line-height body (1.6), dan penanda +/x jadi
-     terpusat pada kotak baris alih-alih pada tinggi hurufnya , terlihat
-     melorot. */
-  line-height: 1;
-  cursor: pointer;
-  list-style: none;
+.org__place {
+  margin-top: var(--s1);
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
 }
 
-/* Segitiga bawaan browser dibuang di kedua mesin; penanda +/x di bawah yang
-   menggantikannya, supaya bentuknya ikut bahasa visual situs. */
-.exp__summary::-webkit-details-marker {
-  display: none;
-}
-
-.exp__summary::marker {
-  content: '';
-}
-
-.exp__summary-label {
-  border-bottom: 1px solid transparent;
-  transition: border-color 140ms ease;
-}
-
-.exp__summary:hover .exp__summary-label {
-  border-bottom-color: currentColor;
-}
-
-/* Tanda "+" dari dua garis. Saat terbuka ia berputar 45 derajat jadi "x" ,
-   satu bentuk, dua state, tanpa file ikon. */
-.exp__summary-mark {
-  position: relative;
-  width: 9px;
-  height: 9px;
+.org__period {
+  margin-left: auto;
   flex-shrink: 0;
-  transition: transform 160ms ease;
 }
 
-.exp__summary-mark::before,
-.exp__summary-mark::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  background: currentColor;
-}
-
-.exp__summary-mark::before {
-  width: 9px;
-  height: 1.5px;
-}
-
-.exp__summary-mark::after {
-  width: 1.5px;
-  height: 9px;
-}
-
-.exp__more[open] .exp__summary-mark {
-  transform: rotate(45deg);
-}
-
-.exp__bullets {
-  display: grid;
-  gap: var(--s3);
-  margin-top: var(--s4);
-  padding-left: var(--s4);
-  border-left: var(--rule-w) solid var(--rule);
+.org__summary {
+  margin-top: var(--s5);
+  color: var(--ink-soft);
   max-width: var(--maxw-text);
 }
 
-.exp__bullets li {
-  position: relative;
-  color: var(--ink-soft);
-  font-size: 0.9375rem;
-  line-height: 1.55;
-}
-
-.exp__org {
-  margin-top: var(--s1);
-  color: var(--ink-soft);
-  font-size: 0.9375rem;
-}
-
-.exp__detail {
-  margin-top: var(--s3);
-  color: var(--ink-soft);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  letter-spacing: 0.02em;
-}
-
-.exp__divider {
-  margin-top: var(--s16);
-}
-
-.exp__subhead {
+/* Daftar sub-jabatan. Untuk Terra AI ini yang membuat dua periode berbeda
+   terbaca sebagai dua pekerjaan berbeda, bukan satu blok panjang, dan tiap
+   bullet menggantung di bawah jabatan yang benar-benar memilikinya. */
+.org__roles {
+  display: grid;
   margin-top: var(--s6);
-  margin-bottom: 0;
+  padding-left: var(--s5);
+  border-left: 2px solid color-mix(in srgb, var(--g1) 35%, var(--rule));
 }
 
-/* Blok kepemimpinan divisualkan lebih ringan: judul jabatan turun ke ukuran
-   body, tidak ada badge, tidak ada penanda baris terbaru. */
-.exp--leadership {
+.org__block + .org__block {
+  margin-top: var(--s8);
+}
+
+.org__role {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s2);
+}
+
+.org__role-title {
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.org__role-date {
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+  font-style: italic;
+}
+
+.org__bullets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3) var(--s8);
   margin-top: var(--s4);
 }
 
-.exp--leadership .exp__title {
-  font-size: 0.9375rem;
-  font-weight: 500;
-}
-
-.exp--leadership .exp__row {
-  padding-block: var(--s4);
-}
-
-@media (max-width: 760px) {
-  .exp__row {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--s2);
-  }
-}
-
-/* ═══ PROOF ═════════════════════════════════════════════════════════════════ */
-
-.proofgrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: var(--s12) 0 0;
-  border: var(--rule-w) solid var(--rule);
-  border-radius: var(--radius);
-  background: var(--paper);
-  overflow: hidden;
-}
-
-.proofgrid__cell {
-  padding: var(--s6);
-  border-left: var(--rule-w) solid var(--rule);
-  border-top: var(--rule-w) solid var(--rule);
-}
-
-.proofgrid__cell:nth-child(3n + 1) {
-  border-left: 0;
-}
-
-.proofgrid__cell:nth-child(-n + 3) {
-  border-top: 0;
-}
-
-/* Angka besar memakai mono, bukan display , ia harus terbaca sebagai data,
-   bukan sebagai poster. */
-.proofgrid__value {
-  display: block;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.proofgrid__label {
-  display: block;
-  margin-top: var(--s3);
-  font-size: 0.9375rem;
-  font-weight: 500;
-}
-
-.proofgrid__method {
-  display: block;
-  margin-top: var(--s2);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  line-height: 1.5;
-  letter-spacing: 0.02em;
+.org__bullets li {
+  position: relative;
+  padding-left: var(--s4);
   color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
 }
 
-@media (max-width: 900px) {
-  .proofgrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .proofgrid__cell:nth-child(3n + 1) {
-    border-left: var(--rule-w) solid var(--rule);
-  }
-
-  .proofgrid__cell:nth-child(odd) {
-    border-left: 0;
-  }
-
-  .proofgrid__cell:nth-child(-n + 3) {
-    border-top: var(--rule-w) solid var(--rule);
-  }
-
-  .proofgrid__cell:nth-child(-n + 2) {
-    border-top: 0;
-  }
+.org__bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--g1);
 }
 
-@media (max-width: 560px) {
-  .proofgrid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .proofgrid__cell {
-    border-left: 0;
-    border-top: var(--rule-w) solid var(--rule);
-  }
-
-  .proofgrid__cell:first-child {
-    border-top: 0;
-  }
+.org__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-top: var(--s6);
+  padding-top: var(--s6);
+  border-top: 1px solid var(--rule);
 }
 
-/* Testimoni , statis. Ini data. */
+/* Blok peran awal, sengaja lebih ringan: ini kredensial kepemimpinan, bukan
+   riwayat kerja berbayar, dan tidak boleh terbaca setara. */
+.early {
+  margin-top: var(--s10);
+}
+
+.early__label {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: var(--s4);
+}
+
+.early__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s4);
+}
+
+.early__card {
+  padding: var(--s6);
+  border-radius: var(--r-md);
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--card) 60%, transparent);
+}
+
+.early__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s3);
+}
+
+.early__title {
+  font-size: 1rem;
+}
+
+.early__date {
+  color: var(--ink-faint);
+  font-size: var(--fs-chip);
+  white-space: nowrap;
+}
+
+.early__org {
+  margin-top: var(--s1);
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.early__detail {
+  margin-top: var(--s3);
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+/* ═══ TESTIMONIALS ══════════════════════════════════════════════════════════ */
+
 .quotes {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s4);
-  margin-top: var(--s12);
-}
-
-.quotes__item {
-  display: flex;
+  margin-top: var(--s10);
 }
 
 .quote {
-  width: 100%;
-  margin: 0;
-  padding: var(--s6);
-  background: var(--paper);
-  border: var(--rule-w) solid var(--rule);
-  border-radius: var(--radius);
   display: flex;
   flex-direction: column;
+  margin: 0;
+  padding: var(--s6);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-float);
 }
 
-.quote__body {
-  margin: 0;
+.quote__mark {
+  color: color-mix(in srgb, var(--g2) 45%, transparent);
+  margin-bottom: var(--s3);
 }
 
 .quote__body p {
-  margin: 0;
   font-size: 1rem;
-  line-height: 1.55;
+  line-height: 1.6;
   text-wrap: pretty;
 }
 
@@ -817,307 +687,277 @@
 }
 
 .quote__name {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9375rem;
 }
 
 .quote__role {
-  color: var(--ink-soft);
-  font-size: 0.8125rem;
-}
-
-.quote__caption {
-  margin-top: var(--s3);
-  padding-top: var(--s3);
-  border-top: var(--rule-w) solid var(--rule);
-  color: var(--ink-soft);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  line-height: 1.5;
-  letter-spacing: 0.02em;
-  text-transform: none;
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
 }
 
 .quotes__more {
   margin-top: var(--s6);
-  font-size: 0.9375rem;
+  font-size: var(--fs-sm);
 }
 
-@media (max-width: 900px) {
-  .quotes {
-    grid-template-columns: minmax(0, 1fr);
-  }
+/* ═══ WORK GRID ═════════════════════════════════════════════════════════════ */
+
+.work {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s4);
+  margin-top: var(--s10);
 }
 
-/* Credentials , chip netral, satu blok padat. */
-.credentials {
-  margin-top: var(--s16);
-}
-
-.credentials__list {
+.work__item {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--s2);
+}
+
+.work__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--s6);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-float);
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease;
+}
+
+/* Garis gradient tipis di tepi atas kartu, penanda bahwa kartu ini bisa
+   dibuka. Kartu tanpa tautan tidak mendapatkannya. */
+.work__card--link::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--gradient);
+}
+
+.work__card--link:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px -12px rgb(15 18 34 / 0.18);
+}
+
+.work__kind {
+  align-self: flex-start;
+  padding: var(--s1) var(--s3);
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.work__title {
   margin-top: var(--s4);
+  font-size: var(--fs-h3);
+  line-height: 1.25;
 }
 
-.credentials__chip {
-  padding: var(--s2) var(--s3);
-  background: var(--paper);
-  border: var(--rule-w) solid var(--rule);
-  border-radius: var(--radius);
-  font-size: 0.8125rem;
+.work__body {
+  margin-top: var(--s3);
   color: var(--ink-soft);
-}
-
-/* Baris kredensial teknis pendukung. Tanpa card, tanpa border, tanpa aksen ,
-   nada footnote, dan itu memang porsinya. */
-.footnote {
-  margin-top: var(--s12);
-  max-width: 68ch;
-  color: var(--ink-soft);
-  font-size: 0.875rem;
+  font-size: var(--fs-sm);
   line-height: 1.65;
 }
 
-/* ═══ SKILLS ════════════════════════════════════════════════════════════════ */
-
-.skills {
-  display: grid;
-  gap: var(--s8);
-  margin-top: var(--s12);
-}
-
-.skills__group {
-  display: grid;
-  grid-template-columns: 14rem minmax(0, 1fr);
-  gap: var(--s6);
-  padding-top: var(--s6);
-  border-top: var(--rule-w) solid var(--rule);
-}
-
-.skills__label {
-  margin: 0;
-  color: var(--ink-soft);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  font-weight: 500;
-  letter-spacing: var(--tracking-mono);
-  text-transform: uppercase;
-  line-height: 1.6;
-}
-
-.skills__chips {
+/* margin-top:auto mendorong blok chip ke dasar kartu. Tanpa ini, kartu course
+   yang deskripsinya pendek menyisakan lubang kosong besar di bawah, karena
+   grid menyamakan tinggi semua kartu dengan kartu terpanjang. */
+.work__chips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s2);
+  margin-top: auto;
+  padding-top: var(--s5);
+  border-top: 1px solid var(--rule);
 }
 
-.skills__chip {
-  padding: var(--s2) var(--s3);
-  background: var(--paper-sunk);
-  border: var(--rule-w) solid var(--rule);
-  border-radius: var(--radius);
-  font-size: 0.875rem;
-}
-
-.skills__divider {
-  margin-top: var(--s12);
-}
-
-.skills__divider + .footnote {
-  margin-top: var(--s6);
-}
-
-@media (max-width: 760px) {
-  .skills__group {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--s4);
-  }
-}
-
-/* ═══ PATH ══════════════════════════════════════════════════════════════════ */
-
-.path__prose {
-  display: grid;
-  gap: var(--s6);
-  margin-top: var(--s8);
-  color: var(--ink-soft);
-}
-
-/* Marquee logo , satu-satunya marquee di situs ini. */
-.marquee {
-  margin-top: var(--s16);
-  overflow: hidden;
-  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-}
-
-.marquee__track {
-  display: flex;
-  width: max-content;
-  animation: marquee-scroll 42s linear infinite;
-}
-
-.marquee:hover .marquee__track {
-  animation-play-state: paused;
-}
-
-.marquee__set {
-  display: flex;
-  align-items: center;
-  gap: clamp(var(--s4), 2.5vw, var(--s8));
-  padding-right: clamp(var(--s4), 2.5vw, var(--s8));
-}
-
-/* Setiap logo duduk di atas kartu putihnya sendiri.
-   Ketujuh logo ini dibuat untuk kertas putih dan memakai warna merek
-   masing-masing , beberapa gelap, beberapa berwarna penuh. Menaruhnya langsung
-   di atas --paper berarti mereka bergantung pada mode terang/gelap untuk bisa
-   terbaca. Kartu putih membuat setiap logo membawa latarnya sendiri, jadi ia
-   tampil persis seperti yang dimaksud pemiliknya di kedua mode. */
-.marquee__card {
-  display: flex;
+.work__go {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--s3) var(--s4);
-  background: #fff;
-  border-radius: var(--radius);
+  width: 40px;
+  height: 40px;
+  margin-top: var(--s4);
+  border-radius: 50%;
+  background: var(--gradient);
+  color: #fff;
+  flex-shrink: 0;
+  align-self: flex-end;
 }
 
-/* Di mode terang, kartu putih di atas kertas bone butuh hairline supaya
-   tepinya terbaca. Di mode gelap kontrasnya sudah jauh lebih dari cukup. */
-@media (prefers-color-scheme: light) {
-  .marquee__card {
-    border: var(--rule-w) solid var(--rule);
-  }
+/* ═══ CONTACT ═══════════════════════════════════════════════════════════════ */
+
+.contact {
+  text-align: center;
+  padding-bottom: var(--s16);
 }
 
-/* Kotak seragam, bukan tinggi seragam. Ketujuh logo datang dengan rasio yang
-   sangat berbeda , ada wordmark lebar, ada lambang nyaris bujur sangkar , jadi
-   menyamakan tinggi saja membuat yang lebar mendominasi strip. `contain` di
-   dalam kotak yang sama memberi setiap institusi bobot optis yang setara. */
-.marquee__logo {
-  width: 120px;
-  /* Kotaknya jauh lebih tinggi dari yang dibutuhkan wordmark lebar, dan itu
-     disengaja: mayoritas logo di sini berbentuk bujur sangkar, dan pada kotak
-     yang pendek mereka terkunci di lebar 40px sementara wordmark memakai
-     seluruh 120px. Kotak yang lebih tinggi menaikkan yang bujur sangkar
-     mendekati bobot optis yang sama. */
-  height: 52px;
-  object-fit: contain;
+.contact__title {
+  font-size: var(--fs-h2);
+  max-width: 22ch;
+  margin-inline: auto;
 }
 
-@keyframes marquee-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+.contact__lede {
+  margin: var(--s5) auto 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-lede);
+  max-width: 52ch;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee__track {
-    animation: none;
-  }
-
-  /* Tanpa animasi, strip-nya jadi daftar yang bisa di-scroll manual. */
-  .marquee {
-    overflow-x: auto;
-  }
-}
-
-/* ═══ LOOKING FOR ═══════════════════════════════════════════════════════════ */
 
 .lookup {
-  margin: var(--s12) 0 0;
-  border-top: var(--rule-w) solid var(--rule);
+  display: grid;
+  gap: var(--s2);
+  max-width: 720px;
+  margin: var(--s10) auto 0;
+  text-align: left;
 }
 
 .lookup__row {
   display: grid;
   grid-template-columns: 10rem minmax(0, 1fr);
-  gap: var(--s6);
-  padding: var(--s4) 0;
-  border-bottom: var(--rule-w) solid var(--rule);
+  gap: var(--s4);
+  padding: var(--s4) var(--s6);
+  border-radius: var(--r-md);
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--card) 65%, transparent);
 }
 
 .lookup__label {
   margin: 0;
-  color: var(--ink-soft);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  font-weight: 500;
-  letter-spacing: var(--tracking-mono);
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--ink-faint);
   line-height: 1.7;
 }
 
 .lookup__value {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
 }
 
-.looking__actions {
+.contact__actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s3);
+  margin-top: var(--s10);
+}
+
+.socials {
+  display: flex;
+  justify-content: center;
   gap: var(--s3);
   margin-top: var(--s12);
 }
 
-.looking__note {
-  margin-top: var(--s6);
+.social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--card);
   color: var(--ink-soft);
-  font-size: 0.9375rem;
+  box-shadow: var(--shadow-float);
+  text-decoration: none;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), color 160ms ease;
 }
 
-@media (max-width: 640px) {
-  .lookup__row {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--s2);
-  }
+.social:hover {
+  transform: translateY(-3px);
+  color: var(--g2);
 }
 
 /* ═══ FOOTER ════════════════════════════════════════════════════════════════ */
 
 .footer {
-  border-top: var(--rule-w) solid var(--rule);
-  padding-block: var(--s12);
-}
-
-.footer__inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: start;
-  justify-content: space-between;
-  gap: var(--s6);
-}
-
-.footer__who {
-  font-size: 0.9375rem;
+  padding-block: var(--s10);
+  border-top: 1px solid var(--rule);
+  text-align: center;
 }
 
 .footer__links {
   display: flex;
-  gap: var(--s6);
-  font-size: 0.9375rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--s5);
+  font-size: var(--fs-sm);
 }
 
 .footer__colophon {
-  margin: 0;
-  color: var(--ink-soft);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
+  margin-top: var(--s5);
+  color: var(--ink-faint);
+  font-size: var(--fs-chip);
   line-height: 1.8;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  text-align: right;
-  max-width: none;
+}
+
+/* ═══ RESPONSIVE ════════════════════════════════════════════════════════════
+   Setiap grid multi-kolom runtuh eksplisit di sini, tidak ada yang
+   diserahkan ke kebetulan. */
+
+@media (max-width: 980px) {
+  .work {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quotes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px) {
-  .footer__colophon {
-    text-align: left;
+  .principles,
+  .early__grid,
+  .org__bullets {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .work {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .org__period {
+    margin-left: 0;
+  }
+
+  .lookup__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s1);
+  }
+
+  .hero__actions .btn,
+  .contact__actions .btn {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .logos__card {
+    width: 112px;
+    height: 56px;
+  }
+
+  .logos__img {
+    width: 84px;
+    height: 32px;
   }
 }

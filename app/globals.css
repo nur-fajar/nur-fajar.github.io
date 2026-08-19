@@ -2,50 +2,61 @@
 @import './sections.css';
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   THE LEDGER , design system nurfajar.com v2
+   AURORA, design system nurfajar.com v3
 
-   Bahasa visualnya diambil dari artefak yang memang milik Fajar sendiri:
-   learner progress dashboard. Grid sel, label mono, status jelas, rule tipis,
-   keterbacaan di atas dekorasi. Bukan tema yang ditempel , ini materi kerjanya
-   sendiri, dinaikkan ke level editorial.
+   Bahasa visualnya: kertas nyaris putih, blob warna besar yang di-blur berat
+   sebagai latar, kartu putih beradius besar yang mengambang di atasnya, chip
+   pill di mana-mana, dan satu gradient biru ke ungu ke magenta yang dipakai
+   untuk menandai hal-hal yang bisa diklik.
 
-   Aturan warna yang menjaga sistem ini tetap jujur:
-     --accent  menandai "ini bagian dari pekerjaan L&D-ku". Satu warna, satu
-               makna, dipakai konsisten di seluruh situs. Kalau warnanya
-               dihapus, situs kehilangan informasi , itu tesnya bahwa elemen
-               desainnya berfungsi, bukan dekoratif.
-     --status  HANYA untuk dot ketersediaan kerja. Satu penggunaan, titik.
-     Tombol primer solid --ink. Tombol tidak butuh warna untuk jadi tombol.
+   LIGHT-ONLY, disengaja. Seluruh sistem ini bergantung pada blob berwarna di
+   atas kertas terang; memaksakan varian gelap berarti mendesain ulang
+   hubungan warnanya dari nol, bukan sekadar membalik token. Karena itu tidak
+   ada blok prefers-color-scheme di file ini, dan `color-scheme: light`
+   memberi tahu browser supaya tidak mencoba membalik apa pun sendiri.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Base , bone dingin dengan sedikit tint hijau. Sengaja BUKAN cream hangat:
-     cream hangat adalah palet default yang dipakai setiap situs portofolio. */
-  --paper: #f1f3ee;
-  --paper-sunk: #e5e9e1; /* sel ledger, card bg */
-  --rule: #c9cfc4; /* hairline 1px */
-  --ink: #16211d; /* teks utama , forest-ink, bukan hitam */
-  --ink-soft: #5a6660; /* caption, label sekunder */
+  /* Kertas & tinta */
+  --paper: #f7f8fb;
+  --card: #ffffff;
+  --ink: #0f1222;
+  --ink-soft: #5b6178;
+  --ink-faint: #8b90a6;
+  --rule: #e6e9f2;
 
-  --accent: #2c6a55;
-  --accent-bg: #dde9e3;
+  /* Gradient aksen. Tiga stop ini adalah satu-satunya sumber warna "bisa
+     diklik" di seluruh situs: tombol primer, separuh headline, tombol panah
+     di kartu karya. */
+  --g1: #3080ff;
+  --g2: #9333ea;
+  --g3: #f6339a;
+  --gradient: linear-gradient(100deg, var(--g1), var(--g2) 55%, var(--g3));
 
-  --status: #c98a14;
-  --focus: #16211d;
+  /* Warna aksen tunggal untuk teks kecil & ikon netral */
+  --accent: #4f46e5;
+  --accent-soft: #eef2ff;
 
-  /* Type scale , modular 1.25, di-clamp supaya fluid tanpa breakpoint kasar */
-  --fs-display: clamp(2.25rem, 5.4vw, 4.5rem);
-  --fs-h2: clamp(1.75rem, 3.5vw, 2.75rem);
-  --fs-h3: clamp(1.15rem, 2vw, 1.4rem);
-  --fs-body: clamp(1rem, 1.15vw, 1.0625rem);
-  --fs-mono: 0.75rem;
-  --fs-mono-lg: 0.8125rem;
+  /* Blob latar */
+  --blob-yellow: #fbe38a;
+  --blob-blue: #a8dcf7;
+  --blob-pink: #f9c2e0;
 
-  --lh-display: 0.94;
-  --lh-body: 1.6;
-  --tracking-display: -0.03em;
-  --tracking-mono: 0.08em;
+  /* Status */
+  --status: #ec4899;
 
+  /* Tipografi */
+  --fs-display: clamp(2.75rem, 6.6vw, 6rem);
+  --fs-h2: clamp(2rem, 4vw, 3rem);
+  --fs-h3: clamp(1.15rem, 1.6vw, 1.375rem);
+  --fs-lede: clamp(1.0625rem, 1.5vw, 1.5rem);
+  --fs-body: 1rem;
+  --fs-sm: 0.875rem;
+  --fs-chip: 0.75rem;
+
+  --tracking-display: -0.025em;
+
+  /* Ruang & bentuk */
   --maxw: 1180px;
   --maxw-text: 62ch;
   --gutter: clamp(1.25rem, 5vw, 3rem);
@@ -54,33 +65,27 @@
   --s2: 0.5rem;
   --s3: 0.75rem;
   --s4: 1rem;
+  --s5: 1.25rem;
   --s6: 1.5rem;
   --s8: 2rem;
+  --s10: 2.5rem;
   --s12: 3rem;
   --s16: 4rem;
+  --s20: 5rem;
   --s24: 6rem;
-  --s32: 8rem;
 
-  --radius: 4px; /* nyaris kotak , bahasa sel spreadsheet */
-  --rule-w: 1px;
+  /* Satu skala radius, dipakai konsisten: kartu besar, kartu kecil, pill. */
+  --r-lg: 28px;
+  --r-md: 18px;
+  --r-sm: 12px;
+  --r-pill: 999px;
 
-  --nav-h: 52px;
+  --shadow-card: 0 1px 2px rgb(15 18 34 / 0.04), 0 12px 40px -12px rgb(15 18 34 / 0.12);
+  --shadow-float: 0 4px 30px rgb(15 18 34 / 0.06);
 
-  color-scheme: light dark;
-}
+  --nav-h: 64px;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #11170f;
-    --paper-sunk: #1a2118;
-    --rule: #2e382c;
-    --ink: #edf0e9;
-    --ink-soft: #9aa396;
-    --accent: #6fbfa0;
-    --accent-bg: #1c2c25;
-    --status: #e3b44a;
-    --focus: #edf0e9;
-  }
+  color-scheme: light;
 }
 
 /* ── Reset & dasar ──────────────────────────────────────────────────────── */
@@ -93,8 +98,7 @@
 
 html {
   scroll-behavior: smooth;
-  /* Anchor nav tidak boleh mendarat di balik navbar sticky. */
-  scroll-padding-top: calc(var(--nav-h) + var(--s6));
+  scroll-padding-top: calc(var(--nav-h) + var(--s8));
   -webkit-text-size-adjust: 100%;
 }
 
@@ -104,10 +108,12 @@ body {
   color: var(--ink);
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--fs-body);
-  line-height: var(--lh-body);
-  font-synthesis-weight: none;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* Blob latar di-fixed dan diletakkan di lapisan paling bawah lewat
+     ::before di .aurora, jadi body sendiri tidak boleh scroll horizontal. */
+  overflow-x: hidden;
 }
 
 h1,
@@ -118,12 +124,12 @@ h4 {
   font-weight: 700;
   letter-spacing: var(--tracking-display);
   margin: 0;
+  line-height: 1.1;
   text-wrap: balance;
 }
 
 p {
   margin: 0;
-  max-width: var(--maxw-text);
 }
 
 img {
@@ -143,17 +149,69 @@ ol {
   list-style: none;
 }
 
-/* Focus ring yang benar-benar terlihat, di semua elemen interaktif. Jangan
-   pernah `outline: none` , spec §9. */
 :where(a, button, input, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--g2);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 
 ::selection {
-  background: var(--accent-bg);
+  background: color-mix(in srgb, var(--g2) 18%, transparent);
   color: var(--ink);
+}
+
+/* ── Latar aurora ───────────────────────────────────────────────────────── */
+
+/* Tiga blob raksasa yang di-blur berat. Mereka `fixed` supaya tidak ikut
+   scroll (itu yang membuat halaman terasa seperti satu permukaan, bukan
+   deretan section), dan pointer-events:none supaya tidak pernah menghalangi
+   klik. Blur sebesar ini mahal kalau dipasang di elemen yang scroll, jadi
+   posisinya fixed sekaligus keputusan performa. */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
+}
+
+.aurora span:nth-child(1) {
+  width: 46vw;
+  height: 46vw;
+  min-width: 320px;
+  min-height: 320px;
+  top: -12vw;
+  left: -8vw;
+  background: var(--blob-yellow);
+}
+
+.aurora span:nth-child(2) {
+  width: 52vw;
+  height: 52vw;
+  min-width: 340px;
+  min-height: 340px;
+  top: 18vw;
+  left: 26vw;
+  background: var(--blob-blue);
+  opacity: 0.45;
+}
+
+.aurora span:nth-child(3) {
+  width: 48vw;
+  height: 48vw;
+  min-width: 320px;
+  min-height: 320px;
+  top: 8vw;
+  right: -10vw;
+  background: var(--blob-pink);
 }
 
 /* ── Primitif tata letak ────────────────────────────────────────────────── */
@@ -167,47 +225,91 @@ ol {
 
 .section {
   padding-block: clamp(var(--s16), 9vw, var(--s24));
-  scroll-margin-top: calc(var(--nav-h) + var(--s4));
+  scroll-margin-top: calc(var(--nav-h) + var(--s6));
 }
 
-/* Label mono di atas judul section , bahasa header kolom spreadsheet. */
-.kicker {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  font-weight: 500;
-  letter-spacing: var(--tracking-mono);
+/* Label mono kecil di atas judul section. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-soft);
-  margin: 0 0 var(--s3);
-  /* Menang atas batas 62ch pada <p>: kicker adalah label satu baris, dan
-     "L&D SPECIALIST · INSTRUCTIONAL DESIGN · CURRICULUM DEVELOPMENT" pecah jadi
-     dua baris kalau ikut aturan panjang paragraf. */
-  max-width: none;
+  color: var(--ink-faint);
+  margin: 0 0 var(--s4);
 }
 
 .section-title {
   font-size: var(--fs-h2);
-  line-height: 1.08;
   max-width: 20ch;
 }
 
 .section-lede {
-  color: var(--ink-soft);
   margin-top: var(--s4);
+  color: var(--ink-soft);
+  font-size: var(--fs-lede);
+  max-width: var(--maxw-text);
 }
 
-.mono {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  font-weight: 500;
-  letter-spacing: var(--tracking-mono);
-  text-transform: uppercase;
+/* Teks bergradient. -webkit-background-clip masih bentuk yang paling luas
+   didukung; fallback-nya adalah warna --ink biasa kalau clip tidak jalan. */
+.grad {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
-.rule {
-  border: 0;
-  border-top: var(--rule-w) solid var(--rule);
-  margin: 0;
+/* ── Kartu ──────────────────────────────────────────────────────────────── */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.card--glass {
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+}
+
+@supports not (backdrop-filter: blur(24px)) {
+  .card--glass {
+    background: var(--card);
+  }
+}
+
+/* ── Chip ───────────────────────────────────────────────────────────────── */
+
+/* Sengaja TANPA white-space:nowrap. Beberapa chip memang panjang (baris
+   publikasi JOIV, "Custom learner-progress tracking"), dan nowrap membuatnya
+   melebar melewati layar ponsel. Karena body memakai overflow-x:hidden untuk
+   menahan blob aurora, kelebihan itu tidak memunculkan scrollbar, ia hanya
+   memotong teksnya diam-diam, yang jauh lebih buruk daripada chip dua baris. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  max-width: 100%;
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-pill);
+  background: var(--card);
+  font-size: var(--fs-chip);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.chip--quiet {
+  background: color-mix(in srgb, var(--paper) 70%, var(--card));
+  border-color: transparent;
 }
 
 /* ── Tombol ─────────────────────────────────────────────────────────────── */
@@ -217,47 +319,44 @@ ol {
   align-items: center;
   justify-content: center;
   gap: var(--s2);
-  /* 44px tinggi minimum , target sentuh mobile (spec §9). */
-  min-height: 44px;
+  min-height: 48px;
   padding: var(--s3) var(--s6);
-  border: var(--rule-w) solid var(--ink);
-  border-radius: var(--radius);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
   font-family: var(--font-body), sans-serif;
   font-size: 0.9375rem;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  background: transparent;
+  background: var(--card);
   color: var(--ink);
-  transition: background-color 140ms ease, color 140ms ease, transform 140ms ease;
+  box-shadow: var(--shadow-float);
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms ease;
 }
 
 .btn:hover {
-  background: var(--paper-sunk);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgb(15 18 34 / 0.12);
 }
 
 .btn:active {
-  transform: translateY(1px);
+  transform: translateY(0);
 }
 
-/* Solid --ink di atas --paper. Teks memakai --paper, bukan putih murni, jadi
-   kontrasnya ikut benar di dark mode tanpa aturan tambahan. */
 .btn--primary {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
+  background: var(--gradient);
+  color: #fff;
+  box-shadow: 0 8px 24px -6px color-mix(in srgb, var(--g2) 55%, transparent);
 }
 
 .btn--primary:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--paper);
+  box-shadow: 0 14px 34px -6px color-mix(in srgb, var(--g2) 65%, transparent);
 }
 
 .btn--sm {
-  min-height: 36px;
+  min-height: 40px;
   padding: var(--s2) var(--s4);
   font-size: 0.8125rem;
 }
@@ -268,60 +367,19 @@ ol {
   color: var(--ink);
   text-decoration: none;
   border-bottom: 1px solid var(--rule);
-  padding-bottom: 1px;
-  transition: border-color 140ms ease, color 140ms ease;
+  transition: border-color 160ms ease, color 160ms ease;
 }
 
 .link:hover {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-}
-
-/* ── Kartu ledger ───────────────────────────────────────────────────────── */
-
-/* Border-kiri 3px --accent di semua kartu: satu warna, satu makna. Hover
-   melebarkannya jadi 5px , micro, bukan lift/shadow (spec §8). */
-.ledger-card {
-  position: relative;
-  background: var(--paper-sunk);
-  border: var(--rule-w) solid var(--rule);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius);
-  padding: var(--s6);
-  transition: border-left-width 120ms ease, padding-left 120ms ease;
-}
-
-.ledger-card:hover {
-  border-left-width: 5px;
-  padding-left: calc(var(--s6) - 2px);
-}
-
-/* Baris metrik di kaki kartu. Dipisah middot, mono, --ink-soft. */
-.metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s2) var(--s3);
-  margin-top: var(--s6);
-  padding-top: var(--s4);
-  border-top: var(--rule-w) solid var(--rule);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--fs-mono);
-  letter-spacing: 0.04em;
-  color: var(--ink-soft);
-}
-
-.metrics li + li::before {
-  content: '·';
-  margin-right: var(--s3);
-  color: var(--rule);
+  color: var(--g2);
+  border-bottom-color: var(--g2);
 }
 
 /* ── Motion ─────────────────────────────────────────────────────────────── */
 
-/* Framer Motion menuliskan state `initial` ke HTML yang dirender di server ,
-   elemen reveal terkirim sebagai opacity:0 sampai JS menjalankan animasinya.
-   Kalau JS tidak pernah jalan, teksnya hilang selamanya. Aturan ini hanya ada
-   ketika tidak ada JS untuk menjalankan animasi itu. */
+/* Framer Motion menuliskan state `initial` ke HTML yang dirender di server,
+   jadi elemen reveal terkirim sebagai opacity:0. Aturan ini hanya ada ketika
+   tidak ada JS untuk menjalankan animasinya. */
 .motion-safe {
   opacity: 1;
 }
@@ -335,9 +393,6 @@ ol {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
-    /* Delay ikut dinolkan, kalau tidak entrance ber-stagger tetap menahan
-       konten tidak terlihat selama delay-nya sebelum menjentik ke posisi
-       akhir , persis efek yang ingin dihindari pengguna. */
     animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -345,21 +400,34 @@ ol {
   }
 }
 
-/* ── Skip link ──────────────────────────────────────────────────────────── */
+/* ── Utility ────────────────────────────────────────────────────────────── */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
 
 .skip-link {
   position: absolute;
   left: var(--s4);
   top: var(--s4);
   z-index: 100;
-  padding: var(--s3) var(--s4);
+  padding: var(--s3) var(--s5);
   background: var(--ink);
-  color: var(--paper);
-  border-radius: var(--radius);
+  color: #fff;
+  border-radius: var(--r-pill);
   text-decoration: none;
   font-size: 0.875rem;
+  font-weight: 700;
   transform: translateY(-200%);
-  transition: transform 140ms ease;
+  transition: transform 160ms ease;
 }
 
 .skip-link:focus-visible {
