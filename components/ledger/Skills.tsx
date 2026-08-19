@@ -2,7 +2,7 @@ import { SKILLS, SKILLS_FOOTNOTE } from '@/content/ledger';
 import Reveal from './Reveal';
 
 /**
- * SECTION 6 — Skills, dan ia duduk SETELAH bukti, bukan sebelum. Daftar
+ * SECTION 6 , Skills, dan ia duduk SETELAH bukti, bukan sebelum. Daftar
  * kompetensi sebelum ada bukti apa pun hanyalah tag soup.
  *
  * Semua grup netral, tanpa aksen warna: Skills bukan tempat untuk menegaskan
@@ -10,7 +10,7 @@ import Reveal from './Reveal';
  *
  * Yang dihapus dari versi lama: empat nama vendor LLM sebagai empat
  * kompetensi terpisah (membuat daftar terlihat digelembungkan), serta grup
- * "AI & Automation" yang dulu berdiri sejajar dengan grup L&D — sekarang turun
+ * "AI & Automation" yang dulu berdiri sejajar dengan grup L&D , sekarang turun
  * jadi satu baris catatan di bawah rule, bukan kategori setara.
  */
 export default function Skills() {

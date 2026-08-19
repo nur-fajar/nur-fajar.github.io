@@ -14,8 +14,8 @@ const ANCHORS = [
  * Sticky nav island.
  *
  * Muncul DARI PAGE LOAD, bukan on-scroll. Versi lama situs menyembunyikannya
- * sampai pengguna scroll, yang berarti tombol Resume — satu-satunya hal yang
- * benar-benar ingin diambil hiring manager — tidak ada di viewport pertama.
+ * sampai pengguna scroll, yang berarti tombol Resume , satu-satunya hal yang
+ * benar-benar ingin diambil hiring manager , tidak ada di viewport pertama.
  * Definition of done section ini: tombol Resume terlihat tanpa scroll di semua
  * breakpoint, termasuk 360px.
  */
@@ -24,7 +24,7 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
 
-  // Anchor aktif ditandai lewat IntersectionObserver, bukan listener scroll —
+  // Anchor aktif ditandai lewat IntersectionObserver, bukan listener scroll ,
   // scroll listener jalan tiap frame dan tidak punya batching.
   useEffect(() => {
     const sections = ANCHORS.map(({ id }) => document.getElementById(id)).filter(

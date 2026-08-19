@@ -8,16 +8,16 @@ import { INSTITUTIONS } from '@/content/ledger';
  *
  * Ini SATU-SATUNYA marquee di seluruh situs, dan itu disengaja: aturan P4
  * mengizinkan marquee untuk logo, tidak pernah untuk data. Versi lama situs
- * memakai marquee untuk angka pencapaian — angka yang bergerak tidak bisa
+ * memakai marquee untuk angka pencapaian , angka yang bergerak tidak bisa
  * dibaca sekilas dan tidak bisa di-screenshot, dua hal yang justru dilakukan
  * hiring manager.
  *
  * Set kedua adalah klon murni untuk menutup jahitan animasi, jadi ia
- * aria-hidden dan tidak bisa di-tab — screen reader dan keyboard hanya
+ * aria-hidden dan tidak bisa di-tab , screen reader dan keyboard hanya
  * bertemu satu daftar.
  */
 /* width/height di bawah adalah ukuran KOTAKNYA (lihat .marquee__logo), bukan
-   rasio asli tiap file. Itu disengaja — kotaknya memang seragam dan
+   rasio asli tiap file. Itu disengaja , kotaknya memang seragam dan
    `object-fit: contain` yang mengurus rasio masing-masing logo di dalamnya.
    Keduanya harus tetap sama persis dengan CSS-nya: kalau meleset, Next
    menyimpulkan CSS mengubah satu dimensi saja dan memperingatkan soal rasio

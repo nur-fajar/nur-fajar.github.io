@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Section styles — dibangun di atas token yang didefinisikan di globals.css.
+   Section styles , dibangun di atas token yang didefinisikan di globals.css.
 
    Tidak ada nilai warna mentah di file ini. Setiap warna datang dari token,
    supaya dark mode tidak butuh satu pun aturan tambahan di sini dan supaya
@@ -205,7 +205,7 @@
     order: 3;
   }
 
-  /* Tombol Resume tetap terlihat di mobile — ia tidak pernah masuk ke sheet. */
+  /* Tombol Resume tetap terlihat di mobile , ia tidak pernah masuk ke sheet. */
   .nav__cv {
     order: 2;
   }
@@ -252,7 +252,7 @@
 .hero__title {
   font-size: var(--fs-display);
   line-height: var(--lh-display);
-  /* Baris headline ditentukan <br/> di markup, bukan oleh lebar kotaknya —
+  /* Baris headline ditentukan <br/> di markup, bukan oleh lebar kotaknya ,
      jadi tidak ada max-width yang memaksa baris ketiga, dan `balance` dimatikan
      supaya browser tidak menata ulang jeda yang sudah dipilih. */
   max-width: none;
@@ -282,7 +282,7 @@
   max-width: none;
 }
 
-/* Stat strip — empat sel dipisah rule vertikal hairline. */
+/* Stat strip , empat sel dipisah rule vertikal hairline. */
 .statstrip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -351,7 +351,7 @@
 
 /* ═══ SECTION SHELL ═════════════════════════════════════════════════════════ */
 
-/* Latar tenggelam bergantian memberi ritme vertikal tanpa mengganti tema —
+/* Latar tenggelam bergantian memberi ritme vertikal tanpa mengganti tema ,
    keduanya hidup di keluarga warna yang sama. */
 .section--sunk {
   background: color-mix(in srgb, var(--paper-sunk) 55%, var(--paper));
@@ -403,9 +403,11 @@
 
 /* ═══ SELECTED WORK ═════════════════════════════════════════════════════════ */
 
+/* 3 kartu, jadi 3 kolom, bukan 2: grid 2 kolom dengan 3 item selalu
+   meninggalkan satu sel kosong di kanan bawah. */
 .worklist {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s4);
   margin-top: var(--s12);
 }
@@ -471,7 +473,7 @@
   text-transform: uppercase;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 860px) {
   .worklist {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -515,7 +517,7 @@
   border-bottom: 0;
 }
 
-/* Penanda "paling baru" — hanya di blok pekerjaan berbayar. */
+/* Penanda "paling baru" , hanya di blok pekerjaan berbayar. */
 .exp__row--current {
   background: var(--paper-sunk);
   border-radius: var(--radius) var(--radius) 0 0;
@@ -561,7 +563,7 @@
   letter-spacing: var(--tracking-mono);
   text-transform: uppercase;
   /* Tanpa ini label mewarisi line-height body (1.6), dan penanda +/x jadi
-     terpusat pada kotak baris alih-alih pada tinggi hurufnya — terlihat
+     terpusat pada kotak baris alih-alih pada tinggi hurufnya , terlihat
      melorot. */
   line-height: 1;
   cursor: pointer;
@@ -587,7 +589,7 @@
   border-bottom-color: currentColor;
 }
 
-/* Tanda "+" dari dua garis. Saat terbuka ia berputar 45 derajat jadi "x" —
+/* Tanda "+" dari dua garis. Saat terbuka ia berputar 45 derajat jadi "x" ,
    satu bentuk, dua state, tanpa file ikon. */
 .exp__summary-mark {
   position: relative;
@@ -707,7 +709,7 @@
   border-top: 0;
 }
 
-/* Angka besar memakai mono, bukan display — ia harus terbaca sebagai data,
+/* Angka besar memakai mono, bukan display , ia harus terbaca sebagai data,
    bukan sebagai poster. */
 .proofgrid__value {
   display: block;
@@ -772,7 +774,7 @@
   }
 }
 
-/* Testimoni — statis. Ini data. */
+/* Testimoni , statis. Ini data. */
 .quotes {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -847,7 +849,7 @@
   }
 }
 
-/* Credentials — chip netral, satu blok padat. */
+/* Credentials , chip netral, satu blok padat. */
 .credentials {
   margin-top: var(--s16);
 }
@@ -868,7 +870,7 @@
   color: var(--ink-soft);
 }
 
-/* Baris kredensial teknis pendukung. Tanpa card, tanpa border, tanpa aksen —
+/* Baris kredensial teknis pendukung. Tanpa card, tanpa border, tanpa aksen ,
    nada footnote, dan itu memang porsinya. */
 .footnote {
   margin-top: var(--s12);
@@ -943,7 +945,7 @@
   color: var(--ink-soft);
 }
 
-/* Marquee logo — satu-satunya marquee di situs ini. */
+/* Marquee logo , satu-satunya marquee di situs ini. */
 .marquee {
   margin-top: var(--s16);
   overflow: hidden;
@@ -970,7 +972,7 @@
 
 /* Setiap logo duduk di atas kartu putihnya sendiri.
    Ketujuh logo ini dibuat untuk kertas putih dan memakai warna merek
-   masing-masing — beberapa gelap, beberapa berwarna penuh. Menaruhnya langsung
+   masing-masing , beberapa gelap, beberapa berwarna penuh. Menaruhnya langsung
    di atas --paper berarti mereka bergantung pada mode terang/gelap untuk bisa
    terbaca. Kartu putih membuat setiap logo membawa latarnya sendiri, jadi ia
    tampil persis seperti yang dimaksud pemiliknya di kedua mode. */
@@ -992,7 +994,7 @@
 }
 
 /* Kotak seragam, bukan tinggi seragam. Ketujuh logo datang dengan rasio yang
-   sangat berbeda — ada wordmark lebar, ada lambang nyaris bujur sangkar — jadi
+   sangat berbeda , ada wordmark lebar, ada lambang nyaris bujur sangkar , jadi
    menyamakan tinggi saja membuat yang lebar mendominasi strip. `contain` di
    dalam kotak yang sama memberi setiap institusi bobot optis yang setara. */
 .marquee__logo {

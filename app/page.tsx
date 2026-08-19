@@ -19,7 +19,7 @@ import Footer from '@/components/ledger/Footer';
  *   Selected work artefak nyata yang bisa diklik            (45 detik–2 menit)
  *   Experience    sudah berapa lama, di mana, progresi      (2–2,5 menit)
  *   Proof         angka + metode, testimoni, kredensial     (2,5–4 menit)
- *   Skills        peta kompetensi — setelah bukti, bukan sebelum
+ *   Skills        peta kompetensi , setelah bukti, bukan sebelum
  *   Path          kredensial akademik, prioritas terendah
  *   Looking for   peran apa, setup apa, cara kontak         (aksi)
  */

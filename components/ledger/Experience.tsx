@@ -5,7 +5,7 @@ import { LEADERSHIP, WORK_HISTORY, type Role } from '@/content/ledger';
 import Reveal from './Reveal';
 
 /**
- * SECTION 4 — Experience. Sebelumnya tidak ada sama sekali, sehingga hiring
+ * SECTION 4 , Experience. Sebelumnya tidak ada sama sekali, sehingga hiring
  * manager tidak bisa menjawab pertanyaan gerbang paling dasar: "sudah berapa
  * lama dia L&D, dan di mana?".
  *
@@ -70,7 +70,7 @@ function RoleList({
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       />
 
-      {/* <ol> karena urutannya bermakna — ini kronologi, bukan kumpulan. */}
+      {/* <ol> karena urutannya bermakna , ini kronologi, bukan kumpulan. */}
       <ol className="exp__list" aria-labelledby={labelledBy}>
         {roles.map((role, index) => (
           <Reveal
@@ -87,7 +87,7 @@ function RoleList({
             <p className="exp__dates">
               {role.start}
               <span className="exp__dash" aria-hidden="true">
-                {' — '}
+                {' - '}
               </span>
               <span className="sr-only"> to </span>
               {role.end}

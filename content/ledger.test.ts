@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
+import * as ledger from './ledger';
 import {
   BUILT,
   CONTACT,
   HERO_STATS,
   LEADERSHIP,
+  LOOKING_FOR,
   PROOF,
   SKILLS,
   SKILLS_FOOTNOTE,
@@ -19,11 +21,11 @@ import {
  * Aturan-aturan ini adalah jenis yang paling gampang bocor pelan-pelan lewat
  * satu edit copy yang kelihatannya tidak berbahaya: satu angka ditambah tanpa
  * metodenya, satu kata "AI" masuk ke hero, satu angka lama muncul lagi. Semua
- * itu adalah bug faktual, bukan selera — jadi tempatnya di suite tes, bukan di
+ * itu adalah bug faktual, bukan selera , jadi tempatnya di suite tes, bukan di
  * checklist yang dibaca manusia sekali lalu dilupakan.
  */
 
-describe('P2 — setiap angka punya denominator atau metode', () => {
+describe('P2 , setiap angka punya denominator atau metode', () => {
   it('setiap sel stat di hero membawa baris metode', () => {
     for (const stat of HERO_STATS) {
       expect(stat.method.trim().length, `${stat.label} tidak punya metode`).toBeGreaterThan(0);
@@ -44,7 +46,7 @@ describe('P2 — setiap angka punya denominator atau metode', () => {
   });
 });
 
-describe('P3 — angka situs match dengan CV', () => {
+describe('P3 , angka situs match dengan CV', () => {
   const allCopy = [
     ...HERO_STATS.map((stat) => `${stat.value} ${stat.method}`),
     ...PROOF.map((cell) => `${cell.value} ${cell.method}`),
@@ -88,7 +90,7 @@ describe('P3 — angka situs match dengan CV', () => {
   });
 });
 
-describe('framing — situs berbicara satu identitas: L&D / ID / CD', () => {
+describe('framing , situs berbicara satu identitas: L&D / ID / CD', () => {
   it('tidak ada kata AI di kesan pertama', () => {
     const firstImpression = HERO_STATS.map((stat) => `${stat.label} ${stat.method}`).join(' ');
     expect(firstImpression).not.toMatch(/\bAI\b/);
@@ -164,7 +166,59 @@ describe('artefak & kontak', () => {
     expect(nineEight?.caption).toBeTruthy();
   });
 
-  it('hanya tiga testimoni — yang generik sudah dipangkas', () => {
+  it('hanya tiga testimoni , yang generik sudah dipangkas', () => {
     expect(TESTIMONIALS).toHaveLength(3);
+  });
+});
+
+describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
+  it('tidak ada em dash di mana pun dalam konten yang di-export', () => {
+    // Scan mekanis, bukan review manual: sekali satu edit copy menyelipkan
+    // em dash lagi, tes ini yang menangkapnya, bukan mata seseorang.
+    for (const [key, value] of Object.entries(ledger)) {
+      const text = JSON.stringify(value);
+      expect(text, `${key} mengandung em dash`).not.toMatch(/—/);
+    }
+  });
+
+  it('What I Built cuma 2 kartu: dashboard dan marketing sudah dihapus, bukan disembunyikan', () => {
+    expect(BUILT.map((card) => card.id)).toEqual(['curriculum', 'train-the-trainers']);
+  });
+
+  it('Selected Work cuma 3 kartu: dashboard-artifact sudah dihapus', () => {
+    expect(WORK.map((card) => card.id)).toEqual(['chatbot-business', 'chatbot-education', 'gen-ai-pm']);
+  });
+
+  it('Train the Trainers tidak mengklaim lecturer sudah mengajar', () => {
+    // Training baru selesai Juni 2026; lecturer belum membawa kurikulumnya
+    // ke mahasiswa mereka sendiri. Klaim "now deliver ... without me" adalah
+    // klaim hasil yang belum terjadi, bukan klaim kompetensi yang sudah ada.
+    const ttt = BUILT.find((card) => card.id === 'train-the-trainers');
+    expect(ttt?.body).not.toMatch(/now deliver/i);
+    expect(ttt?.body).not.toMatch(/without me/i);
+  });
+
+  it('"5 programs" dan "4 curriculum modules" dikunci ke tahun L&D, bukan ke 3 tahun', () => {
+    const programsStat = HERO_STATS.find((stat) => stat.value === '5');
+    const modulesStat = HERO_STATS.find((stat) => stat.value === '4');
+    expect(programsStat?.method).toMatch(/L&D Specialist/);
+    expect(modulesStat?.method).toMatch(/L&D Specialist/);
+
+    const programsCell = PROOF.find((cell) => cell.label.startsWith('programs run'));
+    const modulesCell = PROOF.find((cell) => cell.label.startsWith('curriculum modules'));
+    expect(programsCell?.method).toMatch(/L&D Specialist/);
+    expect(modulesCell?.method).toMatch(/L&D Specialist/);
+  });
+
+  it('"300+ learners" tetap dilabeli lintas 3 peran, tidak pernah dikunci ke satu tahun', () => {
+    const learnersStat = HERO_STATS.find((stat) => stat.label === 'learners trained');
+    const learnersCell = PROOF.find((cell) => cell.label === 'learners trained');
+    expect(learnersStat?.method).toContain('3 roles');
+    expect(learnersCell?.method).toContain('3 roles');
+  });
+
+  it('Curriculum Developer ada di daftar peran yang dicari', () => {
+    const rolesRow = LOOKING_FOR.find(([label]) => label === 'Roles');
+    expect(rolesRow?.[1]).toContain('Curriculum Developer');
   });
 });

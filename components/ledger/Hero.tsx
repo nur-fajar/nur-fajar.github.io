@@ -1,15 +1,15 @@
 import type { CSSProperties } from 'react';
-import { CONTACT, HERO_STATS } from '@/content/ledger';
+import { CONTACT, END_TO_END_PHASES, HERO_STATS } from '@/content/ledger';
 
 /**
- * Hero — semua pertanyaan screening dijawab tanpa scroll: siapa, peran apa,
+ * Hero, semua pertanyaan screening dijawab tanpa scroll: siapa, peran apa,
  * cari apa, bukti utama, di mana, dan bagaimana menghubungi.
  *
  * Section ini sengaja TIDAK memakai Framer Motion, dan itu keputusan yang
  * dipikirkan, bukan kelalaian. Framer Motion membakar state `initial`-nya ke
  * HTML yang dirender server, artinya setiap elemen terkirim sebagai
  * `opacity: 0` dan baru terlihat setelah bundle JS diunduh, di-parse, dan
- * hydration selesai. Untuk section di bawah fold itu tidak masalah — pembaca
+ * hydration selesai. Untuk section di bawah fold itu tidak masalah, pembaca
  * belum sampai ke sana. Untuk fold pertama, itu berarti hiring manager di
  * koneksi lambat menatap halaman kosong di detik-detik yang paling menentukan,
  * dan fold pertama adalah satu-satunya bagian situs yang dijamin dilihat semua
@@ -21,11 +21,18 @@ import { CONTACT, HERO_STATS } from '@/content/ledger';
  * Framer Motion tetap mengerjakan seluruh reveal-on-scroll di bawah fold, di
  * mana biayanya tidak jatuh di jalur kritis.
  *
+ * Lede dengan sengaja HANYA mengklaim "end to end" untuk tahun sebagai L&D
+ * Specialist (2025-2026). Dua peran sebelumnya (mentoring di Bangkit, training
+ * di Terra AI) tidak disebut di sini sama sekali, supaya tidak ada satu
+ * kalimat pun yang bisa dibaca seolah 3 tahun/300+ learner semuanya dikelola
+ * end to end oleh Fajar sendirian. Sejarah lengkapnya ada di Experience,
+ * dengan jabatan dan tanggal eksplisit.
+ *
  * Dua hal lain yang sengaja tidak ada:
  *   1. Kata "Scroll". Affordance scroll paling universal adalah konten yang
  *      terpotong, jadi section berikutnya dibiarkan mengintip di bawah fold.
  *   2. Angka apa pun dari proyek AI. Keempat sel stat adalah metrik
- *      L&D/kurikulum murni — kesan pertama harus 100% menjawab peran yang
+ *      L&D/kurikulum murni, kesan pertama harus 100% menjawab peran yang
  *      dilamar, bukan memancing "jadi dia mau kerja apa?".
  */
 export default function Hero() {
@@ -41,23 +48,22 @@ export default function Hero() {
         </p>
 
         <h1 className="hero__title hero__rise" style={rise(1)}>
-          I run the whole cycle —<br />
-          not just the training day.
+          I run the whole cycle.<br />
+          Not just the training day.
         </h1>
 
         <p className="hero__lede hero__rise" style={rise(2)}>
-          I run learning programs end to end — design, delivery, and evaluation. Three
-          years, five programs, 300+ learners, and a curriculum now taught by people I
-          trained to teach it.
+          As L&D Specialist, I own programs the whole way: {END_TO_END_PHASES}. This past
+          year, that meant 5 programs and 4 curriculum modules I built from scratch.
         </p>
 
-        {/* Stat strip: empat sel dipisah rule vertikal hairline — bahasa ledger.
+        {/* Stat strip: empat sel dipisah rule vertikal hairline, bahasa ledger.
             Angkanya STATIS. Angka yang bergerak tidak bisa dibaca sekilas dan
             tidak bisa di-screenshot, dan hiring manager melakukan keduanya. */}
         <dl className="statstrip hero__rise" style={rise(3)}>
           {HERO_STATS.map((stat) => (
             <div key={stat.label} className="statstrip__cell">
-              {/* Istilahnya dibaca screen reader, definisinya dilihat mata —
+              {/* Istilahnya dibaca screen reader, definisinya dilihat mata,
                   keduanya membawa isi yang sama, jadi label visualnya
                   aria-hidden supaya tidak diumumkan dua kali. */}
               <dt className="sr-only">{stat.label}</dt>

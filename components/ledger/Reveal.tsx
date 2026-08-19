@@ -7,8 +7,8 @@ import type { ReactNode } from 'react';
  * Reveal fade + rise, satu kali saja.
  *
  * Aturan induk motion di situs ini: motion untuk narasi, tidak pernah untuk
- * fakta (spec §8). Komponen ini sengaja hanya bisa melakukan satu hal —
- * memunculkan sebuah blok — supaya tidak ada godaan menggerakkan angka,
+ * fakta (spec §8). Komponen ini sengaja hanya bisa melakukan satu hal ,
+ * memunculkan sebuah blok , supaya tidak ada godaan menggerakkan angka,
  * testimoni, atau sertifikasi.
  *
  * `once: true` penting: elemen yang muncul-hilang-muncul saat pengguna scroll

@@ -7,23 +7,30 @@ import { ImageResponse } from 'next/og';
  *
  * Alasannya praktis: gambar ini harus tetap benar setiap kali angkanya
  * berubah. Kalau ia file PNG statis, ia akan jadi tempat pertama angka lama
- * bertahan hidup setelah situs dan CV sudah diperbarui — dan justru inilah
+ * bertahan hidup setelah situs dan CV sudah diperbarui, dan justru inilah
  * gambar yang muncul di preview LinkedIn dan WhatsApp, sering jadi hal pertama
  * yang dilihat hiring manager.
  *
  * Ia juga harus terbaca dua kali: di 1200x630 penuh, dan di thumbnail kecil
  * timeline LinkedIn. Karena itu isinya cuma nama, peran, tiga angka, dan satu
- * rule aksen — tidak ada yang lain yang bisa dikorbankan saat mengecil.
+ * rule aksen, tidak ada yang lain yang bisa dikorbankan saat mengecil.
+ *
+ * Ketiga angka sengaja dipilih supaya SEMUANYA berbagi cakupan yang sama
+ * ("3 peran, 2023-2026") alih-alih mencampur angka lintas-peran (300+
+ * learners) dengan angka satu-tahun (5 programs, 4 modules). Gambar sekecil
+ * ini tidak punya ruang untuk method line yang memisahkan keduanya, jadi
+ * cara paling aman adalah tidak pernah menaruh keduanya berdampingan di sini
+ * sama sekali. Lihat catatan amandemen di kepala content/ledger.ts.
  */
 /* Gambar ini sepenuhnya diturunkan dari konstanta di repo ini dan satu file di
    /public, jadi ia bisa dirender sekali saat build. Penanda ini juga yang
-   membuat target kedua (static export ke GitHub Pages) tetap bisa di-build —
+   membuat target kedua (static export ke GitHub Pages) tetap bisa di-build,
    tanpanya, `output: 'export'` menolak route ini. */
 export const dynamic = 'force-static';
 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-export const alt = 'Nur Fajar — L&D Specialist. 300+ learners, 5 programs, 9.0/10 satisfaction.';
+export const alt = 'Nur Fajar, L&D Specialist. 300+ learners across 3 roles, 9.0/10 satisfaction.';
 
 // Token diambil dari mode terang design system (globals.css). Dipakai apa
 // adanya supaya preview link terlihat sebagai potongan dari situs yang sama.
@@ -34,8 +41,8 @@ const ACCENT = '#2C6A55';
 const RULE = '#C9CFC4';
 
 const STATS: Array<[string, string]> = [
-  ['300+', 'learners'],
-  ['5', 'programs'],
+  ['300+', 'learners trained'],
+  ['3', 'roles, 2023 to 2026'],
   ['9.0/10', 'satisfaction'],
 ];
 
@@ -87,7 +94,7 @@ export default async function OpengraphImage() {
           />
         </div>
 
-        {/* Satu rule aksen — elemen grafis tunggal di gambar ini. */}
+        {/* Satu rule aksen, elemen grafis tunggal di gambar ini. */}
         <div style={{ display: 'flex', height: 4, background: ACCENT, width: 180 }} />
 
         <div style={{ display: 'flex', gap: 72 }}>

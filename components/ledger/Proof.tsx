@@ -2,10 +2,10 @@ import { CONTACT, CREDENTIALS, PROOF, TECHNICAL_FOOTNOTE, TESTIMONIALS } from '@
 import Reveal from './Reveal';
 
 /**
- * SECTION 5 — Proof.
+ * SECTION 5 , Proof.
  *
  * Setiap sel angka membawa baris metode di bawahnya. "1,250 hours" sendirian
- * adalah klaim; "1,250 hours — 3,000 prospects × 25 min saved each" adalah
+ * adalah klaim; "1,250 hours , 3,000 prospects × 25 min saved each" adalah
  * aritmetika yang bisa dicek pembaca dalam dua detik. Angka yang bisa dihitung
  * ulang pembaca tidak bisa dituduh mengarang.
  *
@@ -23,7 +23,7 @@ export default function Proof() {
           </h2>
         </Reveal>
 
-        {/* 5a — grid angka statis */}
+        {/* 5a , grid angka statis */}
         <Reveal>
           <dl className="proofgrid">
             {PROOF.map((cell) => (
@@ -41,7 +41,7 @@ export default function Proof() {
           </dl>
         </Reveal>
 
-        {/* 5b — tiga testimoni. Dua testimoni generik dari situs lama dibuang:
+        {/* 5b , tiga testimoni. Dua testimoni generik dari situs lama dibuang:
             pujian yang bisa ditempel ke siapa pun menurunkan bobot rata-rata
             tiga yang spesifik ini. */}
         <div className="quotes">
@@ -79,7 +79,7 @@ export default function Proof() {
           </p>
         </Reveal>
 
-        {/* 5c — credentials, compact */}
+        {/* 5c , credentials, compact */}
         <Reveal>
           <div className="credentials">
             <h3 className="kicker">Credentials</h3>
@@ -93,11 +93,11 @@ export default function Proof() {
           </div>
         </Reveal>
 
-        {/* 5d — kredensial teknis pendukung.
+        {/* 5d , kredensial teknis pendukung.
 
             Sengaja dibuat terlihat sekunder: tanpa card, tanpa border, tanpa
             warna aksen, tanpa angka besar mono seperti grid di atas. Kalau
-            hiring manager tertarik pada detailnya, itulah gunanya interview —
+            hiring manager tertarik pada detailnya, itulah gunanya interview ,
             situs hanya perlu membuktikan proyek ini ada dan nyata, bukan
             menjualnya. */}
         <Reveal>

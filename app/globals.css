@@ -2,29 +2,29 @@
 @import './sections.css';
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   THE LEDGER — design system nurfajar.com v2
+   THE LEDGER , design system nurfajar.com v2
 
    Bahasa visualnya diambil dari artefak yang memang milik Fajar sendiri:
    learner progress dashboard. Grid sel, label mono, status jelas, rule tipis,
-   keterbacaan di atas dekorasi. Bukan tema yang ditempel — ini materi kerjanya
+   keterbacaan di atas dekorasi. Bukan tema yang ditempel , ini materi kerjanya
    sendiri, dinaikkan ke level editorial.
 
    Aturan warna yang menjaga sistem ini tetap jujur:
      --accent  menandai "ini bagian dari pekerjaan L&D-ku". Satu warna, satu
                makna, dipakai konsisten di seluruh situs. Kalau warnanya
-               dihapus, situs kehilangan informasi — itu tesnya bahwa elemen
+               dihapus, situs kehilangan informasi , itu tesnya bahwa elemen
                desainnya berfungsi, bukan dekoratif.
      --status  HANYA untuk dot ketersediaan kerja. Satu penggunaan, titik.
      Tombol primer solid --ink. Tombol tidak butuh warna untuk jadi tombol.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Base — bone dingin dengan sedikit tint hijau. Sengaja BUKAN cream hangat:
+  /* Base , bone dingin dengan sedikit tint hijau. Sengaja BUKAN cream hangat:
      cream hangat adalah palet default yang dipakai setiap situs portofolio. */
   --paper: #f1f3ee;
   --paper-sunk: #e5e9e1; /* sel ledger, card bg */
   --rule: #c9cfc4; /* hairline 1px */
-  --ink: #16211d; /* teks utama — forest-ink, bukan hitam */
+  --ink: #16211d; /* teks utama , forest-ink, bukan hitam */
   --ink-soft: #5a6660; /* caption, label sekunder */
 
   --accent: #2c6a55;
@@ -33,7 +33,7 @@
   --status: #c98a14;
   --focus: #16211d;
 
-  /* Type scale — modular 1.25, di-clamp supaya fluid tanpa breakpoint kasar */
+  /* Type scale , modular 1.25, di-clamp supaya fluid tanpa breakpoint kasar */
   --fs-display: clamp(2.25rem, 5.4vw, 4.5rem);
   --fs-h2: clamp(1.75rem, 3.5vw, 2.75rem);
   --fs-h3: clamp(1.15rem, 2vw, 1.4rem);
@@ -61,7 +61,7 @@
   --s24: 6rem;
   --s32: 8rem;
 
-  --radius: 4px; /* nyaris kotak — bahasa sel spreadsheet */
+  --radius: 4px; /* nyaris kotak , bahasa sel spreadsheet */
   --rule-w: 1px;
 
   --nav-h: 52px;
@@ -144,7 +144,7 @@ ol {
 }
 
 /* Focus ring yang benar-benar terlihat, di semua elemen interaktif. Jangan
-   pernah `outline: none` — spec §9. */
+   pernah `outline: none` , spec §9. */
 :where(a, button, input, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
@@ -170,7 +170,7 @@ ol {
   scroll-margin-top: calc(var(--nav-h) + var(--s4));
 }
 
-/* Label mono di atas judul section — bahasa header kolom spreadsheet. */
+/* Label mono di atas judul section , bahasa header kolom spreadsheet. */
 .kicker {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: var(--fs-mono);
@@ -217,7 +217,7 @@ ol {
   align-items: center;
   justify-content: center;
   gap: var(--s2);
-  /* 44px tinggi minimum — target sentuh mobile (spec §9). */
+  /* 44px tinggi minimum , target sentuh mobile (spec §9). */
   min-height: 44px;
   padding: var(--s3) var(--s6);
   border: var(--rule-w) solid var(--ink);
@@ -280,7 +280,7 @@ ol {
 /* ── Kartu ledger ───────────────────────────────────────────────────────── */
 
 /* Border-kiri 3px --accent di semua kartu: satu warna, satu makna. Hover
-   melebarkannya jadi 5px — micro, bukan lift/shadow (spec §8). */
+   melebarkannya jadi 5px , micro, bukan lift/shadow (spec §8). */
 .ledger-card {
   position: relative;
   background: var(--paper-sunk);
@@ -318,7 +318,7 @@ ol {
 
 /* ── Motion ─────────────────────────────────────────────────────────────── */
 
-/* Framer Motion menuliskan state `initial` ke HTML yang dirender di server —
+/* Framer Motion menuliskan state `initial` ke HTML yang dirender di server ,
    elemen reveal terkirim sebagai opacity:0 sampai JS menjalankan animasinya.
    Kalau JS tidak pernah jalan, teksnya hilang selamanya. Aturan ini hanya ada
    ketika tidak ada JS untuk menjalankan animasi itu. */
@@ -337,7 +337,7 @@ ol {
     animation-duration: 0.01ms !important;
     /* Delay ikut dinolkan, kalau tidak entrance ber-stagger tetap menahan
        konten tidak terlihat selama delay-nya sebelum menjentik ke posisi
-       akhir — persis efek yang ingin dihindari pengguna. */
+       akhir , persis efek yang ingin dihindari pengguna. */
     animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

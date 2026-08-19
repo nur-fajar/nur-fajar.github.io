@@ -2,14 +2,17 @@ import { WORK } from '@/content/ledger';
 import Reveal from './Reveal';
 
 /**
- * SECTION 3 — Selected work. Sebelumnya nol artefak, di situs yang menyasar
- * peran instructional design — padahal sample kerja adalah aset screening
+ * SECTION 3, Selected work. Sebelumnya nol artefak, di situs yang menyasar
+ * peran instructional design, padahal sample kerja adalah aset screening
  * standar untuk peran itu.
  *
- * Tiga dari empat kartu menautkan ke course yang live dan publik: hiring
- * manager bisa membuka materinya sendiri, bukan cuma percaya ringkasan.
- * Kartu keempat tidak punya tautan publik (data peserta privat) dan
- * mengatakannya terus terang, bukan berpura-pura punya.
+ * Ketiga kartu menautkan ke course yang live dan publik: hiring manager bisa
+ * membuka materinya sendiri, bukan cuma percaya ringkasan. Kartu keempat
+ * (learner progress dashboard) dihapus untuk saat ini, bukan disembunyikan:
+ * belum ada screenshot yang bisa ditunjukkan, dan spec §12 bilang kartu
+ * kosong lebih baik tidak dipajang daripada dipajang tanpa isi. Komponen ini
+ * tetap mendukung kartu tanpa href (lewat `card.note`) untuk saat artefak itu
+ * kembali, tapi tidak ada kartu yang memakainya sekarang.
  */
 export default function SelectedWork() {
   return (

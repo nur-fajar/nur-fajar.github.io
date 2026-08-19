@@ -3,7 +3,7 @@ import LogoMarquee from './LogoMarquee';
 import Reveal from './Reveal';
 
 /**
- * SECTION 7 — Path. Turun dari posisi #2 ke #7.
+ * SECTION 7 , Path. Turun dari posisi #2 ke #7.
  *
  * Prestasi kampus adalah konten prioritas terendah bagi pembaca yang sedang
  * memutuskan apakah akan mengundang seseorang wawancara, jadi ia tidak boleh

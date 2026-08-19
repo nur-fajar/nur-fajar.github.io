@@ -2,13 +2,17 @@ import { BUILT } from '@/content/ledger';
 import Reveal from './Reveal';
 
 /**
- * SECTION 2 — What I built. Section paling mahal di situs, jadi isinya 100%
+ * SECTION 2, What I built. Section paling mahal di situs, jadi isinya 100%
  * L&D/kurikulum.
  *
  * Satu daftar ledger vertikal, bukan dua kolom: situs ini tidak lagi
  * mempresentasikan dua identitas berdampingan, jadi tidak ada struktur
  * dua-kolom yang perlu di-collapse di layar sempit. Urutan kartunya
- * mencerminkan bobot — kurikulum > Train the Trainers > dashboard > marketing.
+ * mencerminkan bobot: kurikulum (paling besar, di-lead), lalu Train the
+ * Trainers.
+ *
+ * Dua kartu lama (dashboard, marketing) dihapus, bukan disembunyikan, lihat
+ * catatan di content/ledger.ts.
  *
  * Proyek 9-agent CRM sengaja tidak muncul di sini sama sekali. Ia punya
  * tempatnya sendiri sebagai satu baris kredensial di Proof.
@@ -20,7 +24,7 @@ export default function WhatIBuilt() {
         <Reveal>
           <p className="kicker">What I built</p>
           <h2 className="section-title" id="work-title">
-            Programs, curriculum, and the people who now run them without me.
+            Programs and curriculum I&rsquo;ve owned end to end.
           </h2>
         </Reveal>
 
