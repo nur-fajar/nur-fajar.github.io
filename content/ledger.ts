@@ -438,26 +438,33 @@ export const SKILLS_FOOTNOTE =
 // SECTION 7 , Background
 // ─────────────────────────────────────────────────────────────────────────────
 
+export interface BackgroundLogo {
+  src: string;
+  alt: string;
+  /** Sebagian logo membawa margin kosong besar di file-nya sendiri. */
+  scale?: number;
+}
+
 export interface BackgroundCard {
   id: string;
   /** Label kecil di atas nama: apa peran institusi ini dalam ceritanya. */
   kicker: string;
   name: string;
-  logo: string;
+  /** Bisa lebih dari satu: kartu beasiswa membawa dua lembaga sekaligus. */
+  logos: BackgroundLogo[];
   body: string;
-  /** Lebar kolom di grid bento 4-kolom. Jumlah total harus habis dibagi 4
-   *  supaya tidak ada sel kosong menggantung di ujung. */
-  span: 1 | 2;
-  /** Sebagian logo membawa margin kosong besar di file-nya sendiri. */
-  scale?: number;
 }
 
 /**
  * Latar belakang, disusun sebagai bento alih-alih dua paragraf.
  *
- * Tujuh kartu untuk tujuh institusi, dan span-nya berjumlah 12 di grid empat
- * kolom (2+1+1, 2+2, 2+2), jadi tidak ada sel kosong yang menggantung. Bento
- * dengan lubang di ujung adalah tanda grid-nya direncanakan asal, bukan gaya.
+ * Enam kartu berukuran sama, bukan tujuh dengan span berbeda-beda. Versi
+ * sebelumnya memberi Bank BRI dan Bank Indonesia satu kartu sempit
+ * masing-masing, dan isinya cuma satu kalimat ("One semester."), jadi kartunya
+ * teregang setinggi kartu terpanjang di barisnya dan sisanya kosong. Kedua
+ * beasiswa sekarang berbagi satu kartu dengan dua logo, yang membuat bobot
+ * isinya sepadan dengan tetangganya. Ruang kosong di bento hampir selalu soal
+ * isi yang tidak seimbang, bukan soal ukuran sel.
  *
  * Kartu Bangkit sengaja menyebut DUA momen sekaligus, peserta 2022 lalu mentor
  * 2023. Tanpa itu, pembaca yang teliti akan melihat "Bangkit" muncul di sini
@@ -466,92 +473,55 @@ export interface BackgroundCard {
  */
 export const BACKGROUND: BackgroundCard[] = [
   {
-    id: 'unsil',
-    kicker: 'Where it started',
-    name: 'Universitas Siliwangi',
-    logo: '/logos/unsil.png',
-    body: 'Informatics, 2018 to 2022. Graduated best of the Faculty of Engineering with a 3.94 GPA.',
-    span: 2,
-  },
-  {
-    id: 'bri',
-    kicker: 'Scholarship',
-    name: 'Bank BRI',
-    logo: '/logos/bri.png',
-    body: 'One semester.',
-    span: 1,
-  },
-  {
-    id: 'bi',
-    kicker: 'Scholarship',
-    name: 'Bank Indonesia',
-    logo: '/logos/bank-indonesia.png',
-    body: 'One full year.',
-    span: 1,
-  },
-  {
-    id: 'bangkit',
-    kicker: 'Ministry of Education program',
-    name: 'Bangkit Academy',
-    logo: '/logos/bangkit.png',
+    id: "unsil",
+    kicker: "Where it started",
+    name: "Universitas Siliwangi",
+    logos: [{ src: "/logos/unsil.png", alt: "Universitas Siliwangi" }],
     body:
-      'Joined in early 2022 and graduated with distinction on the Machine Learning path. A year later I came back to the same program from the other side, as a mentor.',
-    span: 2,
+      "Informatics, 2018 to 2022. Graduated best of the Faculty of Engineering with a 3.94 GPA.",
   },
   {
-    id: 'terra',
-    kicker: 'Ministry of Education program',
-    name: 'Terra AI',
-    logo: '/logos/terra-ai.png',
-    body:
-      'Joined later in 2022; my team’s mental-health project was picked as a top project. That same program became my employer in 2024.',
-    span: 2,
-    scale: 1.55,
+    id: "scholarships",
+    kicker: "Scholarships",
+    name: "Bank BRI and Bank Indonesia",
+    logos: [
+      { src: "/logos/bri.png", alt: "Bank BRI" },
+      { src: "/logos/bank-indonesia.png", alt: "Bank Indonesia" },
+    ],
+    body: "One semester on the BRI scholarship, then a full year on the Bank Indonesia one.",
   },
   {
-    id: 'genbi',
-    kicker: 'Student organisation',
-    name: 'Generasi Baru Indonesia',
-    logo: '/logos/genbi.png',
+    id: "bangkit",
+    kicker: "Ministry of Education program",
+    name: "Bangkit Academy",
+    logos: [{ src: "/logos/bangkit.png", alt: "Bangkit Academy" }],
     body:
-      'QRIS competition coordinator and media staff, coordinating 50+ Bank Indonesia scholars across digital-payment literacy campaigns.',
-    span: 2,
+      "Joined in early 2022 and graduated with distinction on the Machine Learning path. A year later I came back to the same program from the other side, as a mentor.",
   },
   {
-    id: 'gdsc',
-    kicker: 'Student organisation',
-    name: 'Google Developer Student Clubs',
-    logo: '/logos/gdsc.png',
+    id: "terra",
+    kicker: "Ministry of Education program",
+    name: "Terra AI",
+    logos: [{ src: "/logos/terra-ai.png", alt: "Terra AI", scale: 1.55 }],
     body:
-      'Siliwangi’s first ever chapter lead, built from zero to 100+ members and four national events in its first year.',
-    span: 2,
+      "Joined later in 2022; my team’s mental-health project was picked as a top project. That same program became my employer in 2024.",
   },
-];
-
-export interface Institution {
-  name: string;
-  src: string;
-  /**
-   * Pengali ukuran per-logo, untuk aset yang membawa margin kosong besar di
-   * dalam file-nya sendiri. `object-fit: contain` memasukkan SELURUH gambar ke
-   * dalam kotak, termasuk margin kosongnya, jadi logo yang di file-nya sudah
-   * dikelilingi ruang kosong akan tampil jauh lebih kecil dari tetangganya
-   * meski kotaknya sama besar. Ini mengoreksi bobot optisnya, bukan mengubah
-   * kotaknya. Perbaikan yang sebenarnya adalah memangkas margin di file PNG-nya.
-   */
-  scale?: number;
-}
-
-/** Marquee dipakai HANYA di sini, ini logo, bukan data (P4). */
-export const INSTITUTIONS: Institution[] = [
-  { name: 'Universitas Siliwangi', src: '/logos/unsil.png' },
-  { name: 'Bank BRI', src: '/logos/bri.png' },
-  { name: 'Bank Indonesia', src: '/logos/bank-indonesia.png' },
-  { name: 'Bangkit Academy', src: '/logos/bangkit.png' },
-  // Mark-nya cuma mengisi sekitar sepertiga tengah kanvas 800x800-nya.
-  { name: 'Terra AI', src: '/logos/terra-ai.png', scale: 1.55 },
-  { name: 'Generasi Baru Indonesia', src: '/logos/genbi.png' },
-  { name: 'Google Developer Student Clubs', src: '/logos/gdsc.png' },
+  {
+    id: "genbi",
+    kicker: "Student organisation",
+    name: "Generasi Baru Indonesia",
+    logos: [{ src: "/logos/genbi.png", alt: "Generasi Baru Indonesia" }],
+    body:
+      "QRIS competition coordinator and media staff, coordinating 50+ Bank Indonesia scholars across digital-payment literacy campaigns.",
+  },
+  {
+    id: "gdsc",
+    kicker: "Student organisation",
+    name: "Google Developer Student Clubs",
+    logos: [{ src: "/logos/gdsc.png", alt: "Google Developer Student Clubs" }],
+    body:
+      "Siliwangi’s first ever chapter lead, built from zero to 100+ members and four national events in its first year.",
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────

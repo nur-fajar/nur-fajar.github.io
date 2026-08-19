@@ -264,108 +264,68 @@
   }
 }
 
-/* ═══ LOGO STRIP ════════════════════════════════════════════════════════════ */
+/* ═══ STATS BAND ════════════════════════════════════════════════════════════
+   Duduk tepat di bawah hero, di posisi yang dulu ditempati strip logo. */
 
-.logos {
-  padding-block: var(--s10);
-}
-
-.logos__label {
-  text-align: center;
-  font-size: var(--fs-chip);
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  margin-bottom: var(--s6);
-}
-
-.logos__track {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--s3);
-}
-
-/* Kartu putih di belakang tiap logo. Ketujuh logo ini dibuat untuk kertas
-   putih dan memakai warna merek masing-masing; kartu putih membuat setiap
-   logo membawa latarnya sendiri alih-alih bergantung pada warna halaman. */
-.logos__card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 132px;
-  height: 62px;
-  padding: var(--s3) var(--s4);
-  border-radius: var(--r-md);
-  border: 1px solid var(--rule);
-  background: #fff;
-  box-shadow: var(--shadow-float);
-}
-
-/* Kotak seragam yang sengaja mengabaikan rasio asli tiap file: `contain` yang
-   mengurus pas-nya di dalam. `max-width: none` membatalkan reset global
-   `img { max-width: 100% }`, yang kalau dibiarkan akan memangkas LEBAR saja
-   saat kartunya menyempit sementara tingginya tetap. Bagi next/image itu
-   terbaca sebagai "satu dimensi diubah CSS, satunya tidak", dan ia
-   memperingatkan soal rasio rusak sekali per logo di setiap page load. */
-.logos__img {
-  width: 100px;
-  height: 38px;
-  max-width: none;
-  object-fit: contain;
+.statsband {
+  padding-block: var(--s6) var(--s10);
 }
 
 /* ═══ ABOUT ═════════════════════════════════════════════════════════════════ */
 
-/* Bento riwayat. Tujuh kartu, span-nya berjumlah 12 di grid empat kolom
-   (2+1+1, 2+2, 2+2), jadi tidak ada sel kosong menggantung di ujung. */
+/* Bento riwayat: enam kartu berukuran sama, tiga baris berisi dua.
+   Padding dan gap sengaja lebih rapat dari kartu lain di situs ini, karena
+   isinya pendek. Kartu longgar dengan tiga baris teks membaca sebagai kartu
+   yang setengah kosong, bukan kartu yang lapang. */
 .bento {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--s4);
-  margin-top: var(--s4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3);
+  margin-top: var(--s8);
 }
 
 .bento__item {
   display: flex;
 }
 
-.bento__item--2 {
-  grid-column: span 2;
-}
-
 .bento__card {
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: var(--s6);
-  border-radius: var(--r-lg);
+  padding: var(--s5);
+  border-radius: var(--r-md);
   border: 1px solid var(--rule);
   background: var(--card);
   box-shadow: var(--shadow-float);
 }
 
-/* Kartu putih kecil di belakang logo, alasan yang sama dengan strip di bawah
-   hero: ketujuh logo dibuat untuk kertas putih dan memakai warna mereknya
-   sendiri, jadi masing-masing membawa latarnya alih-alih bergantung pada
-   warna halaman. */
+/* Satu baris logo: kartu beasiswa membawa dua, sisanya satu. */
+.bento__logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-bottom: var(--s4);
+}
+
+/* Kartu putih kecil di belakang logo, alasan yang sama dengan di tempat lain:
+   ketujuh logo dibuat untuk kertas putih dan memakai warna mereknya sendiri,
+   jadi masing-masing membawa latarnya alih-alih bergantung pada warna
+   halaman. */
 .bento__logo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 116px;
-  height: 52px;
-  margin-bottom: var(--s5);
-  padding: var(--s2) var(--s3);
+  width: 100px;
+  height: 44px;
+  padding: var(--s1) var(--s2);
   border-radius: var(--r-sm);
   border: 1px solid var(--rule);
   background: #fff;
 }
 
 .bento__img {
-  width: 96px;
-  height: 36px;
+  width: 84px;
+  height: 30px;
   max-width: none;
   object-fit: contain;
 }
@@ -373,33 +333,33 @@
 .bento__kicker {
   font-size: var(--fs-chip);
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
 
 .bento__name {
-  margin-top: var(--s2);
+  margin-top: var(--s1);
   font-size: var(--fs-h3);
   line-height: 1.25;
 }
 
 .bento__body {
-  margin-top: var(--s3);
+  margin-top: var(--s2);
   color: var(--ink-soft);
   font-size: var(--fs-sm);
-  line-height: 1.65;
+  line-height: 1.6;
 }
 
 .stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--s4);
-  margin: var(--s4) 0 0;
+  gap: var(--s3);
+  margin: 0;
 }
 
 .stat {
-  padding: var(--s6);
+  padding: var(--s5) var(--s4);
   border-radius: var(--r-lg);
   border: 1px solid var(--rule);
   background: var(--card);
@@ -410,7 +370,11 @@
 .stat__icon {
   display: inline-flex;
   color: var(--g1);
-  margin-bottom: var(--s3);
+  margin-bottom: var(--s2);
+}
+
+.stat__body {
+  margin: 0;
 }
 
 .stat__value {
@@ -424,7 +388,7 @@
 
 .stat__label {
   display: block;
-  margin-top: var(--s2);
+  margin-top: var(--s1);
   font-size: var(--fs-sm);
   font-weight: 600;
 }
@@ -433,7 +397,7 @@
    populasi yang sama; jangan pernah dihapus demi kerapian. */
 .stat__method {
   display: block;
-  margin-top: var(--s2);
+  margin-top: var(--s1);
   font-size: var(--fs-chip);
   line-height: 1.5;
   color: var(--ink-faint);
@@ -718,15 +682,27 @@
 
 /* ═══ WORK GRID ═════════════════════════════════════════════════════════════ */
 
+/* Enam kolom supaya dua jenis kartu jatuh di barisnya masing-masing: dua
+   karya milik sendiri (span 3) mengisi baris pertama, tiga course live
+   (span 2) mengisi baris kedua tepat penuh. Sebelumnya grid tiga kolom
+   membelah ketiga course ke dua baris berbeda. */
 .work {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--s4);
-  margin-top: var(--s10);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--s3);
+  margin-top: var(--s8);
 }
 
 .work__item {
   display: flex;
+}
+
+.work__item--own {
+  grid-column: span 3;
+}
+
+.work__item--course {
+  grid-column: span 2;
 }
 
 .work__card {
@@ -734,7 +710,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: var(--s6);
+  padding: var(--s5);
   border-radius: var(--r-lg);
   border: 1px solid var(--rule);
   background: var(--card);
@@ -926,19 +902,15 @@
    diserahkan ke kebetulan. */
 
 @media (max-width: 980px) {
-  .work {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Course turun dari tiga sebaris jadi dua, jadi baris kedua berisi 2 dan
+     baris ketiga 1. Memaksakan tiga sebaris di lebar ini membuat kartunya
+     terlalu sempit untuk dua kalimat. */
+  .work__item--own {
+    grid-column: span 6;
   }
 
-  /* Empat kolom jadi dua, dan setiap kartu jadi selebar satu kolom, jadi
-     tiga baris berisi 2+2+2+1. Kartu terakhir sendirian di barisnya, dan itu
-     lebih baik daripada satu kartu selebar dua kolom di tengah grid. */
-  .bento {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .bento__item--2 {
-    grid-column: span 1;
+  .work__item--course {
+    grid-column: span 3;
   }
 
   .quotes {
@@ -956,18 +928,17 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* Bento runtuh jadi satu kolom, dan span dinolkan: `grid-column: span 2`
-     pada grid satu kolom membuat item meluber keluar track. */
+  /* Bento runtuh jadi satu kolom. */
   .bento {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .bento__item--2 {
-    grid-column: span 1;
-  }
-
-  .work {
-    grid-template-columns: minmax(0, 1fr);
+  /* Semua kartu karya jadi selebar penuh. Span disetel ke lebar grid, bukan
+     ke 1: pada grid enam kolom, `span 1` akan menyisakan lima kolom kosong
+     di kanan tiap kartu. */
+  .work__item--own,
+  .work__item--course {
+    grid-column: span 6;
   }
 
   .org__period {
@@ -986,17 +957,25 @@
 }
 
 @media (max-width: 420px) {
-  /* Padding ikut mengecil bersama kartunya. Kalau tidak, 112px dikurangi
-     padding 16px di dua sisi hanya menyisakan 80px untuk logo selebar 84px,
-     dan logonya terpotong tepat di layar tersempit. */
-  .logos__card {
-    width: 112px;
-    height: 56px;
-    padding: var(--s2) var(--s3);
+  /* Di layar tersempit stat tile turun jadi satu kolom: dua kolom memaksa
+     baris metode pecah jadi lima baris pendek yang lebih sulit dibaca
+     daripada satu baris penuh. */
+  .stats {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .logos__img {
-    width: 84px;
-    height: 32px;
+  .stat {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s4);
+    text-align: left;
+  }
+
+  .stat__icon {
+    display: none;
+  }
+
+  .stat__value {
+    min-width: 4.5rem;
   }
 }

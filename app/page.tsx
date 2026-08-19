@@ -1,6 +1,6 @@
 import Nav from '@/components/site/Nav';
 import Hero from '@/components/site/Hero';
-import Logos from '@/components/site/Logos';
+import Stats from '@/components/site/Stats';
 import About from '@/components/site/About';
 import Experience from '@/components/site/Experience';
 import Work from '@/components/site/Work';
@@ -12,7 +12,7 @@ import Contact from '@/components/site/Contact';
  * pertanyaan pembaca, diurutkan berdasarkan kapan pertanyaan itu muncul:
  *
  *   Hero          siapa ini, dan apa klaim terbesarnya
- *   Logos         di mana dia benar-benar pernah ada
+ *   Stats         empat angka, hal pertama yang dicari setelah headline
  *   About         dari mana asalnya: kuliah, beasiswa, program, organisasi
  *   Experience    sudah berapa lama, di mana, peran mana yang mana, lalu skill
  *   Work          apa yang bisa dibuka dan dinilai sendiri
@@ -40,7 +40,7 @@ export default function HomePage() {
       <Nav />
       <main>
         <Hero />
-        <Logos />
+        <Stats />
         <About />
         <Experience />
         <Work />

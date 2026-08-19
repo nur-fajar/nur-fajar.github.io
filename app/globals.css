@@ -228,8 +228,11 @@ ol {
   padding-inline: var(--gutter);
 }
 
+/* Dulu clamp(s16, 9vw, s24), yang di desktop berarti 96px atas DAN bawah,
+     jadi 192px kosong di antara dua section. Ritme vertikal masih terbaca di
+     64px, dan halamannya berhenti terasa berlubang. */
 .section {
-  padding-block: clamp(var(--s16), 9vw, var(--s24));
+  padding-block: clamp(var(--s12), 6vw, var(--s16));
   scroll-margin-top: calc(var(--nav-h) + var(--s6));
 }
 

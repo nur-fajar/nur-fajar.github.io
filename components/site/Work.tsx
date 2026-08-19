@@ -52,7 +52,17 @@ export default function Work() {
             );
 
             return (
-              <Reveal as="li" key={project.id} delay={index * 0.04} className="work__item">
+              /* Kartu yang punya tautan dan yang tidak diberi lebar berbeda,
+                 supaya ketiga course live jatuh sebaris penuh di baris kedua
+                 alih-alih terbelah dua baris. Kelasnya diturunkan dari ADA
+                 atau TIDAKNYA href, bukan dari urutan indeks, jadi menambah
+                 satu karya nanti tidak diam-diam merusak barisnya. */
+              <Reveal
+                as="li"
+                key={project.id}
+                delay={index * 0.04}
+                className={project.href ? 'work__item work__item--course' : 'work__item work__item--own'}
+              >
                 {project.href ? (
                   <a
                     className="work__card work__card--link"
