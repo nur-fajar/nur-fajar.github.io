@@ -16,6 +16,12 @@ import { INSTITUTIONS } from '@/content/ledger';
  * aria-hidden dan tidak bisa di-tab — screen reader dan keyboard hanya
  * bertemu satu daftar.
  */
+/* width/height di bawah adalah ukuran KOTAKNYA (lihat .marquee__logo), bukan
+   rasio asli tiap file. Itu disengaja — kotaknya memang seragam dan
+   `object-fit: contain` yang mengurus rasio masing-masing logo di dalamnya.
+   Keduanya harus tetap sama persis dengan CSS-nya: kalau meleset, Next
+   menyimpulkan CSS mengubah satu dimensi saja dan memperingatkan soal rasio
+   yang rusak di setiap page load. */
 export default function LogoMarquee() {
   return (
     <div className="marquee" role="group" aria-label="Institutions">
@@ -27,7 +33,7 @@ export default function LogoMarquee() {
                 src={institution.src}
                 alt={institution.name}
                 width={120}
-                height={40}
+                height={52}
                 className="marquee__logo"
                 style={institution.scale ? { scale: String(institution.scale) } : undefined}
                 loading="lazy"
@@ -42,7 +48,7 @@ export default function LogoMarquee() {
                 src={institution.src}
                 alt=""
                 width={120}
-                height={40}
+                height={52}
                 className="marquee__logo"
                 style={institution.scale ? { scale: String(institution.scale) } : undefined}
                 loading="lazy"
