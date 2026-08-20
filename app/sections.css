@@ -1,0 +1,981 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Section styles v3, dibangun di atas token di globals.css.
+
+   Tidak ada nilai warna mentah di file ini kecuali putih murni pada permukaan
+   yang memang harus putih apa pun temanya (kartu logo institusi). Sisanya
+   lewat token, supaya satu perubahan palet cukup disentuh di satu tempat.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ═══ NAV ═══════════════════════════════════════════════════════════════════
+   Island mengambang. Ia tidak menempel ke tepi layar: ada jarak di atas dan
+   samping, dan sudutnya penuh, jadi ia terbaca sebagai objek di atas halaman,
+   bukan sebagai bar yang memotong halaman. */
+
+.nav {
+  position: sticky;
+  top: var(--s4);
+  z-index: 50;
+  padding-inline: var(--gutter);
+  margin-top: var(--s4);
+}
+
+.nav__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  height: var(--nav-h);
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: 0 var(--s3) 0 var(--s3);
+  border-radius: var(--r-pill);
+  border: 1px solid color-mix(in srgb, #fff 60%, transparent);
+  background: color-mix(in srgb, var(--card) 55%, transparent);
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+  box-shadow: var(--shadow-float);
+}
+
+@supports not (backdrop-filter: blur(40px)) {
+  .nav__inner {
+    background: var(--card);
+  }
+}
+
+.nav__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  text-decoration: none;
+  padding-left: var(--s2);
+  flex-shrink: 0;
+}
+
+.nav__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.nav__name {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* Absolut di tengah, bukan ikut arus flex. Nama di kiri dan tombol di kanan
+   tidak akan pernah sama panjang, jadi kalau tautan ini ikut flex ia hanya
+   akan tampak di tengah secara kebetulan dan bergeser begitu salah satu sisi
+   berubah panjang. */
+.nav__links {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: var(--s1);
+}
+
+.nav__link {
+  padding: var(--s2) var(--s4);
+  border-radius: var(--r-pill);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.nav__link:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink);
+}
+
+.nav__link[aria-current='true'] {
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink);
+}
+
+.nav__spacer {
+  margin-left: auto;
+}
+
+.nav__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.nav__icon:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink);
+}
+
+.nav__toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.nav__sheet {
+  max-width: var(--maxw);
+  margin: var(--s2) auto 0;
+  padding: var(--s3);
+  display: grid;
+  gap: var(--s1);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.nav__sheet a {
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.nav__sheet a:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+@media (max-width: 1020px) {
+  .nav__links {
+    display: none;
+  }
+
+  .nav__toggle {
+    display: inline-flex;
+  }
+
+  .nav__spacer {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  /* Ikon LinkedIn yang pergi, bukan tombolnya. Di layar sekecil ini ada
+     ruang untuk satu aksi saja di navbar, dan ajakan bicara mengalahkan
+     tautan profil, yang tetap ada di section Contact.
+
+     Selector-nya sengaja dua kelas: .btn di globals.css menetapkan
+     display:inline-flex dan file itu dimuat SETELAH file ini, jadi satu
+     kelas saja akan kalah spesifisitas dan aturannya diam-diam tidak
+     berlaku. */
+  .nav .nav__icon {
+    display: none;
+  }
+}
+
+/* ═══ HERO ═══════════════════════════════════════════════════════════════════
+   Rata kiri, ruang atas besar. Entrance-nya CSS (lihat .rise), bukan Framer
+   Motion, supaya fold pertama tidak menunggu hydration. */
+
+.hero {
+  padding-top: clamp(var(--s16), 11vw, var(--s24));
+  padding-bottom: clamp(var(--s12), 7vw, var(--s20));
+}
+
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s4);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--ok-border);
+  background: var(--ok-bg);
+  color: var(--ok);
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok-dot);
+  flex-shrink: 0;
+}
+
+.hero__title {
+  margin-top: var(--s6);
+  font-size: var(--fs-display);
+  line-height: 1.02;
+  /* Baris ditentukan <br/> di markup, bukan oleh lebar kotaknya. */
+  max-width: none;
+}
+
+.hero__lede {
+  margin-top: var(--s6);
+  font-size: var(--fs-lede);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 46ch;
+}
+
+.hero__lede strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  margin-top: var(--s10);
+}
+
+/* Entrance stagger, dijalankan CSS supaya mulai di paint pertama. */
+.rise {
+  animation: rise 640ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ═══ STATS BAND ════════════════════════════════════════════════════════════
+   Duduk tepat di bawah hero, di posisi yang dulu ditempati strip logo. */
+
+.statsband {
+  padding-block: var(--s6) var(--s10);
+}
+
+/* ═══ ABOUT ═════════════════════════════════════════════════════════════════ */
+
+/* Bento riwayat: enam kartu berukuran sama, tiga baris berisi dua.
+   Padding dan gap sengaja lebih rapat dari kartu lain di situs ini, karena
+   isinya pendek. Kartu longgar dengan tiga baris teks membaca sebagai kartu
+   yang setengah kosong, bukan kartu yang lapang. */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3);
+  margin-top: var(--s8);
+}
+
+.bento__item {
+  display: flex;
+}
+
+.bento__card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--s5);
+  border-radius: var(--r-md);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-float);
+}
+
+/* Satu baris logo: kartu beasiswa membawa dua, sisanya satu. */
+.bento__logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-bottom: var(--s4);
+}
+
+/* Kartu putih kecil di belakang logo, alasan yang sama dengan di tempat lain:
+   ketujuh logo dibuat untuk kertas putih dan memakai warna mereknya sendiri,
+   jadi masing-masing membawa latarnya alih-alih bergantung pada warna
+   halaman. */
+.bento__logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 44px;
+  padding: var(--s1) var(--s2);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--rule);
+  background: #fff;
+}
+
+.bento__img {
+  width: 84px;
+  height: 30px;
+  max-width: none;
+  object-fit: contain;
+}
+
+.bento__kicker {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.bento__name {
+  margin-top: var(--s1);
+  font-size: var(--fs-h3);
+  line-height: 1.25;
+}
+
+.bento__body {
+  margin-top: var(--s2);
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s3);
+  margin: 0;
+}
+
+.stat {
+  padding: var(--s5) var(--s4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-float);
+  text-align: center;
+}
+
+.stat__icon {
+  display: inline-flex;
+  color: var(--g1);
+  margin-bottom: var(--s2);
+}
+
+.stat__body {
+  margin: 0;
+}
+
+.stat__value {
+  display: block;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.stat__label {
+  display: block;
+  margin-top: var(--s1);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+/* Baris metode. Ini yang mencegah empat angka ini terbaca sebagai satu
+   populasi yang sama; jangan pernah dihapus demi kerapian. */
+.stat__method {
+  display: block;
+  margin-top: var(--s1);
+  font-size: var(--fs-chip);
+  line-height: 1.5;
+  color: var(--ink-faint);
+}
+
+.toolkit {
+  margin-top: var(--s4);
+  padding: clamp(var(--s6), 3vw, var(--s10));
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+}
+
+/* Blok credentials di About: satu grup saja, jadi tidak perlu jarak sebesar
+   blok skill bertumpuk di Experience. */
+.toolkit--tight {
+  padding: var(--s6) clamp(var(--s6), 3vw, var(--s8));
+}
+
+.toolkit--after-exp {
+  margin-top: var(--s12);
+}
+
+.toolkit__group + .toolkit__group {
+  margin-top: var(--s6);
+  padding-top: var(--s6);
+  border-top: 1px solid var(--rule);
+}
+
+.toolkit__label {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: var(--s4);
+}
+
+.toolkit__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.footnote {
+  margin-top: var(--s6);
+  max-width: 72ch;
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+}
+
+.footnote + .footnote {
+  margin-top: var(--s3);
+}
+
+/* ═══ EXPERIENCE ════════════════════════════════════════════════════════════ */
+
+.orgs {
+  display: grid;
+  gap: var(--s6);
+  margin-top: var(--s10);
+}
+
+.org {
+  padding: clamp(var(--s6), 3.5vw, var(--s10));
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.org__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s4);
+  flex-wrap: wrap;
+}
+
+.org__name {
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+}
+
+.org__place {
+  margin-top: var(--s1);
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+}
+
+.org__period {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.org__summary {
+  margin-top: var(--s5);
+  color: var(--ink-soft);
+  max-width: var(--maxw-text);
+}
+
+/* Daftar sub-jabatan. Untuk Terra AI ini yang membuat dua periode berbeda
+   terbaca sebagai dua pekerjaan berbeda, bukan satu blok panjang, dan tiap
+   bullet menggantung di bawah jabatan yang benar-benar memilikinya. */
+.org__roles {
+  display: grid;
+  margin-top: var(--s6);
+  padding-left: var(--s5);
+  border-left: 2px solid color-mix(in srgb, var(--g1) 35%, var(--rule));
+}
+
+.org__block + .org__block {
+  margin-top: var(--s8);
+}
+
+.org__role {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s2);
+}
+
+.org__role-title {
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.org__role-date {
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+  font-style: italic;
+}
+
+.org__bullets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3) var(--s8);
+  margin-top: var(--s4);
+}
+
+.org__bullets li {
+  position: relative;
+  padding-left: var(--s4);
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+.org__bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--g1);
+}
+
+.org__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-top: var(--s6);
+  padding-top: var(--s6);
+  border-top: 1px solid var(--rule);
+}
+
+/* Blok peran awal, sengaja lebih ringan: ini kredensial kepemimpinan, bukan
+   riwayat kerja berbayar, dan tidak boleh terbaca setara. */
+.early {
+  margin-top: var(--s10);
+}
+
+.early__label {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: var(--s4);
+}
+
+.early__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s4);
+}
+
+.early__card {
+  padding: var(--s6);
+  border-radius: var(--r-md);
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--card) 60%, transparent);
+}
+
+.early__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s3);
+}
+
+.early__title {
+  font-size: 1rem;
+}
+
+.early__date {
+  color: var(--ink-faint);
+  font-size: var(--fs-chip);
+  white-space: nowrap;
+}
+
+.early__org {
+  margin-top: var(--s1);
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.early__detail {
+  margin-top: var(--s3);
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+/* ═══ TESTIMONIALS ══════════════════════════════════════════════════════════ */
+
+.quotes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s4);
+  margin-top: var(--s10);
+}
+
+.quote {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--s6);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-float);
+}
+
+.quote__mark {
+  color: color-mix(in srgb, var(--g2) 45%, transparent);
+  margin-bottom: var(--s3);
+}
+
+.quote__body p {
+  font-size: 1rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.quote__by {
+  margin-top: auto;
+  padding-top: var(--s6);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quote__name {
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.quote__role {
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+}
+
+.quotes__more {
+  margin-top: var(--s6);
+  font-size: var(--fs-sm);
+}
+
+/* ═══ WORK GRID ═════════════════════════════════════════════════════════════ */
+
+/* Enam kolom supaya dua jenis kartu jatuh di barisnya masing-masing: dua
+   karya milik sendiri (span 3) mengisi baris pertama, tiga course live
+   (span 2) mengisi baris kedua tepat penuh. Sebelumnya grid tiga kolom
+   membelah ketiga course ke dua baris berbeda. */
+.work {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--s3);
+  margin-top: var(--s8);
+}
+
+.work__item {
+  display: flex;
+}
+
+.work__item--own {
+  grid-column: span 3;
+}
+
+.work__item--course {
+  grid-column: span 2;
+}
+
+.work__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--s5);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-float);
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease;
+}
+
+/* Garis gradient tipis di tepi atas kartu, penanda bahwa kartu ini bisa
+   dibuka. Kartu tanpa tautan tidak mendapatkannya. */
+.work__card--link::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--gradient);
+}
+
+.work__card--link:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px -12px rgb(15 18 34 / 0.18);
+}
+
+.work__kind {
+  align-self: flex-start;
+  padding: var(--s1) var(--s3);
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.work__title {
+  margin-top: var(--s4);
+  font-size: var(--fs-h3);
+  line-height: 1.25;
+}
+
+.work__body {
+  margin-top: var(--s3);
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+}
+
+/* margin-top:auto mendorong blok chip ke dasar kartu. Tanpa ini, kartu course
+   yang deskripsinya pendek menyisakan lubang kosong besar di bawah, karena
+   grid menyamakan tinggi semua kartu dengan kartu terpanjang. */
+.work__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-top: auto;
+  padding-top: var(--s5);
+  border-top: 1px solid var(--rule);
+}
+
+.work__go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-top: var(--s4);
+  border-radius: 50%;
+  background: var(--gradient);
+  color: #fff;
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+/* ═══ CONTACT ═══════════════════════════════════════════════════════════════ */
+
+.contact {
+  text-align: center;
+  padding-bottom: var(--s16);
+}
+
+.contact__title {
+  font-size: var(--fs-h2);
+  max-width: 22ch;
+  margin-inline: auto;
+}
+
+.contact__lede {
+  margin: var(--s5) auto 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-lede);
+  max-width: 52ch;
+}
+
+.lookup {
+  display: grid;
+  gap: var(--s2);
+  max-width: 720px;
+  margin: var(--s10) auto 0;
+  text-align: left;
+}
+
+.lookup__row {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  gap: var(--s4);
+  padding: var(--s4) var(--s6);
+  border-radius: var(--r-md);
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--card) 65%, transparent);
+}
+
+.lookup__label {
+  margin: 0;
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  line-height: 1.7;
+}
+
+.lookup__value {
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.contact__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s3);
+  margin-top: var(--s10);
+}
+
+.socials {
+  display: flex;
+  justify-content: center;
+  gap: var(--s3);
+  margin-top: var(--s12);
+}
+
+.social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  color: var(--ink-soft);
+  box-shadow: var(--shadow-float);
+  text-decoration: none;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), color 160ms ease;
+}
+
+.social:hover {
+  transform: translateY(-3px);
+  color: var(--g2);
+}
+
+/* ═══ FOOTER ════════════════════════════════════════════════════════════════ */
+
+.footer {
+  padding-block: var(--s10);
+  border-top: 1px solid var(--rule);
+  text-align: center;
+}
+
+.footer__links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--s5);
+  font-size: var(--fs-sm);
+}
+
+.footer__colophon {
+  margin-top: var(--s5);
+  color: var(--ink-faint);
+  font-size: var(--fs-chip);
+  line-height: 1.8;
+}
+
+/* ═══ RESPONSIVE ════════════════════════════════════════════════════════════
+   Setiap grid multi-kolom runtuh eksplisit di sini, tidak ada yang
+   diserahkan ke kebetulan. */
+
+@media (max-width: 980px) {
+  /* Course turun dari tiga sebaris jadi dua, jadi baris kedua berisi 2 dan
+     baris ketiga 1. Memaksakan tiga sebaris di lebar ini membuat kartunya
+     terlalu sempit untuk dua kalimat. */
+  .work__item--own {
+    grid-column: span 6;
+  }
+
+  .work__item--course {
+    grid-column: span 3;
+  }
+
+  .quotes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .early__grid,
+  .org__bullets {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Bento runtuh jadi satu kolom. */
+  .bento {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Semua kartu karya jadi selebar penuh. Span disetel ke lebar grid, bukan
+     ke 1: pada grid enam kolom, `span 1` akan menyisakan lima kolom kosong
+     di kanan tiap kartu. */
+  .work__item--own,
+  .work__item--course {
+    grid-column: span 6;
+  }
+
+  .org__period {
+    margin-left: 0;
+  }
+
+  .lookup__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s1);
+  }
+
+  .hero__actions .btn,
+  .contact__actions .btn {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  /* Di layar tersempit stat tile turun jadi satu kolom: dua kolom memaksa
+     baris metode pecah jadi lima baris pendek yang lebih sulit dibaca
+     daripada satu baris penuh. */
+  .stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stat {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s4);
+    text-align: left;
+  }
+
+  .stat__icon {
+    display: none;
+  }
+
+  .stat__value {
+    min-width: 4.5rem;
+  }
+}
