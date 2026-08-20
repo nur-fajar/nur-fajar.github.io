@@ -97,6 +97,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       className={`${spaceGrotesk.variable} ${jakarta.variable}`}
+      /* Skrip anti-FOUC di bawah menulis `data-story-theme` ke elemen ini
+         sebelum React hydrate: mismatch yang disengaja dan aman, karena
+         atribut itu bukan sesuatu yang pernah dirender RootLayout sendiri. */
+      suppressHydrationWarning
     >
       <head>
         {/* Framer Motion membakar state `initial` ke HTML server-rendered,
@@ -104,8 +108,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             animasinya. Kalau JS tidak pernah jalan, teksnya tidak akan pernah
             muncul. Aturan ini hanya ada ketika memang tidak ada JS. */}
         <noscript>
-          <style>{'.motion-safe{opacity:1 !important;transform:none !important;}'}</style>
+          <style>{'.motion-safe{opacity:1 !important;transform:none !important;filter:none !important;}'}</style>
         </noscript>
+        {/* Anti-FOUC untuk toggle tema dark/light di /hire-me, yang memakai
+            palet `.story-root` dari app/story.css. Harus jalan lewat blocking
+            inline <script> di <head>, sebelum paint pertama: kalau ditunda ke
+            useEffect, pengunjung yang sebelumnya memilih light akan sempat
+            melihat kedipan tema dark.
+
+            Daftar path-nya menyempit dari versi sebelumnya. Dulu `/` ikut
+            terdaftar karena homepage-nya adalah scroll-story yang berbagi
+            palet itu; homepage sekarang light-only dan tidak punya toggle,
+            jadi menulis atribut tema di sana hanya akan menaruh state yang
+            tidak pernah dibaca siapa pun. Varian ber-slash tetap didaftar
+            karena static export (GitHub Pages) menyajikan halaman yang sama
+            di `/hire-me/`. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var p=location.pathname;if(p!=='/hire-me'&&p!=='/hire-me/')return;var t=localStorage.getItem('story-theme')==='light'?'light':'dark';document.documentElement.setAttribute('data-story-theme',t);}catch(e){}})();`,
+          }}
+        />
         {/* JSON-LD statis, dibangun dari konstanta di repo ini, tidak ada
             input pengguna yang bisa masuk ke sini. */}
         <script

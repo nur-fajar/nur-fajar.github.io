@@ -71,7 +71,7 @@ export default function Nav() {
       <div className="nav__inner">
         <a className="nav__identity" href="#top">
           <Image
-            src="/foto-profile-nf.jpg"
+            src="/foto-profile-nf-avatar.jpg"
             alt=""
             width={34}
             height={34}

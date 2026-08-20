@@ -51,7 +51,7 @@ const STATS: Array<[string, string]> = [
 ];
 
 export default async function OpengraphImage() {
-  const photo = await readFile(path.join(process.cwd(), 'public', 'foto-profile-nf.jpg'));
+  const photo = await readFile(path.join(process.cwd(), 'public', 'foto-profile-nf-avatar.jpg'));
   const photoSrc = `data:image/jpeg;base64,${photo.toString('base64')}`;
 
   return new ImageResponse(
@@ -92,8 +92,8 @@ export default async function OpengraphImage() {
           <img
             src={photoSrc}
             alt=""
-            width={148}
-            height={148}
+            width={128}
+            height={128}
             style={{ borderRadius: 8, objectFit: 'cover', border: `1px solid ${RULE}` }}
           />
         </div>

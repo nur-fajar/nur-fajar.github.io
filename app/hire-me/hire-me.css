@@ -1,0 +1,1128 @@
+/* ==========================================================================
+   `/hire-me` — briefing pra-peluncuran, bertema mecha.
+
+   HUBUNGANNYA DENGAN story.css
+   page.tsx mengimpor story.css lebih dulu dan membungkus halaman dengan
+   `.story-root`, jadi kedua muka huruf, style navbar, dan SELURUH nama token
+   (`--ink`, `--paper`, `--accent`, …) sudah tersedia. Yang dilakukan file ini
+   adalah menimpa NILAI token itu di dalam `.hire` saja — bukan mengganti nama
+   variabelnya — jadi:
+     · komponen yang dipakai bersama (`StoryNav`, ikon) otomatis ikut warna
+       mecha di sini tanpa satu baris pun perubahan di komponennya, dan
+     · homepage `/` tidak berubah sedikit pun.
+
+   PALET: WARNA TRAD MECHA
+   Peran tokennya persis sama dengan story.css — `--ink`/`--ink-2` selalu
+   PERMUKAAN, `--paper`/`--paper-dim` selalu TEKS — jadi tema terang tetap
+   bekerja dengan cara yang sama (nilainya dibalik, bukan variabelnya diganti
+   nama). Yang berubah cuma isinya: lambung navy, armor putih, dan merah
+   sortie sebagai aksen. Satu token baru ditambahkan, `--hazard` (kuning
+   peringatan), dipakai HEMAT — hanya untuk garis bahaya dan penanda.
+
+   `--ink` sengaja dijaga tetap dekat dengan nilai story.css: `body` membaca
+   token dari `html` (lihat aturan `body` di story.css) dan tidak bisa membaca
+   override yang digantung di `.hire`, jadi area overscroll rubber-band
+   memakai warna lama. Selisihnya dibuat cukup kecil supaya tidak terlihat
+   sebagai kedipan warna asing.
+
+   CHAMFER, BUKAN BORDER-RADIUS
+   Sudut panel dipotong miring lewat `clip-path` (`.panel`). Karena clip-path
+   ikut memotong border, panel chamfer TIDAK memakai garis tepi 1px — bentuknya
+   dibaca dari bidang warnanya sendiri, lalu diperjelas kurung sudut yang
+   digambar di dalamnya. Ini juga yang membuatnya terbaca sebagai pelat armor,
+   bukan kartu.
+   ========================================================================== */
+
+/* ── Token: tema gelap (dasar) ─────────────────────────────────────────── */
+
+.hire {
+  --ink: #0b1020;
+  --ink-2: #151d33;
+  --ink-rgb: 11, 16, 32;
+  --ink-2-rgb: 21, 29, 51;
+  --paper: #eef1f7;
+  --paper-dim: #a3aec6;
+  --paper-rgb: 238, 241, 247;
+  --accent: #e4453f;
+  --accent-dim: #b8332e;
+  --accent-rgb: 228, 69, 63;
+  --accent-contrast: #fff6f4;
+  --line: rgba(238, 241, 247, 0.16);
+  --hazard: #f5c542;
+  --hazard-rgb: 245, 197, 66;
+  --chip-bg: #ece8e0;
+
+  --mono: var(--font-plex-mono), ui-monospace, monospace;
+  --ch: 14px;
+
+  background: var(--ink);
+  min-height: 100vh;
+}
+
+/* ── Token: tema terang ("hangar" terang) ──────────────────────────────── */
+
+[data-story-theme='light'] .hire {
+  --ink: #eceef4;
+  --ink-2: #dfe3ed;
+  --ink-rgb: 236, 238, 244;
+  --ink-2-rgb: 223, 227, 237;
+  --paper: #131a2e;
+  --paper-dim: #4e5872;
+  --paper-rgb: 19, 26, 46;
+  /* Merah dipekatkan di tema terang: nilai gelapnya kurang kontras di atas
+     permukaan terang, terutama untuk teks kecil dan garis tipis. */
+  --accent: #bf2f29;
+  --accent-dim: #96221d;
+  --accent-rgb: 191, 47, 41;
+  --accent-contrast: #fff6f4;
+  --line: rgba(19, 26, 46, 0.18);
+  --hazard: #8a6205;
+  --hazard-rgb: 138, 98, 5;
+  --chip-bg: #ffffff;
+}
+
+.hire-main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+@media (max-width: 720px) {
+  .hire-main {
+    padding-bottom: 92px; /* ruang untuk dock CTA yang fixed */
+  }
+}
+
+/* ── Primitif ──────────────────────────────────────────────────────────── */
+
+/* Pelat armor: satu bidang chamfer, tanpa border — lihat catatan CHAMFER di
+   kepala berkas. Didaftar sekali di sini untuk semua panel yang memakainya,
+   supaya bentuk sudutnya tidak punya empat salinan yang bisa berselisih.
+   `.launch` punya aturannya sendiri karena chamfer-nya jauh lebih besar. */
+.sys__card,
+.rec__col,
+.tx__card {
+  position: relative;
+  background: var(--ink-2);
+  clip-path: polygon(
+    var(--ch) 0,
+    100% 0,
+    100% calc(100% - var(--ch)),
+    calc(100% - var(--ch)) 100%,
+    0 100%,
+    0 var(--ch)
+  );
+}
+/* Kurung sudut di dalam pelat — penanda HUD yang menggantikan garis tepi. */
+.sys__card::after,
+.rec__col::after,
+.tx__card::after {
+  content: '';
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--accent);
+  border-width: 0 0 1px 1px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.hire-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 15px 26px;
+  border: 1px solid transparent;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  /* Chamfer yang sama dengan panel, ukuran lebih kecil supaya tombolnya tetap
+     terbaca sebagai tombol dan bukan sebagai pelat mini. */
+  clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+  transition: transform 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+.hire-btn--primary {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+.hire-btn--ghost {
+  color: var(--paper);
+  background: rgba(var(--paper-rgb), 0.09);
+}
+.hire-btn:hover {
+  transform: translateY(-2px);
+}
+.hire-btn--primary:hover {
+  background: var(--accent-dim);
+}
+.hire-btn--ghost:hover {
+  background: rgba(var(--paper-rgb), 0.16);
+  color: var(--accent);
+}
+.hire-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.hire-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ── Bingkai HUD ───────────────────────────────────────────────────────── */
+
+.hud {
+  position: fixed;
+  inset: 0;
+  z-index: 80; /* di bawah StoryNav, di atas isi halaman */
+  pointer-events: none;
+}
+.hud__corner {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--accent);
+  opacity: 0.65;
+}
+.hud__corner--tl {
+  top: 12px;
+  left: 12px;
+  border-width: 2px 0 0 2px;
+}
+.hud__corner--tr {
+  top: 12px;
+  right: 12px;
+  border-width: 2px 2px 0 0;
+}
+.hud__corner--bl {
+  bottom: 12px;
+  left: 12px;
+  border-width: 0 0 2px 2px;
+}
+.hud__corner--br {
+  bottom: 12px;
+  right: 12px;
+  border-width: 0 2px 2px 0;
+}
+
+.hud__bar {
+  position: absolute;
+  left: 46px;
+  right: 46px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.hud__bar--top {
+  top: 14px;
+}
+.hud__bar--bottom {
+  bottom: 14px;
+}
+.hud__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  opacity: 0.75;
+}
+.hud__sep {
+  color: var(--accent);
+}
+.hud__led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: hud-led 2.6s ease-in-out infinite;
+}
+@keyframes hud-led {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* Scanline CRT. Sangat tipis — ia harus terasa, bukan terlihat; apa pun yang
+   lebih pekat dari ini mulai memakan keterbacaan teks kecil. */
+.hud__scan {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(var(--paper-rgb), 0.045) 0 1px,
+    transparent 1px 3px
+  );
+  mix-blend-mode: overlay;
+}
+
+/* Di layar sempit, sisakan kurung sudutnya saja: strip teks HUD memakan
+   ruang baca dan bertabrakan dengan dock CTA. */
+@media (max-width: 720px) {
+  .hud__bar {
+    display: none;
+  }
+  .hud__corner {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+
+.hire-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 64px);
+  padding: clamp(104px, 15vh, 168px) 0 clamp(56px, 9vh, 96px);
+}
+@media (max-width: 900px) {
+  .hire-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hire-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 7px 14px 7px 11px;
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  background: rgba(var(--paper-rgb), 0.05);
+}
+.hire-status__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.55);
+  animation: hire-pulse 2.4s ease-out infinite;
+}
+@keyframes hire-pulse {
+  70% {
+    box-shadow: 0 0 0 8px rgba(var(--accent-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0);
+  }
+}
+
+/* Pelat identitas unit. */
+.plate {
+  display: flex;
+  align-items: stretch;
+  margin: 0 0 18px;
+  width: fit-content;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.plate__desig {
+  padding: 8px 12px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 600;
+  /* Nomor unit tidak boleh pernah patah jadi "NF-" / "01" — di layar sempit
+     itulah yang terjadi tanpa penahan ini. */
+  white-space: nowrap;
+}
+.plate__class {
+  padding: 8px 14px;
+  background: rgba(var(--paper-rgb), 0.08);
+  color: var(--paper-dim);
+}
+
+.hire-hero__h1 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 30px;
+  font-family: var(--serif);
+  font-size: clamp(38px, 6.4vw, 70px);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+.hire-hero__h1 em {
+  font-family: var(--sans);
+  font-size: clamp(14px, 1.9vw, 19px);
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.5;
+  color: var(--paper-dim);
+}
+
+.hire-hero__reassure {
+  margin: 16px 0 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  opacity: 0.85;
+}
+
+/* ── Blueprint ─────────────────────────────────────────────────────────── */
+
+.bp {
+  display: grid;
+  gap: 18px;
+}
+.bp__svg {
+  width: 100%;
+  height: auto;
+  color: var(--paper);
+}
+.bp__paper {
+  color: var(--paper);
+  opacity: 0.09;
+}
+.bp__reg,
+.bp__dim {
+  opacity: 0.34;
+}
+.bp__line--detail {
+  opacity: 0.55;
+}
+.bp__hatch {
+  color: var(--paper);
+}
+.bp__feedback {
+  color: var(--accent);
+}
+.bp__badge {
+  fill: none;
+  stroke: var(--accent);
+}
+.bp__num {
+  fill: var(--accent);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+.bp__label {
+  fill: var(--paper);
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.bp__sub {
+  fill: var(--paper-dim);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+}
+
+/* Menggambar sendiri. Semua path diberi `pathLength={1}` di komponennya, jadi
+   satu aturan ini berlaku untuk garis sepanjang apa pun. */
+.bp__line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: bp-draw 0.7s ease-out var(--d, 0s) forwards;
+}
+@keyframes bp-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Sisanya tidak bisa "digambar": arsir dan teks bukan garis, dan garis umpan
+   balik memang putus-putus di keadaan akhirnya — dasharray sudah dipakai
+   sebagai gaya, jadi tidak bisa dipinjam lagi sebagai alat gambar. Semuanya
+   memudar masuk, dengan opacity akhir masing-masing lewat `--o` supaya arsir
+   tetap samar dan tidak berakhir sepekat teks. */
+.bp__hatch,
+.bp__feedback,
+.bp__labels g,
+.bp__specs li {
+  opacity: 0;
+  animation: bp-fade 0.45s ease-out var(--d, 0s) forwards;
+}
+@keyframes bp-fade {
+  to {
+    opacity: var(--o, 1);
+  }
+}
+.bp__hatch {
+  --d: 1.2s;
+  --o: 0.16;
+}
+.bp__feedback {
+  --d: 1.35s;
+  --o: 0.75;
+}
+
+.bp__specs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.bp__specs li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 4px 9px;
+  padding: 14px 16px;
+  background: var(--ink-2);
+}
+.bp__specnum {
+  grid-row: span 2;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+.bp__specval {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.6vw, 27px);
+  line-height: 1;
+  color: var(--paper);
+}
+.bp__speclabel {
+  grid-column: 2;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--paper-dim);
+}
+
+/* ── Header section ────────────────────────────────────────────────────── */
+
+.sec {
+  padding: clamp(64px, 11vh, 118px) 0;
+  border-top: 1px solid var(--line);
+}
+.sec__head {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: clamp(32px, 5vw, 54px);
+}
+.sec__code {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+}
+.sec__name {
+  font-family: var(--serif);
+  font-size: clamp(23px, 3.4vw, 36px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.sec__rule {
+  height: 1px;
+  background: linear-gradient(to right, var(--line), transparent);
+}
+.sec__note {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  opacity: 0.8;
+}
+@media (max-width: 720px) {
+  .sec__head {
+    grid-template-columns: auto 1fr;
+    gap: 8px 12px;
+  }
+  .sec__name {
+    grid-column: 2;
+  }
+  .sec__rule,
+  .sec__note {
+    display: none;
+  }
+}
+
+/* ── SEC-01 · Sistem inti ──────────────────────────────────────────────── */
+
+.core {
+  max-width: 34ch;
+  margin: 0 0 22px;
+  font-family: var(--serif);
+  font-size: clamp(22px, 3.4vw, 38px);
+  font-weight: 500;
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+}
+.core:last-child {
+  margin-bottom: 0;
+}
+.core em {
+  font-style: italic;
+  color: var(--accent);
+}
+.core mark {
+  background: none;
+  color: var(--hazard);
+  /* Angka besar diberi garis bawah tipis, bukan blok sorotan: sorotan penuh
+     di atas lambung gelap terbaca seperti stabilo, bukan seperti readout. */
+  box-shadow: inset 0 -2px 0 rgba(var(--hazard-rgb), 0.45);
+}
+
+/* ── SEC-02 · Riwayat penempatan ───────────────────────────────────────── */
+
+.sortie {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sortie__row {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: clamp(16px, 3vw, 36px);
+  padding: 26px 0;
+  border-top: 1px solid var(--line);
+}
+.sortie li:first-child .sortie__row {
+  border-top: 0;
+}
+.sortie__mark {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sortie__code {
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+.sortie__phase {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+.sortie__chips {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+.sortie__chips li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+.sortie__chips img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  /* Sebagian mark ini digambar untuk background terang — alas yang sama
+     dipakai node orbit di homepage. */
+  background: var(--chip-bg);
+  padding: 4px;
+}
+.sortie__caption {
+  margin: 0;
+  max-width: 74ch;
+  font-size: 15px;
+  line-height: 1.66;
+  color: var(--paper-dim);
+}
+@media (max-width: 720px) {
+  .sortie__row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .sortie__mark {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 12px;
+  }
+}
+
+/* ── SEC-03 · Subsistem ────────────────────────────────────────────────── */
+
+.sys {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 720px) {
+  .sys {
+    grid-template-columns: 1fr;
+  }
+}
+.sys__card {
+  height: 100%;
+  padding: 26px 24px;
+}
+.sys__code {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+.sys__name {
+  margin: 9px 0 16px;
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.sys__tags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sys__tags li {
+  padding: 6px 11px;
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--paper-dim);
+  background: rgba(var(--paper-rgb), 0.04);
+}
+
+/* ── SEC-04 · Rekam jejak ──────────────────────────────────────────────── */
+
+.rec {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 860px) {
+  .rec {
+    grid-template-columns: 1fr;
+  }
+}
+.rec__col {
+  padding: 26px 24px;
+}
+.rec__title {
+  margin: 0 0 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.rec__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rec__list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 3px 12px;
+  padding: 13px 0;
+  border-top: 1px solid var(--line);
+}
+.rec__list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.rec__tag {
+  grid-row: span 2;
+  padding: 3px 7px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  border: 1px solid var(--line);
+}
+.rec__name {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.rec__sub {
+  grid-column: 2;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--paper-dim);
+}
+
+/* ── SEC-05 · Transmisi ────────────────────────────────────────────────── */
+
+.tx {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.tx__card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 22px;
+}
+.tx__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+/* Bar sinyal: empat batang yang menyala berurutan, murni CSS. */
+.tx__bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 11px;
+}
+.tx__bars i {
+  width: 3px;
+  background: var(--accent);
+  animation: tx-signal 1.8s ease-in-out infinite;
+}
+.tx__bars i:nth-child(1) {
+  height: 30%;
+  animation-delay: 0s;
+}
+.tx__bars i:nth-child(2) {
+  height: 55%;
+  animation-delay: 0.15s;
+}
+.tx__bars i:nth-child(3) {
+  height: 78%;
+  animation-delay: 0.3s;
+}
+.tx__bars i:nth-child(4) {
+  height: 100%;
+  animation-delay: 0.45s;
+}
+@keyframes tx-signal {
+  0%,
+  100% {
+    opacity: 0.28;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.tx__card blockquote {
+  margin: 0 0 20px;
+  font-size: 15px;
+  line-height: 1.65;
+}
+.tx__card blockquote::before {
+  content: '\201C';
+}
+.tx__card blockquote::after {
+  content: '\201D';
+}
+.tx__by {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.tx__by > span:last-child {
+  display: grid;
+  gap: 3px;
+}
+.tx__by strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+.tx__avatar {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: rgba(var(--accent-rgb), 0.18);
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 14px;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+.tx__role {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--paper-dim);
+}
+.tx__more {
+  margin: 24px 0 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+.tx__more a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.tx__more a:hover {
+  border-color: var(--accent);
+}
+
+/* ── SEC-06 · Peluncuran ───────────────────────────────────────────────── */
+
+.launch {
+  position: relative;
+  padding: clamp(40px, 7vw, 72px) clamp(24px, 5vw, 64px) clamp(36px, 6vw, 60px);
+  text-align: center;
+  background: var(--ink-2);
+  clip-path: polygon(
+    28px 0,
+    100% 0,
+    100% calc(100% - 28px),
+    calc(100% - 28px) 100%,
+    0 100%,
+    0 28px
+  );
+}
+/* Garis bahaya di bibir atas gerbang katapel. */
+.launch__stripe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--hazard) 0 9px,
+    rgba(var(--ink-rgb), 0.85) 9px 18px
+  );
+  background-size: 25.46px 100%; /* 18px × √2 — satu periode penuh pada 45° */
+  opacity: 0.75;
+  animation: launch-stripe 1.4s linear infinite;
+}
+@keyframes launch-stripe {
+  to {
+    background-position: 25.46px 0;
+  }
+}
+.launch__line {
+  margin: 0;
+  font-family: var(--serif);
+  /* Batas atas ditahan di 42px, bukan 48px: pada 48px baris kedua meleset
+     beberapa piksel dari lebar dalam panel dan kata sasarannya terlempar
+     sendirian ke baris ketiga. */
+  font-size: clamp(24px, 4.2vw, 42px);
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: -0.015em;
+}
+.launch__line--roll {
+  margin-top: 8px;
+  margin-bottom: 26px;
+}
+.launch__sub {
+  max-width: 58ch;
+  margin: 0 auto 30px;
+  font-size: clamp(14.5px, 1.6vw, 16.5px);
+  line-height: 1.68;
+  color: var(--paper-dim);
+}
+.launch .hire-ctas {
+  justify-content: center;
+}
+.launch__links {
+  list-style: none;
+  margin: clamp(38px, 6vh, 60px) 0 0;
+  padding: 24px 0 0;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(18px, 4vw, 40px);
+}
+.launch__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  text-decoration: none;
+}
+.launch__links a:hover {
+  color: var(--accent);
+}
+.launch__thanks {
+  margin: 26px 0 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  opacity: 0.7;
+}
+
+/* Kata sasaran yang berputar. */
+.tw {
+  position: relative;
+  display: inline-grid;
+  vertical-align: bottom;
+  color: var(--accent);
+}
+/* Pengukur dan kata aktif menempati SEL GRID YANG SAMA, jadi kotaknya selebar
+   kata terlebar dan setinggi satu baris — bukan dua baris bertumpuk. */
+.tw__ghost,
+.tw__clip {
+  grid-area: 1 / 1;
+}
+.tw__ghost {
+  display: grid;
+  visibility: hidden;
+}
+.tw__ghost > span {
+  grid-area: 1 / 1;
+}
+.tw__clip {
+  display: grid;
+  overflow: hidden;
+  padding: 0 2px;
+}
+/* Selama AnimatePresence menyilangkan kata lama dan kata baru, KEDUANYA ada di
+   DOM sesaat. Tanpa penumpukan di satu sel, keduanya berjajar mengalir: kotak
+   kata melar dua kali lipat dan kalimat penutupnya patah satu baris tepat pada
+   detik pergantian — cacat yang cuma muncul di tengah transisi, jadi mudah
+   terlewat kalau halaman cuma dilihat dalam keadaan diam. */
+.tw__word {
+  grid-area: 1 / 1;
+  font-style: italic;
+}
+/* Kurung pengunci sasaran di kiri-kanan kata. */
+.tw__lock {
+  position: absolute;
+  inset: -4px -8px;
+  border: 1px solid rgba(var(--accent-rgb), 0.5);
+  border-block: 0;
+  animation: tw-lock 2.1s ease-in-out infinite;
+}
+@keyframes tw-lock {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ── Dock CTA (layar sempit saja) ──────────────────────────────────────── */
+
+.hire-dock {
+  display: none;
+}
+@media (max-width: 720px) {
+  .hire-dock {
+    position: fixed;
+    z-index: 90;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    gap: 10px;
+    padding: 9px;
+    border: 1px solid var(--line);
+    background: rgba(var(--ink-2-rgb), 0.92);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  }
+  .hire-dock .hire-btn--primary {
+    flex: 1;
+  }
+  .hire-dock .hire-btn--ghost {
+    padding: 15px 18px;
+  }
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────── */
+
+/* Framer Motion sudah ditangani `<MotionConfig reducedMotion="user">` di
+   layout. Yang perlu dijinakkan di sini adalah animasi CSS — termasuk
+   blueprint, yang harus langsung tampil UTUH alih-alih tertinggal di
+   keadaan awalnya yang tak terlihat. */
+@media (prefers-reduced-motion: reduce) {
+  .hire-btn {
+    transition: none;
+  }
+  .hire-btn:hover {
+    transform: none;
+  }
+  .hire-status__dot,
+  .hud__led,
+  .tx__bars i,
+  .launch__stripe,
+  .tw__lock {
+    animation: none;
+  }
+  .bp__line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .bp__labels g,
+  .bp__specs li {
+    animation: none;
+    opacity: 1;
+  }
+  /* Arsir dan garis umpan balik langsung tampil di opacity akhirnya sendiri,
+     bukan di 1 — kalau dipukul rata jadi 1, arsir fondasinya berubah dari
+     samar menjadi bidang pekat yang menutupi label di atasnya. */
+  .bp__hatch,
+  .bp__feedback {
+    animation: none;
+    opacity: var(--o);
+  }
+}
