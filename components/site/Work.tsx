@@ -26,7 +26,7 @@ export default function Work() {
             Curriculum I own, and courses you can open.
           </h2>
           <p className="section-lede">
-            Three of these are live and public. Take a look and see what's inside.
+            Three of these are live and public. Take a look and see what&apos;s inside.
           </p>
         </Reveal>
 
