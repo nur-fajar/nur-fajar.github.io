@@ -1,6 +1,5 @@
 import { ArrowRight, ArrowUpRight, CalendarBlank } from '@phosphor-icons/react/dist/ssr';
 import { CONTACT, PROJECTS } from '@/content/ledger';
-import Artifacts from './Artifacts';
 import Reveal from './Reveal';
 
 /**
@@ -27,7 +26,7 @@ export default function Work() {
             Curriculum I own, and courses you can open.
           </h2>
           <p className="section-lede">
-            Three of these are live and public. Take a look and see what's inside.
+            Three of these are live and public. Take a look and see what&apos;s inside.
           </p>
         </Reveal>
 
@@ -88,9 +87,6 @@ export default function Work() {
             );
           })}
         </ul>
-
-        {/* Kartu di atas membuat klaim; blok ini menunjukkan barangnya. */}
-        <Artifacts />
 
         {/* Titik keyakinan tertinggi di seluruh halaman: pembaca baru saja
             bisa membuka materinya sendiri. Satu tombol, bukan tiga; tiga
