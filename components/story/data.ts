@@ -62,7 +62,7 @@ export type SkillGroup = { name: string; tags: string[] };
 
 export const SKILL_GROUPS: SkillGroup[] = [
   {
-    name: 'L&D',
+    name: 'Learning & Development',
     tags: [
       'Instructional Design',
       'Curriculum Dev',
@@ -166,7 +166,7 @@ export const REFERENCE_CARDS: ShowcaseQuote[] = [
 export const SOCIAL = {
   linkedin: 'https://www.linkedin.com/in/nurfajar/',
   email: 'hi.nurfajar@gmail.com',
-  resume: '/nf.pdf',
+  resume: '/Nur-Fajar-Resume-Learning-Development-Specialist.pdf',
   // CTA utama `/hire-me`. Slot booking yang sama yang dulu ditanam sebagai
   // embed Cal.com di section Contact versi lama situs ini — di sini cuma
   // ditaut biasa, jadi tidak ada iframe pihak ketiga yang perlu dipercaya

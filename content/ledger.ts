@@ -7,8 +7,8 @@
  * angka itu tidak boleh dipakai.
  *
  * Semua nilai di bawah ini sudah dicocokkan baris per baris dengan
- * Nur-Fajar-LnD-Specialist-CV.pdf (prinsip P3, situs dan CV harus bisa dibaca
- * berdampingan tanpa satu pertanyaan pun).
+ * Nur-Fajar-Resume-Learning-Development-Specialist.pdf (prinsip P3, situs dan
+ * CV harus bisa dibaca berdampingan tanpa satu pertanyaan pun).
  *
  * Amandemen Agustus 2026 (audit "74 ke 96"). Empat perubahan besar:
  *
@@ -40,8 +40,8 @@ export const CONTACT = {
   timezone: 'GMT+7',
   /** Nama file sengaja deskriptif, file ini duduk di folder Downloads
    *  hiring manager selama berminggu-minggu (spec §7 SECTION 8). */
-  cv: '/Nur-Fajar-LnD-Specialist-CV.pdf',
-  cvFilename: 'Nur-Fajar-LnD-Specialist-CV.pdf',
+  cv: '/Nur-Fajar-Resume-Learning-Development-Specialist.pdf',
+  cvFilename: 'Nur-Fajar-Resume-Learning-Development-Specialist.pdf',
   /** Dipajang persis di bawah tombol kontak. Menurunkan biaya psikologis
    *  mengirim email dingin lebih dari yang terlihat: yang menahan orang
    *  bukan ragu soal alamatnya, tapi ragu apakah akan dibalas. */
@@ -139,11 +139,11 @@ export const HERO = {
   ],
   /** Baris pendukung. Isinya sama dengan lede lama, prioritas visualnya turun. */
   support:
-    'L&D Specialist. 5 programs and 3 curriculum modules built from scratch this past year: ' +
+    'Learning & Development Specialist. 5 programs and 3 curriculum modules built from scratch this past year: ' +
     `${END_TO_END_PHASES}.`,
   /** Baris bukti. Ini yang mengubah hero dari klaim jadi undangan verifikasi:
    *  ia menunjuk ke #work, tempat ketiga kursusnya benar-benar bisa dibuka. */
-  proof: '3 of my courses are live and public. Open them and judge the material yourself',
+  proof: "3 of my courses are live and public. Take a look and see what's inside",
 } as const;
 
 /*
@@ -232,7 +232,7 @@ export const WORK: WorkCard[] = [
   {
     id: 'chatbot-business',
     title: 'Chatbot for Business',
-    body: 'One of the four chatbot-development modules I owned end to end: outline, assets, and delivery.',
+    body: 'One of the three chatbot-development modules I owned end to end: outline, assets, and delivery.',
     href: 'https://ai4impact.org/learn/detail?v=chatbots-for-business-id',
     kind: 'Live course · ai4impact',
   },
@@ -275,12 +275,12 @@ export const WORK: WorkCard[] = [
  */
 export const CRM_PROJECT = {
   id: 'crm-pipeline',
-  kind: 'Outside the L&D mandate',
+  kind: 'Outside the Learning & Development mandate',
   title: '9-agent CRM pipeline, Terra Weather',
   body:
     "Sales and revenue ops during the company's B2B pivot. I led the AI side of a 9-agent Python " +
     'pipeline; another engineer owned the CRM itself. No learners, no curriculum, no evaluation. ' +
-    'My title stayed L&D Specialist throughout.',
+    'My title stayed Learning & Development Specialist throughout.',
   metrics: [
     '9 agents',
     '~3,000 contacts / ~600 companies',
@@ -289,6 +289,251 @@ export const CRM_PROJECT = {
     'Python + LLM APIs',
   ],
 } as const;
+
+export interface Artifact {
+  id: string;
+  title: string;
+  /** Satu kalimat: apa yang sebenarnya dilihat pembaca, dan kenapa itu bukti. */
+  note: string;
+  src: string;
+  alt: string;
+}
+
+/**
+ * Lebar kartu di grid bento dua baris, ditulis di data dan bukan diturunkan
+ * dari indeks.
+ *
+ * Alasannya sama dengan yang berlaku di grid Work: kalau lebar kartu ditentukan
+ * urutannya, menambah satu artefak nanti diam-diam menggeser seluruh baris.
+ * Ditulis di sini, ia jadi keputusan editorial yang bisa dibaca dan diubah satu
+ * kata, bukan efek samping dari posisi.
+ *
+ * Grid dasarnya dua belas kolom, dan ketiga nilai ini menjumlah pas jadi dua
+ * baris penuh tanpa satu pun koordinat ditulis tangan:
+ *
+ *   third  4 dari 12   Analysis, Design, Development mengisi baris pertama
+ *   major  7 dari 12   Implementation, kartu berfoto, butuh lebar
+ *   minor  5 dari 12   Evaluation, sisa baris kedua
+ *
+ * Tidak ada varian tinggi. Semua kartu setinggi sama, dan itu yang membuat
+ * kelimanya muat dalam satu layar: kartu setinggi dua baris memaksa seluruh
+ * blok jadi setinggi tiga.
+ */
+export type AddieSpan = 'third' | 'major' | 'minor';
+
+export interface AddiePhase {
+  id: string;
+  /** Huruf ADDIE ('A', 'D', 'D', 'I', 'E'), dipakai sebagai penanda kecil di kartu. */
+  letter: string;
+  phase: string;
+  span: AddieSpan;
+  /** Satu kalimat di muka kartu: apa yang sebenarnya dikerjakan di fase ini.
+   *  Tidak butuh artefak untuk tetap jujur, jadi fase tanpa gambar pun terisi. */
+  summary: string;
+  /** Keputusan yang diambil di fase ini, satu baris satu keputusan, dibuka di
+   *  dialog. Dipisah dari summary karena fase yang belum punya artefak tetap
+   *  punya isi di sini: keputusan yang diambil adalah pekerjaannya, gambar cuma
+   *  jejaknya. */
+  decisions: string[];
+  /** Kosong kalau belum ada artefak yang boleh dipajang untuk fase ini. */
+  artifacts: Artifact[];
+}
+
+/**
+ * Satu program (GenAI Product Manager, kohort Train the Trainers), dibaca
+ * lewat lima fase ADDIE. ADDIE sendiri sudah diklaim sebagai kompetensi di
+ * SKILLS; bagian ini yang membuktikannya per fase, bukan cuma menyebut namanya.
+ *
+ * Lima fase, dan berhenti di lima. Sertifikat peserta memang terbit Juli 2026,
+ * tapi halaman verifikasinya bukti credentialing, bukan bukti evaluasi, dan
+ * kotak keenam untuk itu akan membuat ADDIE terbaca sebagai model enam fase.
+ * Gambarnya tetap ada di public/artifacts/, hanya tidak dirujuk dari sini.
+ *
+ * Kelima fase sekarang punya artefak. Lima di antaranya dirender dari deck
+ * pre-training (`Pre-Session Meeting TTT GenAI PM.pdf`), yang ternyata memuat
+ * sendiri jejak fase yang paling sulit dibuktikan: jadwal yang disepakati
+ * sebelum modul ditulis, pilihan slot waktu, tabel goal per section, daftar
+ * tool, dan rancangan asesmen Day 4. Deck itu satu-satunya artefak di sini
+ * yang dibuat SEBELUM programnya jalan, jadi ia bukti paling kuat untuk klaim
+ * "diputuskan di muka" yang dipakai di fase Analysis, Design dan Evaluation.
+ *
+ * Satu artefak Implementation sengaja dilabeli asal kohortnya. Screenshot kuis
+ * itu dari Chatbot for Business, bukan GenAI Product Manager. Ia dipajang
+ * karena pola pembukanya sama persis, dan disebutkan asalnya karena caption
+ * yang membiarkan pembaca menyimpulkan sendiri lebih murah daripada satu
+ * kalimat jujur.
+ */
+export const ADDIE_PHASES: AddiePhase[] = [
+  {
+    id: 'analysis',
+    letter: 'A',
+    phase: 'Analysis',
+    span: 'third',
+    /* Sengaja pendek. Ringkasan di muka kartu dipotong dua baris, dan kalimat
+       yang terpotong di tengah frasa membaca sebagai teks yang kepanjangan,
+       bukan sebagai ringkasan. Sisa ceritanya ada di `decisions`. */
+    summary: 'Six university lecturers, mixed technical and non-technical.',
+    decisions: [
+      'A pre-training session set the dates and the milestones before a single module was outlined. Three slots went to the group, 09:00, 13:00 and 19:00 WIB, and the group took the morning.',
+      'The schedule agreed in that session is the schedule that ran: 11, 13, 18 and 20 May 2026, two hours each.',
+      'Baseline was general AI awareness. Nobody arrived with a product already in flight to improve.',
+      'Each participant would build their own product from a case they chose themselves, instead of working a shared example.',
+      'Finishing was defined up front and written into the evaluation form: full attendance, plus a final submission with a working chatbot in it.',
+      'Format set as a workshop with consultation running alongside it, not a lecture series.',
+    ],
+    artifacts: [
+      {
+        id: 'pre-schedule',
+        title: 'Program schedule, pre-training deck',
+        note: 'Four sessions, dated and fixed before any module was written: 11, 13, 18 and 20 May 2026, two hours each.',
+        src: '/artifacts/pre-schedule.webp',
+        alt: 'Slide titled Jadwal Pelaksanaan Program with a four row table pairing Day 1 to Day 4 with their topics, the dates 11, 13, 18 and 20 May 2026, and a two hour duration each.',
+      },
+      {
+        id: 'pre-timeslot',
+        title: 'Time slot put to the group',
+        note: 'Three options offered. Only the morning card carries the selected outline, which is the decision the session was called to make.',
+        src: '/artifacts/pre-timeslot.webp',
+        alt: 'Slide titled Diskusi: Pemilihan Waktu showing three time slot cards, 09:00, 13:00 and 19:00 WIB, with the 09:00 morning card outlined as the selected option.',
+      },
+    ],
+  },
+  {
+    id: 'design',
+    letter: 'D',
+    phase: 'Design',
+    span: 'third',
+    summary:
+      'Nine modules across three days, each section given its goal before a single asset existed.',
+    decisions: [
+      'The outline was written goal-first: every section header carries the outcome it owes the reader before any slide, note or lab is attached to it.',
+      'Three teaching days, three modules each: mindset and identity, then AI integration and behavior, then data and tracking. Day 4 is the assessment, not a tenth module.',
+      'Those same goals went back to participants in the pre-training deck, so Day 1 opened with its sequence already visible: PM mindset, then user context, then product identity, each with its goal printed underneath.',
+      'Labs sit inside the sequence rather than after it. Lab 1 lands in Day 1, between two teaching blocks.',
+      "The closing project is the participant's own chatbot, and it doubles as the assessment, so there was never a separate exam to design.",
+    ],
+    artifacts: [
+      {
+        id: 'outline',
+        title: 'Course outline, GenAI Product Manager',
+        note: 'Nine module tabs down the side, one goals table per section, and Lab 1 already sitting inside Day 1 rather than after it.',
+        src: '/artifacts/outline.webp',
+        alt: 'Course outline document for GenAI Product Manager, showing nine module tabs in the sidebar and a table pairing each section header with its stated goals.',
+      },
+      {
+        id: 'pre-day1-goals',
+        title: 'Day 1 goals, shown to participants',
+        note: 'The same goals from the outline, handed to the group before the session rather than kept in the planning document.',
+        src: '/artifacts/pre-day1-goals.webp',
+        alt: 'Slide titled Day 1: Mindset & Identity with three columns, PM Mindset, User Context and Product Identity, each carrying a description and a stated goal.',
+      },
+    ],
+  },
+  {
+    id: 'development',
+    letter: 'D',
+    phase: 'Development',
+    span: 'third',
+    summary:
+      'Course notes written inside the Smojo editor with code that runs, not snippets that illustrate.',
+    decisions: [
+      'Notes were authored in the editor itself, so every code block in them is a block that executed before it was published.',
+      'Images were collected for the notes specifically, and the step where an API key is easiest to leak carries a marked warning rather than a footnote.',
+      'Labs and practice guides were built end to end as one flow, instead of assembled from parts written separately.',
+      'The full Day 1 to Day 4 cycle was dry run solo before the cohort saw it, to confirm the sequence held. Every lab was walked start to finish the same way, and the notes were revised in place each time a run-through broke.',
+    ],
+    artifacts: [
+      {
+        id: 'slides',
+        title: 'Day 1 deck, GenAI Product Manager',
+        note: 'Twenty Day 1 slides in running order. Lab 1 and Lab 2 are numbered into the teaching blocks, not collected at the end.',
+        src: '/artifacts/slides.webp',
+        alt: 'Grid of twenty slide thumbnails from the Day 1 GenAI Product Management deck, with lab exercises interleaved between teaching sections.',
+      },
+      {
+        id: 'course-page',
+        title: 'Course page, ai4impact',
+        note: 'The public page a learner meets before enrolling: three lessons, twelve hours, and a paragraph saying what the course is not.',
+        src: '/artifacts/course-note-home.webp',
+        alt: 'Public course page for Generative AI Product Manager on ai4impact, showing the course description, three lessons, twelve hours and a Start Learning button.',
+      },
+      {
+        id: 'course-note',
+        title: 'Course notes, step by step',
+        note: 'Numbered steps with annotated screenshots, and a warning marked at the step where an API key is easiest to leak.',
+        src: '/artifacts/course-note.webp',
+        alt: 'Course notes page with numbered steps, annotated screenshots and colored callout arrows walking through creating an API key and enabling the Google Sheets API.',
+      },
+    ],
+  },
+  {
+    id: 'implementation',
+    letter: 'I',
+    phase: 'Implementation',
+    span: 'major',
+    summary:
+      'Four live sessions, two hours each, 11 to 20 May 2026, on the dates agreed back in analysis.',
+    decisions: [
+      'Four sessions, not eight. The schedule set in the pre-training session is the schedule that ran.',
+      'Consultation ran between sessions over chat and Zoom, opened by whoever needed it, rather than booked into slots that would have gone half empty.',
+      'Three tools with one job each, named to participants before the program started: Notion held materials, recordings and assignments; WhatsApp carried fast questions and daily announcements; Smojo was the build environment, with the facilitator setting up accounts alongside each lecturer.',
+      'Sessions opened with a live quiz, used as a warm up and as a read on who was actually in the room.',
+      'Participants kept building on their own after the last session. Final submissions came in June 2026, certificates in July 2026.',
+    ],
+    artifacts: [
+      {
+        id: 'live-session',
+        title: 'Live session, Train the Trainers',
+        note: 'One of the four two-hour sessions. Participant nametags are blurred; the facilitator is the only person named.',
+        src: '/artifacts/live-session.webp',
+        alt: 'Zoom gallery view of a live Train the Trainers session with six video tiles. Only the facilitator nametag is legible; the participant nametags are blurred.',
+      },
+      {
+        id: 'pre-ecosystem',
+        title: 'The tools, agreed up front',
+        note: 'Notion, WhatsApp and Smojo given one job each and shown to participants before the first session, so nobody had to guess where anything lived.',
+        src: '/artifacts/pre-ecosystem.webp',
+        alt: 'Slide titled Digital Learning Ecosystem with three cards, Notion as the LMS for materials and recordings, a WhatsApp group for fast questions and daily announcements, and Smojo accounts set up with facilitator help.',
+      },
+      {
+        id: 'warmup-quiz',
+        title: 'Warm up quiz, session open',
+        note: 'A three question poll to open the room. This capture is from the Chatbot for Business cohort, not GenAI Product Manager, and it shows the same opening pattern.',
+        src: '/artifacts/warmup-quiz.webp',
+        alt: 'Mentimeter quiz screen reading Question 1 of 3 with a join code and seven players ready, shared during a live session.',
+      },
+    ],
+  },
+  {
+    id: 'evaluation',
+    letter: 'E',
+    phase: 'Evaluation',
+    span: 'minor',
+    summary: 'The assessment was written before the program ran, not added to it afterward.',
+    decisions: [
+      'Day 4 was booked as peer review and showcase from the pre-training deck onward, before a single module had been built.',
+      "On the day, lecturers and facilitator reviewed each other's work against a chatbot each of them showed running live.",
+      'A tracker at the midpoint, between the last live session and the June submission, checked the build rather than the mood: published, tested, connected to GPT, wired to Google Sheets.',
+      'It also asked what each participant planned to do with the chatbot next, and how ready they felt to teach the material themselves. In a Train the Trainers program that second answer is the one the program exists for.',
+    ],
+    artifacts: [
+      {
+        id: 'pre-peer-review',
+        title: 'Day 4, as designed beforehand',
+        note: 'Peer review and showcase written into the pre-training deck. The assessment existed as a plan before it existed as a session.',
+        src: '/artifacts/pre-peer-review.webp',
+        alt: 'Slide titled Day 4: Peer Review Assessment describing competency validation, with two cards, Peer Review for collaborative evaluation between lecturers and facilitator, and Showcase for demonstrating the chatbot each of them built.',
+      },
+      {
+        id: 'evaluation',
+        title: 'Mid-program progress tracker',
+        note: 'Four responses at the checkpoint between the last live session and the June submission. It asks whether the chatbot is published, tested and connected, not whether the session was enjoyable.',
+        src: '/artifacts/evaluation.webp',
+        alt: 'Google Forms response summary for the Train the Trainers progress tracker at four responses, showing charts for post-program plans, preferred follow-up, chatbot build completeness and confidence to teach the material.',
+      },
+    ],
+  },
+];
 
 /*
  * Dua mini case study ("Two things I changed after watching them not work")
@@ -427,13 +672,13 @@ export const PROOF: ProofCell[] = [
   {
     value: '300+',
     label: 'learners trained',
-    method: 'across 3 roles: 50+ Bangkit 2023 · 100+ training 2024 to 2025 · 150+ L&D 2025 to 2026',
+    method: 'across 3 roles: 50+ Bangkit 2023 · 100+ training 2024 to 2025 · 150+ Learning & Development 2025 to 2026',
   },
   {
     value: '5',
     label: 'programs run end to end',
     method:
-      'as L&D Specialist, 2025 to 2026: Chatbot for Business · Chatbot for Education · Smojothon · Career Talk · Train the Trainers',
+      'as Learning & Development Specialist, 2025 to 2026: Chatbot for Business · Chatbot for Education · Smojothon · Career Talk · Train the Trainers',
   },
   {
     /* Tiga, bukan empat, dan angkanya sekarang berdiri persis di atas
@@ -442,7 +687,7 @@ export const PROOF: ProofCell[] = [
        terpajang di halaman yang sama berhenti perlu dipercaya. */
     value: '3',
     label: 'curriculum modules owned',
-    method: 'business, education, product tracks, same year as L&D Specialist',
+    method: 'business, education, product tracks, same year as Learning & Development Specialist',
   },
   {
     /* Periodenya ditulis, nama perannya tidak. Angka ini lahir di tahun AI
@@ -459,7 +704,7 @@ export const PROOF: ProofCell[] = [
   {
     value: '25+',
     label: 'live sessions delivered',
-    method: 'small-group Zoom to one public YouTube livestream, as L&D Specialist',
+    method: 'small-group Zoom to one public YouTube livestream, as Learning & Development Specialist',
   },
   { value: '6', label: 'lecturers trained to teach it', method: '2-week Train the Trainers cohort, completed June 2026' },
 ];
@@ -622,7 +867,7 @@ export interface SkillGroup {
  */
 export const SKILLS: SkillGroup[] = [
   {
-    label: 'L&D & instructional design',
+    label: 'Learning & Development and instructional design',
     items: [
       'Curriculum development',
       'Instructional design (ADDIE)',
@@ -764,8 +1009,9 @@ export interface LookingForRow {
  * Tiga jabatan, bukan enam.
  *
  * Enam judul jabatan berjajar membaca sebagai kandidat yang belum memilih, dan
- * itu kebalikan dari sinyal yang dibawa seluruh halaman ini. Tiga yang tersisa
- * adalah tiga yang benar-benar dilamar; sisanya masuk ke baris catatan di
+ * itu kebalikan dari sinyal yang dibawa seluruh halaman ini. Empat yang
+ * tersisa (termasuk Curriculum Developer, ditambahkan Agustus 2026) adalah
+ * jabatan yang benar-benar dilamar; sisanya masuk ke baris catatan di
  * bawahnya, tempat ia menerangkan tanpa mengencerkan.
  *
  * Baris Setup membawa jawaban atas pertanyaan screening yang paling sering
@@ -778,8 +1024,9 @@ export interface LookingForRow {
 export const LOOKING_FOR: LookingForRow[] = [
   {
     label: 'Roles',
-    value: 'L&D Specialist · Instructional Designer · Learning Program Manager',
-    note: 'Plus hybrid roles where L&D sits next to AI enablement.',
+    value:
+      'Learning & Development Specialist · Instructional Designer · Learning Program Manager · Curriculum Developer',
+    note: 'Plus hybrid roles where Learning & Development sits next to AI enablement.',
   },
   {
     label: 'Setup',
@@ -816,7 +1063,7 @@ export const LAST_UPDATED = 'August 2026';
 const ORG_META: Record<string, { summary: string }> = {
   'Terra AI': {
     summary:
-      'Two roles, same craft, very different scope. As AI Training Specialist I delivered training other people had scoped. As L&D Specialist I owned programs outright, from needs breakdown to evaluation.',
+      'Two roles, same craft, very different scope. As AI Training Specialist I delivered training other people had scoped. As Learning & Development Specialist I owned programs outright, from needs breakdown to evaluation.',
   },
   'Bangkit Academy': {
     summary:

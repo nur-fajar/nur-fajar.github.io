@@ -42,13 +42,13 @@ const jakarta = Plus_Jakarta_Sans({
  * yang benar-benar ditampilkan hasil pencarian.
  */
 const SUMMARY =
-  'Nur Fajar — L&D Specialist. Programs owned end to end: ideation, design, delivery, ' +
+  'Nur Fajar — Learning & Development Specialist. Programs owned end to end: ideation, design, delivery, ' +
   'evaluation. 5 programs, 3 curriculum modules, 300+ learners.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://nurfajar.com'),
   title: {
-    default: 'Nur Fajar — L&D Specialist | Instructional Design, Curriculum Development',
+    default: 'Nur Fajar — Learning & Development Specialist | Instructional Design, Curriculum Development',
     template: '%s, Nur Fajar',
   },
   description: SUMMARY,
@@ -57,12 +57,12 @@ export const metadata: Metadata = {
     type: 'profile',
     locale: 'en_US',
     url: 'https://nurfajar.com',
-    title: 'Nur Fajar — L&D Specialist',
+    title: 'Nur Fajar — Learning & Development Specialist',
     description: SUMMARY,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Nur Fajar — L&D Specialist',
+    title: 'Nur Fajar — Learning & Development Specialist',
     description: SUMMARY,
   },
 };

@@ -35,7 +35,7 @@ export const dynamic = 'force-static';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 export const alt =
-  'Nur Fajar, L&D Specialist. Teaches generative AI, three courses public. ' +
+  'Nur Fajar, Learning & Development Specialist. Teaches generative AI, three courses public. ' +
   '300+ learners across 3 roles, 5 programs run end to end, 9.0/10 satisfaction.';
 
 // Token diambil dari mode terang design system (globals.css). Dipakai apa
@@ -104,7 +104,7 @@ export default async function OpengraphImage() {
               Nur Fajar
             </div>
             <div style={{ fontSize: 44, fontWeight: 600, color: ACCENT, marginTop: 2 }}>
-              L&amp;D Specialist
+              Learning &amp; Development Specialist
             </div>
             {/* Satu rule bergradient, elemen grafis tunggal di gambar ini. */}
             <div
