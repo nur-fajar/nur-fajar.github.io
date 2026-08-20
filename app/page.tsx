@@ -1,32 +1,54 @@
 import Nav from '@/components/site/Nav';
 import Hero from '@/components/site/Hero';
 import Stats from '@/components/site/Stats';
-import About from '@/components/site/About';
-import Experience from '@/components/site/Experience';
 import Work from '@/components/site/Work';
+import Experience from '@/components/site/Experience';
+import Skills from '@/components/site/Skills';
+import Credentials from '@/components/site/Credentials';
 import Testimonials from '@/components/site/Testimonials';
+import About from '@/components/site/About';
 import Contact from '@/components/site/Contact';
 
 /**
- * Urutan section adalah keputusan, bukan kebiasaan. Tiap posisi menjawab satu
- * pertanyaan pembaca, diurutkan berdasarkan kapan pertanyaan itu muncul:
+ * Urutan section adalah keputusan, bukan kebiasaan. Prinsipnya satu baris:
  *
- *   Hero          siapa ini, dan apa klaim terbesarnya
+ *   apa yang bisa kamu buka sendiri
+ *     lalu apa yang saya kerjakan
+ *       lalu apa yang bisa diverifikasi pihak ketiga
+ *         lalu dari mana asalnya
+ *           lalu cara menghubungi
+ *
+ * Dijalankan, itu jadi:
+ *
+ *   Hero          siapa ini, apa klaim terbesarnya, di mana, kapan bisa mulai
  *   Stats         empat angka, hal pertama yang dicari setelah headline
+ *   Work          apa yang bisa dibuka dan dinilai sendiri, sekarang juga
+ *   Experience    sudah berapa lama, di mana, dan peran mana yang mana
+ *   Skills        dengan apa dia mengerjakannya
+ *   Credentials   bukti pihak ketiga yang bisa diklik satu per satu
+ *   References    bukti pihak ketiga yang berbicara
  *   About         dari mana asalnya: kuliah, beasiswa, program, organisasi
- *   Experience    sudah berapa lama, di mana, peran mana yang mana, lalu skill
- *   Work          apa yang bisa dibuka dan dinilai sendiri
- *   References    apa kata orang yang pernah mengelolanya
  *   Contact       peran apa yang dicari, dan cara menghubungi
  *
- * Work sengaja duduk SEBELUM References: testimoni bekerja lebih keras setelah
- * pembaca sempat melihat sendiri barangnya, bukan sebelumnya. Urutan tautan di
- * navbar mengikuti urutan ini persis.
+ * Yang berpindah paling jauh adalah About, dari posisi kedua ke keenam. Di
+ * urutan lama, pembaca menghabiskan perhatian pertamanya di riwayat kuliah
+ * dan organisasi kampus sebelum sempat melihat satu pun artefak yang bisa
+ * dibuka. Work naik ke posisi itu justru karena ia satu-satunya bagian
+ * halaman yang bisa diperiksa tanpa mempercayai kalimat apa pun di
+ * sekitarnya.
+ *
+ * Credentials dipisah keluar dari About, tempatnya selama ini duduk. Ia bukan
+ * bagian dari cerita masa kuliah, ia bukti pihak ketiga, dan tempatnya di
+ * sebelah References.
  */
 export default function HomePage() {
   return (
     <>
-      <a className="skip-link" href="#about">
+      {/* Targetnya #main, bukan #about. Versi sebelumnya melompat ke About,
+          yang berarti pengguna keyboard yang menekan skip link melewati
+          seluruh hero: headline, kedua tombol, dan baris bukti sekaligus.
+          Skip link seharusnya melompati navigasi, bukan melompati isi. */}
+      <a className="skip-link" href="#main">
         Skip to content
       </a>
 
@@ -38,13 +60,15 @@ export default function HomePage() {
       </div>
 
       <Nav />
-      <main>
+      <main id="main" tabIndex={-1}>
         <Hero />
         <Stats />
-        <About />
-        <Experience />
         <Work />
+        <Experience />
+        <Skills />
+        <Credentials />
         <Testimonials />
+        <About />
         <Contact />
       </main>
     </>

@@ -26,38 +26,44 @@ const jakarta = Plus_Jakarta_Sans({
 
 /**
  * Meta ini adalah teks yang muncul di preview LinkedIn dan WhatsApp, sering
- * jadi hal PERTAMA yang dibaca hiring manager, sebelum situsnya sendiri. Karena
- * itu ia harus 100% mencerminkan peran yang dilamar: L&D / Instructional Design
- * / Curriculum Development. Tidak ada kata "AI" di title, description, og, atau
- * twitter tags sama sekali (spec §10.1 + anti-checklist §16).
+ * jadi hal PERTAMA yang dibaca hiring manager, sebelum situsnya sendiri.
  *
- * "5 programs" dan "4 curriculum modules" secara eksplisit ditulis sebagai
- * "this past year" supaya tidak duduk bersebelahan dengan "300+ learners"
- * (yang mencakup 3 peran/3 tahun) seolah keduanya satu populasi yang sama.
- * Lihat catatan amandemen di kepala content/ledger.ts.
+ * Dua hal diperbaiki di sini.
+ *
+ * Yang pertama, ketiga description (meta, og, twitter) dulu sedikit berbeda
+ * satu sama lain. Tidak ada alasan untuk itu: satu halaman punya satu
+ * ringkasan, dan tiga versi yang hampir sama cuma tiga tempat berbeda untuk
+ * basi diam-diam. Sekarang ketiganya satu konstanta.
+ *
+ * Yang kedua, title-nya. Versi lama berbunyi "Instructional Design &
+ * Curriculum Development" dan nol sinyal lain, jadi pencarian yang menyebut
+ * peran L&D tidak punya pijakan. Urutannya sekarang: nama, jabatan, lalu dua
+ * kompetensi inti, yang mana ketiganya muat di potongan 60 karakter pertama
+ * yang benar-benar ditampilkan hasil pencarian.
  */
+const SUMMARY =
+  'Nur Fajar — L&D Specialist. Programs owned end to end: ideation, design, delivery, ' +
+  'evaluation. 5 programs, 3 curriculum modules, 300+ learners.';
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://nurfajar.com'),
   title: {
-    default: 'Nur Fajar, L&D Specialist: Instructional Design & Curriculum Development',
+    default: 'Nur Fajar — L&D Specialist | Instructional Design, Curriculum Development',
     template: '%s, Nur Fajar',
   },
-  description:
-    'L&D Specialist. Programs owned end to end, from ideation to evaluation: 5 programs and 4 curriculum modules this past year, 300+ learners reached across 3 roles, 9.0/10 satisfaction.',
+  description: SUMMARY,
   alternates: { canonical: 'https://nurfajar.com' },
   openGraph: {
     type: 'profile',
     locale: 'en_US',
     url: 'https://nurfajar.com',
-    title: 'Nur Fajar, L&D Specialist',
-    description:
-      'I own programs end to end, from ideation to evaluation: 5 programs and 4 curriculum modules this past year, 300+ learners reached across 3 roles.',
+    title: 'Nur Fajar — L&D Specialist',
+    description: SUMMARY,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Nur Fajar, L&D Specialist',
-    description:
-      'I own programs end to end, from ideation to evaluation: 5 programs and 4 curriculum modules this past year, 300+ learners reached across 3 roles.',
+    title: 'Nur Fajar — L&D Specialist',
+    description: SUMMARY,
   },
 };
 

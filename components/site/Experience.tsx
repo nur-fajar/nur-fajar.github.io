@@ -1,11 +1,6 @@
 import { CalendarBlank } from '@phosphor-icons/react/dist/ssr';
-import {
-  LEADERSHIP,
-  ORGS,
-  SKILLS,
-  SKILLS_FOOTNOTE,
-  TECHNICAL_FOOTNOTE,
-} from '@/content/ledger';
+import { LEADERSHIP, ORGS } from '@/content/ledger';
+import { formatRange } from '@/lib/dates';
 import Reveal from './Reveal';
 
 /**
@@ -21,6 +16,11 @@ import Reveal from './Reveal';
  * sendiri. Keduanya bukan pekerjaan berbayar, dan menaruhnya sebaris dengan
  * jabatan Terra AI/Bangkit akan mengencerkan sinyal seniority peran berbayar,
  * persis pemisahan yang sudah ada di CV.
+ *
+ * Tag list per kartu sudah tidak ada. Kartu Terra AI dan Bangkit dulu
+ * masing-masing membawa daftar kompetensinya sendiri, dan sembilan dari
+ * sepuluh chip-nya muncul lagi persis sama di blok Skills beberapa ratus
+ * piksel di bawahnya. Blok Skills sekarang satu-satunya sumber.
  */
 export default function Experience() {
   return (
@@ -28,8 +28,21 @@ export default function Experience() {
       <div className="shell">
         <Reveal>
           <p className="eyebrow">Experience</p>
-          <h2 className="section-title" id="experience-title">
-            Three roles, one through-line.
+          {/* Dua baris, dan pembagiannya ditentukan <br/> di sini, bukan oleh
+              lebar kotaknya. Dibiarkan membungkus sendiri, judulnya pecah jadi
+              "Three roles. Same" / "craft, rising ownership.", yang memotong
+              kalimat kedua persis di tengah dan membuat baris pertama terbaca
+              seperti kalimat yang belum selesai. */}
+          <h2 className="section-title section-title--wide" id="experience-title">
+            Three roles.
+            <br />
+            Same craft,
+            {/* Di bawah 560px "Same craft, rising ownership." tidak muat satu
+                baris (450px pada 32px, shell cuma 345px), dan browser
+                memecahnya jadi "Same craft, rising / ownership.", yang
+                memisahkan kata sifat dari kata bendanya. Pecah di komanya. */}
+            <br className="br-sm" />{' '}
+            rising ownership.
           </h2>
         </Reveal>
 
@@ -44,7 +57,7 @@ export default function Experience() {
                   </div>
                   <p className="chip org__period">
                     <CalendarBlank size={14} weight="bold" aria-hidden="true" />
-                    {org.period}
+                    {formatRange(org.start, org.end)}
                   </p>
                 </div>
 
@@ -62,12 +75,11 @@ export default function Experience() {
                     <li className="org__block" key={role.title}>
                       <div className="org__role">
                         <span className="org__role-title">{role.title}</span>
-                        <span className="org__role-date">
-                          {role.start}
-                          <span className="sr-only"> to </span>
-                          <span aria-hidden="true"> - </span>
-                          {role.end}
-                        </span>
+                        {/* Satu format tanggal untuk seluruh situs, dihitung
+                            di lib/dates.ts. Versi sebelumnya menyusunnya di
+                            sini dari potongan-potongan, lengkap dengan kata
+                            "to" khusus screen reader yang bocor ke mata. */}
+                        <span className="org__role-date">{formatRange(role.start, role.end)}</span>
                       </div>
                       <ul className="org__bullets">
                         {role.bullets.map((bullet) => (
@@ -77,14 +89,6 @@ export default function Experience() {
                     </li>
                   ))}
                 </ol>
-
-                <ul className="org__chips">
-                  {org.chips.map((chip) => (
-                    <li className="chip chip--quiet" key={chip}>
-                      {chip}
-                    </li>
-                  ))}
-                </ul>
               </article>
             </Reveal>
           ))}
@@ -98,12 +102,7 @@ export default function Experience() {
                 <div className="early__card" key={role.title}>
                   <div className="early__head">
                     <h4 className="early__title">{role.title}</h4>
-                    <span className="early__date">
-                      {role.start}
-                      <span className="sr-only"> to </span>
-                      <span aria-hidden="true"> - </span>
-                      {role.end}
-                    </span>
+                    <span className="early__date">{formatRange(role.start, role.end)}</span>
                   </div>
                   <p className="early__org">
                     {role.org} · {role.place}
@@ -115,31 +114,13 @@ export default function Experience() {
           </div>
         </Reveal>
 
-        {/* Peta kompetensi duduk SETELAH riwayat kerja, bukan sebelumnya.
-            Daftar skill sebelum ada bukti apa pun hanyalah tag soup; setelah
-            pembaca melihat di mana kemampuan itu dipakai, daftar yang sama
-            berubah jadi ringkasan. */}
-        <Reveal>
-          <div className="toolkit toolkit--after-exp">
-            {SKILLS.map((group) => (
-              <div className="toolkit__group" key={group.label}>
-                <h3 className="toolkit__label">{group.label}</h3>
-                <ul className="toolkit__chips">
-                  {group.items.map((item) => (
-                    <li className="chip" key={item}>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <p className="footnote">{SKILLS_FOOTNOTE}</p>
-          {/* Satu-satunya tempat proyek 9 agent muncul di seluruh situs.
-              Tanpa card, tanpa angka besar, tanpa warna aksen: kredensial
-              pendukung, bukan pencapaian utama. */}
-          <p className="footnote">{TECHNICAL_FOOTNOTE}</p>
-        </Reveal>
+        {/* Peta kompetensi tidak lagi menumpang di sini.
+            Ia sekarang section-nya sendiri (components/site/Skills.tsx), tepat
+            di bawah section ini. Experience menjawab "di mana dan kapan";
+            daftar kompetensi menjawab "dengan apa". Dua pertanyaan berbeda
+            yang berbagi satu judul berarti yang kedua tidak pernah
+            benar-benar dijawab. Urutannya tidak berubah: daftar skill tetap
+            datang SETELAH bukti, bukan sebelumnya. */}
       </div>
     </section>
   );

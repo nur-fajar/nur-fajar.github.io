@@ -16,32 +16,71 @@ import Reveal from './Reveal';
  * bisa gagal diam-diam (kiriman tidak sampai, dan tidak ada yang tahu), dan
  * dua jalur di bawah ini sudah membawa orang ke tempat yang sama dengan
  * gesekan yang sama rendahnya: kalender yang bisa langsung dipesan, dan email
- * dengan subject serta body sudah terisi.
+ * dengan subject serta kerangka body sudah terisi.
+ *
+ * Tiga tombol setara diganti hierarki tiga tingkat, dan itu bukan soal
+ * estetika. Tiga tombol seukuran menghasilkan lebih sedikit aksi daripada
+ * satu, dan yang paling mungkin diambil adalah yang komitmennya paling
+ * rendah, yaitu Download CV, yang justru paling tidak berguna: CV yang
+ * diunduh berakhir di folder Downloads, panggilan 15 menit berakhir di
+ * kalender.
+ *
+ * Kalimat terkuat situs yang dulu duduk di sini sudah naik ke hero. Yang
+ * tinggal di posisinya adalah kalimat operasional: apa yang terjadi setelah
+ * seseorang menekan tombol.
  */
 export default function Contact() {
   return (
     <section className="section contact" id="contact" aria-labelledby="contact-title">
       <div className="shell">
         <Reveal>
-          <p className="eyebrow" style={{ justifyContent: 'center', width: '100%' }}>
+          <p className="eyebrow contact__eyebrow">
             <HandWaving size={14} weight="fill" aria-hidden="true" />
             Contact
           </p>
+          {/* Tanpa lede.
+              Judulnya sudah berupa pertanyaan langsung, dan pertanyaan yang
+              disusul kalimat penjelas berhenti terbaca sebagai pertanyaan.
+              Kalimat yang dulu duduk di sini ("Book fifteen minutes and bring
+              the problem...") juga sudah punya rumah yang lebih baik: versi
+              aslinya sekarang jadi sub-headline di hero. Yang tersisa di sini
+              adalah jawabannya, dan jawabannya adalah tabel di bawah. */}
           <h2 className="contact__title" id="contact-title">
-            Got a team that needs to do something differently?
+            Need someone who can design the curriculum, build the campaign, and run the room?
           </h2>
-          <p className="contact__lede">
-            Tell me what people should be able to do after the program, and I will tell you
-            whether training is even the right answer.
-          </p>
         </Reveal>
 
         <Reveal>
           <dl className="lookup">
-            {LOOKING_FOR.map(([label, value]) => (
-              <div className="lookup__row" key={label}>
-                <dt className="lookup__label">{label}</dt>
-                <dd className="lookup__value">{value}</dd>
+            {LOOKING_FOR.map((row) => (
+              <div className="lookup__row" key={row.label}>
+                <dt className="lookup__label">{row.label}</dt>
+                <dd className="lookup__value">
+                  {row.value}
+                  {/* Daftar kota disembunyikan di balik satu frasa, TAPI tidak
+                      disembunyikan dari semua orang.
+
+                      Konten yang cuma muncul saat hover tidak pernah sampai ke
+                      pengguna ponsel (tidak ada kursor) maupun pengguna
+                      keyboard (tidak pernah lewat). Karena itu pemicunya
+                      tabbable, kotanya juga muncul saat :focus-visible, dan
+                      teksnya tetap berada di pohon aksesibilitas sepanjang
+                      waktu, jadi screen reader membacakannya berurutan tanpa
+                      perlu berinteraksi sama sekali. Yang disembunyikan hanya
+                      tampilannya, bukan informasinya. */}
+                  {row.reveal ? (
+                    <>
+                      {' · '}
+                      <span className="reveal-term" tabIndex={0}>
+                        {row.reveal.label}
+                        <span className="reveal-term__bubble">
+                          {row.reveal.items.join(' · ')}
+                        </span>
+                      </span>
+                    </>
+                  ) : null}
+                  {row.note ? <span className="lookup__hint">{row.note}</span> : null}
+                </dd>
               </div>
             ))}
           </dl>
@@ -55,75 +94,74 @@ export default function Contact() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <CalendarBlank size={18} weight="bold" />
+              <CalendarBlank size={18} weight="bold" aria-hidden="true" />
               Book 15 min
-              <ArrowRight size={16} weight="bold" />
+              <ArrowRight size={16} weight="bold" aria-hidden="true" />
             </a>
-            {/* Subject dan body sudah terisi: gesekan menulis email pertama
-                turun ke nyaris nol. */}
-            <a className="btn" href={MAILTO}>
-              <EnvelopeSimple size={18} weight="bold" />
+            {/* Subject dan kerangka body sudah terisi: empat baris berlabel,
+                jadi hiring manager tinggal mengetik di belakang titik dua.
+                Setiap gesekan yang dihapus dari sisi mereka menaikkan tingkat
+                balasan lebih dari yang terlihat. */}
+            <a className="btn btn--outline" href={MAILTO}>
+              <EnvelopeSimple size={18} weight="bold" aria-hidden="true" />
               Email me
-            </a>
-            <a className="btn" href={CONTACT.cv} download={CONTACT.cvFilename}>
-              <DownloadSimple size={18} weight="bold" />
-              Download CV
             </a>
           </div>
         </Reveal>
 
         <Reveal>
-          <div className="socials">
+          {/* Yang menahan orang mengirim email dingin bukan ragu soal
+              alamatnya, tapi ragu apakah akan dibalas. Satu baris. */}
+          <p className="contact__reply">{CONTACT.responseTime}</p>
+        </Reveal>
+
+        <Reveal>
+          <p className="contact__minor">
+            <a className="contact__minor-link" href={CONTACT.cv} download={CONTACT.cvFilename}>
+              <DownloadSimple size={15} weight="bold" aria-hidden="true" />
+              Download CV (PDF)
+            </a>
+            <span className="contact__minor-sep" aria-hidden="true" />
             <a
-              className="social"
+              className="contact__minor-link"
               href={CONTACT.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="LinkedIn"
             >
-              <LinkedinLogo size={22} weight="fill" />
+              <LinkedinLogo size={15} weight="bold" aria-hidden="true" />
+              LinkedIn
             </a>
-            <a className="social" href={MAILTO} aria-label="Email">
-              <EnvelopeSimple size={22} weight="fill" />
-            </a>
-            <a
-              className="social"
-              href={CONTACT.cv}
-              download={CONTACT.cvFilename}
-              aria-label="Download CV"
-            >
-              <DownloadSimple size={22} weight="fill" />
-            </a>
-          </div>
+          </p>
         </Reveal>
       </div>
 
-      <footer className="footer" style={{ marginTop: 'var(--s16)' }}>
+      <footer className="footer">
         <div className="shell">
           <nav className="footer__links" aria-label="Footer">
-            <a className="link" href="#about">
-              About
+            <a className="link" href="#work">
+              Work
             </a>
             <a className="link" href="#experience">
               Experience
             </a>
-            <a className="link" href="#work">
-              Work
+            <a className="link" href="#skills">
+              Skills
             </a>
-            <a
-              className="link"
-              href={CONTACT.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              LinkedIn
+            <a className="link" href="#credentials">
+              Credentials
+            </a>
+            <a className="link" href="#references">
+              References
+            </a>
+            <a className="link" href="#about">
+              About
             </a>
           </nav>
           <p className="footer__colophon">
             Nur Fajar · {CONTACT.location}
             <br />
-            Built with Next.js, Framer Motion, and a lot of Claude. Last updated{' '}
-            {LAST_UPDATED}.
+            Built with Next.js, Framer Motion, and heavy AI pairing. Same way I ship everything.
+            Last updated {LAST_UPDATED}.
           </p>
         </div>
       </footer>

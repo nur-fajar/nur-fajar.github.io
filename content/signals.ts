@@ -16,7 +16,7 @@ export const WORK_EXPERIENCE: Signal[] = [
     fill: 5,
     open: true,
     bullets: [
-      'Developed 4 GenAI training modules spanning business, education, and product management tracks — foundational to production-ready level.',
+      'Developed 3 GenAI training modules spanning business, education, and product management tracks — foundational to production-ready level.',
       'Led 5 learning programs end-to-end, reaching 200+ participants across webinars and workshops; upskilled 6 university lecturers via Train the Trainers.',
       'Co-engineered a B2B outreach automation pipeline in Python with LLM APIs, in a 3-person build with the CEO and a software engineer; ran live Jun–Jul 2026 — ~3,000 leads processed, 600 qualified prospects surfaced.',
       'Deployed 9 specialized AI agents across the CRM pipeline with human-in-the-loop approval before sending.',
