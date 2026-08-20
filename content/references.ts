@@ -19,7 +19,7 @@ export const REFERENCES: Reference[] = [
     role: 'Manager · Terra Weather',
   },
   {
-    tag: 'L&D Practitioner',
+    tag: 'Learning & Development Practitioner',
     quote:
       'He led with real skill and deep knowledge, and he never let a mentee’s progress go unnoticed — he made a point of supporting us and recognizing every milestone along the way.',
     initial: 'K',

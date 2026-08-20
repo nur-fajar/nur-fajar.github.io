@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 // konversi biasanya justru "harus nulis apa". Isinya sengaja tetap bahasa
 // kerja biasa: temanya mecha, emailnya sungguhan.
 const MAILTO = `mailto:${SOCIAL.email}?subject=${encodeURIComponent(
-  'Hiring enquiry — L&D',
+  'Hiring enquiry — Learning & Development',
 )}&body=${encodeURIComponent(
   "Hi Fajar,\n\nWe're looking at:\n- The gap:\n- Who it's for:\n- Rough timeline:\n\nThanks,\n",
 )}`;

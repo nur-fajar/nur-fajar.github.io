@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import * as ledger from './ledger';
 import {
+  ADDIE_PHASES,
   BACKGROUND,
   BUILT,
   CONTACT,
@@ -80,8 +81,8 @@ describe('satu angka, satu periode, satu objek', () => {
   it('"5 programs" dan "3 curriculum modules" dikunci ke tahun L&D, bukan ke 3 tahun', () => {
     const programs = PROOF.find((cell) => cell.label.startsWith('programs run'));
     const modules = PROOF.find((cell) => cell.label.startsWith('curriculum modules'));
-    expect(programs?.method).toMatch(/L&D Specialist/);
-    expect(modules?.method).toMatch(/L&D Specialist/);
+    expect(programs?.method).toMatch(/Learning & Development Specialist/);
+    expect(modules?.method).toMatch(/Learning & Development Specialist/);
   });
 
   it('"300+ learners" tetap dilabeli lintas 3 peran, tidak pernah dikunci ke satu tahun', () => {
@@ -181,7 +182,7 @@ describe('framing , situs berbicara satu identitas: L&D / ID / CD', () => {
     // training: itu yang menempatkan proyek ini di luar mandat L&D secara
     // faktual, bukan cuma lewat label kartunya.
     expect(CRM_PROJECT.body).toMatch(/sales/i);
-    expect(CRM_PROJECT.kind).toBe('Outside the L&D mandate');
+    expect(CRM_PROJECT.kind).toBe('Outside the Learning & Development mandate');
   });
 
   it('Terra Weather disebut namanya, dengan hubungannya ke Terra AI', () => {
@@ -189,7 +190,7 @@ describe('framing , situs berbicara satu identitas: L&D / ID / CD', () => {
     // sama dengan pekerjaan L&D-nya, yang bukan gambaran yang akurat.
     const card = `${CRM_PROJECT.title} ${CRM_PROJECT.body}`;
     expect(card).toContain('Terra Weather');
-    expect(card).toContain('L&D Specialist');
+    expect(card).toContain('Learning & Development Specialist');
   });
 
   it('tidak ada kata penghubung sebab-akibat antara L&D dan AI', () => {
@@ -263,7 +264,7 @@ describe('hero , tiga pertanyaan screening dijawab di layar pertama', () => {
 
   it('baris bukti mengundang verifikasi, bukan mengulang klaim', () => {
     expect(HERO.proof).toMatch(/live and public/);
-    expect(HERO.proof).toMatch(/judge the material yourself/);
+    expect(HERO.proof).toMatch(/see what's inside/);
   });
 });
 
@@ -307,7 +308,7 @@ describe('artefak & kontak', () => {
   });
 
   it('nama file CV deskriptif, bukan nf.pdf', () => {
-    expect(CONTACT.cv).toBe('/Nur-Fajar-LnD-Specialist-CV.pdf');
+    expect(CONTACT.cv).toBe('/Nur-Fajar-Resume-Learning-Development-Specialist.pdf');
   });
 
   it('mailto membawa kerangka isian, bukan cuma sapaan', () => {
@@ -360,14 +361,15 @@ describe('referensi , tiga sudut pandang, bukan tiga pujian', () => {
 });
 
 describe('CTA , hierarki, bukan tiga tombol setara', () => {
-  it('daftar jabatan yang dicari dipangkas jadi tiga', () => {
+  it('daftar jabatan yang dicari dipangkas jadi empat', () => {
     // Enam judul jabatan berjajar membaca sebagai kandidat yang belum
     // memilih. Sisanya turun ke satu baris catatan.
     const roles = LOOKING_FOR.find((row) => row.label === 'Roles')?.value ?? '';
-    expect(roles.split('·')).toHaveLength(3);
-    expect(roles).toContain('L&D Specialist');
+    expect(roles.split('·')).toHaveLength(4);
+    expect(roles).toContain('Learning & Development Specialist');
     expect(roles).toContain('Instructional Designer');
     expect(roles).toContain('Learning Program Manager');
+    expect(roles).toContain('Curriculum Developer');
   });
 
   it('peran hybrid disebut sebagai catatan, bukan sebagai jabatan keempat', () => {
@@ -438,6 +440,90 @@ describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
     const ttt = BUILT.find((card) => card.id === 'train-the-trainers');
     expect(ttt?.body).not.toMatch(/now deliver/i);
     expect(ttt?.body).not.toMatch(/without me/i);
+  });
+
+  it('ADDIE berhenti di lima fase, halaman verifikasi sertifikat tidak ikut', () => {
+    // Kotak keenam untuk credentialing pernah dipertimbangkan dan ditolak:
+    // sertifikat itu bukti kelulusan, bukan bukti evaluasi, dan enam kotak
+    // membuat model lima fase terbaca sebagai model enam fase. File gambarnya
+    // sengaja dibiarkan di public/artifacts/, jadi tes ini yang menjaga ia
+    // tidak diam-diam dirujuk lagi.
+    expect(ADDIE_PHASES.map((phase) => phase.letter).join('')).toBe('ADDIE');
+    const sources = ADDIE_PHASES.flatMap((phase) => phase.artifacts.map((a) => a.src));
+    expect(sources.join(' ')).not.toMatch(/cert/i);
+  });
+
+  it('lebar kartu ADDIE menjumlah pas jadi dua baris dua belas kolom', () => {
+    // Kelima kartu harus muat satu layar, dan itu cuma benar selama spannya
+    // mengisi dua baris tepat. Sekali satu kartu diubah lebarnya tanpa
+    // pasangannya ikut menyesuaikan, grid melipat jadi tiga baris dan blok
+    // yang gunanya dilihat sekaligus kembali harus digulir. Kegagalannya
+    // murni visual, jadi tanpa tes ini ia cuma ketahuan kalau ada yang
+    // kebetulan membuka halamannya di lebar yang tepat.
+    const WIDTH: Record<string, number> = { third: 4, major: 7, minor: 5 };
+    const spans = ADDIE_PHASES.map((phase) => WIDTH[phase.span]);
+    expect(spans, 'ada span yang tidak dikenal').not.toContain(undefined);
+
+    let row = 0;
+    for (const span of spans) {
+      row += span;
+      expect(row, 'satu baris melebihi dua belas kolom').toBeLessThanOrEqual(12);
+      if (row === 12) row = 0;
+    }
+    expect(row, 'baris terakhir tidak penuh, akan ada lubang di grid').toBe(0);
+    expect(spans.reduce((a, b) => a + b, 0)).toBe(24);
+  });
+
+  it('setiap fase punya keputusan, termasuk fase yang belum punya artefak', () => {
+    // Fase tanpa gambar adalah satu-satunya tempat di section ini di mana
+    // "kosong" bisa terbaca sebagai "tidak terjadi". Selama daftar
+    // keputusannya terisi, salah baca itu tidak mungkin.
+    for (const phase of ADDIE_PHASES) {
+      expect(phase.decisions.length, `${phase.phase} tanpa keputusan`).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it('Implementation menyebut empat sesi live, bukan delapan', () => {
+    // Draft awal menghitung delapan karena konsultasi ikut dihitung sebagai
+    // sesi. Konsultasi berjalan lentur lewat chat dan Zoom di sela sesi, bukan
+    // sebagai slot terjadwal, jadi menghitungnya menggandakan angka yang
+    // sebenarnya.
+    const implementation = ADDIE_PHASES.find((phase) => phase.id === 'implementation');
+    const text = JSON.stringify(implementation);
+    expect(text).toMatch(/Four (live )?sessions/);
+    expect(text).toMatch(/11 to 20 May 2026/);
+    expect(text).not.toMatch(/eight (live )?sessions/i);
+  });
+
+  it('peserta disebut campuran teknis dan non-teknis, bukan non-teknis saja', () => {
+    // Menyebut enam dosen sebagai "non-technical" membuat programnya terdengar
+    // lebih mudah dari yang sebenarnya, dan itu salah ke arah yang merugikan
+    // orang yang menulisnya.
+    const analysis = ADDIE_PHASES.find((phase) => phase.id === 'analysis');
+    expect(analysis?.summary).toMatch(/Six university lecturers/);
+    expect(analysis?.summary).toMatch(/mixed technical and non-technical/);
+  });
+
+  it('artefak dari kohort lain menyebut asalnya sendiri', () => {
+    // Screenshot kuis itu dari Chatbot for Business. Ia boleh dipajang karena
+    // pola pembukanya sama, tapi caption yang diam soal asalnya mengubah
+    // artefak pinjaman jadi klaim palsu.
+    const quiz = ADDIE_PHASES.flatMap((phase) => phase.artifacts).find(
+      (artifact) => artifact.id === 'warmup-quiz',
+    );
+    expect(quiz?.note).toMatch(/Chatbot for Business/);
+    expect(quiz?.note).toMatch(/not GenAI Product Manager/);
+  });
+
+  it('foto kelas menyatakan sendiri bahwa nametag peserta diburamkan', () => {
+    // Redaksi yang dikerjakan tapi tidak disebut tetap terbaca sebagai
+    // kelalaian oleh siapa pun yang memperhatikan. Menyebutnya mengubahnya
+    // jadi keputusan.
+    const photo = ADDIE_PHASES.flatMap((phase) => phase.artifacts).find(
+      (artifact) => artifact.id === 'live-session',
+    );
+    expect(photo?.note).toMatch(/blurred/);
+    expect(photo?.alt).toMatch(/blurred/);
   });
 
   it('latar belakang dipadatkan jadi tiga kartu, tanpa kehilangan satu lembaga pun', () => {
