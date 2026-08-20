@@ -17,20 +17,46 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Kertas & tinta */
+  /* Kertas & tinta.
+     Ketiga tingkat tinta sudah diukur terhadap --paper, bukan dipilih karena
+     terlihat enak. Teks abu-abu muda di atas kertas nyaris putih adalah
+     tempat paling sering gagal kontras di situs mana pun, dan di situs ini
+     tingkat paling terang justru dipakai untuk hal-hal yang paling penting
+     dibaca dengan benar: baris meta hero, baris method di bawah tiap angka,
+     dan caption kecil.
+
+       --ink        17.6:1   judul, teks tebal
+       --ink-soft    7.3:1   paragraf, chip, ringkasan
+       --ink-faint   4.7:1   label, method line, caption
+
+     Nilai lama (#5b6178 dan #8b90a6) memberi 5.6:1 dan 2.9:1; yang kedua
+     gagal AA telak. Untuk kandidat yang menjual learning experience design,
+     skor aksesibilitas situsnya sendiri adalah portofolio diam-diam. */
   --paper: #f7f8fb;
   --card: #ffffff;
   --ink: #0f1222;
-  --ink-soft: #5b6178;
-  --ink-faint: #8b90a6;
+  --ink-soft: #4a5066;
+  --ink-faint: #686e86;
   --rule: #e6e9f2;
 
   /* Gradient aksen. Tiga stop ini adalah satu-satunya sumber warna "bisa
      diklik" di seluruh situs: tombol primer, separuh headline, tombol panah
-     di kartu karya. */
-  --g1: #3080ff;
+     di kartu karya.
+
+     Stop biru dan magenta diperdalam dari #3080ff dan #f6339a. Alasannya
+     bukan selera: label putih di atas tombol primer diukur 3.71:1 di ujung
+     biru dan 3.58:1 di ujung magenta, sementara teks 15px bold butuh 4.5:1.
+     Tombol paling penting di halaman adalah satu-satunya elemen yang gagal
+     kontras, dan ia gagal justru di kedua ujung yang paling sering dilihat
+     (awal dan akhir sapuan gradient).
+
+     Nilai baru diukur ulang di sepanjang sapuannya, bukan cuma di ketiga
+     stop: luminansi tertinggi di seluruh gradient sekarang 0.174, yang
+     memberi 4.70:1 terhadap putih di titik terburuknya. Ungu di tengah tidak
+     disentuh, jadi identitas warnanya tidak bergeser, cuma jadi lebih pekat. */
+  --g1: #2a6fe6;
   --g2: #9333ea;
-  --g3: #f6339a;
+  --g3: #d81b7c;
   --gradient: linear-gradient(100deg, var(--g1), var(--g2) 55%, var(--g3));
 
   /* Warna aksen tunggal untuk teks kecil & ikon netral */
@@ -154,10 +180,32 @@ ol {
   list-style: none;
 }
 
-:where(a, button, input, textarea, [tabindex]):focus-visible {
+/* Cincin fokus keyboard.
+   Bukan `:where()`, yang spesifisitasnya nol dan karena itu bisa dikalahkan
+   diam-diam oleh aturan komponen mana pun yang kebetulan menyebut warna
+   outline. Cincinnya dua lapis: garis ungu untuk identitas, dan halo putih
+   di luarnya lewat box-shadow supaya ia tetap terlihat ketika elemen yang
+   difokus kebetulan duduk di atas kartu putih atau blob berwarna. Satu
+   warna outline saja akan hilang di salah satu dari keduanya. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
   outline: 2px solid var(--g2);
   outline-offset: 3px;
   border-radius: var(--r-sm);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--g2) 18%, transparent);
+}
+
+/* Target skip link. Ia menerima fokus lewat program, bukan lewat Tab, jadi
+   cincin fokusnya justru mengganggu: pembaca yang baru saja melompat ke sini
+   sudah tahu di mana ia berada. */
+main:focus,
+main:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 ::selection {
@@ -252,6 +300,14 @@ ol {
 .section-title {
   font-size: var(--fs-h2);
   max-width: 20ch;
+}
+
+/* Batas 20ch cocok untuk judul yang isinya satu klaim, dan memaksa judul yang
+   isinya satu DAFTAR pecah di tengah daftarnya. Modifier ini melonggarkannya
+   untuk kasus itu saja; ukuran fontnya tidak berubah, jadi ritme judul antar
+   section tetap sama. */
+.section-title--wide {
+  max-width: 38ch;
 }
 
 .section-lede {
@@ -363,8 +419,30 @@ ol {
   box-shadow: 0 14px 34px -6px color-mix(in srgb, var(--g2) 65%, transparent);
 }
 
+/* Tingkat kedua dalam hierarki tombol. Ia sengaja TIDAK memakai bayangan
+   mengambang seperti .btn biasa: yang membedakannya dari tombol primer adalah
+   bobot, dan bayangan mengembalikan sebagian bobot itu. Garis tepinya cukup
+   gelap untuk lolos 3:1 terhadap kertas, jadi batas tombolnya tetap terlihat
+   oleh pengguna low-vision, bukan cuma tersirat. */
+.btn--outline {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--ink) 22%, transparent);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.btn--outline:hover {
+  background: var(--card);
+  border-color: color-mix(in srgb, var(--ink) 34%, transparent);
+  box-shadow: var(--shadow-float);
+}
+
+/* 44px, bukan 40px. Ukuran ini dipakai persis sekali, oleh tombol Contact di
+   navbar, dan di ponsel tombol itu adalah satu-satunya aksi yang tersisa di
+   navbar setelah ikon LinkedIn disembunyikan. 40px di bawah ambang target
+   sentuh yang nyaman, dan 44px masih duduk lapang di dalam navbar 64px. */
 .btn--sm {
-  min-height: 40px;
+  min-height: 44px;
   padding: var(--s2) var(--s4);
   font-size: 0.8125rem;
 }
@@ -410,6 +488,65 @@ ol {
 
 /* ── Utility ────────────────────────────────────────────────────────────── */
 
+/* Ganti baris yang hanya berlaku di layar sempit.
+   Di desktop `display:none` membuat <br> ini benar-benar tidak ada, jadi
+   judulnya kembali ke pemecahan aslinya; di bawah 560px ia aktif dan
+   memecah kalimat di batas frasa.
+
+   560px bukan angka bulat yang enak dilihat, itu hasil pengukuran: baris
+   terpanjang di hero ("Not just the training day.") lebarnya 487px pada
+   ukuran display 40px, dan shell baru cukup memuatnya ketika viewport
+   mencapai ~545px. Di bawah itu browser memecahnya sendiri di tempat yang
+   salah, yaitu di tengah frasa: "I run the / whole cycle." memotong span
+   gradient jadi dua, dan "Same craft, rising / ownership." memisahkan kata
+   sifat dari kata bendanya.
+
+   Judul yang pecah di tengah frasa memaksa pembaca menyusun ulang
+   kalimatnya sendiri sebelum bisa memahaminya. Di headline, itu ongkos yang
+   dibayar tepat di detik paling menentukan. */
+.br-sm {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .br-sm {
+    display: inline;
+  }
+}
+
+/* Saudara `.br-sm` dengan ambang lebih lebar.
+   Ambangnya berbeda karena kalimatnya berbeda panjang, bukan karena selera:
+   headline hero berhenti butuh bantuan di ~560px, sementara judul References
+   ("From a manager, a mentee, and a peer.") masih menggantung kata sandang
+   sendirian di ujung baris sampai sekitar 900px. Satu ambang untuk keduanya
+   berarti salah satunya pasti salah. */
+.br-md {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .br-md {
+    display: inline;
+  }
+}
+
+/* Di bawah 400px, ukuran display turun dari 2.5rem ke 2.25rem.
+   Bukan karena 40px terlalu besar di sana, tapi karena baris terpanjang
+   headline ("the training day.") lebarnya kira-kira 324px pada 40px,
+   sementara kolom teks di ponsel 360px cuma menyisakan ~320px. Selisih
+   beberapa piksel itu cukup untuk memecahnya jadi "the training / day.",
+   yang justru mengembalikan persis masalah yang `.br-sm` ada untuk
+   memperbaikinya.
+
+   Batasnya 400px, bukan 560px: di ponsel 390px ke atas 40px masih muat, dan
+   mengecilkan headline di sana berarti membayar ongkos untuk masalah yang
+   tidak ada di sana. */
+@media (max-width: 400px) {
+  :root {
+    --fs-display: 2.25rem;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -440,4 +577,98 @@ ol {
 
 .skip-link:focus-visible {
   transform: translateY(0);
+}
+
+/* ── Cetak ──────────────────────────────────────────────────────────────────
+
+   Sebagian recruiter mencetak halaman kandidat, atau menyimpannya sebagai PDF
+   untuk dilampirkan ke catatan internal sebelum panel review. Tanpa aturan di
+   bawah, yang keluar dari printer adalah navbar mengambang yang menutupi
+   headline, tiga blob raksasa yang menghabiskan toner, dan sebagian elemen
+   reveal yang tidak pernah selesai dianimasikan jadi tercetak kosong.
+
+   Yang dilakukan blok ini, urut: buang kromnya, buka semua isi, ratakan
+   permukaan, dan pulihkan URL di balik tiap tautan, karena tautan yang tidak
+   bisa diklik di atas kertas tidak berguna kalau alamatnya ikut hilang. */
+@media print {
+  .aurora,
+  .nav,
+  .skip-link,
+  .midcta,
+  .hero__actions,
+  .contact__actions,
+  .quote__mark,
+  .work__go {
+    display: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+
+  /* Elemen reveal terkirim sebagai opacity:0 dan baru terlihat setelah
+     IntersectionObserver menjalankannya. Preview cetak tidak selalu men-scroll
+     halaman lebih dulu, jadi tanpa aturan ini sebagian halaman keluar kosong. */
+  .motion-safe,
+  [style*='opacity'] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .section,
+  .hero {
+    padding-block: 0.6cm;
+    break-inside: avoid;
+  }
+
+  .card,
+  .org,
+  .quote,
+  .work__card,
+  .bento__card,
+  .cred,
+  .early__card,
+  .lookup__row,
+  .toolkit {
+    background: #fff !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    backdrop-filter: none !important;
+    break-inside: avoid;
+  }
+
+  .org,
+  .work__item,
+  .cases__item,
+  .bento__item {
+    break-inside: avoid;
+  }
+
+  /* Gradient teks tidak punya arti di atas kertas, dan sebagian printer
+     merendernya jadi kotak transparan alias hilang sama sekali. */
+  .grad {
+    background: none;
+    color: #000;
+    -webkit-text-fill-color: #000;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  /* URL dipulihkan hanya untuk tautan yang benar-benar keluar dari situs.
+     Mencetak "(#work)" di belakang tiap tautan internal cuma menambah derau. */
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 9pt;
+    color: #444;
+    word-break: break-all;
+  }
 }

@@ -121,7 +121,7 @@ export const WORK: ShowcaseCard[] = [
   { tag: 'Project', title: '9 AI agents in the CRM', sub: 'Full pipeline, human-in-the-loop before sending' },
   { tag: 'Project', title: 'B2B outreach automation', sub: 'Python + LLM APIs — ~3,000 leads processed' },
   { tag: 'Project', title: 'Learning-progress chatbot', sub: 'Built unprompted for Terra AI students' },
-  { tag: 'Project', title: '4 GenAI training modules', sub: 'Business, education & product tracks' },
+  { tag: 'Project', title: '3 GenAI training modules', sub: 'Business, education & product tracks' },
   { tag: 'Project', title: 'This website', sub: 'Designed & built with AI' },
   { tag: 'Milestone', title: '1,000+ human-hours', sub: 'Manual work the CRM agents absorbed' },
   { tag: 'Milestone', title: '350+ learners trained', sub: 'Startups through multinationals' },

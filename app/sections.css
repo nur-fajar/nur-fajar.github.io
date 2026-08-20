@@ -30,7 +30,14 @@
   padding: 0 var(--s3) 0 var(--s3);
   border-radius: var(--r-pill);
   border: 1px solid color-mix(in srgb, #fff 60%, transparent);
-  background: color-mix(in srgb, var(--card) 55%, transparent);
+  /* Dulu 55%. Blur setebal apa pun tidak menyelamatkan teks navbar ketika
+     yang lewat di belakangnya adalah teks lain dengan ukuran mirip: di
+     tengah halaman, judul kartu dan baris method terbaca menembus navbar dan
+     bertabrakan dengan label "Work / Experience / About" di atasnya. Naik ke
+     82% permukaannya masih jelas kaca (blob aurora tetap terlihat bergerak
+     di baliknya), tapi teks di belakangnya berhenti bersaing dengan teks di
+     depannya. */
+  background: color-mix(in srgb, var(--card) 82%, transparent);
   backdrop-filter: blur(40px) saturate(1.8);
   -webkit-backdrop-filter: blur(40px) saturate(1.8);
   box-shadow: var(--shadow-float);
@@ -81,6 +88,7 @@
 }
 
 .nav__link {
+  position: relative;
   padding: var(--s2) var(--s4);
   border-radius: var(--r-pill);
   font-size: 0.9375rem;
@@ -98,6 +106,39 @@
 .nav__link[aria-current='true'] {
   background: color-mix(in srgb, var(--ink) 8%, transparent);
   color: var(--ink);
+}
+
+/* Indikator posisi.
+   Halaman ini satu scroll panjang tanpa batas halaman, dan tanpa penanda
+   pembaca tidak punya cara tahu seberapa jauh ia sudah berjalan. Warna latar
+   pill saja hampir tidak terlihat di navbar berlatar kaca, jadi section aktif
+   juga mendapat garis gradient tipis yang melebar dari nol.
+
+   Ia melebar, bukan muncul begitu saja: perubahan lebar memberi tahu arah
+   perpindahan, dan itu yang membuatnya terbaca sebagai posisi alih-alih
+   sebagai kedipan. Transisinya width, bukan transform, karena bar setipis
+   ini tidak pernah cukup mahal untuk dipindahkan ke compositor, dan scaleX
+   akan memelarkan sudut membulatnya. */
+.nav__link-mark {
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  width: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--gradient);
+  transform: translateX(-50%);
+  transition: width 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav__link[aria-current='true'] .nav__link-mark {
+  width: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__link-mark {
+    transition: none;
+  }
 }
 
 .nav__spacer {
@@ -188,27 +229,79 @@
 }
 
 /* ═══ HERO ═══════════════════════════════════════════════════════════════════
-   Rata kiri, ruang atas besar. Entrance-nya CSS (lihat .rise), bukan Framer
-   Motion, supaya fold pertama tidak menunggu hydration. */
+   Rata kiri, dua kolom kalau ada foto. Entrance-nya CSS (lihat .rise), bukan
+   Framer Motion, supaya fold pertama tidak menunggu hydration.
+
+   Ruang atasnya sengaja dipangkas dari clamp(s16, 11vw, s24) jadi kira-kira
+   setengahnya. Nilai lama berarti 96px di laptop, dan digabung dengan navbar
+   mengambang di atasnya, headline mendarat jauh di bawah tengah layar,
+   membaca sebagai bug tata letak alih-alih sebagai ruang yang disengaja.
+   Sekarang seluruh tumpukan, dari baris meta sampai baris bukti, muat di satu
+   layar laptop 800px tanpa scroll. */
 
 .hero {
-  padding-top: clamp(var(--s16), 11vw, var(--s24));
-  padding-bottom: clamp(var(--s12), 7vw, var(--s20));
+  padding-top: clamp(var(--s10), 6vw, var(--s16));
+  padding-bottom: clamp(var(--s10), 6vw, var(--s16));
 }
 
-.hero__badge {
+.hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(var(--s8), 5vw, var(--s12));
+  align-items: center;
+}
+
+/* Kolom teks TIDAK 50/50 dengan foto. Headline di ukuran display penuh butuh
+   ruang untuk jatuh dua baris seperti yang ditulis <br/>-nya; foto cuma butuh
+   cukup lebar untuk mengenali orangnya. */
+.hero--split .hero__grid {
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+}
+
+/* ── Baris meta ──────────────────────────────────────────────────────────
+   Tiga keraguan logistik (di mana, kapan bisa mulai, remote atau tidak)
+   dihapus dalam satu baris kecil, sebelum pembaca sempat merumuskannya jadi
+   pertanyaan. Ia kecil dengan sengaja: tugasnya menutup pertanyaan, bukan
+   menarik perhatian.
+
+   Pemisahnya titik tengah yang digambar CSS, bukan diketik di markup, dan itu
+   bukan kerapian belaka: titik yang diketik ikut terbaca screen reader jadi
+   "titik" di tengah setiap frasa, dan ia juga tidak bisa dihilangkan saat
+   baris ini pecah jadi beberapa baris di ponsel. */
+.hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s4);
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+
+.hero__meta-live {
   display: inline-flex;
   align-items: center;
   gap: var(--s2);
-  padding: var(--s2) var(--s4);
-  border-radius: var(--r-pill);
-  border: 1px solid var(--ok-border);
-  background: var(--ok-bg);
   color: var(--ok);
-  font-size: var(--fs-chip);
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+}
+
+.hero__meta-item {
+  position: relative;
+  padding-left: var(--s4);
+}
+
+.hero__meta-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.55;
 }
 
 .hero__dot {
@@ -220,31 +313,114 @@
 }
 
 .hero__title {
-  margin-top: var(--s6);
+  margin-top: var(--s5);
   font-size: var(--fs-display);
   line-height: 1.02;
   /* Baris ditentukan <br/> di markup, bukan oleh lebar kotaknya. */
   max-width: none;
 }
 
-.hero__lede {
-  margin-top: var(--s6);
-  font-size: var(--fs-lede);
-  line-height: 1.6;
-  color: var(--ink-soft);
-  max-width: 46ch;
+/* Sub-headline. Kalimat terkuat situs, dan satu-satunya blok teks di hero
+   yang memakai warna tinta penuh: ia harus terbaca sebelum baris pendukung
+   di bawahnya, bukan sesudahnya. */
+/* Ukurannya sengaja TIDAK sebesar --fs-lede.
+   Kedua kalimat ini adalah pasangan tanya-jawab, dan <br/> di antaranya
+   memisahkan keduanya. Di ukuran lede penuh (24px) masing-masing kalimat
+   sendiri sudah pecah dua baris, jadi yang terlihat pembaca adalah empat
+   baris rata kiri yang batas antar-kalimatnya hilang, persis efek yang
+   <br/> itu ada untuk mencegah. Diturunkan ke ~22px, tiap kalimat muat satu
+   baris di kolom teks desktop, dengan ATAU tanpa foto di sebelahnya. */
+.hero__sub {
+  margin-top: var(--s5);
+  font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--ink);
+  max-width: 62ch;
 }
 
-.hero__lede strong {
-  color: var(--ink);
-  font-weight: 700;
+/* Baris pendukung. Isinya sama dengan lede versi sebelumnya; yang berubah
+   cuma ukuran dan warnanya. Angka tetap ada, prioritas visualnya turun. */
+.hero__support {
+  margin-top: var(--s4);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 52ch;
 }
 
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s3);
-  margin-top: var(--s10);
+  margin-top: var(--s6);
+}
+
+/* Baris bukti. Ini yang mengubah hero dari klaim jadi undangan verifikasi,
+   jadi ia harus terbaca sebagai sesuatu yang bisa ditindaklanjuti, bukan
+   sebagai catatan kaki. Panahnya bergeser saat hover, satu-satunya gerakan
+   di seluruh hero setelah entrance selesai. */
+.hero__proof {
+  margin-top: var(--s5);
+  font-size: var(--fs-sm);
+}
+
+.hero__proof-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 2px;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.hero__proof-link svg {
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero__proof-link:hover {
+  color: var(--g2);
+  border-bottom-color: var(--g2);
+}
+
+.hero__proof-link:hover svg {
+  transform: translateX(3px);
+}
+
+/* ── Foto ────────────────────────────────────────────────────────────────
+   Rasio dikunci di CSS, bukan diturunkan dari file, jadi tidak ada layout
+   shift saat gambarnya selesai diunduh berapa pun dimensi aslinya. Itu juga
+   alasan next/image dipakai dalam mode `fill`: file fotonya bisa diganti
+   kapan saja tanpa menyentuh satu baris kode pun. */
+.hero__figure {
+  position: relative;
+}
+
+.hero__photo {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.hero__img {
+  object-fit: cover;
+}
+
+/* Garis gradient tipis di tepi bawah foto: keluarga warna yang sama dengan
+   tombol primer dan separuh headline, jadi foto terbaca sebagai bagian dari
+   halaman, bukan sebagai gambar yang ditempel di atasnya. */
+.hero__photo::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 4px;
+  background: var(--gradient);
 }
 
 /* Entrance stagger, dijalankan CSS supaya mulai di paint pertama. */
@@ -273,10 +449,20 @@
 
 /* ═══ ABOUT ═════════════════════════════════════════════════════════════════ */
 
-/* Bento riwayat: enam kartu berukuran sama, tiga baris berisi dua.
+/* Bento riwayat: tiga kartu, bukan enam.
+   Kartu pertama (pendidikan dan beasiswa) selebar penuh, dua sisanya berbagi
+   baris di bawahnya. Tiga kartu seukuran berjajar adalah tata letak paling
+   mudah dan paling datar yang bisa dipilih; satu kartu memimpin lalu dua
+   mengikuti memberi bagian ini ritme tanpa menambah satu elemen pun.
+
+   Kartu pertama juga memang yang paling berbobot isinya: ia membawa tiga logo
+   dan satu tautan publikasi, dan dipaksa masuk ke sepertiga lebar ia akan
+   menjadi kartu tertinggi yang meregangkan dua tetangganya jadi setengah
+   kosong. Ruang kosong di bento hampir selalu soal isi yang tidak seimbang,
+   bukan soal ukuran sel.
+
    Padding dan gap sengaja lebih rapat dari kartu lain di situs ini, karena
-   isinya pendek. Kartu longgar dengan tiga baris teks membaca sebagai kartu
-   yang setengah kosong, bukan kartu yang lapang. */
+   isinya pendek. */
 .bento {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -286,6 +472,10 @@
 
 .bento__item {
   display: flex;
+}
+
+.bento__item:first-child {
+  grid-column: span 2;
 }
 
 .bento__card {
@@ -349,6 +539,39 @@
   color: var(--ink-soft);
   font-size: var(--fs-sm);
   line-height: 1.6;
+  max-width: 68ch;
+}
+
+/* Tautan publikasi di kartu pendidikan. Ia duduk di sini, bukan di daftar
+   kredensial profesional: ia hasil riset sarjana, dan berdiri di antara
+   sertifikasi HR ia akan terbaca sebagai jenis bukti yang sama padahal
+   bukan. Rule tipis di atasnya memisahkannya dari body tanpa menambah kotak
+   kedua di dalam kartu. */
+.bento__link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s2);
+  margin-top: var(--s4);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-size: var(--fs-chip);
+  line-height: 1.5;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.bento__link svg {
+  flex-shrink: 0;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bento__link:hover {
+  color: var(--g2);
+}
+
+.bento__link:hover svg {
+  transform: translate(2px, -2px);
 }
 
 .stats {
@@ -419,8 +642,12 @@
   padding: var(--s6) clamp(var(--s6), 3vw, var(--s8));
 }
 
-.toolkit--after-exp {
-  margin-top: var(--s12);
+/* Blok kompetensi sebagai isi section-nya sendiri, bukan lampiran di kaki
+   Experience. Jarak atasnya mengikuti ritme section lain (judul, lede, lalu
+   isi), jadi tidak perlu margin besar yang dulu dipakai untuk memisahkannya
+   dari kartu jabatan di atasnya. */
+.toolkit--section {
+  margin-top: var(--s8);
 }
 
 .toolkit__group + .toolkit__group {
@@ -444,16 +671,115 @@
   gap: var(--s2);
 }
 
-.footnote {
+/* ═══ CREDENTIALS ═══════════════════════════════════════════════════════════
+   Strip horizontal, di antara Experience dan References: bukti pihak ketiga
+   yang bisa diklik, tepat sebelum bukti pihak ketiga yang berbicara.
+
+   Section ini lebih pendek dari section lain (lihat .section--strip), dan itu
+   disengaja: ia jembatan antara dua blok bukti, bukan blok bukti ketiga yang
+   berdiri sendiri. Padding penuh akan membuatnya terbaca sebagai perhentian
+   alih-alih sebagai lintasan. */
+
+.section--strip {
+  padding-block: clamp(var(--s8), 4vw, var(--s12));
+}
+
+.strip__title {
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+  max-width: 24ch;
+}
+
+.creds {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s3);
   margin-top: var(--s6);
-  max-width: 72ch;
+}
+
+.creds__item {
+  display: flex;
+}
+
+/* Seluruh kartu adalah tautannya, bukan cuma kata "Verify" di kakinya.
+   Target klik sebesar kartu jauh lebih mudah dikenai daripada label 40px,
+   terutama dengan jempol, dan tidak ada apa pun lain di dalam kartu ini yang
+   bersaing untuk jadi tujuan kliknya. */
+.cred {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--s5);
+  border-radius: var(--r-md);
+  border: 1px solid var(--rule);
+  background: var(--card);
+  box-shadow: var(--shadow-float);
+  text-decoration: none;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease,
+    border-color 200ms ease;
+}
+
+.cred:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--g2) 35%, var(--rule));
+  box-shadow: 0 14px 36px -14px rgb(15 18 34 / 0.18);
+}
+
+.cred__seal {
+  display: inline-flex;
+  color: var(--g2);
+  margin-bottom: var(--s3);
+}
+
+.cred__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+}
+
+.cred__name {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.cred__issuer {
+  font-size: var(--fs-sm);
+  color: var(--ink-soft);
+}
+
+.cred__go {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  margin-top: auto;
+  padding-top: var(--s5);
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--g2);
+}
+
+.cred__go svg {
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cred:hover .cred__go svg {
+  transform: translate(2px, -2px);
+}
+
+/* Kredensial yang belum punya tautan verifikasi turun ke sini, tanpa
+   afordansi klik. Kredensial tanpa tautan boleh dipajang; ia cuma tidak
+   boleh berpura-pura bisa dibuka. */
+.creds__rest {
+  margin-top: var(--s5);
+  max-width: 78ch;
   color: var(--ink-faint);
   font-size: var(--fs-sm);
   line-height: 1.7;
-}
-
-.footnote + .footnote {
-  margin-top: var(--s3);
 }
 
 /* ═══ EXPERIENCE ════════════════════════════════════════════════════════════ */
@@ -556,15 +882,6 @@
   height: 6px;
   border-radius: 50%;
   background: var(--g1);
-}
-
-.org__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s2);
-  margin-top: var(--s6);
-  padding-top: var(--s6);
-  border-top: 1px solid var(--rule);
 }
 
 /* Blok peran awal, sengaja lebih ringan: ini kredensial kepemimpinan, bukan
@@ -670,6 +987,19 @@
   font-size: 0.9375rem;
 }
 
+/* Hubungan ke Fajar, bukan jabatan orangnya. Ini yang membuat ketiga
+   testimoni terbaca sebagai tiga arah pandang alih-alih tiga pujian: tanpa
+   baris ini pembaca melihat tiga orang memuji dan tidak punya cara tahu dari
+   mana masing-masing melihat. Ia diberi warna aksen supaya terbaca sebelum
+   baris jabatan di bawahnya, yang cuma konteks. */
+.quote__relation {
+  margin-top: 2px;
+  color: var(--accent);
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
 .quote__role {
   color: var(--ink-faint);
   font-size: var(--fs-sm);
@@ -705,6 +1035,19 @@
   grid-column: span 2;
 }
 
+/* Kartu di luar mandat L&D. Selebar penuh, di baris terakhir, dan dengan
+   permukaan yang berbeda dari kartu lain di grid ini.
+
+   Ia dulu dua paragraf disclaimer berturut-turut di kaki Experience. Dua kali
+   menyangkal satu hal yang sama membaca seperti orang yang tahu ia sedang
+   menaruh sesuatu di tempat yang salah. Sekarang label kategorinya yang
+   melakukan pekerjaan pemisahan, dan pemisahan yang dilakukan secara visual
+   justru membuat klaimnya lebih dipercaya, bukan kurang. */
+.work__item--aside {
+  grid-column: span 6;
+  margin-top: var(--s3);
+}
+
 .work__card {
   position: relative;
   display: flex;
@@ -735,6 +1078,17 @@
   box-shadow: 0 16px 40px -12px rgb(15 18 34 / 0.18);
 }
 
+/* Permukaan kartu aside sengaja kertas, bukan putih: di halaman yang seluruh
+   kartunya putih mengambang, satu kartu yang justru menyatu dengan latarnya
+   membaca sebagai catatan pinggir tanpa perlu satu kalimat pun untuk
+   mengatakannya. Ia juga tidak punya garis gradient di tepi atas, tidak
+   punya tombol panah, dan tidak bergerak saat di-hover. */
+.work__card--aside {
+  background: color-mix(in srgb, var(--paper) 82%, var(--card));
+  border-style: dashed;
+  box-shadow: none;
+}
+
 .work__kind {
   align-self: flex-start;
   padding: var(--s1) var(--s3);
@@ -744,6 +1098,13 @@
   font-size: var(--fs-chip);
   font-weight: 700;
   letter-spacing: 0.06em;
+}
+
+/* Label netral, bukan aksen. Warna aksen di seluruh situs ini berarti
+   "bagian dari jalur L&D", dan kartu ini justru yang tidak. */
+.work__kind--aside {
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+  color: var(--ink-soft);
 }
 
 .work__title {
@@ -785,6 +1146,41 @@
   align-self: flex-end;
 }
 
+/* ═══ MID-PAGE CTA ══════════════════════════════════════════════════════════
+   Satu baris tipis tepat setelah Work: titik keyakinan tertinggi di seluruh
+   halaman, karena pembaca baru saja bisa membuka materinya sendiri.
+
+   Satu tombol, bukan tiga. Tiga pilihan di titik ini mengubah keputusan "ya"
+   jadi keputusan "yang mana", dan keputusan kedua itu yang paling sering
+   berakhir tanpa jawaban. */
+.midcta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s4);
+  margin-top: var(--s12);
+  padding: var(--s5) clamp(var(--s5), 3vw, var(--s8));
+  border-radius: var(--r-pill);
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+}
+
+@supports not (backdrop-filter: blur(24px)) {
+  .midcta {
+    background: var(--card);
+  }
+}
+
+.midcta__text {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
 /* ═══ CONTACT ═══════════════════════════════════════════════════════════════ */
 
 .contact {
@@ -792,18 +1188,20 @@
   padding-bottom: var(--s16);
 }
 
+.contact__eyebrow {
+  justify-content: center;
+  width: 100%;
+}
+
 .contact__title {
   font-size: var(--fs-h2);
-  max-width: 22ch;
+  max-width: 26ch;
   margin-inline: auto;
 }
 
-.contact__lede {
-  margin: var(--s5) auto 0;
-  color: var(--ink-soft);
-  font-size: var(--fs-lede);
-  max-width: 52ch;
-}
+/* Tanpa lede di bawah judul. Judul Contact sudah berupa pertanyaan langsung,
+   dan pertanyaan yang disusul kalimat penjelas berhenti terbaca sebagai
+   pertanyaan; jawabannya adalah tabel di bawahnya, bukan paragraf. */
 
 .lookup {
   display: grid;
@@ -839,6 +1237,97 @@
   font-weight: 600;
 }
 
+/* ── Frasa yang menyimpan daftar di baliknya ────────────────────────────
+   Dipakai sekali, oleh "onsite in Indonesia" di baris Setup.
+
+   Garis putus-putus di bawahnya adalah satu-satunya penanda bahwa ada sesuatu
+   di sana. Tanpa itu, informasi yang disembunyikan di balik hover adalah
+   informasi yang tidak akan pernah ditemukan siapa pun.
+
+   Gelembungnya muncul pada :hover DAN :focus-within, jadi ia bisa dicapai
+   lewat keyboard dan lewat tap di ponsel (tap memberi fokus pada elemen
+   ber-tabindex). Ia disembunyikan dengan opacity, BUKAN dengan display:none
+   atau visibility:hidden: keduanya akan mencabutnya dari pohon aksesibilitas,
+   dan lima nama kota itu justru harus tetap terbaca screen reader tanpa perlu
+   berinteraksi sama sekali. */
+/* Gelembungnya ditambatkan ke KOLOM NILAI, bukan ke frasa pemicunya.
+   Versi pertama menambatkannya ke pemicu dan memusatkannya di sana
+   (`left:50%`), dan itu bocor: frasa "onsite in Indonesia" duduk di ujung
+   kanan barisnya, jadi gelembung selebar 300px yang dipusatkan padanya
+   menjulur keluar viewport dan memunculkan scroll horizontal di layar
+   ~430px. Ditambatkan ke kolom dan dibatasi `max-width:100%`, ia tidak
+   pernah bisa lebih lebar dari ruang yang memang tersedia, berapa pun lebar
+   layarnya dan di mana pun pemicunya kebetulan jatuh. */
+.lookup__value {
+  position: relative;
+}
+
+.reveal-term {
+  display: inline-block;
+  border-bottom: 1px dashed var(--ink-faint);
+  cursor: help;
+}
+
+.reveal-term__bubble {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  z-index: 5;
+  width: max-content;
+  /* Cukup untuk kelima kota berdiri sebaris di layar lebar. Di 17rem
+     "Surabaya" jatuh sendirian ke baris kedua, yang membuat daftar lima
+     terbaca seperti daftar empat plus catatan. `100%` di depannya yang
+     menjaga ia tidak pernah melewati kolomnya di layar sempit. */
+  max-width: min(23rem, 100%);
+  padding: var(--s2) var(--s3);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--rule);
+  background: var(--ink);
+  color: #fff;
+  font-size: var(--fs-chip);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-align: left;
+  white-space: normal;
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-term:hover .reveal-term__bubble,
+.reveal-term:focus-within .reveal-term__bubble,
+.reveal-term:focus .reveal-term__bubble {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-term__bubble {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Tiga jabatan lain yang dulu berjajar setara turun ke baris ini. Enam judul
+   jabatan sebaris membaca sebagai kandidat yang belum memilih; satu baris
+   catatan di bawah tiga jabatan menerangkan tanpa mengencerkan. */
+.lookup__hint {
+  display: block;
+  margin-top: var(--s2);
+  color: var(--ink-faint);
+  font-size: var(--fs-chip);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Dua tombol, bukan tiga, dan keduanya tidak setara.
+   Tiga tombol seukuran menghasilkan lebih sedikit aksi daripada satu, dan
+   yang paling mungkin diambil adalah yang komitmennya paling rendah, yaitu
+   Download CV. Itu justru yang paling tidak diinginkan: CV yang diunduh
+   berakhir di folder Downloads, panggilan 15 menit berakhir di kalender. */
 .contact__actions {
   display: flex;
   flex-wrap: wrap;
@@ -847,36 +1336,55 @@
   margin-top: var(--s10);
 }
 
-.socials {
-  display: flex;
-  justify-content: center;
-  gap: var(--s3);
-  margin-top: var(--s12);
+.contact__reply {
+  margin-top: var(--s4);
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
 }
 
-.social {
-  display: inline-flex;
+/* Tingkat ketiga: tautan teks, bukan tombol. Keduanya tetap ada dan tetap
+   mudah ditemukan; yang berubah cuma berapa besar suaranya. */
+.contact__minor {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 1px solid var(--rule);
-  background: var(--card);
-  color: var(--ink-soft);
-  box-shadow: var(--shadow-float);
-  text-decoration: none;
-  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), color 160ms ease;
+  gap: var(--s4);
+  margin-top: var(--s8);
+  font-size: var(--fs-sm);
 }
 
-.social:hover {
-  transform: translateY(-3px);
+.contact__minor-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  /* 44px tinggi minimum, sama dengan tombol: tautan teks tetap harus bisa
+     dikenai jempol, dan baris teks 21px bukan target sentuh. */
+  min-height: 44px;
+  padding-inline: var(--s2);
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.contact__minor-link:hover {
   color: var(--g2);
+  border-bottom-color: var(--g2);
+}
+
+.contact__minor-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+  opacity: 0.55;
 }
 
 /* ═══ FOOTER ════════════════════════════════════════════════════════════════ */
 
 .footer {
+  margin-top: var(--s16);
   padding-block: var(--s10);
   border-top: 1px solid var(--rule);
   text-align: center;
@@ -901,6 +1409,22 @@
    Setiap grid multi-kolom runtuh eksplisit di sini, tidak ada yang
    diserahkan ke kebetulan. */
 
+@media (max-width: 1020px) {
+  /* Hero kembali satu kolom sebelum kolom teksnya menyempit sampai headline
+     pecah tiga baris. Foto pindah ke BAWAH tombol, bukan ke atas headline:
+     yang dicari pembaca di layar sempit adalah klaim dan tombolnya, dan foto
+     setinggi 4:5 di atas keduanya mendorong keduanya keluar dari fold. */
+  .hero--split .hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s8);
+  }
+
+  .hero__photo {
+    aspect-ratio: 16 / 10;
+    max-width: 520px;
+  }
+}
+
 @media (max-width: 980px) {
   /* Course turun dari tiga sebaris jadi dua, jadi baris kedua berisi 2 dan
      baris ketiga 1. Memaksakan tiga sebaris di lebar ini membuat kartunya
@@ -920,6 +1444,10 @@
   .stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .creds {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 760px) {
@@ -928,9 +1456,14 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* Bento runtuh jadi satu kolom. */
+  /* Bento runtuh jadi satu kolom, termasuk kartu pertama yang di desktop
+     selebar dua. */
   .bento {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bento__item:first-child {
+    grid-column: span 1;
   }
 
   /* Semua kartu karya jadi selebar penuh. Span disetel ke lebar grid, bukan
@@ -954,8 +1487,25 @@
   .contact__actions .btn {
     flex: 1 1 100%;
   }
+
+  /* Pill horizontal jadi blok bertumpuk: tombol selebar penuh lebih mudah
+     dikenai jempol daripada tombol yang menyusut mengikuti sisa ruang. */
+  .midcta {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    border-radius: var(--r-lg);
+  }
+
+  .midcta .btn {
+    width: 100%;
+  }
 }
 
+/* Diuji di 360px, bukan 390px. Ponsel Android kelas menengah yang banyak
+   dipakai di Indonesia berhenti di 360px, dan selisih 30px itu persis lebar
+   yang membuat chip skill berdempet dan angka besar mulai memotong baris
+   method-nya. */
 @media (max-width: 420px) {
   /* Di layar tersempit stat tile turun jadi satu kolom: dua kolom memaksa
      baris metode pecah jadi lima baris pendek yang lebih sulit dibaca
@@ -977,5 +1527,34 @@
 
   .stat__value {
     min-width: 4.5rem;
+  }
+
+  /* Chip yang berdempet terbaca sebagai satu blok abu-abu panjang alih-alih
+     sebagai daftar. Jarak vertikalnya dinaikkan lebih banyak daripada
+     horizontalnya, karena di lebar ini hampir setiap chip pindah baris. */
+  .toolkit__chips,
+  .work__chips {
+    gap: var(--s3) var(--s2);
+  }
+
+  .hero__meta {
+    gap: var(--s1) var(--s3);
+  }
+
+  /* Baris meta pecah jadi beberapa baris di sini, dan titik pemisah di awal
+     baris baru menggantung tanpa apa pun di kirinya. */
+  .hero__meta-item {
+    padding-left: var(--s3);
+  }
+
+  .contact__minor {
+    gap: var(--s2);
+  }
+
+  /* Judul kartu kredensial paling panjang ("Generative AI for Learning and
+     Development") butuh ruang lebih di lebar ini daripada yang disisakan
+     padding kartu default. */
+  .cred {
+    padding: var(--s4);
   }
 }
