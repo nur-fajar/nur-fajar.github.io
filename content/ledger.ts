@@ -488,7 +488,10 @@ export const BACKGROUND: BackgroundCard[] = [
       { src: "/logos/bri.png", alt: "Bank BRI" },
       { src: "/logos/bank-indonesia.png", alt: "Bank Indonesia" },
     ],
-    body: "One semester on the BRI scholarship, then a full year on the Bank Indonesia one.",
+    // Tahunnya konsisten dengan sisa timeline: kuliah 2018-2022, dan GenBI
+    // (organisasi penerima beasiswa Bank Indonesia) mulai Mei 2021, sebulan
+    // setelah beasiswa BI-nya turun.
+    body: "BRI for one semester in 2020, then Bank Indonesia for a full year in 2021.",
   },
   {
     id: "bangkit",
