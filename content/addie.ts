@@ -23,11 +23,22 @@
  *   - Link chatbot individual dihapus. URL-nya memuat username asli peserta.
  *   - Nama institusi peserta dan nama pimpinan program tidak ditampilkan.
  *
- * ANGKA DAN DENOMINATORNYA. Prinsip P2 situs berlaku penuh di sini: rating
- * 4.5/5 dan confidence 4.0/5 datang dari empat form evaluasi yang kembali dari
- * enam peserta, dan pecahan itu ditulis di sebelah angkanya, bukan di catatan
- * kaki. Menulis "seluruh peserta" untuk data yang cuma mencakup empat dari
- * enam adalah persis jenis klaim yang membuat sisa halaman ikut diragukan.
+ * JUMLAH PESERTA TIDAK DISEBUT DI MANA PUN, dan itu berlaku ke seluruh situs,
+ * bukan cuma ke file ini: berapa dosen yang ikut, berapa yang mengembalikan
+ * form evaluasi, dan berapa chatbot yang terbit semuanya dihapus. Rating
+ * kualitatif tetap ada, jumlah kepala tidak.
+ *
+ * BATAS DATA TIDAK LAGI DITULIS, dan itu keputusan Fajar yang perlu dicatat
+ * di sini karena ia berlawanan dengan prinsip P2 situs. Rating 4.5/5 dan 4.0/5
+ * sekarang berdiri tanpa baris metode: kalimat "from the participants who
+ * returned the evaluation form" dihapus, begitu juga catatan penutup yang
+ * menyatakan tidak semua peserta mengembalikan form.
+ *
+ * Yang masih menanggung sebagian tugas itu cuma badge "Retrospective
+ * documentation" di kepala tiap tab, dan ia menerangkan sifat dokumennya,
+ * bukan cakupan angkanya. Larangan menulis "seluruh peserta" atas data
+ * parsial tetap berlaku dan tetap dijaga tes, jadi angkanya tidak boleh
+ * MENGKLAIM cakupan penuh; ia hanya tidak lagi menyangkalnya.
  */
 
 /** Warna tag aktivitas di storyboard, dipetakan ke sapuan gradient situs. */
@@ -64,8 +75,11 @@ export type AddieBlock =
   | { kind: 'checklist'; title: string; items: string[] }
   /** Rubrik mini: kriteria kali nama level, tanpa deskripsi tiap sel. */
   | { kind: 'rubric'; criteria: string[]; levels: string[]; footnote: string }
-  /** Bar skor kepuasan. `of` selalu ditulis, tidak pernah tersirat. */
-  | { kind: 'scores'; items: { label: string; value: number }[]; of: number; method: string }
+  /** Bar skor kepuasan. `of` selalu ditulis, tidak pernah tersirat.
+   *  `method` opsional: baris keterangan di bawah bar dihapus atas permintaan
+   *  Fajar, dan bidangnya dibiarkan ada supaya ia bisa dipasang kembali tanpa
+   *  mengubah bentuk data. */
+  | { kind: 'scores'; items: { label: string; value: number }[]; of: number; method?: string }
   /** Kutipan peserta, sudah dianonimkan di sumbernya. */
   | { kind: 'quotes'; items: { text: string; by: string }[] }
   /** Pemisah tipis berlabel di dalam satu tab, bukan tab terpisah. */
@@ -94,20 +108,20 @@ export interface AddiePhase {
   blocks: AddieBlock[];
 }
 
-/** Judul, dua paragraf pembuka kolom kiri, dan badge di kepala panel kanan.
- *  Body copy-nya dikunci oleh spec kata per kata, dan dijaga oleh tes. */
+/** Judul, kalimat pembukanya, dan badge di kepala panel.
+ *
+ *  Body copy-nya dikunci kata per kata oleh tes, jadi ia tidak bisa bergeser
+ *  diam-diam lewat satu edit yang niatnya cuma merapikan. Bunyinya berasal
+ *  dari spec, dengan satu perubahan yang datang belakangan: jumlah dosen
+ *  dihapus dari kalimat pembuka. */
 export const ADDIE_SECTION = {
-  eyebrow: 'Inside one program',
-  title: 'One program, opened up phase by phase.',
+  eyebrow: 'Behind the work',
+  title: 'How one program actually got made.',
   lede:
-    'Train the Trainers: GenAI Product Manager. Six university lecturers, four live sessions, ' +
+    'Train the Trainers: GenAI Product Manager. University lecturers, four live sessions, ' +
     'and a five week independent build. Below is the working method behind it, from the needs ' +
     'assessment that started it to the evaluation data that closed it.',
   badge: 'Retrospective documentation',
-  /** Ditulis sekali, di bawah lede, bukan diulang di tiap item. */
-  disclosure:
-    'These documents were written after the program ran, to record the reasoning behind decisions ' +
-    'made at the time. Participant names, institutions and chatbot links are removed throughout.',
   /** Nama tablist untuk pembaca layar. Tanpa ini, screen reader mengumumkan
    *  lima tab tanpa mengatakan lima tab dari apa. */
   tablistLabel: 'The five ADDIE phases of this program',
@@ -121,7 +135,7 @@ export const ADDIE_PHASES: AddiePhase[] = [
     letter: 'A',
     phase: 'Analysis',
     headline:
-      'Six university lecturers, mixed technical and non-technical, and one gap worth closing.',
+      'University lecturers, mixed technical and non-technical, and one gap worth closing.',
     question: 'Can this person diagnose a need before designing a solution?',
     sources: ['Learning Needs Assessment'],
     blocks: [
@@ -475,15 +489,14 @@ export const ADDIE_PHASES: AddiePhase[] = [
           { label: 'Overall', value: 4.5 },
         ],
         of: 5,
-        method: 'From 4 of 6 participants who returned the evaluation form.',
       },
       {
         kind: 'prose',
         body:
-          'Four chatbots were published and publicly reachable, covering course material ' +
-          'consultation, campus information for prospective students, and institutional advisory ' +
-          'services. All four were tested with no critical errors and connected to GPT; three of the ' +
-          'four also read from a live spreadsheet as their knowledge base.',
+          'The chatbots that came back were published and publicly reachable, covering course ' +
+          'material consultation, campus information for prospective students, and institutional ' +
+          'advisory services. Every one of them was tested with no critical errors and connected to ' +
+          'GPT, and most also read from a live spreadsheet as their knowledge base.',
       },
       {
         kind: 'quotes',
@@ -503,8 +516,8 @@ export const ADDIE_PHASES: AddiePhase[] = [
       {
         kind: 'prose',
         body:
-          'Confidence to teach the material forward averaged 4.0 out of 5 across those same four ' +
-          'responses. Every one of them planned to keep using the chatbot they built, and two said ' +
+          'Confidence to teach the material forward averaged 4.0 out of 5. Every one of those ' +
+          'who responded planned to keep using the chatbot they built, and some said ' +
           'explicitly that they planned to teach the material to colleagues, which is the outcome a ' +
           'train the trainers program exists for.',
       },
@@ -512,17 +525,10 @@ export const ADDIE_PHASES: AddiePhase[] = [
         kind: 'note',
         title: 'What still needs fixing',
         body:
-          'Two participants asked for more hands-on practice time, and one asked for more complete ' +
-          'written technical guides after falling behind the live instructions. One reported a ' +
+          'Participants asked for more hands-on practice time, and for more complete written ' +
+          'technical guides after falling behind the live instructions. Someone reported a ' +
           'publishing error on the platform and wanted a direct channel to ask about it. A ' +
           'post-program consultation channel is the gap that shows up most clearly in the responses.',
-      },
-      {
-        kind: 'note',
-        title: 'The limit of this data',
-        body:
-          'Four of six participants returned the evaluation form. Every number in this phase comes ' +
-          'from those four, and none of them should be read as the whole cohort.',
       },
     ],
   },

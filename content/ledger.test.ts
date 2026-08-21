@@ -481,22 +481,28 @@ describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
     }
   });
 
-  it('body copy kolom kiri sama persis dengan yang dikunci spec', () => {
-    // Spec menuliskan dua paragraf ini kata per kata dengan instruksi "pakai
-    // persis ini". Kalimat yang dikunci di luar kode adalah kalimat yang paling
-    // gampang bergeser diam-diam lewat satu edit yang niatnya cuma merapikan.
-    expect(ADDIE_SECTION.eyebrow).toBe('Inside one program');
-    expect(ADDIE_SECTION.title).toBe('One program, opened up phase by phase.');
+  it('kepala section dikunci kata per kata', () => {
+    // Kalimat yang dikunci di sini adalah kalimat yang paling gampang bergeser
+    // diam-diam lewat satu edit yang niatnya cuma merapikan.
+    //
+    // Judul dan eyebrow tidak boleh memakai kata yang sama: versi sebelumnya
+    // beryebrow "Inside one program" di atas judul "One program, opened up
+    // phase by phase", jadi tiga kata yang sama dicetak dua kali berjarak
+    // delapan piksel. Judul lama juga menjelaskan ANTARMUKA-nya, bukan isinya,
+    // dan tidak ada judul lain di situs ini yang melakukan itu.
+    expect(ADDIE_SECTION.eyebrow).toBe('Behind the work');
+    expect(ADDIE_SECTION.title).toBe('How one program actually got made.');
     expect(ADDIE_SECTION.lede).toBe(
-      'Train the Trainers: GenAI Product Manager. Six university lecturers, four live sessions, ' +
+      'Train the Trainers: GenAI Product Manager. University lecturers, four live sessions, ' +
         'and a five week independent build. Below is the working method behind it, from the needs ' +
         'assessment that started it to the evaluation data that closed it.',
     );
-    expect(ADDIE_SECTION.disclosure).toBe(
-      'These documents were written after the program ran, to record the reasoning behind ' +
-        'decisions made at the time. Participant names, institutions and chatbot links are ' +
-        'removed throughout.',
-    );
+
+    const shared = ADDIE_SECTION.eyebrow
+      .toLowerCase()
+      .split(' ')
+      .filter((word) => ADDIE_SECTION.title.toLowerCase().includes(word) && word.length > 3);
+    expect(shared, 'eyebrow dan judul memakai kata yang sama').toEqual([]);
   });
 
   it('setiap fase menyebut dokumen sumbernya sendiri', () => {
@@ -544,12 +550,40 @@ describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
   });
 
   it('peserta disebut campuran teknis dan non-teknis, bukan non-teknis saja', () => {
-    // Menyebut enam dosen sebagai "non-technical" membuat programnya terdengar
+    // Menyebut dosen-dosen itu "non-technical" saja membuat programnya terdengar
     // lebih mudah dari yang sebenarnya, dan itu salah ke arah yang merugikan
     // orang yang menulisnya.
     const analysis = ADDIE_PHASES.find((phase) => phase.id === 'analysis');
-    expect(analysis?.headline).toMatch(/Six university lecturers/);
+    expect(analysis?.headline).toMatch(/University lecturers/);
     expect(analysis?.headline).toMatch(/mixed technical and non-technical/);
+  });
+
+  it('jumlah peserta tidak disebut di mana pun, di seluruh situs', () => {
+    // Keputusan Fajar, dan ia berlaku ke SELURUH ledger, bukan cuma ke section
+    // ADDIE: berapa dosen yang ikut, berapa yang mengembalikan form, dan
+    // berapa chatbot yang terbit tidak ditulis di mana pun. Angka kecil
+    // membuat program terbaca kecil, dan yang dinilai di sini metodenya, bukan
+    // ukuran kohortnya.
+    //
+    // Scan-nya jalan di atas seluruh ledger karena angka ini dulu tersebar di
+    // lima tempat sekaligus: kartu What I built, kartu Selected Work, bullet
+    // riwayat kerja, satu sel PROOF, dan enam kalimat di fase Evaluation.
+    // Aturan yang tempat bocornya sebanyak itu tidak bisa dijaga dengan
+    // ingatan.
+    const counts: [RegExp, string][] = [
+      [/\b(six|6)\s+(university\s+)?lecturers?\b/i, 'jumlah dosen'],
+      [/\b(four|4)\s+of\s+(six|6)\b/i, 'pecahan responden'],
+      [/\b(four|4)\s+chatbots?\b/i, 'jumlah chatbot terbit'],
+      [/\b(two|2)\s+participants?\s+(asked|said)\b/i, 'jumlah peserta yang berkomentar'],
+      [/\b(three|3)\s+of\s+the\s+(four|4)\b/i, 'pecahan chatbot'],
+    ];
+
+    for (const [key, value] of Object.entries(ledger)) {
+      const text = JSON.stringify(value);
+      for (const [pattern, what] of counts) {
+        expect(text, `${key} menyebut ${what}`).not.toMatch(pattern);
+      }
+    }
   });
 
   it('tanggal di stepper Design sama persis dengan Training Calendar', () => {
@@ -583,29 +617,36 @@ describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
     ]);
   });
 
-  it('setiap angka di fase Evaluation membawa penyebutnya', () => {
-    // Prinsip P2 berlaku penuh di sini. Rating 4.5 datang dari empat form yang
-    // kembali dari enam peserta, dan pecahan itu wajib duduk di sebelah
-    // angkanya. Bar skor tanpa baris method adalah bar yang mengaku mewakili
-    // seluruh kohort.
+  it('bar skor menulis skalanya, dan tidak mengklaim cakupan yang tidak dimilikinya', () => {
+    // Baris metode di bawah bar sudah dihapus atas permintaan Fajar, jadi
+    // prinsip P2 tidak lagi bisa dijaga di sini dalam bentuk aslinya. Yang
+    // masih bisa dijaga, dan tetap dijaga, ada dua.
+    //
+    // Pertama, skalanya ditulis. "4.5" sendirian bisa berarti dari 5 atau dari
+    // 10, dan pembaca yang harus menebak skalanya akan menebak yang paling
+    // murah bagi penulisnya.
+    //
+    // Kedua, dan ini yang menggantikan denominator: angkanya boleh berhenti
+    // MENYANGKAL cakupan penuh, tapi tidak boleh MENGKLAIM-nya. Selama tidak
+    // ada kalimat "seluruh peserta" di sekitar bar, angka parsial yang berdiri
+    // tanpa keterangan tetap cuma kurang tepat; begitu klaim itu masuk, ia
+    // berubah jadi salah.
     const evaluation = ADDIE_PHASES.find((phase) => phase.id === 'evaluation');
     const scores = evaluation?.blocks.find((block) => block.kind === 'scores');
     if (scores?.kind !== 'scores') throw new Error('blok scores hilang');
     expect(scores.of).toBe(5);
-    expect(scores.method).toMatch(/4 of 6/);
     for (const item of scores.items) {
       expect(item.value, `${item.label} di luar skala`).toBeLessThanOrEqual(scores.of);
     }
-  });
 
-  it('fase Evaluation menyatakan sendiri batas datanya', () => {
-    // Empat dari enam peserta yang mengembalikan form. Selama pecahan itu
-    // ditulis, tidak ada pembaca yang bisa salah membaca 4.5/5 sebagai suara
-    // seluruh kohort; tanpa itu, setiap angka lain di halaman ikut dicurigai.
-    const evaluation = ADDIE_PHASES.find((phase) => phase.id === 'evaluation');
     const text = JSON.stringify(evaluation);
-    expect(text).toMatch(/Four of six participants returned the evaluation form/);
-    expect(text).not.toMatch(/all six participants/i);
+    for (const overclaim of [
+      /\ball participants\b/i,
+      /\bevery participant\b/i,
+      /\bthe whole cohort (rated|scored|said)\b/i,
+    ]) {
+      expect(text, `fase Evaluation mengklaim cakupan penuh: ${overclaim}`).not.toMatch(overclaim);
+    }
   });
 
   it('fase Evaluation menyebut apa yang masih perlu diperbaiki', () => {
@@ -666,7 +707,6 @@ describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
     // Ia adalah batas klaim, bukan dekorasi. Batas klaim yang diketik langsung
     // ke komponen tidak pernah ikut discan aturan copy mana pun.
     expect(ADDIE_SECTION.badge).toBe('Retrospective documentation');
-    expect(ADDIE_SECTION.disclosure).toMatch(/written after the program ran/);
   });
 
   it('latar belakang dipadatkan jadi tiga kartu, tanpa kehilangan satu lembaga pun', () => {

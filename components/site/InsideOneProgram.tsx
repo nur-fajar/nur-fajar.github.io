@@ -9,8 +9,9 @@ import Reveal from './Reveal';
 /**
  * Satu program, dibaca lewat lima fase ADDIE.
  *
- * BENTUKNYA split kiri-kanan: lima tab di kolom kiri, satu panel bertinggi
- * tetap di kolom kanan yang isinya berganti mengikuti tab yang dipilih.
+ * BENTUKNYA satu kolom yang ditumpuk: kepala section rata kiri, lalu satu
+ * panel selebar penuh dengan lima tab bergaya browser di kepalanya sendiri.
+ * Panelnya bertinggi tetap, dan isinya yang berganti mengikuti tab.
  *
  * Dua bentuk sebelumnya sudah dicoba dan dibuang, dan keduanya jatuh di
  * tempat yang sama, yaitu tinggi. Grid bento lima kartu menaruh isi fase di
@@ -306,7 +307,11 @@ function Block({ block }: { block: AddieBlock }) {
               </li>
             ))}
           </ul>
-          <p className="phase__footnote">{block.method}</p>
+          {/* Baris metode dirender kondisional. Bidangnya dibiarkan ada di tipe
+              supaya keterangan cakupan bisa dipasang kembali tanpa mengubah
+              bentuk data, tapi selama ia kosong, tidak ada paragraf kosong
+              yang ikut menyisakan jarak di bawah bar. */}
+          {block.method ? <p className="phase__footnote">{block.method}</p> : null}
         </div>
       );
 
@@ -395,134 +400,138 @@ export default function InsideOneProgram() {
 
   return (
     <div className="program">
-      {/* Judul berdiri selebar penuh DI ATAS grid, bukan di dalam kolom kiri.
+      {/* Kepala section ditumpuk di atas panel selebar penuh.
 
-          Itu yang mengunci syaratnya: selama judul jadi baris sendiri, tepi
-          atas panel kanan tidak punya cara untuk naik melewatinya. Ditaruh di
-          dalam kolom kiri, keduanya jadi dua item grid yang sama-sama mulai di
-          garis atas yang sama, dan panel setinggi 720px selalu berangkat dari
-          sisi judul, bukan dari bawahnya. */}
+          Versi sebelumnya menaruh judul dan dua paragraf ini di kolom kiri, di
+          samping panel. Masalahnya bukan selera: kolom kiri habis di sekitar
+          390px sementara panel jatuh ke 740px, jadi sepertiga bawah kolom itu
+          selalu kosong, dan lubang sebesar itu di sebelah kotak yang penuh
+          terbaca sebagai tata letak yang belum selesai, bukan sebagai ruang
+          napas.
+
+          Ditumpuk, tidak ada lagi dua kolom yang harus sama tinggi, dan panel
+          mendapat seluruh lebar shell, yang justru dibutuhkan isinya: tabel
+          empat kolom dan stepper lima langkah sebelumnya harus muat di sekitar
+          530px.
+
+          Syarat lama tetap dipegang dengan sendirinya di sini, yaitu panel
+          tidak pernah naik melewati judul. Ditumpuk, itu bukan lagi aturan
+          yang harus dijaga, itu urutan DOM. */}
       <Reveal className="program__head">
         <p className="eyebrow">{ADDIE_SECTION.eyebrow}</p>
         <h3 className="program__title">{ADDIE_SECTION.title}</h3>
+        <p className="program__lede">{ADDIE_SECTION.lede}</p>
       </Reveal>
 
-      <div className="program__grid">
-        <Reveal className="program__side">
-          <p className="program__lede">{ADDIE_SECTION.lede}</p>
-          <p className="program__disclosure">{ADDIE_SECTION.disclosure}</p>
-        </Reveal>
+      <Reveal delay={0.08}>
+        {/* Tab pindah ke kepala panel dan mengambil bentuk tab browser.
 
-        <Reveal delay={0.08}>
-          {/* Tab pindah ke kepala panel dan mengambil bentuk tab browser.
-
-              Bukan cuma pindah tempat: tab yang duduk di atas isinya sendiri
-              mengatakan sesuatu yang tab di kolom terpisah tidak bisa katakan,
-              yaitu bahwa kelima fase itu lima isi dari SATU wadah yang sama.
-              Yang aktif berbagi warna dengan panel di bawahnya dan kehilangan
-              garis bawahnya, jadi keduanya terbaca menyambung; yang lain duduk
-              di bilah yang lebih gelap, di belakang. */}
-          <div className="panel">
-            <div className="panel__bar" role="tablist" aria-label={ADDIE_SECTION.tablistLabel}>
-              {ADDIE_PHASES.map((phase, index) => {
-                const on = phase.id === activeId;
-                return (
-                  <button
-                    type="button"
-                    key={phase.id}
-                    id={tabIdFor(phase.id)}
-                    ref={(node) => {
-                      tabRefs.current[index] = node;
-                    }}
-                    className={on ? 'phasetab phasetab--on' : 'phasetab'}
-                    role="tab"
-                    aria-selected={on}
-                    aria-controls={panelIdFor(phase.id)}
-                    tabIndex={on ? 0 : -1}
-                    onClick={() => setActiveId(phase.id)}
-                    onKeyDown={(event) => onTabKeyDown(event, index)}
-                  >
-                    <span className="phasetab__index" aria-hidden="true">
-                      {phase.index}
-                    </span>
-                    <span className="phasetab__name">{phase.phase}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Bilah asal-usul, dan ia diam saat isinya digulir.
-
-                Nama fase sengaja TIDAK diulang di sini. Tab yang aktif sudah
-                membawanya, dan judul yang sama dicetak dua kali dengan jarak
-                40px membuat yang kedua terbaca sebagai judul untuk sesuatu
-                yang lain.
-
-                Yang ada di sini adalah dua hal yang tidak dibawa tab: sifat
-                dokumennya, dan dokumen mana. Keduanya perlu ikut tergulir
-                bersama mata pembaca, karena pertanyaan "ini dari mana?" paling
-                sering muncul justru di tengah tabel, bukan di baris pertama. */}
-            <div className="panel__head">
-              <span className="panel__badge">{ADDIE_SECTION.badge}</span>
-              {/* Tanpa label "Source" di depannya. Chip-nya sudah menyebut
-                  nama dokumennya sendiri, dan berdiri tepat di bawah badge
-                  "Retrospective documentation" ia sudah terbaca sebagai
-                  dokumen yang mana. Label yang cuma mengulang apa yang sudah
-                  jelas dari posisinya adalah satu kata yang harus dibaca
-                  lima kali, sekali per tab. */}
-              <span className="panel__sources">
-                {active.sources.map((source) => (
-                  <span className="panel__source" key={source}>
-                    {source}
+            Bukan cuma pindah tempat: tab yang duduk di atas isinya sendiri
+            mengatakan sesuatu yang tab di kolom terpisah tidak bisa katakan,
+            yaitu bahwa kelima fase itu lima isi dari SATU wadah yang sama.
+            Yang aktif berbagi warna dengan panel di bawahnya dan kehilangan
+            garis bawahnya, jadi keduanya terbaca menyambung; yang lain duduk
+            di bilah yang lebih gelap, di belakang. */}
+        <div className="panel">
+          <div className="panel__bar" role="tablist" aria-label={ADDIE_SECTION.tablistLabel}>
+            {ADDIE_PHASES.map((phase, index) => {
+              const on = phase.id === activeId;
+              return (
+                <button
+                  type="button"
+                  key={phase.id}
+                  id={tabIdFor(phase.id)}
+                  ref={(node) => {
+                    tabRefs.current[index] = node;
+                  }}
+                  className={on ? 'phasetab phasetab--on' : 'phasetab'}
+                  role="tab"
+                  aria-selected={on}
+                  aria-controls={panelIdFor(phase.id)}
+                  tabIndex={on ? 0 : -1}
+                  onClick={() => setActiveId(phase.id)}
+                  onKeyDown={(event) => onTabKeyDown(event, index)}
+                >
+                  <span className="phasetab__index" aria-hidden="true">
+                    {phase.index}
                   </span>
-                ))}
-              </span>
-            </div>
-
-            {/* tabIndex 0 di wadah yang menggulir.
-                Tanpa itu, isi panel bisa digulir mouse tapi tidak bisa
-                digulir panah keyboard, jadi seluruh fase Evaluation di bawah
-                lipatan panel jadi isi yang tidak punya cara dijangkau tanpa
-                mouse. Chrome menambahkannya sendiri untuk sebagian kasus,
-                Safari tidak, dan menebak-nebak dukungan browser untuk hal
-                yang biayanya satu atribut adalah tebakan yang tidak perlu. */}
-            <div className="panel__scroll" ref={scrollRef} tabIndex={0}>
-              {/* Tanpa AnimatePresence, dan itu koreksi dari versi pertama.
-
-                  Dengan `mode="wait"`, animasi keluar fase lama harus selesai
-                  sebelum yang masuk mulai. Di kartu kecil jeda itu tidak
-                  kelihatan; di panel setinggi 720px ia jadi kotak putih kosong
-                  selama hampir setengah detik setiap kali tab diklik, dan
-                  kotak kosong di tempat yang baru saja berisi terbaca sebagai
-                  konten yang gagal dimuat.
-
-                  `key` di m.div sudah cukup: React membongkar fase lama dan
-                  memasang yang baru di commit yang sama, jadi isinya berganti
-                  seketika lalu naik masuk. Tidak ada bingkai kosong di antara
-                  keduanya karena tidak ada saat di mana keduanya absen. */}
-              <m.div
-                key={active.id}
-                className="panel__body"
-                id={panelIdFor(active.id)}
-                role="tabpanel"
-                aria-labelledby={tabIdFor(active.id)}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <p className="panel__headline">{active.headline}</p>
-                <p className="phase__question">
-                  <span className="phase__question-label">What this phase answers</span>
-                  {active.question}
-                </p>
-                {active.blocks.map((block, index) => (
-                  <Block block={block} key={`${active.id}-${index}`} />
-                ))}
-              </m.div>
-            </div>
+                  <span className="phasetab__name">{phase.phase}</span>
+                </button>
+              );
+            })}
           </div>
-        </Reveal>
-      </div>
+
+          {/* Bilah asal-usul, dan ia diam saat isinya digulir.
+
+              Nama fase sengaja TIDAK diulang di sini. Tab yang aktif sudah
+              membawanya, dan judul yang sama dicetak dua kali dengan jarak
+              40px membuat yang kedua terbaca sebagai judul untuk sesuatu
+              yang lain.
+
+              Yang ada di sini adalah dua hal yang tidak dibawa tab: sifat
+              dokumennya, dan dokumen mana. Keduanya perlu ikut tergulir
+              bersama mata pembaca, karena pertanyaan "ini dari mana?" paling
+              sering muncul justru di tengah tabel, bukan di baris pertama. */}
+          <div className="panel__head">
+            <span className="panel__badge">{ADDIE_SECTION.badge}</span>
+            {/* Tanpa label "Source" di depannya. Chip-nya sudah menyebut
+                nama dokumennya sendiri, dan berdiri tepat di bawah badge
+                "Retrospective documentation" ia sudah terbaca sebagai
+                dokumen yang mana. Label yang cuma mengulang apa yang sudah
+                jelas dari posisinya adalah satu kata yang harus dibaca
+                lima kali, sekali per tab. */}
+            <span className="panel__sources">
+              {active.sources.map((source) => (
+                <span className="panel__source" key={source}>
+                  {source}
+                </span>
+              ))}
+            </span>
+          </div>
+
+          {/* tabIndex 0 di wadah yang menggulir.
+              Tanpa itu, isi panel bisa digulir mouse tapi tidak bisa
+              digulir panah keyboard, jadi seluruh fase Evaluation di bawah
+              lipatan panel jadi isi yang tidak punya cara dijangkau tanpa
+              mouse. Chrome menambahkannya sendiri untuk sebagian kasus,
+              Safari tidak, dan menebak-nebak dukungan browser untuk hal
+              yang biayanya satu atribut adalah tebakan yang tidak perlu. */}
+          <div className="panel__scroll" ref={scrollRef} tabIndex={0}>
+            {/* Tanpa AnimatePresence, dan itu koreksi dari versi pertama.
+
+                Dengan `mode="wait"`, animasi keluar fase lama harus selesai
+                sebelum yang masuk mulai. Di kartu kecil jeda itu tidak
+                kelihatan; di panel setinggi 720px ia jadi kotak putih kosong
+                selama hampir setengah detik setiap kali tab diklik, dan
+                kotak kosong di tempat yang baru saja berisi terbaca sebagai
+                konten yang gagal dimuat.
+
+                `key` di m.div sudah cukup: React membongkar fase lama dan
+                memasang yang baru di commit yang sama, jadi isinya berganti
+                seketika lalu naik masuk. Tidak ada bingkai kosong di antara
+                keduanya karena tidak ada saat di mana keduanya absen. */}
+            <m.div
+              key={active.id}
+              className="panel__body"
+              id={panelIdFor(active.id)}
+              role="tabpanel"
+              aria-labelledby={tabIdFor(active.id)}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <p className="panel__headline">{active.headline}</p>
+              <p className="phase__question">
+                <span className="phase__question-label">What this phase answers</span>
+                {active.question}
+              </p>
+              {active.blocks.map((block, index) => (
+                <Block block={block} key={`${active.id}-${index}`} />
+              ))}
+            </m.div>
+          </div>
+        </div>
+      </Reveal>
     </div>
   );
 }

@@ -1174,66 +1174,40 @@
   margin-top: var(--s16);
 }
 
-/* Judul selebar penuh, di atas kedua kolom.
+/* Kepala section rata tengah, panel selebar penuh di bawahnya.
 
-   Ini yang mengunci aturan "panel kanan tidak pernah naik melewati judul".
-   Selama judul berdiri sebagai barisnya sendiri, tepi atas panel secara
-   struktural tidak punya cara untuk sampai ke sana. Kalau ia duduk di dalam
-   kolom kiri, judul dan panel jadi dua item grid bersaudara yang sama-sama
-   mulai di garis atas yang sama, dan aturannya cuma bisa ditegakkan dengan
-   menebak tinggi judul lewat margin, yang meleset begitu judulnya pecah dua
-   baris atau tiga. */
+   Versi sebelumnya menaruh kepala ini di kolom kiri, di samping panel. Yang
+   menjatuhkannya bukan selera: kolom kiri habis di sekitar 390px sementara
+   panel jatuh ke 740px, jadi sepertiga bawah kolom itu selalu kosong. Lubang
+   sebesar itu di sebelah kotak yang penuh terbaca sebagai tata letak yang
+   belum selesai, bukan sebagai ruang napas, dan tidak ada cara menutupnya
+   selama isi kedua kolom memang tidak sama panjang.
+
+   Ditumpuk, tidak ada lagi dua kolom yang harus sama tinggi, dan panel
+   mendapat seluruh lebar shell, yang justru dibutuhkan isinya: tabel empat
+   kolom dan stepper lima langkah sebelumnya harus muat di sekitar 530px.
+
+   Rata kiri, sama seperti kepala section lain di situs ini. Versi rata tengah
+   sempat dicoba dan dibatalkan: ia memang mengunci simetri di atas kotak yang
+   simetris, tapi ia juga membuat satu section isi berbicara dengan sikap yang
+   berbeda dari Work, Experience, Skills dan References tepat di sekitarnya.
+   Rata tengah di situs ini punya arti yang sudah dipakai, yaitu penutup, dan
+   itu sebabnya cuma Contact dan footer memakainya. */
 .program__head {
   max-width: var(--maxw-text);
 }
 
 .program__title {
   font-size: clamp(1.5rem, 2.8vw, 2.125rem);
-  max-width: 22ch;
+  max-width: 24ch;
 }
 
 .program__lede {
-  max-width: 46ch;
+  margin-top: var(--s5);
+  text-wrap: pretty;
   color: var(--ink-soft);
   font-size: var(--fs-body);
   line-height: 1.7;
-}
-
-/* Batas klaimnya ditulis di muka, bukan di kaki. Pembaca yang menemukan
-   sendiri bahwa dokumennya retrospektif setelah membaca lima fase merasa
-   diberi tahu terlambat; pembaca yang diberi tahu di awal membaca sisanya
-   sebagai catatan proses, yang memang bentuknya. */
-.program__disclosure {
-  margin-top: var(--s4);
-  max-width: 46ch;
-  color: var(--ink-faint);
-  font-size: var(--fs-sm);
-  line-height: 1.65;
-}
-
-/* Dua kolom, dan yang menahan tingginya adalah kolom kanan.
-
-   Ini yang paling menentukan di seluruh blok: tinggi section TIDAK boleh ikut
-   isi fase yang sedang dibuka. Analysis punya lima blok, Evaluation dua belas,
-   dan kalau tinggi section mengikuti keduanya, memilih tab terakhir menggeser
-   separuh halaman ke bawah setiap kali. Panel kanan karena itu diberi tinggi
-   tetap dan isinya yang menggulir di dalamnya.
-
-   Kolom kiri sekarang tinggal dua paragraf, jauh lebih pendek dari panel di
-   sebelahnya, dan itu memang bentuknya: ia kolom keterangan, bukan kolom
-   kedua yang harus mengimbangi. Kolomnya menyempit jadi 18rem supaya sisa
-   lebar jatuh ke tempat yang isinya benar-benar butuh, yaitu tabel dan
-   stepper di dalam panel. */
-.program__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
-  gap: clamp(var(--s6), 3vw, var(--s10));
-  margin-top: var(--s6);
-  align-items: start;
-}
-
-.program__side {
-  padding-top: var(--s2);
 }
 
 /* ── Panel, dan tab browser di kepalanya ────────────────────────────────── */
@@ -1245,7 +1219,34 @@
    tinggi ia jadi kotak 1200px yang sebagian besarnya kosong saat tab
    Development aktif. 560px sampai 760px adalah rentang di mana panel ini
    masih terbaca sebagai satu dokumen, bukan sebagai jendela intip. */
+/* LEBAR WADAH DAN LEBAR TEKS DIPISAH, dan pemisahan itu yang membereskan dua
+   keluhan yang sebelumnya saling meniadakan.
+
+   Percobaan pertama menahan lebar tiap blok teks sendiri-sendiri dalam ch.
+   Cap dalam ch terlihat konsisten di kode dan tidak konsisten di layar,
+   karena 1ch ikut ukuran font: 72ch di paragraf 16px jadi 843px, 72ch di
+   catatan kaki 14px jadi 738px, 70ch di badan catatan jadi 717px. Empat tepi
+   kanan berbeda bertumpuk di satu panel.
+
+   Percobaan kedua menyempitkan panelnya jadi 50rem supaya isinya mengisi
+   penuh. Itu meluruskan teksnya, tapi menaruh panel selebar 800px tepat di
+   bawah kartu Work selebar 1180px, dan section-nya jadi terbaca menjorok
+   masuk tanpa alasan.
+
+   Yang benar: panel tetap selebar penuh, sejajar kartu di atasnya, dan
+   ukurnya dikerjakan oleh PADDING, bukan oleh cap. Isinya tetap mengisi penuh
+   ruang yang tersisa, jadi tidak ada blok yang bisa membungkus lebih awal
+   dari tetangganya, dan ruang kosongnya duduk seimbang di kiri dan kanan
+   tempat ia terbaca sebagai margin dokumen. Ruang kosong yang berimbang
+   terbaca disengaja; ruang kosong yang cuma di satu sisi terbaca rusak.
+
+   Angkanya diukur, bukan dipilih. Di panel 1084px, inset terkunci di 10rem
+   dan isinya jatuh sekitar 764px: kira-kira 65 karakter untuk teks 16px dan
+   75 untuk teks 14px, dua-duanya di dalam rentang baca yang nyaman. Di panel
+   sempit sukunya jadi negatif dan clamp jatuh ke --s5, jadi padding-nya
+   otomatis mengecil tanpa satu media query pun. */
 .panel {
+  --inset: clamp(var(--s5), calc((100% - 47rem) / 2), 10rem);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1350,20 +1351,31 @@
    di baris pertama, dan jawaban yang sudah tergulir keluar layar sama saja
    dengan tidak ada. */
 
-/* Dua baris, selalu, dan itu bukan pilihan gaya.
+/* Satu baris, dan itu keputusan yang dibalik dari versi sebelumnya.
 
-   Sejajar dalam satu baris, badge dan chip sumber muat satu baris di fase
-   yang punya satu dokumen dan pecah jadi dua di fase yang punya tiga. Bilah
-   kepalanya jadi berganti tinggi tiap kali tab diklik, dan karena tinggi
-   panel dikunci, yang bergerak adalah tepi atas isinya. Ditumpuk sejak awal,
-   tingginya sama di kelima tab. */
+   Waktu panel masih jadi kolom kanan selebar 530px, badge dan chip sumber
+   muat satu baris di fase yang punya satu dokumen tapi pecah jadi dua di fase
+   yang punya tiga, jadi bilahnya berganti tinggi tiap kali tab diklik. Waktu
+   itu jawabannya menumpuk keduanya sejak awal.
+
+   Panel selebar penuh menghapus sebabnya: 1084px cukup untuk badge dan
+   ketiga chip terpanjang sekaligus, jadi kelima tab memberi bilah setinggi
+   satu baris tanpa perlu dipaksa. Menumpuknya sekarang berarti membuang satu
+   baris tinggi di bilah yang tiga perempatnya sudah kosong.
+
+   Diukur, bukan ditebak: di lebar penuh kelima tab memberi bilah 60px tepat.
+   Di lebar sempit chip membungkus lagi dan angkanya berpencar dari 81px ke
+   131px, jadi aturan ini TIDAK cukup sendirian, dan pasangannya ada di media
+   query 760px di bawah. `min-height` di sini hanya menjaga bilah tetap punya
+   tinggi yang enak dilihat ketika isinya cuma satu badge dan satu chip. */
 .panel__head {
   flex-shrink: 0;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--s3);
-  padding: var(--s4) clamp(var(--s5), 2.5vw, var(--s8));
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s4);
+  min-height: 60px;
+  padding: var(--s3) var(--inset);
   border-bottom: 1px solid var(--rule);
   background: var(--card);
 }
@@ -1420,7 +1432,15 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: clamp(var(--s5), 2.5vw, var(--s8));
+  /* Ruang scrollbar dipesan permanen, dipakai atau tidak.
+
+     Tanpa ini lebar isi ikut berubah 22px antar-tab: Development muat tanpa
+     menggulir sementara empat tab lain tidak, jadi paragrafnya mengalir ulang
+     tiap kali tab itu dibuka atau ditinggalkan. Pergeseran sekecil itu tidak
+     akan pernah disadari sebagai scrollbar; ia cuma terbaca sebagai teks yang
+     tidak bisa diam. */
+  scrollbar-gutter: stable;
+  padding: clamp(var(--s5), 2.5vw, var(--s8)) var(--inset);
 }
 
 .panel__body {
@@ -1433,7 +1453,7 @@
    header sebagai alasan untuk mengklik; di sini tab sudah membawa namanya,
    jadi tugasnya berubah jadi kalimat pembuka isi panel. */
 .panel__headline {
-  max-width: 62ch;
+  text-wrap: pretty;
   color: var(--ink-soft);
   font-size: var(--fs-sm);
   font-weight: 600;
@@ -1482,7 +1502,7 @@
 }
 
 .phase__prose {
-  max-width: 72ch;
+  text-wrap: pretty;
   color: var(--ink-soft);
   line-height: 1.75;
 }
@@ -1502,7 +1522,7 @@
 }
 
 .phase__footnote {
-  max-width: 72ch;
+  text-wrap: pretty;
   color: var(--ink-faint);
   font-size: var(--fs-sm);
   line-height: 1.65;
@@ -1526,7 +1546,7 @@
 
 .phase__note-body {
   margin-top: var(--s2);
-  max-width: 70ch;
+  text-wrap: pretty;
   color: var(--ink-soft);
   font-size: var(--fs-sm);
   line-height: 1.7;
@@ -1944,7 +1964,7 @@
 }
 
 .livecard__body {
-  max-width: 62ch;
+  text-wrap: pretty;
   color: var(--ink-soft);
   font-size: var(--fs-sm);
   line-height: 1.65;
@@ -2062,9 +2082,9 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: var(--s3);
-  max-width: 72ch;
   font-size: var(--fs-sm);
   line-height: 1.7;
+  text-wrap: pretty;
 }
 
 .qa__q {
@@ -2520,28 +2540,11 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* Kolom keterangan naik ke atas panel. Di bawah lebar ini kolom 18rem
-     memakan sepertiga layar untuk dua paragraf, dan menyisakan panel yang
-     lebih sempit daripada tabel di dalamnya.
-
-     Panelnya ikut memendek. Tinggi tetap masuk akal selama ia sisa layar di
-     sebelah keterangan; begitu keterangan pindah ke atasnya, panel setinggi
-     700px berarti pembaca harus menggulir halaman melewati judul dan dua
-     paragraf dulu sebelum melihat baris pertama isinya. */
-  .program__grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--s6);
-  }
-
-  .program__side {
-    padding-top: 0;
-  }
-
-  .program__lede,
-  .program__disclosure {
-    max-width: var(--maxw-text);
-  }
-
+  /* Panelnya memendek. Tinggi 760px masuk akal di layar lebar, tempat isi
+     yang sama muat dalam lebih sedikit baris; di lebar ini teksnya membungkus
+     jauh lebih sering, dan panel setinggi itu berarti pembaca harus menggulir
+     halaman melewati judul dan dua paragraf dulu sebelum melihat baris
+     pertama isinya. */
   .panel {
     height: clamp(460px, 68vh, 620px);
   }
@@ -2576,6 +2579,40 @@
   .work__item--own,
   .work__item--course {
     grid-column: span 6;
+  }
+
+  /* Bilah kepala jadi dua baris tetap: badge di atas, chip sumber di bawah
+     dalam satu baris yang menggulir mendatar.
+
+     Dibiarkan membungkus, tingginya berpencar dari 81px di fase yang punya
+     satu dokumen ke 131px di fase yang punya tiga, dan karena tinggi panel
+     dikunci, yang bergeser adalah tepi atas isinya tiap kali tab diklik.
+     Digulir mendatar, jumlah chip berhenti menentukan tinggi sama sekali,
+     dan perlakuannya jadi sama dengan bilah tab tepat di atasnya. */
+  .panel__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s3);
+  }
+
+  .panel__sources {
+    flex-wrap: nowrap;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .panel__sources::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* nowrap cuma di sini, tidak global: di lebar penuh bilahnya membungkus
+     antar-chip, dan chip yang dilarang membungkus di sana bisa melebar
+     melewati panel lalu terpotong diam-diam oleh overflow:hidden. Di lebar
+     ini barisnya menggulir, jadi melebar justru yang diinginkan. */
+  .panel__source {
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 
   /* Semua grid di dalam panel runtuh jadi satu kolom sekaligus. Di lebar ini

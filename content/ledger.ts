@@ -203,8 +203,8 @@ export const BUILT: BuiltCard[] = [
     id: 'train-the-trainers',
     title: 'Train the Trainers',
     body:
-      'Six university lecturers, two weeks: four workshops, four consultations, weekly live check-ins, and daily WhatsApp support between sessions. The program wrapped in June 2026, equipping them to deliver the chatbot development curriculum to their own students going forward.',
-    metrics: ['6 lecturers', '8 sessions', '2 weeks', 'completed June 2026'],
+      'University lecturers, two weeks: four workshops, four consultations, weekly live check-ins, and daily WhatsApp support between sessions. The program wrapped in June 2026, equipping them to deliver the chatbot development curriculum to their own students going forward.',
+    metrics: ['8 sessions', '2 weeks', 'completed June 2026'],
   },
 ];
 
@@ -247,7 +247,7 @@ export const WORK: WorkCard[] = [
     id: 'gen-ai-pm',
     title: 'Gen AI Product Manager',
     body:
-      'The Train the Trainers course. The material I used to hand the curriculum to six lecturers, so they can teach it themselves.',
+      'The Train the Trainers course. The material I used to hand the curriculum to university lecturers, so they can teach it themselves.',
     href: 'https://ai4impact.org/learn/detail?v=gen-ai-product-manager-id',
     kind: 'Live course · ai4impact',
   },
@@ -359,7 +359,7 @@ export const WORK_HISTORY: Role[] = [
     detail: '5 programs end-to-end · 150+ participants · 25+ live sessions',
     bullets: [
       'Delivered 5 end-to-end programs and 25+ live sessions to 150+ participants, from small-group Zoom workshops to a publicly livestreamed YouTube event (Chatbot for Business, Chatbot for Education, Smojothon, Career Talk, Train the Trainers).',
-      'Designed and led a 2-week Train the Trainers program for 6 university lecturers: 4 workshop sessions plus 4 consultation sessions, backed by weekly live consultations and daily WhatsApp support to keep participants unblocked between sessions.',
+      'Designed and led a 2-week Train the Trainers program for university lecturers: 4 workshop sessions plus 4 consultation sessions, backed by weekly live consultations and daily WhatsApp support to keep participants unblocked between sessions.',
       'Owned the full curriculum lifecycle for 3 GenAI training modules across business, education, and product management tracks, from needs breakdown and outlining to asset development and live delivery.',
       'Produced 4 alumni testimonial videos and ran program social media to drive enrollment across all 5 programs.',
     ],
@@ -478,7 +478,6 @@ export const PROOF: ProofCell[] = [
     label: 'live sessions delivered',
     method: 'small-group Zoom to one public YouTube livestream, as Learning & Development Specialist',
   },
-  { value: '6', label: 'lecturers trained to teach it', method: '2-week Train the Trainers cohort, completed June 2026' },
 ];
 
 export interface Testimonial {
