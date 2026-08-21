@@ -1146,6 +1146,1077 @@
   align-self: flex-end;
 }
 
+/* ═══ INSIDE ONE PROGRAM ════════════════════════════════════════════════════
+   Satu program, lima fase ADDIE, duduk di antara grid karya dan CTA tengah.
+
+   Split kiri-kanan: lima tab di kolom kiri, satu panel bertinggi tetap di
+   kolom kanan yang isinya berganti mengikuti tab yang dipilih.
+
+   Dua bentuk sebelumnya sudah dicoba dan dibuang, dan keduanya jatuh di
+   tempat yang sama, yaitu tinggi. Grid bento lima kartu menaruh isi fase di
+   balik dialog, jadi lima fase berarti lima kali buka-tutup untuk membaca
+   satu proses yang gunanya dibaca berurutan. Accordion menghapus dialognya
+   tapi menukarnya dengan section yang panjangnya berubah-ubah: membuka
+   Evaluation, fase terpanjang, menggeser separuh halaman ke bawah.
+
+   Panel bertinggi tetap menutup keduanya. Tab murah untuk dipindah, isinya
+   utuh tanpa harus diringkas demi muat, dan halaman di sekitarnya tidak
+   bergerak satu piksel pun apa pun yang dipilih pembaca.
+
+   TIDAK ADA WARNA BARU DI SELURUH BLOK INI. Kedelapan dokumen sumber
+   masing-masing punya accent sendiri (emas, ungu, biru tua), dan menyalinnya
+   akan membuat section ini terbaca sebagai enam dokumen yang ditempel. Setiap
+   warna di bawah diturunkan dari --g1/--g2/--g3 lewat color-mix, jadi
+   piramida Bloom dan tag storyboard tetap bisa dibedakan tanpa satu token
+   pun yang tidak dikenal sisa situs. */
+
+.program {
+  margin-top: var(--s16);
+}
+
+/* Judul selebar penuh, di atas kedua kolom.
+
+   Ini yang mengunci aturan "panel kanan tidak pernah naik melewati judul".
+   Selama judul berdiri sebagai barisnya sendiri, tepi atas panel secara
+   struktural tidak punya cara untuk sampai ke sana. Kalau ia duduk di dalam
+   kolom kiri, judul dan panel jadi dua item grid bersaudara yang sama-sama
+   mulai di garis atas yang sama, dan aturannya cuma bisa ditegakkan dengan
+   menebak tinggi judul lewat margin, yang meleset begitu judulnya pecah dua
+   baris atau tiga. */
+.program__head {
+  max-width: var(--maxw-text);
+}
+
+.program__title {
+  font-size: clamp(1.5rem, 2.8vw, 2.125rem);
+  max-width: 22ch;
+}
+
+.program__lede {
+  max-width: 46ch;
+  color: var(--ink-soft);
+  font-size: var(--fs-body);
+  line-height: 1.7;
+}
+
+/* Batas klaimnya ditulis di muka, bukan di kaki. Pembaca yang menemukan
+   sendiri bahwa dokumennya retrospektif setelah membaca lima fase merasa
+   diberi tahu terlambat; pembaca yang diberi tahu di awal membaca sisanya
+   sebagai catatan proses, yang memang bentuknya. */
+.program__disclosure {
+  margin-top: var(--s4);
+  max-width: 46ch;
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+}
+
+/* Dua kolom, dan yang menahan tingginya adalah kolom kanan.
+
+   Ini yang paling menentukan di seluruh blok: tinggi section TIDAK boleh ikut
+   isi fase yang sedang dibuka. Analysis punya lima blok, Evaluation dua belas,
+   dan kalau tinggi section mengikuti keduanya, memilih tab terakhir menggeser
+   separuh halaman ke bawah setiap kali. Panel kanan karena itu diberi tinggi
+   tetap dan isinya yang menggulir di dalamnya.
+
+   Kolom kiri sekarang tinggal dua paragraf, jauh lebih pendek dari panel di
+   sebelahnya, dan itu memang bentuknya: ia kolom keterangan, bukan kolom
+   kedua yang harus mengimbangi. Kolomnya menyempit jadi 18rem supaya sisa
+   lebar jatuh ke tempat yang isinya benar-benar butuh, yaitu tabel dan
+   stepper di dalam panel. */
+.program__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+  gap: clamp(var(--s6), 3vw, var(--s10));
+  margin-top: var(--s6);
+  align-items: start;
+}
+
+.program__side {
+  padding-top: var(--s2);
+}
+
+/* ── Panel, dan tab browser di kepalanya ────────────────────────────────── */
+
+/* Tinggi diikat ke viewport, dengan lantai dan langit-langit.
+
+   clamp, bukan vh polos: di laptop pendek 100vh menyisakan panel setinggi
+   400px yang memuat empat baris teks sebelum harus digulir, dan di monitor
+   tinggi ia jadi kotak 1200px yang sebagian besarnya kosong saat tab
+   Development aktif. 560px sampai 760px adalah rentang di mana panel ini
+   masih terbaca sebagai satu dokumen, bukan sebagai jendela intip. */
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: clamp(560px, calc(100vh - var(--nav-h) - 10rem), 760px);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+/* Bilah tab, dan ia dibuat seperti bilah tab browser dengan sengaja.
+
+   Kuncinya bukan bentuk tabnya, tapi WARNA BILAHNYA. Bilah ini lebih gelap
+   dari panel di bawahnya, dan tab yang aktif mengambil warna panel itu persis.
+   Efeknya: satu tab terbaca menyatu dengan isinya sementara empat sisanya
+   duduk di belakang, dan itu yang membuat kelima fase terbaca sebagai lima
+   isi dari SATU wadah, bukan lima tombol yang kebetulan berjajar.
+
+   Menggulir mendatar kalau kehabisan tempat, sama seperti bilah tab
+   sungguhan. Menumpuknya jadi dua baris akan mengubah tinggi panel, dan
+   tinggi panel adalah satu hal yang tidak boleh berubah di sini. */
+.panel__bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: var(--s2) var(--s2) 0;
+  background: color-mix(in srgb, var(--paper) 82%, var(--ink) 3%);
+  border-bottom: 1px solid var(--rule);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.panel__bar::-webkit-scrollbar {
+  display: none;
+}
+
+.phasetab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  flex-shrink: 0;
+  padding: var(--s3) var(--s4);
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: var(--r-sm) var(--r-sm) 0 0;
+  background: none;
+  font: inherit;
+  color: var(--ink-faint);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.phasetab:hover:not(.phasetab--on) {
+  background: color-mix(in srgb, var(--card) 55%, transparent);
+  color: var(--ink-soft);
+}
+
+/* Tab aktif mengambil warna panel dan turun 1px menutupi garis pemisahnya,
+   jadi tab dan isinya jadi satu permukaan tanpa garis di antaranya. Itu satu
+   detail yang membedakan bilah tab dari sekadar deretan pill. */
+.phasetab--on {
+  background: var(--card);
+  border-color: var(--rule);
+  color: var(--ink);
+  margin-bottom: -1px;
+  padding-bottom: calc(var(--s3) + 1px);
+}
+
+.phasetab__index {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.phasetab--on .phasetab__index {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.phasetab__name {
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.3;
+}
+
+/* Bilah asal-usul, diam di tempat saat isi panel digulir.
+
+   Dua hal yang tidak dibawa tab duduk di sini: SIFAT dokumennya (badge
+   "Retrospective documentation") dan dokumen MANA (chip nama file sumber).
+   Keduanya tetap terlihat sepanjang gulir, dan itu disengaja: pertanyaan
+   "ini diringkas dari mana?" paling sering muncul di tengah tabel skor, bukan
+   di baris pertama, dan jawaban yang sudah tergulir keluar layar sama saja
+   dengan tidak ada. */
+
+/* Dua baris, selalu, dan itu bukan pilihan gaya.
+
+   Sejajar dalam satu baris, badge dan chip sumber muat satu baris di fase
+   yang punya satu dokumen dan pecah jadi dua di fase yang punya tiga. Bilah
+   kepalanya jadi berganti tinggi tiap kali tab diklik, dan karena tinggi
+   panel dikunci, yang bergerak adalah tepi atas isinya. Ditumpuk sejak awal,
+   tingginya sama di kelima tab. */
+.panel__head {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s3);
+  padding: var(--s4) clamp(var(--s5), 2.5vw, var(--s8));
+  border-bottom: 1px solid var(--rule);
+  background: var(--card);
+}
+
+.panel__badge {
+  padding: 3px var(--s3);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--paper) 70%, var(--card));
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.panel__sources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+  min-width: 0;
+}
+
+/* Nama dokumen sumber. Tidak bisa diklik, dan itu bukan kelalaian: kedelapan
+   dokumen aslinya tidak diterbitkan di situs ini, jadi chip yang terlihat
+   seperti tautan akan menjanjikan halaman yang tidak ada. Ia atribusi, bukan
+   navigasi. */
+.panel__source {
+  padding: 2px var(--s3);
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--g2) 8%, transparent);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.7;
+  color: var(--g2);
+}
+
+/* Wadah yang menggulir.
+
+   `overscroll-behavior` sengaja DIBIARKAN default, bukan disetel `contain`.
+   Contain menghentikan rantai scroll ke halaman, dan efeknya: pembaca yang
+   sudah sampai di dasar tab Evaluation dan terus menggulir tidak bergerak ke
+   mana-mana sampai ia sadar harus memindahkan kursornya keluar panel dulu.
+   Panel yang menahan scroll pembaca di ujungnya terbaca sebagai halaman yang
+   membeku. Dengan rantai default, panel menggulir lebih dulu sampai habis,
+   lalu halaman melanjutkan, yang persis perilaku yang diharapkan orang.
+
+   `tabindex` dipasang di JSX, bukan di sini, tapi ia bagian dari aturan yang
+   sama: wadah yang bisa digulir mouse tapi tidak bisa digulir panah keyboard
+   adalah isi yang tidak bisa dijangkau tanpa mouse. */
+.panel__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: clamp(var(--s5), 2.5vw, var(--s8));
+}
+
+.panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+}
+
+/* Baris ringkas fase yang sedang dibuka. Di draft accordion ia duduk di
+   header sebagai alasan untuk mengklik; di sini tab sudah membawa namanya,
+   jadi tugasnya berubah jadi kalimat pembuka isi panel. */
+.panel__headline {
+  max-width: 62ch;
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+/* Isyarat bahwa masih ada isi di bawah lipatan panel.
+
+   Panel bertinggi tetap punya satu masalah khas: teks yang terpotong rapi di
+   tepi bawah kotak terlihat seperti teks yang memang berakhir di situ.
+   Gradient tipis di kaki panel membuat potongannya terlihat sebagai potongan.
+   pointer-events:none supaya ia tidak pernah menelan klik ke isi di baliknya. */
+.panel::after {
+  content: '';
+  position: absolute;
+  inset: auto 1px 1px;
+  height: var(--s10);
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  background: linear-gradient(to bottom, transparent, var(--card));
+  pointer-events: none;
+}
+
+/* Pertanyaan yang dijawab fase ini, ditulis dari sudut pandang yang menilai.
+   Ia dipasang di kepala tiap panel karena bagian tersulit dari portofolio
+   proses bukan menunjukkan artefaknya, tapi mengatakan artefak itu menjawab
+   pertanyaan apa. */
+.phase__question {
+  padding: var(--s4) var(--s5);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--g2) 5%, var(--card));
+  border: 1px solid color-mix(in srgb, var(--g2) 14%, transparent);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.phase__question-label {
+  display: block;
+  margin-bottom: var(--s1);
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--g2);
+}
+
+.phase__prose {
+  max-width: 72ch;
+  color: var(--ink-soft);
+  line-height: 1.75;
+}
+
+.phase__block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.phase__block-title {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.phase__footnote {
+  max-width: 72ch;
+  color: var(--ink-faint);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+}
+
+/* Catatan bergaris kiri. Dipakai untuk tiga hal yang bentuknya sama: catatan
+   metodologi, keputusan pacing, dan batas data. Ketiganya adalah kalimat yang
+   melemahkan klaim di sekitarnya, dan justru itu yang membuatnya dipercaya. */
+.phase__note {
+  padding: var(--s4) var(--s5);
+  border-left: 2px solid color-mix(in srgb, var(--g2) 45%, transparent);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  background: color-mix(in srgb, var(--paper) 60%, var(--card));
+}
+
+.phase__note-title {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.phase__note-body {
+  margin-top: var(--s2);
+  max-width: 70ch;
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+}
+
+/* Pemisah dua sub-blok di dalam Evaluation. Garis tipis berlabel, bukan
+   sub-accordion: "Bagaimana dinilai" dan "Apa hasilnya" dibaca berurutan,
+   dan menaruh keduanya di balik dua toggle lagi membuat pembaca harus
+   membuka tiga hal untuk melihat satu fase. */
+.phase__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  margin-top: var(--s3);
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.phase__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+.phase__divider:first-child {
+  margin-top: 0;
+}
+
+/* ── Tabel ──────────────────────────────────────────────────────────────── */
+
+/* Tabel adalah satu-satunya isi di section ini yang bisa melebar melewati
+   layar ponsel. Ia menggulir di dalam kotaknya sendiri, bukan menggeser
+   halaman: body memakai overflow-x:hidden untuk menahan blob aurora, jadi
+   tabel yang melebar tidak akan memunculkan scrollbar, ia hanya terpotong
+   diam-diam. */
+.phase__table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--card);
+}
+
+.gap,
+.rubric {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  text-align: left;
+}
+
+.gap th,
+.gap td,
+.rubric th,
+.rubric td {
+  padding: var(--s3) var(--s4);
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule);
+}
+
+.gap tbody tr:last-child th,
+.gap tbody tr:last-child td,
+.rubric tbody tr:last-child th,
+.rubric tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.gap thead th,
+.rubric thead th {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--paper) 60%, var(--card));
+}
+
+.gap tbody th,
+.rubric tbody th {
+  font-weight: 700;
+  color: var(--ink);
+  min-width: 9ch;
+}
+
+/* 18ch di sel isi, bukan 24ch. Angkanya diukur terhadap lebar PANEL, bukan
+   lebar halaman: di dalam panel kanan yang sekitar 530px, tiga kolom 24ch
+   memaksa scrollbar horizontal untuk tabel yang sebenarnya muat. Di layar
+   sempit ia tetap melebar dan tetap menggulir di dalam kotaknya sendiri,
+   yang memang perilaku yang diinginkan di sana. */
+
+.gap td {
+  color: var(--ink-soft);
+  line-height: 1.6;
+  min-width: 18ch;
+}
+
+/* Kolom "where they needed to be" dibedakan warnanya, bukan cuma posisinya.
+   Tabel gap gunanya dibaca sebagai perpindahan dari kiri ke kanan, dan tanpa
+   pembeda visual kedua kolom terbaca sebagai dua daftar setara. */
+.gap__desired {
+  color: var(--ink);
+  font-weight: 500;
+  background: color-mix(in srgb, var(--g2) 4%, transparent);
+}
+
+.rubric td {
+  text-align: center;
+}
+
+.rubric__dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--g2) 32%, transparent);
+}
+
+/* ── Constraint ─────────────────────────────────────────────────────────── */
+
+.constraints {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s3);
+}
+
+.constraint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--card);
+}
+
+.constraint__code {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--g2);
+}
+
+.constraint__title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.constraint__body {
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+/* ── Temuan ke keputusan ────────────────────────────────────────────────── */
+
+/* Dua sisi, dan panah di antaranya. Yang dinilai perekrut bukan temuannya dan
+   bukan keputusannya, tapi apakah yang kedua benar-benar mengikuti dari yang
+   pertama. Menaruh keduanya berdampingan membuat hubungan itu bisa diperiksa
+   dalam satu pandangan. */
+.finding {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: var(--s5);
+  padding: var(--s5);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--card);
+  position: relative;
+}
+
+.finding__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.finding__label {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.finding__side--out .finding__label {
+  color: var(--g2);
+}
+
+.finding__text {
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+}
+
+.finding__side--out .finding__text {
+  color: var(--ink);
+}
+
+/* ── Piramida Bloom ─────────────────────────────────────────────────────── */
+
+/* Lebarnya datang dari --w yang dihitung di komponen dari posisi baris, dan
+   warnanya dari --t yang menyapu --g1 ke --g3 sepanjang piramidanya. Dua
+   variabel, nol angka ajaib di CSS, dan menambah level ketujuh nanti tidak
+   menuntut satu nilai pun di file ini diubah. */
+.bloom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  align-items: center;
+}
+
+.bloom__row {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  width: var(--w);
+  min-width: 0;
+}
+
+.bloom__bar {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-sm);
+  background: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--g1), var(--g3) calc(var(--t) * 100%)) 14%,
+    var(--card)
+  );
+  border: 1px solid
+    color-mix(
+      in srgb,
+      color-mix(in srgb, var(--g1), var(--g3) calc(var(--t) * 100%)) 30%,
+      transparent
+    );
+}
+
+.bloom__level {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--g1), var(--g3) calc(var(--t) * 100%));
+}
+
+.bloom__day {
+  flex-shrink: 0;
+  width: 5ch;
+  font-size: var(--fs-chip);
+  font-weight: 600;
+  color: var(--ink-faint);
+}
+
+/* ── Objective ──────────────────────────────────────────────────────────── */
+
+.objectives {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3);
+}
+
+.objective {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s5);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--card);
+}
+
+.objective__level {
+  align-self: flex-start;
+  padding: 3px var(--s3);
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--g2) 10%, transparent);
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--g2);
+}
+
+.objective__text {
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1.65;
+}
+
+/* Cara mengukurnya dipasang menempel di objective-nya, bukan di tabel
+   terpisah. Objective tanpa buktinya adalah kalimat harapan; berdampingan,
+   keduanya jadi satu klaim yang bisa diperiksa. */
+.objective__evidence {
+  padding-top: var(--s3);
+  border-top: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+.objective__evidence-label {
+  display: block;
+  margin-bottom: var(--s1);
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ── Stepper ────────────────────────────────────────────────────────────── */
+
+.stepper {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--s3);
+}
+
+/* Garis tipis di tepi atas tiap langkah, dan garis itu yang membuat kelimanya
+   terbaca sebagai satu rentetan alih-alih lima kartu sejajar. */
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  padding-top: var(--s3);
+  border-top: 2px solid color-mix(in srgb, var(--g2) 25%, var(--rule));
+}
+
+.step:last-child {
+  border-top-color: var(--rule);
+  border-top-style: dashed;
+}
+
+.step__day {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--g2);
+}
+
+.step__date {
+  font-size: var(--fs-chip);
+  font-weight: 600;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.step__title {
+  margin-top: var(--s1);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.step__body {
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+}
+
+/* ── Kartu tautan hidup ─────────────────────────────────────────────────── */
+
+/* Satu-satunya blok di section ini yang bisa diklik keluar. Ia dapat garis
+   gradient di tepi atas, aturan yang sama persis dengan kartu karya di grid
+   Work: di seluruh situs, gradient berarti "ini bisa kamu buka sendiri". */
+.livecard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s6);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease;
+}
+
+.livecard::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--gradient);
+}
+
+.livecard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px -12px rgb(15 18 34 / 0.18);
+}
+
+.livecard__domain {
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.livecard__title {
+  font-family: var(--font-display), sans-serif;
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.25;
+}
+
+.livecard__body {
+  max-width: 62ch;
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+}
+
+.livecard__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  margin-top: var(--s2);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--g2);
+}
+
+/* ── Frame storyboard ───────────────────────────────────────────────────── */
+
+.frames {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--card);
+  overflow: hidden;
+}
+
+.frame {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--s4);
+  row-gap: var(--s1);
+  padding: var(--s4) var(--s5);
+  border-bottom: 1px solid var(--rule);
+}
+
+.frame:last-child {
+  border-bottom: 0;
+}
+
+.frame__time {
+  grid-row: 1 / span 2;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.frame__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.frame__title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+/* Empat tag, empat titik berbeda di sapuan gradient yang sama. Dokumen
+   aslinya memakai empat warna lepas (biru, oranye, hijau, ungu) yang tidak
+   punya hubungan apa pun dengan situs ini; diambil dari sapuan sendiri,
+   keempatnya tetap bisa dibedakan tanpa memperkenalkan palet kedua. */
+.frame__tag {
+  padding: 2px var(--s2);
+  border-radius: var(--r-pill);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.frame__tag--a {
+  background: color-mix(in srgb, var(--g1) 12%, transparent);
+  color: var(--g1);
+}
+
+.frame__tag--b {
+  background: color-mix(in srgb, var(--g2) 12%, transparent);
+  color: var(--g2);
+}
+
+.frame__tag--c {
+  background: color-mix(in srgb, var(--g3) 12%, transparent);
+  color: var(--g3);
+}
+
+.frame__tag--d {
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink-soft);
+}
+
+.frame__goal {
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+/* ── Tanya jawab ────────────────────────────────────────────────────────── */
+
+.qa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s5);
+  border: 1px dashed color-mix(in srgb, var(--ink) 16%, transparent);
+  border-radius: var(--r-md);
+}
+
+.qa__q,
+.qa__a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--s3);
+  max-width: 72ch;
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+}
+
+.qa__q {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.qa__a {
+  color: var(--ink-soft);
+}
+
+.qa__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.qa__mark--a {
+  background: color-mix(in srgb, var(--g2) 12%, transparent);
+  color: var(--g2);
+}
+
+/* ── Checklist ──────────────────────────────────────────────────────────── */
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.checklist__item {
+  position: relative;
+  padding-left: var(--s6);
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+}
+
+.checklist__item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--gradient);
+}
+
+/* ── Bar skor ───────────────────────────────────────────────────────────── */
+
+.scores {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.score {
+  display: grid;
+  grid-template-columns: 10ch minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s4);
+}
+
+.score__label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.score__track {
+  height: 8px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+  overflow: hidden;
+}
+
+.score__fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--gradient);
+}
+
+.score__value {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Penyebutnya ditulis di tiap baris, dan sengaja tidak disembunyikan di
+   header kolom. "4.5" sendirian bisa berarti dari 5 atau dari 10, dan
+   pembaca yang harus menebak skalanya akan menebak yang paling murah. */
+.score__of {
+  font-weight: 600;
+  color: var(--ink-faint);
+}
+
+/* ── Kutipan ────────────────────────────────────────────────────────────── */
+
+.quotes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3);
+}
+
+.quote {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  height: 100%;
+  margin: 0;
+  padding: var(--s5);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--card);
+}
+
+.quote__text {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+}
+
+.quote__text::before {
+  content: '\201C';
+}
+
+.quote__text::after {
+  content: '\201D';
+}
+
+/* "Participant A", bukan nama. Atribusi yang disamarkan tetap harus terlihat
+   sebagai atribusi, kalau tidak kutipannya terbaca seperti tidak bersumber. */
+.quote__by {
+  margin-top: auto;
+  font-size: var(--fs-chip);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
 /* ═══ MID-PAGE CTA ══════════════════════════════════════════════════════════
    Satu baris tipis tepat setelah Work: titik keyakinan tertinggi di seluruh
    halaman, karena pembaca baru saja bisa membuka materinya sendiri.
@@ -1448,6 +2519,39 @@
   .creds {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  /* Kolom keterangan naik ke atas panel. Di bawah lebar ini kolom 18rem
+     memakan sepertiga layar untuk dua paragraf, dan menyisakan panel yang
+     lebih sempit daripada tabel di dalamnya.
+
+     Panelnya ikut memendek. Tinggi tetap masuk akal selama ia sisa layar di
+     sebelah keterangan; begitu keterangan pindah ke atasnya, panel setinggi
+     700px berarti pembaca harus menggulir halaman melewati judul dan dua
+     paragraf dulu sebelum melihat baris pertama isinya. */
+  .program__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s6);
+  }
+
+  .program__side {
+    padding-top: 0;
+  }
+
+  .program__lede,
+  .program__disclosure {
+    max-width: var(--maxw-text);
+  }
+
+  .panel {
+    height: clamp(460px, 68vh, 620px);
+  }
+
+  /* Stepper lima langkah jadi terlalu sempit di lebar ini: kolomnya turun ke
+     bawah 150px dan judul hari mulai pecah jadi tiga baris. Tiga kolom, dua
+     baris, dan urutannya tetap terbaca dari kiri atas ke kanan bawah. */
+  .stepper {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px) {
@@ -1472,6 +2576,43 @@
   .work__item--own,
   .work__item--course {
     grid-column: span 6;
+  }
+
+  /* Semua grid di dalam panel runtuh jadi satu kolom sekaligus. Di lebar ini
+     dua kolom berarti dua kolom yang sama-sama terlalu sempit, bukan dua
+     kolom yang lebih padat. */
+  .constraints,
+  .objectives,
+  .quotes,
+  .stepper {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Temuan di atas keputusan, bukan di sebelahnya. Panah kiri-ke-kanan
+     kehilangan artinya begitu keduanya bertumpuk, jadi labelnya yang
+     menanggung urutannya. */
+  .finding {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s4);
+  }
+
+  /* Piramida Bloom berhenti menyempit di 62%. Lebar 44% yang benar di
+     desktop menyisakan sekitar 130px di ponsel, dan "Understand" tidak muat
+     satu baris di dalamnya. Bentuk piramidanya tetap terbaca, cuma lebih
+     tumpul. */
+  .bloom__row {
+    width: max(var(--w), 62%);
+  }
+
+  /* Menit pindah ke barisnya sendiri di atas judul frame. Kolom waktu selebar
+     5ch di sebelah judul dua baris menyisakan lebar judul yang lebih sempit
+     daripada judulnya sendiri. */
+  .frame {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .frame__time {
+    grid-row: auto;
   }
 
   .org__period {

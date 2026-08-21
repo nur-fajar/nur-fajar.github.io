@@ -1,5 +1,6 @@
 import { ArrowRight, ArrowUpRight, CalendarBlank } from '@phosphor-icons/react/dist/ssr';
 import { CONTACT, PROJECTS } from '@/content/ledger';
+import InsideOneProgram from './InsideOneProgram';
 import Reveal from './Reveal';
 
 /**
@@ -87,6 +88,13 @@ export default function Work() {
             );
           })}
         </ul>
+
+        {/* Kelanjutan langsung dari grid di atasnya, bukan section baru.
+            Grid menjawab "apa yang sudah dia buat"; panel di bawah ini
+            menjawab "bagaimana caranya", dan ia sengaja tidak punya entri
+            navigasi sendiri: pembaca sampai di sini karena baru saja melihat
+            karyanya, bukan karena melompat dari menu. */}
+        <InsideOneProgram />
 
         {/* Titik keyakinan tertinggi di seluruh halaman: pembaca baru saja
             bisa membuka materinya sendiri. Satu tombol, bukan tiga; tiga

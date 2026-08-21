@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import * as ledger from './ledger';
 import {
   ADDIE_PHASES,
+  ADDIE_SECTION,
   BACKGROUND,
   BUILT,
   CONTACT,
@@ -442,44 +443,91 @@ describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
     expect(ttt?.body).not.toMatch(/without me/i);
   });
 
+  /* ═══ Inside One Program ══════════════════════════════════════════════════
+     Grid bento lima kartu diganti accordion lima fase. Yang berubah adalah
+     bentuk penyajiannya; yang TIDAK boleh berubah adalah faktanya, jadi
+     invarian faktual dari versi bento dipindah utuh ke bawah ini alih-alih
+     ikut terhapus bersama komponennya. Tes yang dihapus bersama komponen yang
+     digantikannya adalah cara paling rapi untuk kehilangan koreksi yang dulu
+     mahal didapat. */
+
   it('ADDIE berhenti di lima fase, halaman verifikasi sertifikat tidak ikut', () => {
     // Kotak keenam untuk credentialing pernah dipertimbangkan dan ditolak:
-    // sertifikat itu bukti kelulusan, bukan bukti evaluasi, dan enam kotak
-    // membuat model lima fase terbaca sebagai model enam fase. File gambarnya
-    // sengaja dibiarkan di public/artifacts/, jadi tes ini yang menjaga ia
-    // tidak diam-diam dirujuk lagi.
+    // sertifikat itu bukti kelulusan, bukan bukti evaluasi, dan enam fase
+    // membuat model lima fase terbaca sebagai model enam fase.
     expect(ADDIE_PHASES.map((phase) => phase.letter).join('')).toBe('ADDIE');
-    const sources = ADDIE_PHASES.flatMap((phase) => phase.artifacts.map((a) => a.src));
-    expect(sources.join(' ')).not.toMatch(/cert/i);
+    expect(ADDIE_PHASES.map((phase) => phase.index)).toEqual(['01', '02', '03', '04', '05']);
   });
 
-  it('lebar kartu ADDIE menjumlah pas jadi dua baris dua belas kolom', () => {
-    // Kelima kartu harus muat satu layar, dan itu cuma benar selama spannya
-    // mengisi dua baris tepat. Sekali satu kartu diubah lebarnya tanpa
-    // pasangannya ikut menyesuaikan, grid melipat jadi tiga baris dan blok
-    // yang gunanya dilihat sekaligus kembali harus digulir. Kegagalannya
-    // murni visual, jadi tanpa tes ini ia cuma ketahuan kalau ada yang
-    // kebetulan membuka halamannya di lebar yang tepat.
-    const WIDTH: Record<string, number> = { third: 4, major: 7, minor: 5 };
-    const spans = ADDIE_PHASES.map((phase) => WIDTH[phase.span]);
-    expect(spans, 'ada span yang tidak dikenal').not.toContain(undefined);
-
-    let row = 0;
-    for (const span of spans) {
-      row += span;
-      expect(row, 'satu baris melebihi dua belas kolom').toBeLessThanOrEqual(12);
-      if (row === 12) row = 0;
-    }
-    expect(row, 'baris terakhir tidak penuh, akan ada lubang di grid').toBe(0);
-    expect(spans.reduce((a, b) => a + b, 0)).toBe(24);
-  });
-
-  it('setiap fase punya keputusan, termasuk fase yang belum punya artefak', () => {
-    // Fase tanpa gambar adalah satu-satunya tempat di section ini di mana
-    // "kosong" bisa terbaca sebagai "tidak terjadi". Selama daftar
-    // keputusannya terisi, salah baca itu tidak mungkin.
+  it('setiap fase membawa isi, tidak ada accordion yang terbuka ke ruang kosong', () => {
+    // Accordion yang terbuka lalu tidak menunjukkan apa pun lebih buruk
+    // daripada accordion yang tidak ada: pembaca sudah membayar satu klik.
     for (const phase of ADDIE_PHASES) {
-      expect(phase.decisions.length, `${phase.phase} tanpa keputusan`).toBeGreaterThanOrEqual(3);
+      expect(phase.blocks.length, `${phase.phase} tanpa blok isi`).toBeGreaterThanOrEqual(3);
+      expect(phase.headline.trim().length, `${phase.phase} tanpa headline`).toBeGreaterThan(0);
+      expect(phase.question.trim().length, `${phase.phase} tanpa pertanyaan`).toBeGreaterThan(0);
+    }
+  });
+
+  it('headline tiap fase tetap satu kalimat pembuka, bukan paragraf', () => {
+    // Ia baris pertama isi panel, tepat di bawah nama fase, dan tugasnya
+    // mengatakan apa isi fase ini dalam sekali baca sebelum pembaca memutuskan
+    // menggulir. Di atas 110 karakter ia berhenti jadi pembuka dan mulai jadi
+    // paragraf yang kebetulan dicetak tebal.
+    for (const phase of ADDIE_PHASES) {
+      expect(phase.headline.length, `headline ${phase.phase} terlalu panjang`).toBeLessThanOrEqual(
+        110,
+      );
+    }
+  });
+
+  it('body copy kolom kiri sama persis dengan yang dikunci spec', () => {
+    // Spec menuliskan dua paragraf ini kata per kata dengan instruksi "pakai
+    // persis ini". Kalimat yang dikunci di luar kode adalah kalimat yang paling
+    // gampang bergeser diam-diam lewat satu edit yang niatnya cuma merapikan.
+    expect(ADDIE_SECTION.eyebrow).toBe('Inside one program');
+    expect(ADDIE_SECTION.title).toBe('One program, opened up phase by phase.');
+    expect(ADDIE_SECTION.lede).toBe(
+      'Train the Trainers: GenAI Product Manager. Six university lecturers, four live sessions, ' +
+        'and a five week independent build. Below is the working method behind it, from the needs ' +
+        'assessment that started it to the evaluation data that closed it.',
+    );
+    expect(ADDIE_SECTION.disclosure).toBe(
+      'These documents were written after the program ran, to record the reasoning behind ' +
+        'decisions made at the time. Participant names, institutions and chatbot links are ' +
+        'removed throughout.',
+    );
+  });
+
+  it('setiap fase menyebut dokumen sumbernya sendiri', () => {
+    // Panel yang menampilkan tabel gap tanpa mengatakan tabel itu diringkas
+    // dari mana adalah klaim, bukan kutipan. Chip sumber yang mengubahnya jadi
+    // kutipan, dan fase tanpa chip diam-diam kembali jadi klaim.
+    for (const phase of ADDIE_PHASES) {
+      expect(phase.sources.length, `${phase.phase} tanpa dokumen sumber`).toBeGreaterThan(0);
+      for (const source of phase.sources) {
+        expect(source.trim().length, `${phase.phase} punya sumber kosong`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('kedelapan dokumen sumber terpakai, tidak ada yang hilang diam-diam', () => {
+    // Spec menghitung delapan file, dan aturan penggabungannya menentukan
+    // dokumen mana masuk ke fase mana. Kalau satu nama hilang saat konten
+    // dirapikan, yang hilang bukan cuma atribusinya: hilang juga bukti bahwa
+    // fase itu punya dasar dokumen sama sekali.
+    const named = ADDIE_PHASES.flatMap((phase) => phase.sources).join(' | ');
+    for (const doc of [
+      'Learning Needs Assessment',
+      'Learning Objectives',
+      'Curriculum Map',
+      'Training Calendar',
+      'Storyboard',
+      'Facilitator Guide',
+      'Assessment Strategy & Rubric',
+      'Impact & Evaluation Summary',
+    ]) {
+      expect(named, `dokumen "${doc}" tidak disebut di fase mana pun`).toContain(doc);
     }
   });
 
@@ -490,7 +538,7 @@ describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
     // sebenarnya.
     const implementation = ADDIE_PHASES.find((phase) => phase.id === 'implementation');
     const text = JSON.stringify(implementation);
-    expect(text).toMatch(/Four (live )?sessions/);
+    expect(text).toMatch(/Four live sessions/);
     expect(text).toMatch(/11 to 20 May 2026/);
     expect(text).not.toMatch(/eight (live )?sessions/i);
   });
@@ -500,30 +548,125 @@ describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
     // lebih mudah dari yang sebenarnya, dan itu salah ke arah yang merugikan
     // orang yang menulisnya.
     const analysis = ADDIE_PHASES.find((phase) => phase.id === 'analysis');
-    expect(analysis?.summary).toMatch(/Six university lecturers/);
-    expect(analysis?.summary).toMatch(/mixed technical and non-technical/);
+    expect(analysis?.headline).toMatch(/Six university lecturers/);
+    expect(analysis?.headline).toMatch(/mixed technical and non-technical/);
   });
 
-  it('artefak dari kohort lain menyebut asalnya sendiri', () => {
-    // Screenshot kuis itu dari Chatbot for Business. Ia boleh dipajang karena
-    // pola pembukanya sama, tapi caption yang diam soal asalnya mengubah
-    // artefak pinjaman jadi klaim palsu.
-    const quiz = ADDIE_PHASES.flatMap((phase) => phase.artifacts).find(
-      (artifact) => artifact.id === 'warmup-quiz',
-    );
-    expect(quiz?.note).toMatch(/Chatbot for Business/);
-    expect(quiz?.note).toMatch(/not GenAI Product Manager/);
+  it('tanggal di stepper Design sama persis dengan Training Calendar', () => {
+    // Empat tanggal ini adalah satu-satunya kontribusi Training Calendar ke
+    // section ini. Kalau salah satu bergeser, ia bergeser diam-diam: tidak ada
+    // yang menghafal tanggal sesi orang lain.
+    const design = ADDIE_PHASES.find((phase) => phase.id === 'design');
+    const stepper = design?.blocks.find((block) => block.kind === 'stepper');
+    expect(stepper, 'Design kehilangan stepper-nya').toBeDefined();
+    if (stepper?.kind !== 'stepper') throw new Error('stepper block hilang');
+    expect(stepper.steps.map((step) => step.date)).toEqual([
+      '11 May 2026',
+      '13 May 2026',
+      '18 May 2026',
+      '20 May 2026',
+      '21 May to 30 June 2026',
+    ]);
   });
 
-  it('foto kelas menyatakan sendiri bahwa nametag peserta diburamkan', () => {
-    // Redaksi yang dikerjakan tapi tidak disebut tetap terbaca sebagai
-    // kelalaian oleh siapa pun yang memperhatikan. Menyebutnya mengubahnya
-    // jadi keputusan.
-    const photo = ADDIE_PHASES.flatMap((phase) => phase.artifacts).find(
-      (artifact) => artifact.id === 'live-session',
+  it('piramida Bloom lengkap enam level, dari Create turun ke Remember', () => {
+    const design = ADDIE_PHASES.find((phase) => phase.id === 'design');
+    const bloom = design?.blocks.find((block) => block.kind === 'bloom');
+    if (bloom?.kind !== 'bloom') throw new Error('blok bloom hilang');
+    expect(bloom.levels.map((level) => level.level)).toEqual([
+      'Create',
+      'Evaluate',
+      'Analyze',
+      'Apply',
+      'Understand',
+      'Remember',
+    ]);
+  });
+
+  it('setiap angka di fase Evaluation membawa penyebutnya', () => {
+    // Prinsip P2 berlaku penuh di sini. Rating 4.5 datang dari empat form yang
+    // kembali dari enam peserta, dan pecahan itu wajib duduk di sebelah
+    // angkanya. Bar skor tanpa baris method adalah bar yang mengaku mewakili
+    // seluruh kohort.
+    const evaluation = ADDIE_PHASES.find((phase) => phase.id === 'evaluation');
+    const scores = evaluation?.blocks.find((block) => block.kind === 'scores');
+    if (scores?.kind !== 'scores') throw new Error('blok scores hilang');
+    expect(scores.of).toBe(5);
+    expect(scores.method).toMatch(/4 of 6/);
+    for (const item of scores.items) {
+      expect(item.value, `${item.label} di luar skala`).toBeLessThanOrEqual(scores.of);
+    }
+  });
+
+  it('fase Evaluation menyatakan sendiri batas datanya', () => {
+    // Empat dari enam peserta yang mengembalikan form. Selama pecahan itu
+    // ditulis, tidak ada pembaca yang bisa salah membaca 4.5/5 sebagai suara
+    // seluruh kohort; tanpa itu, setiap angka lain di halaman ikut dicurigai.
+    const evaluation = ADDIE_PHASES.find((phase) => phase.id === 'evaluation');
+    const text = JSON.stringify(evaluation);
+    expect(text).toMatch(/Four of six participants returned the evaluation form/);
+    expect(text).not.toMatch(/all six participants/i);
+  });
+
+  it('fase Evaluation menyebut apa yang masih perlu diperbaiki', () => {
+    // Bagian yang paling gampang dihapus saat merapikan, dan bagian yang
+    // paling membedakan laporan dampak dari brosur.
+    const evaluation = ADDIE_PHASES.find((phase) => phase.id === 'evaluation');
+    const notes = evaluation?.blocks.filter((block) => block.kind === 'note') ?? [];
+    expect(notes.some((note) => note.kind === 'note' && /still needs fixing/i.test(note.title))).toBe(
+      true,
     );
-    expect(photo?.note).toMatch(/blurred/);
-    expect(photo?.alt).toMatch(/blurred/);
+  });
+
+  it('tidak ada nama peserta, username, atau link chatbot individual', () => {
+    // Aturan penyamaran dari spec, ditulis sebagai scan mekanis. Nama-nama di
+    // bawah ini ada di dokumen sumber dan tidak boleh pernah sampai ke HTML,
+    // dan URL chatbot dilarang karena memuat username asli peserta di path-nya.
+    const text = JSON.stringify(ADDIE_PHASES);
+    for (const name of ['Annisa', 'Fauzi', 'Nining', 'Anita', 'Majid', 'Prawitasari', 'Suri']) {
+      expect(text, `nama peserta "${name}" bocor ke section`).not.toContain(name);
+    }
+    expect(text, 'link chatbot individual masih ada').not.toMatch(/app\.smojo\.org/i);
+    expect(text, 'nama universitas peserta masih disebut').not.toMatch(/\bUPB\b/);
+  });
+
+  it('kutipan peserta dianonimkan tapi tetap punya atribusi', () => {
+    // Kutipan tanpa atribusi apa pun terbaca sebagai kutipan yang dikarang.
+    // "Participant A" cukup untuk membedakan dua suara tanpa menunjuk siapa pun.
+    const evaluation = ADDIE_PHASES.find((phase) => phase.id === 'evaluation');
+    const quotes = evaluation?.blocks.find((block) => block.kind === 'quotes');
+    if (quotes?.kind !== 'quotes') throw new Error('blok quotes hilang');
+    expect(quotes.items.length).toBeGreaterThan(0);
+    for (const quote of quotes.items) {
+      expect(quote.by, `atribusi "${quote.by}" bukan label anonim`).toMatch(/^Participant [A-Z]$/);
+    }
+  });
+
+  it('nama pimpinan dan perusahaan penyelenggara tidak disebut di section ini', () => {
+    // Dokumen sumber menyebut "diskusi strategis dengan CEO"; di sini ia jadi
+    // "the program team". Yang dinilai adalah metodenya, bukan siapa yang ikut
+    // rapat.
+    const text = JSON.stringify(ADDIE_PHASES);
+    expect(text).not.toMatch(/\bCEO\b/);
+    expect(text).toMatch(/strategy discussion with the program team/);
+  });
+
+  it('satu-satunya tautan keluar menunjuk ke halaman yang benar-benar hidup', () => {
+    // Fase Development berdiri di atas satu klaim: materinya bisa dibuka
+    // sendiri oleh pembaca. Klaim itu jatuh seluruhnya kalau tautannya bukan
+    // https dan bukan ke domain kursusnya.
+    const development = ADDIE_PHASES.find((phase) => phase.id === 'development');
+    const card = development?.blocks.find((block) => block.kind === 'linkCard');
+    if (card?.kind !== 'linkCard') throw new Error('blok linkCard hilang');
+    expect(card.href).toMatch(/^https:\/\/ai4impact\.org\//);
+    expect(card.domain).toBe('ai4impact.org');
+  });
+
+  it('label "Retrospective documentation" hidup di data, bukan di JSX', () => {
+    // Ia adalah batas klaim, bukan dekorasi. Batas klaim yang diketik langsung
+    // ke komponen tidak pernah ikut discan aturan copy mana pun.
+    expect(ADDIE_SECTION.badge).toBe('Retrospective documentation');
+    expect(ADDIE_SECTION.disclosure).toMatch(/written after the program ran/);
   });
 
   it('latar belakang dipadatkan jadi tiga kartu, tanpa kehilangan satu lembaga pun', () => {
