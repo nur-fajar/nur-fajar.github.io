@@ -1193,13 +1193,8 @@
    berbeda dari Work, Experience, Skills dan References tepat di sekitarnya.
    Rata tengah di situs ini punya arti yang sudah dipakai, yaitu penutup, dan
    itu sebabnya cuma Contact dan footer memakainya. */
-/* Kepala section memakai lebar yang sama persis dengan panel di bawahnya,
-   jadi lede dan panel berbagi tepi kanan. Nilai tokennya sengaja diulang
-   alih-alih diwariskan: --maxw-text milik seluruh situs, dan menariknya ke
-   sini akan mengikat lebar panel ini ke keputusan tipografi global yang bisa
-   berubah untuk alasan yang tidak ada hubungannya dengan section ini. */
 .program__head {
-  max-width: 50rem;
+  max-width: var(--maxw-text);
 }
 
 .program__title {
@@ -1224,29 +1219,34 @@
    tinggi ia jadi kotak 1200px yang sebagian besarnya kosong saat tab
    Development aktif. 560px sampai 760px adalah rentang di mana panel ini
    masih terbaca sebagai satu dokumen, bukan sebagai jendela intip. */
-/* Lebar panel adalah SATU-SATUNYA keputusan ukur di blok ini, dan itu
-   disengaja.
+/* LEBAR WADAH DAN LEBAR TEKS DIPISAH, dan pemisahan itu yang membereskan dua
+   keluhan yang sebelumnya saling meniadakan.
 
-   Versi sebelumnya menahan lebar tiap blok teks sendiri-sendiri, dalam ch.
+   Percobaan pertama menahan lebar tiap blok teks sendiri-sendiri dalam ch.
    Cap dalam ch terlihat konsisten di kode dan tidak konsisten di layar,
    karena 1ch ikut ukuran font: 72ch di paragraf 16px jadi 843px, 72ch di
-   catatan kaki 14px jadi 738px, dan 70ch di badan catatan jadi 717px. Empat
-   tepi kanan berbeda bertumpuk di satu panel, dan tiap paragraf terlihat
-   membungkus di tempat yang sembarangan padahal masih ada ruang di
-   sebelahnya.
+   catatan kaki 14px jadi 738px, 70ch di badan catatan jadi 717px. Empat tepi
+   kanan berbeda bertumpuk di satu panel.
 
-   Menaruh ukurnya di panel membalik persoalannya: isinya mengisi penuh, jadi
-   tidak ada satu pun blok yang bisa membungkus lebih awal dari tetangganya.
-   Ruang kosongnya pindah ke luar panel, tempat ia terbaca sebagai margin.
-   Tepi kanan yang ragged jadi mustahil secara struktur, bukan sekadar
-   dihindari.
+   Percobaan kedua menyempitkan panelnya jadi 50rem supaya isinya mengisi
+   penuh. Itu meluruskan teksnya, tapi menaruh panel selebar 800px tepat di
+   bawah kartu Work selebar 1180px, dan section-nya jadi terbaca menjorok
+   masuk tanpa alasan.
 
-   50rem, dan angkanya diukur bukan dipilih. Dikurangi padding 32px di kedua
-   sisi, isinya jatuh di 736px, yang berarti sekitar 63 karakter untuk teks
-   16px dan 72 karakter untuk teks 14px. Kedua ukuran font di panel ini
-   mendarat di dalam rentang baca yang nyaman dari satu angka yang sama. */
+   Yang benar: panel tetap selebar penuh, sejajar kartu di atasnya, dan
+   ukurnya dikerjakan oleh PADDING, bukan oleh cap. Isinya tetap mengisi penuh
+   ruang yang tersisa, jadi tidak ada blok yang bisa membungkus lebih awal
+   dari tetangganya, dan ruang kosongnya duduk seimbang di kiri dan kanan
+   tempat ia terbaca sebagai margin dokumen. Ruang kosong yang berimbang
+   terbaca disengaja; ruang kosong yang cuma di satu sisi terbaca rusak.
+
+   Angkanya diukur, bukan dipilih. Di panel 1084px, inset terkunci di 10rem
+   dan isinya jatuh sekitar 764px: kira-kira 65 karakter untuk teks 16px dan
+   75 untuk teks 14px, dua-duanya di dalam rentang baca yang nyaman. Di panel
+   sempit sukunya jadi negatif dan clamp jatuh ke --s5, jadi padding-nya
+   otomatis mengecil tanpa satu media query pun. */
 .panel {
-  max-width: 50rem;
+  --inset: clamp(var(--s5), calc((100% - 47rem) / 2), 10rem);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1375,7 +1375,7 @@
   align-items: center;
   gap: var(--s2) var(--s4);
   min-height: 60px;
-  padding: var(--s3) clamp(var(--s5), 2.5vw, var(--s8));
+  padding: var(--s3) var(--inset);
   border-bottom: 1px solid var(--rule);
   background: var(--card);
 }
@@ -1432,7 +1432,15 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: clamp(var(--s5), 2.5vw, var(--s8));
+  /* Ruang scrollbar dipesan permanen, dipakai atau tidak.
+
+     Tanpa ini lebar isi ikut berubah 22px antar-tab: Development muat tanpa
+     menggulir sementara empat tab lain tidak, jadi paragrafnya mengalir ulang
+     tiap kali tab itu dibuka atau ditinggalkan. Pergeseran sekecil itu tidak
+     akan pernah disadari sebagai scrollbar; ia cuma terbaca sebagai teks yang
+     tidak bisa diam. */
+  scrollbar-gutter: stable;
+  padding: clamp(var(--s5), 2.5vw, var(--s8)) var(--inset);
 }
 
 .panel__body {
