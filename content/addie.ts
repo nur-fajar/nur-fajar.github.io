@@ -28,13 +28,17 @@
  * form evaluasi, dan berapa chatbot yang terbit semuanya dihapus. Rating
  * kualitatif tetap ada, jumlah kepala tidak.
  *
- * ANGKA YANG TERSISA TETAP MEMBAWA BATASNYA. Prinsip P2 situs tidak bisa
- * dipenuhi dengan pecahan lagi, jadi ia dipenuhi dengan kalimat: rating 4.5/5
- * dan confidence 4.0/5 dilabeli "from the participants who returned the
- * evaluation form, not from the whole cohort". Itu tetap memberi tahu pembaca
- * bahwa angkanya parsial, yang merupakan pekerjaan sebenarnya dari sebuah
- * denominator. Yang hilang cuma ketepatannya, bukan kejujurannya, dan menulis
- * "seluruh peserta" atas data parsial tetap dilarang seperti sebelumnya.
+ * BATAS DATA TIDAK LAGI DITULIS, dan itu keputusan Fajar yang perlu dicatat
+ * di sini karena ia berlawanan dengan prinsip P2 situs. Rating 4.5/5 dan 4.0/5
+ * sekarang berdiri tanpa baris metode: kalimat "from the participants who
+ * returned the evaluation form" dihapus, begitu juga catatan penutup yang
+ * menyatakan tidak semua peserta mengembalikan form.
+ *
+ * Yang masih menanggung sebagian tugas itu cuma badge "Retrospective
+ * documentation" di kepala tiap tab, dan ia menerangkan sifat dokumennya,
+ * bukan cakupan angkanya. Larangan menulis "seluruh peserta" atas data
+ * parsial tetap berlaku dan tetap dijaga tes, jadi angkanya tidak boleh
+ * MENGKLAIM cakupan penuh; ia hanya tidak lagi menyangkalnya.
  */
 
 /** Warna tag aktivitas di storyboard, dipetakan ke sapuan gradient situs. */
@@ -71,8 +75,11 @@ export type AddieBlock =
   | { kind: 'checklist'; title: string; items: string[] }
   /** Rubrik mini: kriteria kali nama level, tanpa deskripsi tiap sel. */
   | { kind: 'rubric'; criteria: string[]; levels: string[]; footnote: string }
-  /** Bar skor kepuasan. `of` selalu ditulis, tidak pernah tersirat. */
-  | { kind: 'scores'; items: { label: string; value: number }[]; of: number; method: string }
+  /** Bar skor kepuasan. `of` selalu ditulis, tidak pernah tersirat.
+   *  `method` opsional: baris keterangan di bawah bar dihapus atas permintaan
+   *  Fajar, dan bidangnya dibiarkan ada supaya ia bisa dipasang kembali tanpa
+   *  mengubah bentuk data. */
+  | { kind: 'scores'; items: { label: string; value: number }[]; of: number; method?: string }
   /** Kutipan peserta, sudah dianonimkan di sumbernya. */
   | { kind: 'quotes'; items: { text: string; by: string }[] }
   /** Pemisah tipis berlabel di dalam satu tab, bukan tab terpisah. */
@@ -101,24 +108,20 @@ export interface AddiePhase {
   blocks: AddieBlock[];
 }
 
-/** Judul, dua paragraf pembukanya, dan badge di kepala panel.
+/** Judul, kalimat pembukanya, dan badge di kepala panel.
  *
  *  Body copy-nya dikunci kata per kata oleh tes, jadi ia tidak bisa bergeser
  *  diam-diam lewat satu edit yang niatnya cuma merapikan. Bunyinya berasal
  *  dari spec, dengan satu perubahan yang datang belakangan: jumlah dosen
  *  dihapus dari kalimat pembuka. */
 export const ADDIE_SECTION = {
-  eyebrow: 'Inside one program',
-  title: 'One program, opened up phase by phase.',
+  eyebrow: 'Behind the work',
+  title: 'How one program actually got made.',
   lede:
     'Train the Trainers: GenAI Product Manager. University lecturers, four live sessions, ' +
     'and a five week independent build. Below is the working method behind it, from the needs ' +
     'assessment that started it to the evaluation data that closed it.',
   badge: 'Retrospective documentation',
-  /** Ditulis sekali, di bawah lede, bukan diulang di tiap item. */
-  disclosure:
-    'These documents were written after the program ran, to record the reasoning behind decisions ' +
-    'made at the time. Participant names, institutions and chatbot links are removed throughout.',
   /** Nama tablist untuk pembaca layar. Tanpa ini, screen reader mengumumkan
    *  lima tab tanpa mengatakan lima tab dari apa. */
   tablistLabel: 'The five ADDIE phases of this program',
@@ -486,7 +489,6 @@ export const ADDIE_PHASES: AddiePhase[] = [
           { label: 'Overall', value: 4.5 },
         ],
         of: 5,
-        method: 'From the participants who returned the evaluation form, not from the whole cohort.',
       },
       {
         kind: 'prose',
@@ -514,8 +516,8 @@ export const ADDIE_PHASES: AddiePhase[] = [
       {
         kind: 'prose',
         body:
-          'Confidence to teach the material forward averaged 4.0 out of 5 across those same ' +
-          'responses. Every one of them planned to keep using the chatbot they built, and some said ' +
+          'Confidence to teach the material forward averaged 4.0 out of 5. Every one of those ' +
+          'who responded planned to keep using the chatbot they built, and some said ' +
           'explicitly that they planned to teach the material to colleagues, which is the outcome a ' +
           'train the trainers program exists for.',
       },
@@ -527,13 +529,6 @@ export const ADDIE_PHASES: AddiePhase[] = [
           'technical guides after falling behind the live instructions. Someone reported a ' +
           'publishing error on the platform and wanted a direct channel to ask about it. A ' +
           'post-program consultation channel is the gap that shows up most clearly in the responses.',
-      },
-      {
-        kind: 'note',
-        title: 'The limit of this data',
-        body:
-          'Not every participant returned the evaluation form. Every number in this phase comes ' +
-          'from those who did, and none of them should be read as the whole cohort.',
       },
     ],
   },

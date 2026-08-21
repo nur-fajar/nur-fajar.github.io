@@ -1210,18 +1210,6 @@
   line-height: 1.7;
 }
 
-/* Batas klaimnya ditulis di muka, bukan di kaki. Pembaca yang menemukan
-   sendiri bahwa dokumennya retrospektif setelah membaca lima fase merasa
-   diberi tahu terlambat; pembaca yang diberi tahu di awal membaca sisanya
-   sebagai catatan proses, yang memang bentuknya. */
-.program__disclosure {
-  margin-top: var(--s4);
-  max-width: 62ch;
-  color: var(--ink-faint);
-  font-size: var(--fs-sm);
-  line-height: 1.65;
-}
-
 /* ── Panel, dan tab browser di kepalanya ────────────────────────────────── */
 
 /* Tinggi diikat ke viewport, dengan lantai dan langit-langit.

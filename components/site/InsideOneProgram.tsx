@@ -307,7 +307,11 @@ function Block({ block }: { block: AddieBlock }) {
               </li>
             ))}
           </ul>
-          <p className="phase__footnote">{block.method}</p>
+          {/* Baris metode dirender kondisional. Bidangnya dibiarkan ada di tipe
+              supaya keterangan cakupan bisa dipasang kembali tanpa mengubah
+              bentuk data, tapi selama ia kosong, tidak ada paragraf kosong
+              yang ikut menyisakan jarak di bawah bar. */}
+          {block.method ? <p className="phase__footnote">{block.method}</p> : null}
         </div>
       );
 
@@ -417,7 +421,6 @@ export default function InsideOneProgram() {
         <p className="eyebrow">{ADDIE_SECTION.eyebrow}</p>
         <h3 className="program__title">{ADDIE_SECTION.title}</h3>
         <p className="program__lede">{ADDIE_SECTION.lede}</p>
-        <p className="program__disclosure">{ADDIE_SECTION.disclosure}</p>
       </Reveal>
 
       <Reveal delay={0.08}>
