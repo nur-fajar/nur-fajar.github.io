@@ -934,3 +934,205 @@ export const PROJECTS: ProjectCard[] = [
     aside: true,
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 3.1 , Marketing & event content dari ai4impact
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type GalleryCategory = 'video-marketing' | 'testimonial' | 'event-poster' | 'greeting-poster';
+
+export interface GalleryItem {
+  id: string;
+  title: string;
+  category: GalleryCategory;
+  href: string;
+  /** Path ke public/work-gallery/<id>.jpg, diambil dari cover post Instagram aslinya. */
+  thumbnail: string;
+}
+
+export const GALLERY_CATEGORY_LABEL: Record<GalleryCategory, string> = {
+  'video-marketing': 'Video',
+  testimonial: 'Testimonial',
+  'event-poster': 'Event',
+  'greeting-poster': 'Greeting',
+};
+
+/**
+ * Konten marketing & event yang saya bikin untuk ai4impact: video, poster
+ * program, wawancara alumni, dan poster ucapan hari besar. Ini pekerjaan
+ * desain/marketing, terpisah dari kartu kurikulum L&D di atas, ditaruh di
+ * grid tersendiri (lihat WorkGallery.tsx) supaya keduanya tidak tercampur.
+ *
+ * href menuju post Instagram aslinya, jadi setiap kartu bisa diverifikasi
+ * langsung, sama seperti aturan §7 di atas untuk WORK.
+ */
+export const WORK_GALLERY: GalleryItem[] = [
+  {
+    id: 'DMhq46JPyde',
+    title: 'Ajakan ikut kelas chatbot gratis',
+    category: 'video-marketing',
+    href: 'https://www.instagram.com/p/DMhq46JPyde/',
+    thumbnail: '/work-gallery/DMhq46JPyde.jpg',
+  },
+  {
+    id: 'DM1noFqPfEv',
+    title: 'Ajakan gabung grup WhatsApp Chatbots for Business',
+    category: 'video-marketing',
+    href: 'https://www.instagram.com/p/DM1noFqPfEv/',
+    thumbnail: '/work-gallery/DM1noFqPfEv.jpg',
+  },
+  {
+    id: 'DNP61IEP4RX',
+    title: 'Rekap live session pertama: coding & kuis',
+    category: 'video-marketing',
+    href: 'https://www.instagram.com/p/DNP61IEP4RX/',
+    thumbnail: '/work-gallery/DNP61IEP4RX.jpg',
+  },
+  {
+    id: 'DRD-EpeDz1i',
+    title: 'Cerita alumni: Arianto Pakaang, kini S2 di Griffith University',
+    category: 'testimonial',
+    href: 'https://www.instagram.com/p/DRD-EpeDz1i/',
+    thumbnail: '/work-gallery/DRD-EpeDz1i.jpg',
+  },
+  {
+    id: 'DSWQv2CjXRf',
+    title: 'Cerita alumni: Valencia Vananda, Fullstack Engineer di AbiShar',
+    category: 'testimonial',
+    href: 'https://www.instagram.com/p/DSWQv2CjXRf/',
+    thumbnail: '/work-gallery/DSWQv2CjXRf.jpg',
+  },
+  {
+    id: 'DUIW5jWjemf',
+    title: 'Cerita alumni: Silvia Larasatul Masyitoh, developer di Jepang',
+    category: 'testimonial',
+    href: 'https://www.instagram.com/p/DUIW5jWjemf/',
+    thumbnail: '/work-gallery/DUIW5jWjemf.jpg',
+  },
+  {
+    id: 'DVXdPvqjSSy',
+    title: 'Cerita alumni: Elvira Nurfadhilah, researcher di BRIN',
+    category: 'testimonial',
+    href: 'https://www.instagram.com/p/DVXdPvqjSSy/',
+    thumbnail: '/work-gallery/DVXdPvqjSSy.jpg',
+  },
+  {
+    id: 'DPTH95QjwRe',
+    title: 'Poster kelas Chatbots for Education',
+    category: 'event-poster',
+    href: 'https://www.instagram.com/p/DPTH95QjwRe/',
+    thumbnail: '/work-gallery/DPTH95QjwRe.jpg',
+  },
+  {
+    id: 'DU5elThD_MQ',
+    title: 'Poster Smojothon edisi Ramadhan',
+    category: 'event-poster',
+    href: 'https://www.instagram.com/p/DU5elThD_MQ/',
+    thumbnail: '/work-gallery/DU5elThD_MQ.jpg',
+  },
+  {
+    id: 'DVvD0r_j9-c',
+    title: 'Poster Smojothon Alumni Talk bareng Adeline',
+    category: 'event-poster',
+    href: 'https://www.instagram.com/p/DVvD0r_j9-c/',
+    thumbnail: '/work-gallery/DVvD0r_j9-c.jpg',
+  },
+  {
+    id: 'DVvEzTTD1Ch',
+    title: 'Poster Smojothon Alumni Talk bareng Verren',
+    category: 'event-poster',
+    href: 'https://www.instagram.com/p/DVvEzTTD1Ch/',
+    thumbnail: '/work-gallery/DVvEzTTD1Ch.jpg',
+  },
+  {
+    id: 'DVvGJHKDzd7',
+    title: 'Poster Smojothon Alumni Talk bareng Devara',
+    category: 'event-poster',
+    href: 'https://www.instagram.com/p/DVvGJHKDzd7/',
+    thumbnail: '/work-gallery/DVvGJHKDzd7.jpg',
+  },
+  {
+    id: 'DNcRMq8Pwfd',
+    title: 'Ucapan HUT ke-80 Republik Indonesia',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DNcRMq8Pwfd/',
+    thumbnail: '/work-gallery/DNcRMq8Pwfd.jpg',
+  },
+  {
+    id: 'DQWDuCFDyWt',
+    title: 'Ucapan Hari Sumpah Pemuda',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DQWDuCFDyWt/',
+    thumbnail: '/work-gallery/DQWDuCFDyWt.jpg',
+  },
+  {
+    id: 'DQ4WBrDD-Xy',
+    title: 'Ucapan Hari Pahlawan Nasional',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DQ4WBrDD-Xy/',
+    thumbnail: '/work-gallery/DQ4WBrDD-Xy.jpg',
+  },
+  {
+    id: 'DReKtaHDwSV',
+    title: 'Ucapan Hari Guru Nasional 2025',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DReKtaHDwSV/',
+    thumbnail: '/work-gallery/DReKtaHDwSV.jpg',
+  },
+  {
+    id: 'DSqznhDj1S4',
+    title: 'Ucapan Natal',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DSqznhDj1S4/',
+    thumbnail: '/work-gallery/DSqznhDj1S4.jpg',
+  },
+  {
+    id: 'DS8_ummD1kS',
+    title: 'Ucapan Tahun Baru 2026',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DS8_ummD1kS/',
+    thumbnail: '/work-gallery/DS8_ummD1kS.jpg',
+  },
+  {
+    id: 'DTj_ziTD_JU',
+    title: 'Ucapan Isra Mikraj 1447 H',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DTj_ziTD_JU/',
+    thumbnail: '/work-gallery/DTj_ziTD_JU.jpg',
+  },
+  {
+    id: 'DU2UwiCj7YY',
+    title: 'Ucapan Tahun Baru Imlek 2026',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DU2UwiCj7YY/',
+    thumbnail: '/work-gallery/DU2UwiCj7YY.jpg',
+  },
+  {
+    id: 'DWDP117kgut',
+    title: 'Ucapan Hari Raya Nyepi, Tahun Baru Saka 1948',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DWDP117kgut/',
+    thumbnail: '/work-gallery/DWDP117kgut.jpg',
+  },
+  {
+    id: 'DWH7TRREvoP',
+    title: 'Ucapan Idul Fitri 1447 H',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DWH7TRREvoP/',
+    thumbnail: '/work-gallery/DWH7TRREvoP.jpg',
+  },
+  {
+    id: 'DWqLLd9j-NN',
+    title: 'Ucapan Good Friday',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DWqLLd9j-NN/',
+    thumbnail: '/work-gallery/DWqLLd9j-NN.jpg',
+  },
+  {
+    id: 'DWvG2g_j-1o',
+    title: 'Ucapan Paskah',
+    category: 'greeting-poster',
+    href: 'https://www.instagram.com/p/DWvG2g_j-1o/',
+    thumbnail: '/work-gallery/DWvG2g_j-1o.jpg',
+  },
+];

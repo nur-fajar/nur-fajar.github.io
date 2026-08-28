@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import * as ledger from './ledger';
 import {
@@ -8,6 +10,7 @@ import {
   CONTACT,
   CREDENTIALS,
   CRM_PROJECT,
+  GALLERY_CATEGORY_LABEL,
   HERO,
   LEADERSHIP,
   LOOKING_FOR,
@@ -17,6 +20,7 @@ import {
   SKILLS,
   TESTIMONIALS,
   WORK,
+  WORK_GALLERY,
   WORK_HISTORY,
 } from './ledger';
 
@@ -385,6 +389,36 @@ describe('CTA , hierarki, bukan tiga tombol setara', () => {
     // Daftar kotanya hidup di data, bukan cuma di CSS: kalau ia hanya muncul
     // lewat hover ia tidak akan pernah sampai ke pengguna ponsel.
     expect(setup?.reveal?.items).toEqual(['Tangerang', 'Jakarta', 'Bandung', 'Bali', 'Surabaya']);
+  });
+});
+
+describe('WORK_GALLERY , bento marketing & event content', () => {
+  it('setiap id unik, dipakai sebagai key React dan nama file thumbnail', () => {
+    const ids = WORK_GALLERY.map((item) => item.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('href selalu menuju post Instagram asli, bukan link generik', () => {
+    for (const item of WORK_GALLERY) {
+      expect(item.href, `${item.id} href tidak menuju instagram.com/p/`).toMatch(
+        /^https:\/\/www\.instagram\.com\/p\/[^/]+\/$/,
+      );
+      expect(item.href, `${item.id} href tidak cocok dengan id-nya sendiri`).toContain(`/p/${item.id}/`);
+    }
+  });
+
+  it('thumbnail selalu /work-gallery/<id>.jpg dan file-nya benar ada di public/', () => {
+    for (const item of WORK_GALLERY) {
+      expect(item.thumbnail).toBe(`/work-gallery/${item.id}.jpg`);
+      const onDisk = path.join(process.cwd(), 'public', item.thumbnail);
+      expect(existsSync(onDisk), `${item.thumbnail} tidak ada di public/work-gallery/`).toBe(true);
+    }
+  });
+
+  it('setiap kategori item punya label tampilan yang terdaftar', () => {
+    for (const item of WORK_GALLERY) {
+      expect(GALLERY_CATEGORY_LABEL[item.category], `${item.id} pakai kategori tanpa label`).toBeTruthy();
+    }
   });
 });
 
