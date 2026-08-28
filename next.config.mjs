@@ -53,7 +53,13 @@ const nextConfig = STATIC_EXPORT
       // terbaru dengan nama yang deskriptif, jadi tautan lamanya diarahkan ke
       // sana alih-alih dibiarkan jadi 404.
       async redirects() {
-        return [{ source: '/nf.pdf', destination: '/Nur-Fajar-LnD-Specialist-CV.pdf', permanent: true }];
+        return [
+          {
+            source: '/nf.pdf',
+            destination: '/Nur-Fajar-Resume-Learning-Development-Specialist.pdf',
+            permanent: true,
+          },
+        ];
       },
       async headers() {
         return [
