@@ -56,7 +56,7 @@ const nextConfig = STATIC_EXPORT
         return [
           {
             source: '/nf.pdf',
-            destination: '/Nur-Fajar-Resume-Learning-Development-Specialist.pdf',
+            destination: '/Nur-Fajar-Resume.pdf',
             permanent: true,
           },
         ];

@@ -313,7 +313,9 @@ describe('artefak & kontak', () => {
   });
 
   it('nama file CV deskriptif, bukan nf.pdf', () => {
-    expect(CONTACT.cv).toBe('/Nur-Fajar-Resume-Learning-Development-Specialist.pdf');
+    // Tanpa nama role di file-nya, sengaja , CV yang sama dipakai lintas
+    // lamaran tanpa kelihatan ditujukan untuk satu posisi spesifik.
+    expect(CONTACT.cv).toBe('/Nur-Fajar-Resume.pdf');
   });
 
   it('mailto membawa kerangka isian, bukan cuma sapaan', () => {

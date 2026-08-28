@@ -7,8 +7,8 @@
  * angka itu tidak boleh dipakai.
  *
  * Semua nilai di bawah ini sudah dicocokkan baris per baris dengan
- * Nur-Fajar-Resume-Learning-Development-Specialist.pdf (prinsip P3, situs dan
- * CV harus bisa dibaca berdampingan tanpa satu pertanyaan pun).
+ * Nur-Fajar-Resume.pdf (prinsip P3, situs dan CV harus bisa dibaca
+ * berdampingan tanpa satu pertanyaan pun).
  *
  * Amandemen Agustus 2026 (audit "74 ke 96"). Empat perubahan besar:
  *
@@ -40,8 +40,8 @@ export const CONTACT = {
   timezone: 'GMT+7',
   /** Nama file sengaja deskriptif, file ini duduk di folder Downloads
    *  hiring manager selama berminggu-minggu (spec §7 SECTION 8). */
-  cv: '/Nur-Fajar-Resume-Learning-Development-Specialist.pdf',
-  cvFilename: 'Nur-Fajar-Resume-Learning-Development-Specialist.pdf',
+  cv: '/Nur-Fajar-Resume.pdf',
+  cvFilename: 'Nur-Fajar-Resume.pdf',
   /** Dipajang persis di bawah tombol kontak. Menurunkan biaya psikologis
    *  mengirim email dingin lebih dari yang terlihat: yang menahan orang
    *  bukan ragu soal alamatnya, tapi ragu apakah akan dibalas. */
