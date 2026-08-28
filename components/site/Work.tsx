@@ -2,6 +2,7 @@ import { ArrowRight, ArrowUpRight, CalendarBlank } from '@phosphor-icons/react/d
 import { CONTACT, PROJECTS } from '@/content/ledger';
 import InsideOneProgram from './InsideOneProgram';
 import Reveal from './Reveal';
+import WorkGallery from './WorkGallery';
 
 /**
  * Grid karya: yang dibangun sendiri, yang bisa dibuka publik, dan satu yang
@@ -95,6 +96,12 @@ export default function Work() {
             navigasi sendiri: pembaca sampai di sini karena baru saja melihat
             karyanya, bukan karena melompat dari menu. */}
         <InsideOneProgram />
+
+        {/* Bukti keluasan kerja di luar kurikulum: video, poster event, dan
+            wawancara alumni yang saya bikin untuk ai4impact. Naik setelah
+            bedah satu program, sebelum CTA penutup , spesifik dulu, baru
+            luas, baru ajakan terakhir. */}
+        <WorkGallery />
 
         {/* Titik keyakinan tertinggi di seluruh halaman: pembaca baru saja
             bisa membuka materinya sendiri. Satu tombol, bukan tiga; tiga
