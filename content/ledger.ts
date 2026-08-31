@@ -586,20 +586,6 @@ export const CREDENTIALS: Credential[] = [
     href: 'https://www.linkedin.com/learning/certificates/cc531416ad4efd0208c4939578a3d80d8ad3ea599c9d3f7b6b1f189ce3ec74f8',
     track: 'ld',
   },
-  {
-    name: 'SDGs 101',
-    issuer: 'Bappenas',
-    href: 'https://sdgs-mlp.bappenas.go.id/certificates/3d68718c0aca4921abc8914651e8b764',
-    track: 'other',
-  },
-  { name: 'TensorFlow Developer Certificate', issuer: 'Google', year: '2024', track: 'other' },
-  {
-    name: 'Google Data Analytics Professional Certificate',
-    issuer: 'Coursera',
-    year: '2023',
-    track: 'other',
-  },
-  { name: 'Digital Marketing', issuer: 'BNSP', track: 'other' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
