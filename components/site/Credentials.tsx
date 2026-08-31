@@ -65,31 +65,33 @@ export default function Credentials() {
           ))}
         </ul>
 
-        <Reveal>
-          <p className="creds__rest">
-            Also held:{' '}
-            {rest.map((credential, index) => (
-              <span key={credential.name}>
-                {index > 0 ? ' · ' : ''}
-                {credential.href ? (
-                  <a
-                    className="link"
-                    href={credential.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {credential.name} ({credential.issuer})
-                  </a>
-                ) : (
-                  <>
-                    {credential.name} ({credential.issuer}
-                    {credential.year ? `, ${credential.year}` : ''})
-                  </>
-                )}
-              </span>
-            ))}
-          </p>
-        </Reveal>
+        {rest.length > 0 && (
+          <Reveal>
+            <p className="creds__rest">
+              Also held:{' '}
+              {rest.map((credential, index) => (
+                <span key={credential.name}>
+                  {index > 0 ? ' · ' : ''}
+                  {credential.href ? (
+                    <a
+                      className="link"
+                      href={credential.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {credential.name} ({credential.issuer})
+                    </a>
+                  ) : (
+                    <>
+                      {credential.name} ({credential.issuer}
+                      {credential.year ? `, ${credential.year}` : ''})
+                    </>
+                  )}
+                </span>
+              ))}
+            </p>
+          </Reveal>
+        )}
       </div>
     </section>
   );
