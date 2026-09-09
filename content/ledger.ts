@@ -1153,22 +1153,22 @@ export type V3Category = 'design' | 'video' | 'course' | 'website';
  *  akan gagal alih-alih diam-diam berbeda. */
 export const V3_PROJECT_CATEGORIES: { id: V3Category; label: string; blurb: string }[] = [
   {
-    id: 'design',
-    label: 'DESIGN',
-    blurb: 'Program posters and event assets, each one linked to where it was published.',
-  },
-  {
-    id: 'video',
-    label: 'VIDEO',
-    blurb: 'Program videos and alumni interviews, each one linked to where it was published.',
-  },
-  {
     id: 'course',
-    label: 'COURSE',
+    label: 'Course',
     blurb:
       'Three courses anyone can open, the curriculum behind them, and the working method of one program from needs assessment to evaluation.',
   },
-  { id: 'website', label: 'WEBSITE', blurb: 'Sites built and shipped.' },
+  {
+    id: 'video',
+    label: 'Video',
+    blurb: 'Program videos and alumni interviews, each one linked to where it was published.',
+  },
+  {
+    id: 'design',
+    label: 'Design',
+    blurb: 'Program posters and event assets, each one linked to where it was published.',
+  },
+  { id: 'website', label: 'Website', blurb: 'Sites built and shipped.' },
 ];
 
 /** Empat kategori galeri dilipat ke dua kategori project. Sebuah tes

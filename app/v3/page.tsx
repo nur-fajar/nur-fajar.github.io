@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
 import Hero from '@/components/v3/Hero';
+import Experience from '@/components/v3/sections/Experience';
+import Proof from '@/components/v3/sections/Proof';
+import Work from '@/components/v3/sections/Work';
 
 /* absolute, bukan judul biasa: template root menambahkan ", Nur Fajar" di
    belakang setiap judul, dan di halaman yang judulnya sudah namanya sendiri
@@ -14,8 +17,15 @@ export const metadata: Metadata = {
  * Urutannya mengikuti argumen yang sudah ditulis di app/page.tsx, bukan
  * urutan referensinya: Work sebelum Experience, dan About di posisi keenam.
  * Alasannya soal isi, bukan soal kulit, jadi ia tidak ikut berubah saat
- * kulitnya diganti. Section-nya menyusul satu per satu; sekarang baru hero.
+ * kulitnya diganti. Sebuah tes mengunci urutan itu di V3_SECTIONS.
  */
 export default function V3Page() {
-  return <Hero />;
+  return (
+    <>
+      <Hero />
+      <Proof />
+      <Work />
+      <Experience />
+    </>
+  );
 }
