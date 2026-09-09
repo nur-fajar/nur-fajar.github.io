@@ -38,11 +38,17 @@ export default function Tile({
     '--v3-rows': tile.rows,
   } as React.CSSProperties;
 
-  const arrow = (
-    <span className="v3-tile__go" aria-hidden="true">
-      <ArrowUpRight size={22} weight="bold" />
-    </span>
-  );
+  /* Panah cuma muncul di ubin setinggi dua satuan, persis seperti di mockup.
+     Alasannya bukan selera: tombol 48px plus jarak 32px memakan 80px dari
+     ubin setinggi 165px, dan isinya yang rata tengah pasti tertimpa. Ubin
+     satu satuan tetap sepenuhnya bisa diklik, dan hover-nya tetap mengangkat,
+     jadi yang hilang cuma ikonnya, bukan keterbukaannya. */
+  const arrow =
+    tile.rows > 1 ? (
+      <span className="v3-tile__go" aria-hidden="true">
+        <ArrowUpRight size={22} weight="bold" />
+      </span>
+    ) : null;
 
   if (!tile.href) {
     return (

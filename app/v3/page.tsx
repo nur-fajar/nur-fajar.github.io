@@ -1,6 +1,12 @@
 import type { Metadata } from 'next';
 import Grid from '@/components/v3/Grid';
 import Tile from '@/components/v3/Tile';
+import ConnectTile from '@/components/v3/tiles/ConnectTile';
+import CvTile from '@/components/v3/tiles/CvTile';
+import IntroTile from '@/components/v3/tiles/IntroTile';
+import LinkedInTile from '@/components/v3/tiles/LinkedInTile';
+import ProjectsTile from '@/components/v3/tiles/ProjectsTile';
+import ToolsTile from '@/components/v3/tiles/ToolsTile';
 import { V3_HOME_TILES } from '@/content/ledger';
 
 /* absolute, bukan judul biasa: template root menambahkan ", Nur Fajar" di
@@ -8,6 +14,15 @@ import { V3_HOME_TILES } from '@/content/ledger';
    itu keluar sebagai "Nur Fajar, Nur Fajar". */
 export const metadata: Metadata = {
   title: { absolute: 'Nur Fajar, Learning & Development Specialist' },
+};
+
+const TILE_CONTENT: Record<string, React.ComponentType> = {
+  intro: IntroTile,
+  cv: CvTile,
+  projects: ProjectsTile,
+  tools: ToolsTile,
+  linkedin: LinkedInTile,
+  connect: ConnectTile,
 };
 
 /**
@@ -22,11 +37,14 @@ export default function V3HomePage() {
   return (
     <div className="v3-shell">
       <Grid>
-        {V3_HOME_TILES.map((tile) => (
-          <Tile key={tile.id} tile={tile}>
-            <span>{tile.label}</span>
-          </Tile>
-        ))}
+        {V3_HOME_TILES.map((tile) => {
+          const Content = TILE_CONTENT[tile.id];
+          return (
+            <Tile key={tile.id} tile={tile}>
+              <Content />
+            </Tile>
+          );
+        })}
       </Grid>
     </div>
   );
