@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import Hero from '@/components/v3/Hero';
+import About from '@/components/v3/sections/About';
+import Achievements from '@/components/v3/sections/Achievements';
+import Contact from '@/components/v3/sections/Contact';
 import Experience from '@/components/v3/sections/Experience';
 import Proof from '@/components/v3/sections/Proof';
+import Technologies from '@/components/v3/sections/Technologies';
 import Work from '@/components/v3/sections/Work';
 
 /* absolute, bukan judul biasa: template root menambahkan ", Nur Fajar" di
@@ -17,7 +21,8 @@ export const metadata: Metadata = {
  * Urutannya mengikuti argumen yang sudah ditulis di app/page.tsx, bukan
  * urutan referensinya: Work sebelum Experience, dan About di posisi keenam.
  * Alasannya soal isi, bukan soal kulit, jadi ia tidak ikut berubah saat
- * kulitnya diganti. Sebuah tes mengunci urutan itu di V3_SECTIONS.
+ * kulitnya diganti. Sebuah tes mengunci urutan itu di V3_SECTIONS, jadi
+ * menyusun ulang jadi keputusan sadar alih-alih pergeseran diam-diam.
  */
 export default function V3Page() {
   return (
@@ -26,6 +31,10 @@ export default function V3Page() {
       <Proof />
       <Work />
       <Experience />
+      <Technologies />
+      <Achievements />
+      <About />
+      <Contact />
     </>
   );
 }
