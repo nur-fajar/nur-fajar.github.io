@@ -346,12 +346,36 @@
   }
 }
 
+/* Nav melayang di tengah dan status di pojok kanan atas berhenti muat
+   berdampingan jauh sebelum breakpoint tablet: di sekitar 1150px keduanya
+   bertabrakan. Statusnya turun ke bawah nav, bukan dikecilkan. */
+@media (max-width: 1180px) {
+  .v3-status {
+    top: 5.25rem;
+  }
+}
+
 @media (max-width: 640px) {
+  /* Enam item huruf kapital berspasi lebar tidak akan pernah muat di 414px.
+     Nav berhenti jadi pil melayang dan jadi bilah selebar layar yang bisa
+     digeser, dengan scrollbar-nya disembunyikan: bilah abu setebal 15px di
+     bawah nav terbaca sebagai kerusakan, bukan sebagai petunjuk. */
   .v3-nav {
-    gap: 0.9rem;
-    padding: 0.75rem 0.9rem;
-    max-width: 100vw;
+    left: 0;
+    right: 0;
+    transform: none;
+    justify-content: flex-start;
+    gap: 1.1rem;
+    padding: 0.8rem var(--v3-gutter);
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
     overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .v3-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .v3-nav__link {
@@ -359,8 +383,22 @@
     letter-spacing: 0.14em;
   }
 
+  /* Nav sekarang selebar layar, jadi penanda sudut tidak punya sudut lagi.
+     NF dibuang: namanya sudah terpampang seukuran layar tepat di bawahnya.
+     Status pindah ke kiri, di bawah nav, karena ia menjawab pertanyaan
+     screening dan tidak boleh ikut hilang. */
+  .v3-mark {
+    display: none;
+  }
+
+  .v3-status {
+    top: 4.1rem;
+    left: var(--v3-gutter);
+    right: auto;
+  }
+
   .v3-hero {
-    padding-top: 8.5rem;
+    padding-top: 9rem;
   }
 
   .v3-hero__name {
