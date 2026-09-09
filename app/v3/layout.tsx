@@ -1,5 +1,6 @@
 import { Fraunces, Inter } from 'next/font/google';
 import Nav from '@/components/v3/Nav';
+import ScrollProgress from '@/components/v3/ScrollProgress';
 import './v3.css';
 
 /* Dua keluarga, keduanya di-self-host lewat next/font supaya
@@ -37,6 +38,7 @@ export default function V3Layout({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
 
+      <ScrollProgress />
       <Nav />
 
       <main id="v3-main" tabIndex={-1}>

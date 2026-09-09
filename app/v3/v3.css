@@ -573,8 +573,14 @@
   grid-template-columns: repeat(2, 1fr);
 }
 
+/* flex-direction: column wajib disebut.
+   Sebagian li di grid ini membungkus kartu (kartu course dibungkus <a>),
+   sebagian lagi ADALAH kartunya sendiri (kartu BUILT dan Website). Untuk
+   yang kedua, flex tanpa arah membuat judul, isi, dan chip berjajar
+   menyamping alih-alih bertumpuk. */
 .v3-cards > li {
   display: flex;
+  flex-direction: column;
 }
 
 .v3-cards > li > * {
@@ -1063,4 +1069,19 @@
     grid-template-columns: 1fr;
     gap: 0.35rem;
   }
+}
+
+/* ── Bar progres scroll ───────────────────────────────────────────────── */
+
+/* transform-origin kiri, dan scaleX yang digerakkan Framer Motion. Memakai
+   width akan memicu layout di setiap frame; scaleX hanya compositing. */
+.v3-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 60;
+  transform-origin: 0%;
+  background: var(--v3-blue);
 }

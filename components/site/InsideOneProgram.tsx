@@ -512,7 +512,15 @@ export default function InsideOneProgram() {
                 keduanya karena tidak ada saat di mana keduanya absen. */}
             <m.div
               key={active.id}
-              className="panel__body"
+              /* motion-safe WAJIB ada di sini, bukan opsional.
+                 Framer Motion membakar `initial` ke HTML server-rendered,
+                 jadi panel ini terkirim sebagai opacity:0. Aturan <noscript>
+                 di app/layout.tsx memulihkan hanya elemen berkelas
+                 motion-safe, dan tanpa kelas itu isi tab pertama tidak
+                 pernah terlihat kalau JavaScript tidak jalan. Itu persis
+                 kebalikan dari yang dijanjikan komentar di kepala file ini,
+                 dan satu-satunya elemen di seluruh situs yang meleset. */
+              className="panel__body motion-safe"
               id={panelIdFor(active.id)}
               role="tabpanel"
               aria-labelledby={tabIdFor(active.id)}
