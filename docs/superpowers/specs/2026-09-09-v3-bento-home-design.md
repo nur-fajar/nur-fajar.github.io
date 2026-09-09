@@ -79,8 +79,9 @@ row 3:  6 + 6      = 12
 
 The tiling is exact, which is what makes it testable. A tile whose span
 changes without its neighbours changing folds the grid into a fourth row, and
-that failure is purely visual: nothing in the code looks wrong. A unit test
-asserts the spans sum to 12 per row, mirroring the existing ADDIE bento test.
+that failure is purely visual: nothing in the code looks wrong. A new unit test
+asserts the spans sum to 12 per row. There is no existing test of this shape in
+the repo to model it on; it is written from scratch.
 
 | Tile | Span | Surface | Leads to |
 |---|---|---|---|
@@ -218,7 +219,7 @@ Four categories, in the order the mockup prints them on the black tile.
   Every card links out to its original Instagram post, so each is verifiable
   on its own.
 - **Course** — `WORK` (three live ai4impact courses), `BUILT` (curriculum and
-  Train the Trainers), and the ADDIE bento from `content/addie.ts`.
+  Train the Trainers), and the ADDIE tab panel driven by `content/addie.ts`.
 - **Website** — one entry for now, `nurfajar.com` itself. The category is built
   as a list so entries can be appended without touching layout.
 
@@ -227,9 +228,22 @@ them, carrying its existing structural label, "Outside the Learning &
 Development mandate". That label is the whole mechanism by which the ledger
 separates it from L&D work, and burying it inside a category would undo that.
 
-The ADDIE bento is rebuilt with the same spans as the current one, 4/7/5 over
-two rows with five cards of equal height. The existing test that asserts those
-spans tile into exact rows of twelve stays in force. No sixth card.
+The ADDIE section keeps its current form: one full-width, fixed-height panel
+with five browser-style tabs, restyled to v3 tokens. It is not rebuilt as a
+bento, and that is deliberate. `components/site/InsideOneProgram.tsx` records
+that a five-card bento was tried and dropped, because it put each phase's
+content behind a dialog and five phases then meant five open-and-close cycles
+to read one process that only makes sense read in order. An accordion was tried
+and dropped too, because Analysis has five blocks and Evaluation has twelve, so
+opening the last phase shoved half the page down.
+
+The panel also renders its first tab from the server, so the section reads
+complete before JavaScript runs. That property matters more on a bento home
+screen than it did on the old page, because `/v3/project` is now a
+click away rather than on the scroll path.
+
+Restyling is limited to surface, radius, type, and color. The tab mechanics,
+keyboard handling, and the fixed panel height are left as they are.
 
 ### `/v3/about`
 
@@ -284,6 +298,13 @@ It goes in `ledger.ts` specifically because four tests there iterate
 
 Copy written directly into components escapes all four. That is the reason for
 the rule, not a stylistic preference.
+
+One gap worth naming, inherited rather than introduced: `ledger.ts` re-exports
+`./addie` but not `./references`, so `REFERENCES` is outside all four sweeps
+today. Moving references onto `/v3/about` does not change that either way.
+Closing the gap is a one-line change but it is not part of this work, because
+it would put five quotes written by other people under a copy rule written for
+Fajar's own prose.
 
 ## Tests
 
@@ -344,7 +365,7 @@ files is modified.
 
 1. Shell: tokens, fonts, `Grid`, `Tile`, nav. Home renders with empty tiles.
 2. Real tiles: intro, CV, LinkedIn, Projects, Tools, Let's Connect.
-3. `/v3/project`, including the ADDIE bento.
+3. `/v3/project`, including the restyled ADDIE tab panel.
 4. `/v3/about`.
 5. `/v3/tools` and `/v3/contact`.
 6. Tests, both builds, responsive pass.
