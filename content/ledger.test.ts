@@ -19,6 +19,13 @@ import {
   PROOF,
   SKILLS,
   TESTIMONIALS,
+  V3_GALLERY_CATEGORY,
+  V3_HOME_TILES,
+  V3_NAV,
+  V3_PROJECT_CATEGORIES,
+  V3_ROLE_CHIPS,
+  V3_TOOLS,
+  V3_WEBSITES,
   WORK,
   WORK_GALLERY,
   WORK_HISTORY,
@@ -759,5 +766,80 @@ describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
     ]) {
       expect(institutions, `${name} hilang saat kartu digabung`).toContain(name);
     }
+  });
+});
+
+describe('v3 , bento home screen', () => {
+  it('setiap baris grid tertutup penuh 12 kolom, tidak lebih tidak kurang', () => {
+    // Kegagalannya murni visual: satu span yang bergeser melipat grid jadi
+    // baris keempat dan tidak ada satu pun baris kode yang terlihat salah.
+    for (const row of [1, 2, 3]) {
+      const occupying = V3_HOME_TILES.filter(
+        (tile) => tile.row <= row && row < tile.row + tile.rows,
+      );
+      const total = occupying.reduce((sum, tile) => sum + tile.span, 0);
+      expect(total, `baris ${row} berisi ${total} kolom`).toBe(12);
+    }
+  });
+
+  it('grid berhenti di tiga baris', () => {
+    const last = Math.max(...V3_HOME_TILES.map((tile) => tile.row + tile.rows - 1));
+    expect(last).toBe(3);
+  });
+
+  it('setiap ubin-pintu internal menunjuk route yang benar-benar ada', () => {
+    // Pola yang sama dipakai tes artefak di atas: keberadaan file diperiksa
+    // di disk, bukan dipercaya dari string.
+    const internal = V3_HOME_TILES.filter((tile) => tile.href?.startsWith('/v3'));
+    expect(internal.length).toBeGreaterThan(0);
+    for (const tile of internal) {
+      const page = path.join(process.cwd(), 'app', tile.href!.slice(1), 'page.tsx');
+      expect(existsSync(page), `${tile.href} tidak punya page.tsx`).toBe(true);
+    }
+  });
+
+  it('nav dan halaman project memakai kata yang sama, jadi keduanya tidak bisa berpisah diam-diam', () => {
+    const tile = V3_HOME_TILES.find((candidate) => candidate.id === 'projects');
+    expect(tile?.href).toBe('/v3/project');
+    expect(V3_PROJECT_CATEGORIES.map((category) => category.label)).toEqual([
+      'DESIGN',
+      'VIDEO',
+      'COURSE',
+      'WEBSITE',
+    ]);
+    expect(V3_NAV.map((link) => link.href)).toContain('/v3/project');
+  });
+
+  it('tidak ada satu pun item galeri yang hilang saat dilipat ke halaman project', () => {
+    for (const item of WORK_GALLERY) {
+      const target = V3_GALLERY_CATEGORY[item.category];
+      expect(target, `${item.id} tidak punya kategori tujuan`).toBeTruthy();
+      expect(V3_PROJECT_CATEGORIES.map((category) => category.id)).toContain(target);
+    }
+  });
+
+  it('SKILLS tetap bersih dari nama vendor LLM meski V3_TOOLS memuat tiga', () => {
+    // V3_TOOLS memang memajang Claude, OpenAI, dan Gemini, dan itu boleh:
+    // kartunya berlabel Tools. Pernah memakai produk sebuah vendor bukan
+    // kompetensi, jadi SKILLS tidak boleh ikut kebobolan.
+    const skills = SKILLS.flatMap((group) => group.items).join(' ');
+    for (const vendor of ['Claude', 'Gemini', 'OpenAI', 'GPT']) {
+      expect(skills).not.toContain(vendor);
+    }
+    expect(V3_TOOLS.map((tool) => tool.name)).toContain('Claude');
+  });
+
+  it('setiap situs di kategori Website punya tautan yang bisa dibuka', () => {
+    expect(V3_WEBSITES.length).toBeGreaterThan(0);
+    for (const site of V3_WEBSITES) {
+      expect(site.href, `${site.id} tidak punya href`).toMatch(/^https:\/\//);
+    }
+  });
+
+  it('chip peran menulis disiplinnya dengan ampersand, bukan "and"', () => {
+    // Aturan yang sama dengan sapuan di atas, tapi ditegaskan di sini karena
+    // chip inilah yang paling sering diketik ulang tangan saat menyusun
+    // kartu bio.
+    expect(V3_ROLE_CHIPS[0]).toBe('Learning & Development');
   });
 });

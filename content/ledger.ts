@@ -1122,3 +1122,175 @@ export const WORK_GALLERY: GalleryItem[] = [
     thumbnail: '/work-gallery/DWvG2g_j-1o.jpg',
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 9 , /v3 bento home screen
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Blok ini hidup di ledger.ts, bukan di komponen, dan itu bukan soal
+ * kerapian. Empat tes di ledger.test.ts berjalan dengan
+ * `Object.entries(ledger)`, jadi mereka menyapu SETIAP export di file ini:
+ * em dash, ejaan British, "Learning and Development", dan tujuh kata sifat
+ * tanpa bukti. Copy yang ditulis langsung di komponen lolos keempatnya.
+ */
+
+export type V3Surface = 'white' | 'yellow' | 'ink' | 'blue';
+
+export interface V3Tile {
+  id: string;
+  /** Teks yang dibaca screen reader untuk ubin ini. Isi visualnya diurus
+   *  komponen per-ubin; label inilah yang jadi accessible name-nya. */
+  label: string;
+  /** Lebar dalam kolom, 1 sampai 12. */
+  span: number;
+  /** Baris awal, 1-indexed. */
+  row: number;
+  /** Berapa baris yang ditempati. */
+  rows: number;
+  surface: V3Surface;
+  /** Ada href berarti ubin ini pintu, dan pintu selalu dapat tombol panah.
+   *  Ubin tanpa href tidak pernah dapat panah, jadi pembaca tidak pernah
+   *  mengarahkan kursor ke sesuatu yang tidak kemana-mana. */
+  href?: string;
+  external?: boolean;
+}
+
+/**
+ * Enam ubin, tiga baris, dua belas kolom, nol sel sisa.
+ *
+ * Span-nya data, bukan nama kelas CSS, supaya tiling-nya bisa diuji. Satu
+ * span yang bergeser melipat grid jadi baris keempat, dan kegagalan itu cuma
+ * kelihatan di layar; di kode tidak ada yang terlihat salah.
+ */
+export const V3_HOME_TILES: V3Tile[] = [
+  { id: 'intro', label: "hi! I'm Nur Fajar", span: 6, row: 1, rows: 1, surface: 'white' },
+  { id: 'cv', label: 'Download my CV', span: 2, row: 1, rows: 1, surface: 'white', href: CONTACT.cv },
+  { id: 'projects', label: 'Projects', span: 4, row: 1, rows: 2, surface: 'ink', href: '/v3/project' },
+  { id: 'tools', label: 'Tools I work with', span: 6, row: 2, rows: 2, surface: 'yellow', href: '/v3/tools' },
+  {
+    id: 'linkedin',
+    label: 'LinkedIn',
+    span: 2,
+    row: 2,
+    rows: 1,
+    surface: 'blue',
+    href: CONTACT.linkedin,
+    external: true,
+  },
+  { id: 'connect', label: "Let's Connect", span: 6, row: 3, rows: 1, surface: 'white', href: '/v3/contact' },
+];
+
+export const V3_NAV = [
+  { href: '/v3', label: 'Home' },
+  { href: '/v3/about', label: 'About' },
+  { href: '/v3/tools', label: 'Tools' },
+  { href: '/v3/project', label: 'Project' },
+] as const;
+
+export type V3Category = 'design' | 'video' | 'course' | 'website';
+
+/** Urutannya sama persis dengan urutan kata yang tercetak di ubin hitam di
+ *  home. Sebuah tes mengunci keduanya, jadi mengubah satu tanpa yang lain
+ *  akan gagal alih-alih diam-diam berbeda. */
+export const V3_PROJECT_CATEGORIES: { id: V3Category; label: string; blurb: string }[] = [
+  {
+    id: 'design',
+    label: 'DESIGN',
+    blurb: 'Program posters and event assets, each one linked to where it was published.',
+  },
+  {
+    id: 'video',
+    label: 'VIDEO',
+    blurb: 'Program videos and alumni interviews, each one linked to where it was published.',
+  },
+  {
+    id: 'course',
+    label: 'COURSE',
+    blurb:
+      'Three courses anyone can open, the curriculum behind them, and the working method of one program from needs assessment to evaluation.',
+  },
+  { id: 'website', label: 'WEBSITE', blurb: 'Sites built and shipped.' },
+];
+
+/** Empat kategori galeri dilipat ke dua kategori project. Sebuah tes
+ *  memastikan tidak ada item yang jatuh ke luar peta ini. */
+export const V3_GALLERY_CATEGORY: Record<GalleryCategory, V3Category> = {
+  'event-poster': 'design',
+  'greeting-poster': 'design',
+  'video-marketing': 'video',
+  testimonial: 'video',
+};
+
+export interface V3Site {
+  id: string;
+  name: string;
+  href: string;
+  body: string;
+  stack: string[];
+}
+
+/** Satu entri untuk sekarang, sengaja disusun sebagai list supaya entri
+ *  berikutnya cuma menambah baris, bukan mengubah layout. */
+export const V3_WEBSITES: V3Site[] = [
+  {
+    id: 'nurfajar-com',
+    name: 'nurfajar.com',
+    href: 'https://nurfajar.com',
+    body:
+      'This site. It deploys twice from one source: a Next.js app on Vercel, and a static export mirrored to GitHub Pages. Every number and every line of copy lives in a single file, and a test suite holds the copy rules in place so they cannot drift one harmless edit at a time.',
+    stack: ['Next.js', 'TypeScript', 'Vercel', 'GitHub Pages'],
+  },
+];
+
+export interface V3Tool {
+  id: string;
+  name: string;
+  /** Satu baris yang menerangkan APA tool-nya, bukan klaim tentang apa yang
+   *  dicapai dengannya. Perbedaan itu penting: yang kedua adalah klaim yang
+   *  tidak bisa dibuktikan artefak, dan aturan situs melarangnya. */
+  use: string;
+}
+
+export const V3_TOOLS: V3Tool[] = [
+  { id: 'github', name: 'GitHub', use: 'Version control and code hosting.' },
+  { id: 'canva', name: 'Canva', use: 'Poster and social asset design.' },
+  { id: 'notion', name: 'Notion', use: 'Notes, outlines, and course planning documents.' },
+  { id: 'miro', name: 'Miro', use: 'Whiteboarding and session mapping.' },
+  { id: 'n8n', name: 'n8n', use: 'Workflow automation.' },
+  { id: 'claude', name: 'Claude', use: 'Large language model.' },
+  { id: 'capcut', name: 'CapCut', use: 'Video editing.' },
+  { id: 'openai', name: 'OpenAI', use: 'Large language model.' },
+  { id: 'gemini', name: 'Gemini', use: 'Large language model.' },
+];
+
+/** Chip peran di kepala /v3/about. Ditulis di sini, bukan di komponennya,
+ *  supaya keempat sapuan copy ikut membacanya. Perhatikan yang pertama:
+ *  "Learning & Development", bukan "Learning and Development", dan ada tes
+ *  yang gagal kalau tertukar. */
+export const V3_ROLE_CHIPS = [
+  'Learning & Development',
+  'Instructional Design',
+  'Curriculum Development',
+  'ADDIE',
+] as const;
+
+export const V3_PAGE = {
+  home: { title: 'Home', lede: '' },
+  project: {
+    title: 'Project',
+    lede: 'Four kinds of work. Everything below links to where it lives, so none of it has to be taken on trust.',
+  },
+  about: {
+    title: 'About',
+    lede: 'Where the work came from: three roles, the education behind them, and the third-party evidence for both.',
+  },
+  tools: {
+    title: 'Tools',
+    lede: 'What I work with day to day.',
+  },
+  contact: {
+    title: 'Contact',
+    lede: 'What I am looking for, and four ways to reach me.',
+  },
+} as const;
