@@ -1,13 +1,5 @@
 import type { Metadata } from 'next';
-import Grid from '@/components/v3/Grid';
-import Tile from '@/components/v3/Tile';
-import ConnectTile from '@/components/v3/tiles/ConnectTile';
-import CvTile from '@/components/v3/tiles/CvTile';
-import IntroTile from '@/components/v3/tiles/IntroTile';
-import LinkedInTile from '@/components/v3/tiles/LinkedInTile';
-import ProjectsTile from '@/components/v3/tiles/ProjectsTile';
-import ToolsTile from '@/components/v3/tiles/ToolsTile';
-import { V3_HOME_TILES } from '@/content/ledger';
+import Hero from '@/components/v3/Hero';
 
 /* absolute, bukan judul biasa: template root menambahkan ", Nur Fajar" di
    belakang setiap judul, dan di halaman yang judulnya sudah namanya sendiri
@@ -16,36 +8,14 @@ export const metadata: Metadata = {
   title: { absolute: 'Nur Fajar, Learning & Development Specialist' },
 };
 
-const TILE_CONTENT: Record<string, React.ComponentType> = {
-  intro: IntroTile,
-  cv: CvTile,
-  projects: ProjectsTile,
-  tools: ToolsTile,
-  linkedin: LinkedInTile,
-  connect: ConnectTile,
-};
-
 /**
- * Home screen: enam ubin, tiga baris, dua belas kolom, nol sel sisa.
+ * Satu halaman, delapan section.
  *
- * Halaman ini sengaja tidak menyimpan tata letaknya sendiri. Urutan, lebar,
- * dan tinggi tiap ubin datang dari V3_HOME_TILES di ledger, tempat sebuah
- * tes memeriksa bahwa setiap baris tertutup penuh 12 kolom. Kalau angkanya
- * ditulis di sini, tes itu tidak punya apa pun untuk dibaca.
+ * Urutannya mengikuti argumen yang sudah ditulis di app/page.tsx, bukan
+ * urutan referensinya: Work sebelum Experience, dan About di posisi keenam.
+ * Alasannya soal isi, bukan soal kulit, jadi ia tidak ikut berubah saat
+ * kulitnya diganti. Section-nya menyusul satu per satu; sekarang baru hero.
  */
-export default function V3HomePage() {
-  return (
-    <div className="v3-shell">
-      <Grid>
-        {V3_HOME_TILES.map((tile) => {
-          const Content = TILE_CONTENT[tile.id];
-          return (
-            <Tile key={tile.id} tile={tile}>
-              <Content />
-            </Tile>
-          );
-        })}
-      </Grid>
-    </div>
-  );
+export default function V3Page() {
+  return <Hero />;
 }

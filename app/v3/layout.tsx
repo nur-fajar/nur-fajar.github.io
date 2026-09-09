@@ -1,18 +1,20 @@
-import { Archivo, Inter, Kaushan_Script } from 'next/font/google';
+import { Fraunces, Inter } from 'next/font/google';
 import Nav from '@/components/v3/Nav';
 import './v3.css';
 
-/* Tiga keluarga, semuanya di-self-host lewat next/font supaya
+/* Dua keluarga, keduanya di-self-host lewat next/font supaya
    `font-src 'self'` di CSP tetap cukup dan tidak ada request
-   render-blocking ke fonts.googleapis.com. Pola yang sama sudah dipakai
-   app/layout.tsx untuk dua keluarga situs lama. */
+   render-blocking ke fonts.googleapis.com. */
 
-/* Display. Italic-nya italic sungguhan, bukan miring bikinan browser: di
-   ukuran sebesar "PROJECTS" oblique sintetis terlihat meleot. */
-const archivo = Archivo({
+/* Fraunces dimuat di bobot 300 saja, tegak dan miring. Bobotnya yang
+   menentukan karakter halaman ini: serif kontras tinggi yang tipis di ukuran
+   display terbaca editorial, dan huruf yang sama di bobot tebal terbaca
+   seperti kepala koran. Italic-nya italic sungguhan, bukan miring bikinan
+   browser, dan di ukuran hero bedanya kelihatan jelas. */
+const fraunces = Fraunces({
   subsets: ['latin'],
-  weight: ['800'],
-  style: ['italic'],
+  weight: ['300'],
+  style: ['normal', 'italic'],
   variable: '--font-v3-display',
   display: 'swap',
 });
@@ -24,26 +26,13 @@ const inter = Inter({
   display: 'swap',
 });
 
-/* Dipakai persis di dua tempat: ubin "Let's Connect!" di home dan kepala
-   /v3/contact. Tidak di tempat lain. */
-const kaushan = Kaushan_Script({
-  subsets: ['latin'],
-  weight: ['400'],
-  variable: '--font-v3-script',
-  display: 'swap',
-});
-
 /* Layout ini sengaja TIDAK punya metadata sendiri.
    Root layout memasang template '%s, Nur Fajar', jadi judul apa pun yang
-   ditulis di sini akan keluar sebagai "Nur Fajar, Nur Fajar". Judul
-   diputuskan tiap halaman: yang di bawah root mendapat template itu
-   (menjadi "Project, Nur Fajar"), sementara home memakai title.absolute. */
+   ditulis di sini akan keluar sebagai "Nur Fajar, Nur Fajar". */
 
 export default function V3Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`v3-root ${archivo.variable} ${inter.variable} ${kaushan.variable}`}>
-      {/* Targetnya #v3-main, bukan konten pertama: skip link tugasnya
-          melompati navigasi, bukan melompati isi. */}
+    <div className={`v3-root ${fraunces.variable} ${inter.variable}`}>
       <a className="skip-link" href="#v3-main">
         Skip to content
       </a>

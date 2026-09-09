@@ -2,367 +2,346 @@
    Situs lama masih live di / dan berbagi dokumen yang sama; menaruh token
    ini di :root akan mengecat ulang halaman itu. */
 .v3-root {
-  --v3-paper: #fff9f1;
-  --v3-card: #ffffff;
-  --v3-nav: #f5f2ed;
+  --v3-page: #0f0f0f;
+  --v3-card: #161616;
+  --v3-line: #252525;
 
-  /* Ketiga tingkat tinta diukur terhadap --v3-paper, bukan dipilih:
-       --v3-ink        20.07:1   judul, angka
-       --v3-ink-soft    7.20:1   paragraf
-       --v3-ink-faint   4.63:1   label, caption
-     Kedua tinta menengah abu HANGAT. Abu netral terlihat kebiruan di atas
-     krem, dan bedanya baru kelihatan setelah semuanya terpasang. */
-  --v3-ink: #000000;
-  --v3-ink-soft: #5a5350;
-  --v3-ink-faint: #78706c;
+  /* Ketiga tingkat tinta diukur, bukan dipilih. Angka kedua adalah rasio di
+     atas kartu #161616, karena caption dan chip duduk di sana, bukan di
+     atas latar halaman:
+       --v3-ink        16.82   -
+       --v3-ink-soft    7.18   6.78
+       --v3-ink-faint   4.88   4.61 */
+  --v3-ink: #f0f0f0;
+  --v3-ink-soft: #9e9ea2;
+  --v3-ink-faint: #808085;
 
-  --v3-yellow: #ffde59;
-  --v3-cyan: #5ce1e6;
-  --v3-blue: #0b66c3;
+  /* DUA biru, dan itu bukan kelebihan.
+     Referensinya memakai #2563eb untuk eyebrow 10.4px. Di atas #0f0f0f
+     rasionya 3.71:1, di bawah 4.5:1 yang diminta AA, dan itu teks terkecil
+     di halamannya. #2563eb di sini hanya untuk hal yang rasionya bukan
+     pertanyaan utama: bar progres 4px, isian tombol (putih di atasnya 5.17:1),
+     dan asterisk hero. Semua teks biru kecil memakai --v3-blue-text. */
+  --v3-blue: #2563eb;
+  --v3-blue-text: #60a5fa;
 
-  --v3-r-tile: 32px;
-  --v3-r-card: 20px;
-  --v3-gap: 16px;
-  --v3-maxw: 1180px;
-  --v3-gutter: clamp(1rem, 4vw, 2rem);
-  --v3-unit: 165px;
+  --v3-ok: #22c55e;
 
-  background: var(--v3-paper);
+  --v3-maxw: 1240px;
+  --v3-gutter: clamp(1.25rem, 5vw, 4rem);
+  --v3-r-card: 12px;
+
+  background: var(--v3-page);
   color: var(--v3-ink);
   font-family: var(--font-v3-body), ui-sans-serif, system-ui, sans-serif;
 
-  /* Root layout memuat globals.css di SETIAP route, jadi --paper: #f7f8fb
-     milik situs lama tetap mengecat <body> di balik halaman ini. Dua baris
-     berikut yang menutupinya. Perbaikannya harus di sini, tidak pernah
-     dengan menyunting globals.css. */
+  /* Root layout memuat globals.css di setiap route, jadi --paper: #f7f8fb
+     milik situs lama tetap mengecat <body> di balik halaman ini. */
   min-height: 100vh;
   isolation: isolate;
 }
 
-.v3-root h1,
-.v3-root h2,
-.v3-root h3 {
-  font-family: var(--font-v3-display), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 800;
-  font-style: italic;
-  letter-spacing: -0.01em;
-  margin: 0;
-}
-
 .v3-shell {
+  /* width:100% wajib ada. Tanpanya, `margin: 0 auto` di dalam induk flex
+     membuat margin otomatis menyerap sisa ruang dan kotaknya menyusut ke
+     lebar isinya, bukan melebar sampai max-width. Hero jadi 1064px alih-alih
+     1240px, dan gejalanya cuma "kok agak ke tengah", bukan error. */
+  width: 100%;
   max-width: var(--v3-maxw);
   margin: 0 auto;
-  padding: 0 var(--v3-gutter) 4rem;
+  padding: 0 var(--v3-gutter);
 }
 
-/* ── Grid ─────────────────────────────────────────────────────────────── */
+/* ── Tipografi display ────────────────────────────────────────────────── */
 
-.v3-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: var(--v3-unit);
-  gap: var(--v3-gap);
-}
-
-/* ── Tile ─────────────────────────────────────────────────────────────── */
-
-/* Nol box-shadow, di mana pun. Kartu terpisah dari halaman lewat beda
-   #ffffff dengan #fff9f1 saja, dan itulah yang membuat referensinya terasa
-   tenang. Bayangan dua lapis di situs lama dibuang, bukan dikecilkan. */
-.v3-tile {
-  /* Angkanya datang dari V3_HOME_TILES lewat custom property, bukan lewat
-     `grid-column` inline. Inline style menang atas stylesheet tanpa
-     !important, dan itu membuat kedua media query di bawah tidak sanggup
-     menyempitkan apa pun. */
-  grid-column: span var(--v3-span);
-  grid-row: span var(--v3-rows);
-
-  position: relative;
-  border-radius: var(--v3-r-tile);
-  padding: 32px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-decoration: none;
-  color: inherit;
-  transition: transform 160ms ease;
-}
-
-.v3-tile--white {
-  background: var(--v3-card);
-}
-
-.v3-tile--yellow {
-  background: var(--v3-yellow);
-}
-
-.v3-tile--ink {
-  background: var(--v3-ink);
-  color: #ffffff;
-}
-
-.v3-tile--blue {
-  background: var(--v3-blue);
-  color: #ffffff;
-}
-
-a.v3-tile:hover {
-  transform: translateY(-2px);
-}
-
-a.v3-tile:focus-visible {
-  outline: 3px solid var(--v3-blue);
-  outline-offset: 3px;
-}
-
-.v3-tile--ink:focus-visible {
-  outline-color: var(--v3-cyan);
-}
-
-.v3-tile__go {
-  position: absolute;
-  left: 32px;
-  bottom: 32px;
-  width: 48px;
-  height: 48px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  background: var(--v3-ink);
-  color: #ffffff;
-}
-
-/* Panah membalik terhadap ubinnya: putih di atas hitam, hitam di atas
-   sisanya. */
-.v3-tile--ink .v3-tile__go,
-.v3-tile--blue .v3-tile__go {
-  background: #ffffff;
-  color: var(--v3-ink);
-}
-
-/* ── Isi ubin ─────────────────────────────────────────────────────────── */
-
-.v3-intro {
+/* Fraunces di BOBOT 300, bukan tebal. Ini pilihan paling menentukan dari
+   referensinya dan yang paling gampang salah: di ukuran display, serif
+   kontras tinggi yang tipis terbaca editorial, dan huruf yang sama di bobot
+   700 terbaca seperti kepala koran. */
+.v3-display {
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
   margin: 0;
-  text-align: center;
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 500;
-  line-height: 1.25;
 }
 
-.v3-intro__name {
-  font-family: var(--font-v3-display), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 800;
+/* Baris kedua judul selalu miring. Titik pecahnya datang dari data, bukan
+   dari browser. */
+.v3-display em {
   font-style: italic;
-  white-space: nowrap;
-}
-
-.v3-glyph {
-  display: grid;
-  place-items: center;
-}
-
-/* Ubin Projects rata atas, bukan tengah: empat kategorinya adalah daftar,
-   dan daftar yang mengambang di tengah kartu setinggi dua baris berhenti
-   terbaca sebagai daftar. */
-.v3-projects {
-  align-self: start;
-  margin-top: -4px;
-}
-
-.v3-projects__head {
-  margin: 0 0 0.4em;
-  color: var(--v3-cyan);
-  font-family: var(--font-v3-display), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 800;
-  font-style: italic;
-  font-size: clamp(1.5rem, 2.4vw, 2.125rem);
-  letter-spacing: -0.01em;
-}
-
-.v3-projects__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-v3-display), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 800;
-  font-style: italic;
-  font-size: clamp(1.125rem, 1.9vw, 1.625rem);
-  line-height: 1.4;
-}
-
-/* Chip tersebar mengisi seluruh bidang kuning, jadi wadahnya menempel ke
-   tepi ubin dan mengabaikan padding-nya. */
-.v3-tools {
-  position: absolute;
-  inset: 0;
-}
-
-.v3-tools__spot {
-  position: absolute;
-}
-
-.v3-tool-chip {
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 999px;
-  background: var(--v3-card);
-}
-
-.v3-connect {
-  margin: 0;
-  text-align: center;
-  font-family: var(--font-v3-script), cursive;
-  font-size: clamp(2rem, 3.4vw, 2.75rem);
-  color: var(--v3-blue);
-  line-height: 1.25;
 }
 
 /* ── Nav ──────────────────────────────────────────────────────────────── */
 
 .v3-nav {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
   display: flex;
-  justify-content: center;
-  padding: 24px var(--v3-gutter);
-}
-
-.v3-nav__track {
-  display: flex;
-  gap: 4px;
-  background: var(--v3-nav);
-  border-radius: 999px;
-  padding: 6px;
+  gap: clamp(1rem, 3vw, 2.75rem);
+  padding: 1rem clamp(1.25rem, 3vw, 2.25rem);
+  background: rgba(15, 15, 15, 0.72);
+  backdrop-filter: blur(12px);
+  border: 0.8px solid var(--v3-line);
+  border-top: 0;
+  border-radius: 0 0 16px 16px;
 }
 
 .v3-nav__link {
-  padding: 10px 22px;
-  border-radius: 999px;
-  text-decoration: none;
   color: var(--v3-ink-soft);
-  font-size: 0.9375rem;
+  text-decoration: none;
+  font-size: 0.6875rem;
   font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
   white-space: nowrap;
+  transition: color 160ms ease;
 }
 
-/* Penanda halaman aktif dibaca dari aria-current, bukan dari kelas
-   terpisah. Satu sumber kebenaran, dan penanda visualnya otomatis ikut
-   terbaca screen reader. */
-.v3-nav__link[aria-current='page'] {
-  background: var(--v3-card);
+.v3-nav__link:hover,
+.v3-nav__link:focus-visible {
   color: var(--v3-ink);
+}
+
+/* ── Penanda sudut ────────────────────────────────────────────────────── */
+
+.v3-mark {
+  position: absolute;
+  top: 1.75rem;
+  left: var(--v3-gutter);
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: var(--v3-blue);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.v3-status {
+  position: absolute;
+  top: 2.1rem;
+  right: var(--v3-gutter);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--v3-ink-soft);
+}
+
+.v3-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--v3-ok);
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────────── */
+
+.v3-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: clamp(3rem, 8vh, 6rem);
+  padding-top: 7rem;
+}
+
+.v3-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: end;
+}
+
+.v3-hero__name {
+  font-size: clamp(4rem, 12vw, 11rem);
+}
+
+/* Tanda > penting: tanpanya aturan ini kena juga ke span asterisk di dalam
+   baris, dan asterisknya turun jadi blok sendiri di bawah nama. */
+.v3-hero__name > span {
+  display: block;
+}
+
+/* Asterisk biru menempel di ujung baris pertama, sejajar bahu hurufnya. */
+.v3-hero__star {
+  color: var(--v3-blue);
+  font-size: 0.3em;
+  vertical-align: super;
+  margin-left: 0.08em;
+}
+
+.v3-hero__claim {
+  font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
+  line-height: 1.45;
+  margin: 0 0 1rem;
+  max-width: 34ch;
+}
+
+.v3-hero__support {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--v3-ink-faint);
+  margin: 0 0 1.75rem;
+  max-width: 46ch;
+}
+
+.v3-hero__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.v3-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0.8rem 0.8rem 1.5rem;
+  border-radius: 999px;
+  background: var(--v3-blue);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.v3-btn__go {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #000000;
+}
+
+.v3-link-caps {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--v3-ink-soft);
+  text-decoration: none;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--v3-line);
+  padding-bottom: 2px;
+}
+
+.v3-link-caps:hover,
+.v3-link-caps:focus-visible {
+  color: var(--v3-ink);
+}
+
+.v3-hero__socials {
+  display: flex;
+  gap: 1.1rem;
+}
+
+.v3-hero__socials a {
+  color: var(--v3-ink-faint);
+  transition: color 160ms ease;
+}
+
+.v3-hero__socials a:hover,
+.v3-hero__socials a:focus-visible {
+  color: var(--v3-ink);
+}
+
+/* ── Furnitur section ─────────────────────────────────────────────────── */
+
+.v3-section {
+  padding: clamp(5rem, 12vh, 9rem) 0;
+  border-top: 0.8px solid var(--v3-line);
+}
+
+.v3-eyebrow {
+  margin: 0 0 1.25rem;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--v3-blue-text);
+}
+
+.v3-section__title {
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  margin-bottom: 1.25rem;
+}
+
+.v3-section__title > span {
+  display: block;
+}
+
+.v3-lede {
+  margin: 0 0 clamp(2.5rem, 5vh, 4rem);
+  max-width: 62ch;
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  line-height: 1.65;
+  color: var(--v3-ink-soft);
+}
+
+/* Kartu di atas latar mendekati hitam tidak bisa memisahkan diri lewat
+   terang saja tanpa berubah jadi abu. Garis rambut yang mengerjakannya.
+   Ini kebalikan dari pass sebelumnya, yang melarang border dan bayangan
+   di atas kertas krem. */
+.v3-card {
+  background: var(--v3-card);
+  border: 0.8px solid var(--v3-line);
+  border-radius: var(--v3-r-card);
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
 }
 
 /* ── Responsive ───────────────────────────────────────────────────────── */
 
-/* 980px sudah jadi breakpoint tablet di app/sections.css. Dipakai ulang
-   supaya situs ini tidak punya dua breakpoint yang berbeda tipis.
-
-   Enam kolom tidak bisa cuma mewarisi span dua belas kolom: ubin ber-span 2
-   akan duduk sendirian menyisakan empat kolom kosong, dan ubin ber-span 4
-   tidak muat di sisa baris lalu turun sambil meninggalkan lubang. Jadi span
-   ditulis ulang per ubin di sini.
-
-   `order` ikut ditulis ulang karena urutan DOM disusun untuk desktop
-   (intro, cv, projects, tools, linkedin, connect) dan di kolom sempit
-   urutan itu menaruh CV di atas Projects. Yang dipakai di layar sempit:
-   intro, projects, tools, lalu CV dan LinkedIn berdampingan, lalu connect.
-   Aturan ini juga berlaku di 640px, jadi tidak perlu ditulis dua kali. */
 @media (max-width: 980px) {
-  .v3-grid {
-    grid-template-columns: repeat(6, 1fr);
+  .v3-hero__grid {
+    grid-template-columns: 1fr;
+    align-items: start;
   }
 
-  .v3-tile {
-    grid-column: span 6;
-  }
-
-  [data-tile='intro'] {
-    order: 1;
-  }
-
-  [data-tile='projects'] {
-    order: 2;
-    grid-row: span 2;
-  }
-
-  [data-tile='tools'] {
-    order: 3;
-    grid-row: span 2;
-  }
-
-  /* Dua ubin kecil ini satu-satunya yang berbagi baris di layar sempit. */
-  [data-tile='cv'] {
-    order: 4;
-    grid-column: span 3;
-    grid-row: span 1;
-  }
-
-  [data-tile='linkedin'] {
-    order: 5;
-    grid-column: span 3;
-    grid-row: span 1;
-  }
-
-  [data-tile='connect'] {
-    order: 6;
+  .v3-hero {
+    justify-content: center;
   }
 }
 
 @media (max-width: 640px) {
-  /* Tinggi berhenti diukur dalam satuan baris tetap dan mulai diukur dari
-     isinya, kalau tidak ubin Tools jadi papan kuning melintang: satu kolom
-     penuh dengan tinggi satu satuan. */
-  .v3-grid {
-    grid-template-columns: 1fr;
-    grid-auto-rows: auto;
-  }
-
-  .v3-tile {
-    grid-column: 1 / -1;
-    grid-row: auto;
-    min-height: 170px;
-    padding: 24px;
-  }
-
-  [data-tile='cv'],
-  [data-tile='linkedin'] {
-    grid-column: 1 / -1;
-    min-height: 150px;
-  }
-
-  /* Kedua ubin bergambar mempertahankan proporsinya, bukan tingginya. */
-  [data-tile='tools'] {
-    aspect-ratio: 1 / 1;
-  }
-
-  [data-tile='projects'] {
-    aspect-ratio: 4 / 5;
-  }
-
-  .v3-tile__go {
-    left: 24px;
-    bottom: 24px;
-  }
-
   .v3-nav {
-    padding: 16px 12px;
+    gap: 0.9rem;
+    padding: 0.75rem 0.9rem;
+    max-width: 100vw;
+    overflow-x: auto;
   }
 
   .v3-nav__link {
-    padding: 9px 16px;
-    font-size: 0.875rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+  }
+
+  .v3-hero {
+    padding-top: 8.5rem;
+  }
+
+  .v3-hero__name {
+    line-height: 0.95;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .v3-tile {
+  .v3-nav__link,
+  .v3-hero__socials a {
     transition: none;
-  }
-
-  a.v3-tile:hover {
-    transform: none;
   }
 }

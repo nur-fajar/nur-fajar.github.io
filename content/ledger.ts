@@ -1135,57 +1135,15 @@ export const WORK_GALLERY: GalleryItem[] = [
  * tanpa bukti. Copy yang ditulis langsung di komponen lolos keempatnya.
  */
 
-export type V3Surface = 'white' | 'yellow' | 'ink' | 'blue';
-
-export interface V3Tile {
-  id: string;
-  /** Teks yang dibaca screen reader untuk ubin ini. Isi visualnya diurus
-   *  komponen per-ubin; label inilah yang jadi accessible name-nya. */
-  label: string;
-  /** Lebar dalam kolom, 1 sampai 12. */
-  span: number;
-  /** Baris awal, 1-indexed. */
-  row: number;
-  /** Berapa baris yang ditempati. */
-  rows: number;
-  surface: V3Surface;
-  /** Ada href berarti ubin ini pintu, dan pintu selalu dapat tombol panah.
-   *  Ubin tanpa href tidak pernah dapat panah, jadi pembaca tidak pernah
-   *  mengarahkan kursor ke sesuatu yang tidak kemana-mana. */
-  href?: string;
-  external?: boolean;
-}
-
-/**
- * Enam ubin, tiga baris, dua belas kolom, nol sel sisa.
- *
- * Span-nya data, bukan nama kelas CSS, supaya tiling-nya bisa diuji. Satu
- * span yang bergeser melipat grid jadi baris keempat, dan kegagalan itu cuma
- * kelihatan di layar; di kode tidak ada yang terlihat salah.
- */
-export const V3_HOME_TILES: V3Tile[] = [
-  { id: 'intro', label: "hi! I'm Nur Fajar", span: 6, row: 1, rows: 1, surface: 'white' },
-  { id: 'cv', label: 'Download my CV', span: 2, row: 1, rows: 1, surface: 'white', href: CONTACT.cv },
-  { id: 'projects', label: 'Projects', span: 4, row: 1, rows: 2, surface: 'ink', href: '/v3/project' },
-  { id: 'tools', label: 'Tools I work with', span: 6, row: 2, rows: 2, surface: 'yellow', href: '/v3/tools' },
-  {
-    id: 'linkedin',
-    label: 'LinkedIn',
-    span: 2,
-    row: 2,
-    rows: 1,
-    surface: 'blue',
-    href: CONTACT.linkedin,
-    external: true,
-  },
-  { id: 'connect', label: "Let's Connect", span: 6, row: 3, rows: 1, surface: 'white', href: '/v3/contact' },
-];
-
+/** Nav menunjuk anchor di halaman yang sama, bukan route. Sebuah tes
+ *  memastikan setiap href di sini punya section dengan id yang sama. */
 export const V3_NAV = [
-  { href: '/v3', label: 'Home' },
-  { href: '/v3/about', label: 'About' },
-  { href: '/v3/tools', label: 'Tools' },
-  { href: '/v3/project', label: 'Project' },
+  { href: '#work', label: 'Work' },
+  { href: '#experience', label: 'Experience' },
+  { href: '#technologies', label: 'Technologies' },
+  { href: '#achievements', label: 'Achievements' },
+  { href: '#about', label: 'About' },
+  { href: '#contact', label: 'Contact' },
 ] as const;
 
 export type V3Category = 'design' | 'video' | 'course' | 'website';
@@ -1275,22 +1233,73 @@ export const V3_ROLE_CHIPS = [
   'ADDIE',
 ] as const;
 
-export const V3_PAGE = {
-  home: { title: 'Home', lede: '' },
-  project: {
-    title: 'Project',
-    lede: 'Four kinds of work. Everything below links to where it lives, so none of it has to be taken on trust.',
+export interface V3Section {
+  id: string;
+  /** Label kecil berspasi lebar di atas judul. */
+  eyebrow: string;
+  /**
+   * Judul dua baris. Baris kedua dimiringkan.
+   *
+   * Titik pecahnya ditentukan di data, bukan diserahkan ke browser, alasan
+   * yang sama dengan HERO di atas: browser memecah baris di tempat kata
+   * kebetulan habis, dan di ukuran display itu berarti satu kata menggantung
+   * sendirian atau frasa terbelah di tengah.
+   */
+  heading: readonly [string, string];
+  lede: string;
+}
+
+/**
+ * Tujuh section berfurnitur sama. Hero tidak ada di sini karena ia satu-satunya
+ * yang tidak memakai pola eyebrow + judul dua baris + lede.
+ *
+ * URUTANNYA TIDAK MENGIKUTI REFERENSI, dan itu keputusan. Argumen urutan yang
+ * ditulis di app/page.tsx tetap berlaku: About turun ke posisi keenam karena di
+ * urutan lama pembaca menghabiskan perhatian pertamanya di riwayat kuliah
+ * sebelum sempat melihat satu pun artefak yang bisa dibuka. Itu soal isi, bukan
+ * soal kulit, jadi ia tidak ikut berubah saat kulitnya diganti.
+ */
+export const V3_SECTIONS: readonly V3Section[] = [
+  {
+    id: 'proof',
+    eyebrow: 'Proof',
+    heading: ['Four numbers,', 'in context.'],
+    lede: 'Each one carries the period it belongs to and the population it came from.',
   },
-  about: {
-    title: 'About',
-    lede: 'Where the work came from: three roles, the education behind them, and the third-party evidence for both.',
+  {
+    id: 'work',
+    eyebrow: 'Work',
+    heading: ["What I've", 'built.'],
+    lede: "Three of these are live and public. Take a look and see what's inside.",
   },
-  tools: {
-    title: 'Tools',
+  {
+    id: 'experience',
+    eyebrow: 'Experience',
+    heading: ["Where I've", 'worked.'],
+    lede: 'Three roles. Same craft, rising ownership.',
+  },
+  {
+    id: 'technologies',
+    eyebrow: 'Technologies',
+    heading: ['Tools &', 'stack.'],
     lede: 'What I work with day to day.',
   },
-  contact: {
-    title: 'Contact',
+  {
+    id: 'achievements',
+    eyebrow: 'Achievements',
+    heading: ['Evidence from', 'other people.'],
+    lede: 'Certificates that can be checked one by one, and references chosen for different vantage points.',
+  },
+  {
+    id: 'about',
+    eyebrow: 'About',
+    heading: ['Where it', 'started.'],
+    lede: 'Study, scholarships, national programs, and the organizations in between.',
+  },
+  {
+    id: 'contact',
+    eyebrow: 'Contact',
+    heading: ["Let's work", 'together.'],
     lede: 'What I am looking for, and four ways to reach me.',
   },
-} as const;
+] as const;
