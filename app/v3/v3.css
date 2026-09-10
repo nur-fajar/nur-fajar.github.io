@@ -390,15 +390,26 @@ a.v3-tile:focus-visible {
 
 .v3-tools__spot {
   position: absolute;
+  pointer-events: none;
+  will-change: transform;
 }
 
-.v3-tool-chip {
+/* Dua aturan chip hidup di file ini: yang ini untuk bento, yang satu lagi
+   untuk section Technologies di bawah. Keduanya sempat memakai selektor yang
+   sama persis, dan yang ditulis belakangan menang di kedua tempat: chip
+   bento yang seharusnya bulat ikut jadi kotak rounded 10px. Selektor induk
+   .v3-tools yang memisahkan keduanya sekarang. */
+.v3-tools .v3-tool-chip {
   display: grid;
   place-items: center;
-  width: 64px;
-  height: 64px;
+  /* Fluid, karena ubinnya menyempit di dua breakpoint. Titik tengah chip
+     diukur dari DOM di ToolsTile, jadi ukurannya boleh berubah tanpa ada
+     angka kedua yang harus dijaga ikut berubah. */
+  width: clamp(52px, 7.6vw, 88px);
+  height: clamp(52px, 7.6vw, 88px);
   border-radius: 999px;
   background: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 
 .v3-connect {
@@ -1007,7 +1018,7 @@ a.v3-tile:focus-visible {
 /* Di tema gelap chip harus putih supaya logo merek terbaca. Di tema
    terang putih di atas kartu putih tidak memisahkan apa pun, jadi ia jadi
    abu sangat muda. */
-.v3-tool-chip {
+.v3-tool .v3-tool-chip {
   flex: 0 0 auto;
   display: grid;
   place-items: center;
