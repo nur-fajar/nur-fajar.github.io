@@ -1122,3 +1122,272 @@ export const WORK_GALLERY: GalleryItem[] = [
     thumbnail: '/work-gallery/DWvG2g_j-1o.jpg',
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 9 , /v3 bento home screen
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Blok ini hidup di ledger.ts, bukan di komponen, dan itu bukan soal
+ * kerapian. Empat tes di ledger.test.ts berjalan dengan
+ * `Object.entries(ledger)`, jadi mereka menyapu SETIAP export di file ini:
+ * em dash, ejaan British, "Learning and Development", dan tujuh kata sifat
+ * tanpa bukti. Copy yang ditulis langsung di komponen lolos keempatnya.
+ */
+
+/** Nav menunjuk anchor di halaman yang sama, bukan route. Sebuah tes
+ *  memastikan setiap href di sini punya section dengan id yang sama. */
+export type V3Surface = 'paper' | 'yellow' | 'ink' | 'blue';
+
+export interface V3Tile {
+  id: string;
+  /** Nama yang dibaca screen reader. Isi visualnya diurus komponen per-ubin. */
+  label: string;
+  /** Lebar dalam kolom, 1 sampai 12. */
+  span: number;
+  /** Baris awal, 1-indexed. */
+  row: number;
+  /** Berapa baris yang ditempati. */
+  rows: number;
+  surface: V3Surface;
+  /**
+   * Kemana ubin ini membawa pembaca.
+   *
+   *   '#id'   menggulir ke section di halaman yang sama
+   *   'http'  keluar situs, dibuka di tab baru
+   *   '/x'    berkas di origin ini, misalnya PDF
+   *   absen   ubin ini tidak kemana-mana dan tidak dapat tombol panah
+   *
+   * Sebuah tes memastikan setiap target berawalan '#' punya section dengan
+   * id yang sama, jadi ubin yang menunjuk ke ruang kosong gagal di CI, bukan
+   * ketahuan saat seseorang mengkliknya.
+   */
+  href?: string;
+  external?: boolean;
+  /**
+   * true → ubin dirender sebagai div dan KOMPONEN ISINYA yang menyediakan
+   * anchor sendiri ke href yang sama. Dipakai Connect: yang bisa diklik
+   * cuma amplopnya. Tes anchor di bawah tidak melihat ke dalam komponen,
+   * jadi flag ini mewajibkan komponennya memang merender anchor itu —
+   * jangan asal menaruh true.
+   */
+  innerLink?: boolean;
+  /**
+   * Teks kapsul di tombol panah ubin. Field ini SEKALIGUS pemisah perilaku:
+   * ubin yang memilikinya dirender sebagai div dan CUMA tombol kapsulnya
+   * yang bisa diklik (seluruh permukaan sisanya pegangan seret); ubin
+   * ber-href tanpa cta seluruhnya jadi anchor. Cuma untuk ubin dua baris,
+   * satu-satunya yang muat tombol 48px tanpa menimpa isi.
+   */
+  cta?: string;
+}
+
+/**
+ * Enam ubin, tiga baris, dua belas kolom, nol sel sisa.
+ *
+ * Span-nya data, bukan nama kelas CSS, supaya tiling-nya bisa diuji. Satu
+ * span yang bergeser melipat grid jadi baris keempat, dan kegagalan itu cuma
+ * kelihatan di layar; di kode tidak ada yang terlihat salah.
+ *
+ * Ubin ini menggantikan hero. Karena itu targetnya anchor, bukan route:
+ * halaman ini satu gulungan panjang, dan ubin yang memuat ulang halaman
+ * untuk pergi ke bagian yang sudah ada di bawahnya cuma membuang waktu
+ * pembaca.
+ */
+export const V3_HOME_TILES: V3Tile[] = [
+  { id: 'intro', label: "hi! I'm Nur Fajar", span: 6, row: 1, rows: 1, surface: 'paper' },
+  { id: 'cv', label: 'Download my CV', span: 2, row: 1, rows: 1, surface: 'paper', href: CONTACT.cv },
+  { id: 'projects', label: 'Jump to Work', span: 4, row: 1, rows: 2, surface: 'ink', href: '#work', cta: 'See all projects' },
+  { id: 'tools', label: 'Jump to Technologies', span: 6, row: 2, rows: 2, surface: 'yellow', href: '#technologies', cta: 'See all tools & skills' },
+  {
+    id: 'linkedin',
+    label: 'LinkedIn',
+    span: 2,
+    row: 2,
+    rows: 1,
+    surface: 'blue',
+    href: CONTACT.linkedin,
+    external: true,
+  },
+  { id: 'connect', label: 'Jump to Contact', span: 6, row: 3, rows: 1, surface: 'paper', href: '#contact', innerLink: true },
+];
+
+export const V3_NAV = [
+  { href: '#top', label: 'Home' },
+  { href: '#work', label: 'Project' },
+  { href: '#experience', label: 'Experience' },
+  { href: '#technologies', label: 'Tools' },
+  { href: '#about', label: 'About' },
+  { href: '#contact', label: 'Contact' },
+] as const;
+
+export type V3Category = 'design' | 'video' | 'course' | 'website';
+
+/** Urutannya sama persis dengan urutan kata yang tercetak di ubin hitam di
+ *  home. Sebuah tes mengunci keduanya, jadi mengubah satu tanpa yang lain
+ *  akan gagal alih-alih diam-diam berbeda. */
+export const V3_PROJECT_CATEGORIES: { id: V3Category; label: string; blurb: string }[] = [
+  {
+    id: 'course',
+    label: 'Course',
+    blurb:
+      'Three courses anyone can open, the curriculum behind them, and the working method of one program from needs assessment to evaluation.',
+  },
+  {
+    id: 'video',
+    label: 'Video',
+    blurb: 'Program videos and alumni interviews, each one linked to where it was published.',
+  },
+  {
+    id: 'design',
+    label: 'Design',
+    blurb: 'Program posters and event assets, each one linked to where it was published.',
+  },
+  { id: 'website', label: 'Website', blurb: 'Sites built and shipped.' },
+];
+
+/** Empat kategori galeri dilipat ke dua kategori project. Sebuah tes
+ *  memastikan tidak ada item yang jatuh ke luar peta ini. */
+export const V3_GALLERY_CATEGORY: Record<GalleryCategory, V3Category> = {
+  'event-poster': 'design',
+  'greeting-poster': 'design',
+  'video-marketing': 'video',
+  testimonial: 'video',
+};
+
+export interface V3Site {
+  id: string;
+  name: string;
+  href: string;
+  body: string;
+  stack: string[];
+}
+
+/** Satu entri untuk sekarang, sengaja disusun sebagai list supaya entri
+ *  berikutnya cuma menambah baris, bukan mengubah layout. */
+export const V3_WEBSITES: V3Site[] = [
+  {
+    id: 'nurfajar-com',
+    name: 'nurfajar.com',
+    href: 'https://nurfajar.com',
+    body:
+      'This site. It deploys twice from one source: a Next.js app on Vercel, and a static export mirrored to GitHub Pages. Every number and every line of copy lives in a single file, and a test suite holds the copy rules in place so they cannot drift one harmless edit at a time.',
+    stack: ['Next.js', 'TypeScript', 'Vercel', 'GitHub Pages'],
+  },
+];
+
+export interface V3Tool {
+  id: string;
+  name: string;
+  /** Satu baris yang menerangkan APA tool-nya, bukan klaim tentang apa yang
+   *  dicapai dengannya. Perbedaan itu penting: yang kedua adalah klaim yang
+   *  tidak bisa dibuktikan artefak, dan aturan situs melarangnya. */
+  use: string;
+}
+
+export const V3_TOOLS: V3Tool[] = [
+  { id: 'github', name: 'GitHub', use: 'Version control and code hosting.' },
+  { id: 'canva', name: 'Canva', use: 'Poster and social asset design.' },
+  { id: 'notion', name: 'Notion', use: 'Notes, outlines, and course planning documents.' },
+  { id: 'miro', name: 'Miro', use: 'Whiteboarding and session mapping.' },
+  { id: 'n8n', name: 'n8n', use: 'Workflow automation.' },
+  { id: 'claude', name: 'Claude', use: 'Large language model.' },
+  { id: 'capcut', name: 'CapCut', use: 'Video editing.' },
+  { id: 'openai', name: 'OpenAI', use: 'Large language model.' },
+  { id: 'gemini', name: 'Gemini', use: 'Large language model.' },
+  { id: 'vercel', name: 'Vercel', use: 'Hosting and deploys.' },
+  { id: 'supabase', name: 'Supabase', use: 'Database and authentication.' },
+];
+
+/** Chip peran di kepala /v3/about. Ditulis di sini, bukan di komponennya,
+ *  supaya keempat sapuan copy ikut membacanya. Perhatikan yang pertama:
+ *  "Learning & Development", bukan "Learning and Development", dan ada tes
+ *  yang gagal kalau tertukar. */
+export const V3_ROLE_CHIPS = [
+  'Learning & Development',
+  'Instructional Design',
+  'Curriculum Development',
+  'ADDIE',
+] as const;
+
+export interface V3Section {
+  id: string;
+  /** Label kecil berspasi lebar di atas judul. */
+  eyebrow: string;
+  /**
+   * Judul dua baris. Baris kedua dimiringkan.
+   *
+   * Titik pecahnya ditentukan di data, bukan diserahkan ke browser, alasan
+   * yang sama dengan HERO di atas: browser memecah baris di tempat kata
+   * kebetulan habis, dan di ukuran display itu berarti satu kata menggantung
+   * sendirian atau frasa terbelah di tengah.
+   */
+  heading: readonly [string, string];
+  lede: string;
+}
+
+/**
+ * Tujuh section berfurnitur sama. Hero tidak ada di sini karena ia satu-satunya
+ * yang tidak memakai pola eyebrow + judul dua baris + lede.
+ *
+ * URUTANNYA TIDAK MENGIKUTI REFERENSI, dan itu keputusan. Argumen urutan yang
+ * ditulis di app/page.tsx tetap berlaku: About turun ke posisi keenam karena di
+ * urutan lama pembaca menghabiskan perhatian pertamanya di riwayat kuliah
+ * sebelum sempat melihat satu pun artefak yang bisa dibuka. Itu soal isi, bukan
+ * soal kulit, jadi ia tidak ikut berubah saat kulitnya diganti.
+ */
+export const V3_SECTIONS: readonly V3Section[] = [
+  {
+    id: 'proof',
+    eyebrow: 'Proof',
+    heading: ['Four numbers,', 'in context.'],
+    lede: 'Each one carries the period it belongs to and the population it came from.',
+  },
+  {
+    id: 'work',
+    /* Tanpa eyebrow, judul sebaris: "What I've built." satu baris penuh.
+       Baris kedua kosong disengaja (bukan lupa) — lihat tes. */
+    eyebrow: '',
+    heading: ["What I've built.", ''],
+    /* Sengaja kosong: indeks kategori + blurb tiap kategori sudah mengerjakan
+       tugas lede (memberi tahu apa di bawah dan ke mana melompat), jadi lede
+       di sini cuma mengulang. Section lain tetap wajib punya lede — ada tes
+       yang mengunci kekosongan ini khusus untuk work. */
+    lede: '',
+  },
+  {
+    id: 'experience',
+    eyebrow: 'Experience',
+    heading: ["Where I've", 'worked.'],
+    lede: 'Three roles. Same craft, rising ownership.',
+  },
+  {
+    id: 'technologies',
+    eyebrow: 'Technologies',
+    heading: ['Tools &', 'stack.'],
+    lede: 'What I work with day to day.',
+  },
+  {
+    id: 'achievements',
+    eyebrow: 'Achievements',
+    heading: ['Evidence from', 'other people.'],
+    /* Sengaja kosong: kartunya langsung bicara. Lihat tes untuk daftar
+       section yang diizinkan tanpa lede. */
+    lede: '',
+  },
+  {
+    id: 'about',
+    eyebrow: 'About',
+    heading: ['Where it', 'started.'],
+    lede: 'Study, scholarships, national programs, and the organizations in between.',
+  },
+  {
+    id: 'contact',
+    eyebrow: 'Contact',
+    heading: ["Let's work", 'together.'],
+    /* Sengaja kosong seperti Work: baris lookup + tombol di bawahnya sudah
+       menjawab semuanya, lede cuma mengulang. Lihat tes untuk daftar
+       section yang diizinkan tanpa lede. */
+    lede: '',
+  },
+] as const;

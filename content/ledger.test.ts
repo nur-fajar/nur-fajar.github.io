@@ -19,6 +19,14 @@ import {
   PROOF,
   SKILLS,
   TESTIMONIALS,
+  V3_GALLERY_CATEGORY,
+  V3_HOME_TILES,
+  V3_SECTIONS,
+  V3_NAV,
+  V3_PROJECT_CATEGORIES,
+  V3_ROLE_CHIPS,
+  V3_TOOLS,
+  V3_WEBSITES,
   WORK,
   WORK_GALLERY,
   WORK_HISTORY,
@@ -759,5 +767,137 @@ describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
     ]) {
       expect(institutions, `${name} hilang saat kartu digabung`).toContain(name);
     }
+  });
+});
+
+describe('v3 , halaman scroll gelap', () => {
+  it('setiap baris bento tertutup penuh 12 kolom, tidak lebih tidak kurang', () => {
+    // Kegagalannya murni visual: satu span yang bergeser melipat grid jadi
+    // baris keempat dan tidak ada satu pun baris kode yang terlihat salah.
+    for (const row of [1, 2, 3]) {
+      const occupying = V3_HOME_TILES.filter(
+        (tile) => tile.row <= row && row < tile.row + tile.rows,
+      );
+      const total = occupying.reduce((sum, tile) => sum + tile.span, 0);
+      expect(total, `baris ${row} berisi ${total} kolom`).toBe(12);
+    }
+    const last = Math.max(...V3_HOME_TILES.map((tile) => tile.row + tile.rows - 1));
+    expect(last, 'bento tidak berhenti di tiga baris').toBe(3);
+  });
+
+  it('setiap ubin yang menunjuk anchor punya section dengan id itu', () => {
+    // Ubin yang menunjuk ruang kosong gagal di sini, bukan ketahuan saat
+    // seseorang mengkliknya dan halaman diam saja.
+    const ids = V3_SECTIONS.map((section) => section.id);
+    const anchors = V3_HOME_TILES.filter((tile) => tile.href?.startsWith('#'));
+    expect(anchors.length, 'tidak ada satu pun ubin yang menggulir').toBeGreaterThan(0);
+    for (const tile of anchors) {
+      expect(ids, `ubin ${tile.id} menunjuk ${tile.href} yang tidak ada`).toContain(
+        tile.href!.slice(1),
+      );
+    }
+  });
+
+  it('ubin tanpa target tidak pernah mengaku bisa diklik', () => {
+    // Panah hanya dipasang di ubin ber-href. Ubin intro tidak kemana-mana,
+    // jadi ia juga tidak boleh terlihat seperti pintu.
+    const intro = V3_HOME_TILES.find((tile) => tile.id === 'intro');
+    expect(intro?.href).toBeUndefined();
+  });
+
+  it('setiap tool punya berkas logonya sendiri di public/logos/tools', () => {
+    // Nama berkas mengikuti id tool, jadi tidak ada tabel pemetaan yang bisa
+    // basi. Tes ini yang menangkap tool baru yang lupa dibuatkan logonya.
+    for (const tool of V3_TOOLS) {
+      const file = path.join(process.cwd(), 'public', 'logos', 'tools', `${tool.id}.png`);
+      expect(existsSync(file), `logo ${tool.id}.png tidak ada`).toBe(true);
+    }
+  });
+
+  it('setiap section punya eyebrow, dua baris judul, dan lede', () => {
+    for (const section of V3_SECTIONS) {
+      expect(section.id.trim().length, 'section tanpa id').toBeGreaterThan(0);
+      /* Work tampil tanpa eyebrow dan judul sebaris ("What I've built." satu
+         baris penuh): kekosongan yang disengaja, dikunci di sini supaya
+         tidak ada yang "melengkapi" kembali. */
+      if (section.id === 'work') {
+        expect(section.eyebrow, 'eyebrow Work kembali terisi').toBe('');
+      } else {
+        expect(section.eyebrow.trim().length, `${section.id} tanpa eyebrow`).toBeGreaterThan(0);
+      }
+      expect(section.heading, `${section.id} judulnya bukan dua baris`).toHaveLength(2);
+      section.heading.forEach((line, position) => {
+        if (section.id === 'work' && position === 1) {
+          expect(line, 'baris kedua Work kembali terisi').toBe('');
+        } else {
+          expect(line.trim().length, `${section.id} punya baris judul kosong`).toBeGreaterThan(0);
+        }
+      });
+      if (section.id === 'work' || section.id === 'contact' || section.id === 'achievements') {
+        /* Tanpa lede dengan sengaja: Work diwakili indeks + blurb kategori,
+           Contact diwakili baris lookup + tombol, Achievements langsung ke
+           kartu testimoni. Tes ini yang mencegah seseorang "memperbaiki"
+           kekosongan itu kembali. */
+        expect(section.lede, `lede ${section.id} kembali terisi`).toBe('');
+      } else {
+        expect(section.lede.trim().length, `${section.id} tanpa lede`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('setiap tautan nav menunjuk section yang benar-benar ada', () => {
+    // Hero (bento) bukan V3Section karena tidak memakai furnitur eyebrow +
+    // judul + lede, tapi ia membawa id="top" sebagai jangkar Home.
+    const ids = [...V3_SECTIONS.map((section) => section.id), 'top'];
+    for (const link of V3_NAV) {
+      expect(ids, `${link.href} tidak punya section`).toContain(link.href.slice(1));
+    }
+  });
+
+  it('urutan section adalah urutan yang diargumenkan, bukan urutan referensi', () => {
+    // Referensinya berjalan about, experience, projects, achievements,
+    // technologies, contact. Urutan di bawah menaruh Work sebelum Experience
+    // dan About di posisi keenam, persis argumen yang sudah ditulis di
+    // app/page.tsx. Kalau seseorang menyusun ulang, tes ini yang memaksanya
+    // jadi keputusan sadar alih-alih pergeseran diam-diam.
+    expect(V3_SECTIONS.map((section) => section.id)).toEqual([
+      'proof',
+      'work',
+      'experience',
+      'technologies',
+      'achievements',
+      'about',
+      'contact',
+    ]);
+  });
+
+  it('tidak ada satu pun item galeri yang hilang saat dikelompokkan di section Work', () => {
+    for (const item of WORK_GALLERY) {
+      const target = V3_GALLERY_CATEGORY[item.category];
+      expect(target, `${item.id} tidak punya kategori tujuan`).toBeTruthy();
+      expect(V3_PROJECT_CATEGORIES.map((category) => category.id)).toContain(target);
+    }
+  });
+
+  it('SKILLS tetap bersih dari nama vendor LLM meski V3_TOOLS memuat tiga', () => {
+    // V3_TOOLS memang memajang Claude, OpenAI, dan Gemini, dan itu boleh:
+    // sectionnya berjudul Technologies. Pernah memakai produk sebuah vendor
+    // bukan kompetensi, jadi SKILLS tidak boleh ikut kebobolan.
+    const skills = SKILLS.flatMap((group) => group.items).join(' ');
+    for (const vendor of ['Claude', 'Gemini', 'OpenAI', 'GPT']) {
+      expect(skills).not.toContain(vendor);
+    }
+    expect(V3_TOOLS.map((tool) => tool.name)).toContain('Claude');
+  });
+
+  it('setiap situs di kategori Website punya tautan yang bisa dibuka', () => {
+    expect(V3_WEBSITES.length).toBeGreaterThan(0);
+    for (const site of V3_WEBSITES) {
+      expect(site.href, `${site.id} tidak punya href`).toMatch(/^https:\/\//);
+    }
+  });
+
+  it('chip peran menulis disiplinnya dengan ampersand, bukan "and"', () => {
+    expect(V3_ROLE_CHIPS[0]).toBe('Learning & Development');
   });
 });

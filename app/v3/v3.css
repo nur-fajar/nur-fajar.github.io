@@ -1,0 +1,1913 @@
+/* ── TEMA ───────────────────────────────────────────────────────────────
+   Halaman ini terang saja, tidak ada opsi gelap. Token hidup di .v3-root.
+
+   Token v3 duduk di .v3-root, TIDAK di :root. Situs lama masih live di /
+   dan berbagi dokumen yang sama; menaruhnya di :root akan mengecat ulang
+   halaman itu.
+
+   AKSEN mengikuti trikolor RX-78-2, dengan pembagian tugas yang tegas:
+     biru    semua yang struktural (eyebrow, tautan, tombol, bar progres)
+     merah   satu tusukan saja (asterisk hero, penanda nav)
+     kuning  HANYA bidang isi, tidak pernah jadi huruf
+
+   Kuning #ffc400 cuma 1.49:1 di atas kertas terang. Ia gagal untuk teks
+   apa pun, dan itu bukan sesuatu yang bisa diakali dengan menebalkannya.
+   Tulisan di atas bidang kuning selalu tinta gelap (11.89:1).
+*/
+.v3-root {
+  /* ── Terang, default ── angka di komentar adalah rasio terukur ── */
+  --v3-page: #f7f7f5;
+  --v3-card: #ffffff;
+  --v3-line: #e3e3df;
+  --v3-nav-bg: rgba(247, 247, 245, 0.78);
+  --v3-chip-bg: #f2f2ef;
+
+  --v3-ink: #101014;         /* 17.70 kertas · 18.98 kartu */
+  --v3-ink-soft: #4f4f57;    /*  7.56 kertas ·  8.11 kartu */
+  --v3-ink-faint: #6f6f77;   /*  4.64 kertas ·  4.98 kartu */
+
+  --v3-blue: #0f3a93;        /*  9.56 kertas · putih di atasnya 10.26 */
+  --v3-blue-text: #0f3a93;   /*  di kertas terang satu biru sudah cukup */
+  --v3-red: #ce2029;         /*  5.07 kertas */
+  --v3-yellow: #ffc400;      /*  bidang isi saja, tinta gelap di atasnya */
+  --v3-ok: #15803d;
+
+  /* ── Alias ke token situs lama ──────────────────────────────────────
+     app/globals.css meng-import sections.css, jadi seluruh kelas situs lama
+     tersedia juga di halaman ini, dan kelas-kelas itu membaca warnanya dari
+     variabel di :root. Menimpa nama variabel yang SAMA di sini membuat
+     komponen mana pun dari components/site otomatis ikut tema, tanpa satu
+     kelas pun disalin. Yang memanfaatkan ini: panel ADDIE, 537 baris yang
+     tidak perlu digandakan. */
+  --paper: var(--v3-page);
+  --card: var(--v3-card);
+  --ink: var(--v3-ink);
+  --ink-soft: var(--v3-ink-soft);
+  --ink-faint: var(--v3-ink-faint);
+  --rule: var(--v3-line);
+  --accent: var(--v3-blue-text);
+  --accent-soft: color-mix(in srgb, var(--v3-blue) 12%, transparent);
+  --g1: var(--v3-blue);
+  --g2: var(--v3-blue-text);
+  --g3: var(--v3-red);
+  --gradient: linear-gradient(100deg, var(--g1), var(--g2) 55%, var(--g3));
+  --ok: var(--v3-ok);
+  --ok-dot: var(--v3-ok);
+  --ok-bg: color-mix(in srgb, var(--v3-ok) 12%, transparent);
+  --ok-border: color-mix(in srgb, var(--v3-ok) 32%, transparent);
+  --shadow-card: none;
+  --shadow-float: none;
+
+  /* Dua lebar, dan pemisahannya disengaja. 1240px adalah ukuran untuk
+     kolom teks, dan ketujuh section lain memang membacanya. Bento bukan
+     kolom teks: di 1240px ia menyisakan pita kosong 404px di kiri dan kanan
+     layar 1920px, dan grid-nya cuma mengisi 32% luas layar. */
+  --v3-maxw: 1240px;
+  /* 1560, bukan 1440: .v3-shell memakan 64px gutter di tiap sisi, jadi
+     grid yang sebenarnya selalu 128px lebih sempit dari angka ini. */
+  --v3-maxw-bento: 1560px;
+
+  /* Tinggi satu baris grid. 165px juga peninggalan dari hero versi teks;
+     di layar 945px tiga baris cuma setinggi 527px. */
+  /* 23vh, bukan 19vh: di layar setinggi 945px, 19vh menghasilkan 179px dan
+     kalah dari batas minimumnya sendiri, jadi clamp-nya tidak pernah aktif. */
+  --v3-unit: clamp(180px, 23vh, 240px);
+  --v3-gutter: clamp(1.25rem, 5vw, 4rem);
+  --v3-r-card: 12px;
+
+  background: var(--v3-page);
+  color: var(--v3-ink);
+  font-family: var(--font-v3-body), ui-sans-serif, system-ui, sans-serif;
+
+  /* Root layout memuat globals.css di setiap route, jadi --paper milik
+     situs lama tetap mengecat <body> di balik halaman ini. */
+  min-height: 100vh;
+  isolation: isolate;
+}
+
+/* Teks yang diseleksi mengambil satu-satunya tugas kuning yang masih
+   tersisa: bidang isi dengan tinta gelap di atasnya (11.89:1). */
+.v3-root ::selection {
+  background: var(--v3-yellow);
+  color: #101014;
+}
+
+/* ── Kanvas blueprint ─────────────────────────────────────────────────
+   Fixed di belakang <main>, bukan di hero: ubin bento buram dan menutup
+   layar pertama, jadi latar yang disimpan di belakangnya tidak akan pernah
+   terlihat. Di sini ia muncul di ruang kosong antar section. */
+.v3-blueprint {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.v3-root main {
+  position: relative;
+  z-index: 1;
+}
+
+/* Grain halus di atas segalanya: satu pseudo-element fixed, jadi GPU tidak
+   pernah mengecat ulang elemen yang ikut scroll. Opacity-nya cukup untuk
+   membunuh rasa "render digital", tidak cukup untuk terbaca sebagai noise. */
+.v3-root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+}
+
+.v3-shell {
+  /* width:100% wajib ada. Tanpanya, `margin: 0 auto` di dalam induk flex
+     membuat margin otomatis menyerap sisa ruang dan kotaknya menyusut ke
+     lebar isinya, bukan melebar sampai max-width. Hero jadi 1064px alih-alih
+     1240px, dan gejalanya cuma "kok agak ke tengah", bukan error. */
+  width: 100%;
+  max-width: var(--v3-maxw);
+  margin: 0 auto;
+  padding: 0 var(--v3-gutter);
+}
+
+/* ── Tipografi display ────────────────────────────────────────────────── */
+
+/* Fraunces di BOBOT 300, bukan tebal. Ini pilihan paling menentukan dari
+   referensinya dan yang paling gampang salah: di ukuran display, serif
+   kontras tinggi yang tipis terbaca editorial, dan huruf yang sama di bobot
+   700 terbaca seperti kepala koran. */
+.v3-display {
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* Baris kedua judul selalu miring. Titik pecahnya datang dari data, bukan
+   dari browser. */
+.v3-display em {
+  font-style: italic;
+}
+
+/* ── Nav ──────────────────────────────────────────────────────────────── */
+
+.v3-nav {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  gap: clamp(1rem, 3vw, 2.75rem);
+  padding: 1rem clamp(1.25rem, 3vw, 2.25rem);
+  background: var(--v3-nav-bg);
+  backdrop-filter: blur(12px);
+  border: 0.8px solid var(--v3-line);
+  border-top: 0;
+  border-radius: 0 0 16px 16px;
+}
+
+.v3-nav__link {
+  color: var(--v3-ink-soft);
+  text-decoration: none;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 160ms ease;
+}
+
+/* Garis merah di bawah tautan yang disentuh. Tugas kedua dan terakhir
+   untuk merah di halaman ini, setelah asterisk hero. */
+.v3-nav__link {
+  border-bottom: 2px solid transparent;
+}
+
+.v3-nav__link:hover,
+.v3-nav__link:focus-visible {
+  color: var(--v3-ink);
+  border-bottom-color: var(--v3-red);
+}
+
+/* Section yang sedang melintasi tengah viewport. Garis merahnya sama dengan
+   garis hover: satu bahasa untuk "di sini". */
+.v3-nav__link.is-active {
+  color: var(--v3-ink);
+  border-bottom-color: var(--v3-red);
+}
+
+/* Tombol hamburger: disembunyikan kecuali di layar sempit ber-JS (lihat
+   aturan 640px). Lebar-tinggi 44px memenuhi target sentuh; margin negatif
+   menahan tinggi bar supaya tidak ikut membesar. */
+.v3-nav__toggle {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -0.55rem -0.55rem -0.55rem 0.25rem;
+  border: 0.8px solid var(--v3-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--v3-ink);
+  cursor: pointer;
+}
+
+/* Sidebar mobile: overlay peredup + panel kanan. Tertutup = visibility
+   hidden (transisi tetap bisa jalan saat dibuka) dan tautan tabindex -1
+   dari komponen, jadi tidak ada fokus nyasar maupun pembaca layar nyasar. */
+.v3-drawer {
+  visibility: hidden;
+}
+
+.v3-drawer__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(8, 8, 10, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms ease;
+}
+
+/* Menu fullscreen tipografi: panel menutup seluruh layar (bukan rel samping),
+   tautan serif raksasa masuk berurutan dari bawah, dan tiap baris bergeser +
+   miring + memerah saat disentuh — gerak kinetiknya di baris, bukan di panel. */
+.v3-drawer__panel {
+  position: fixed;
+  inset: 0;
+  z-index: 71;
+  overflow-y: auto;
+  background: var(--v3-page);
+  padding: calc(5.5rem + env(safe-area-inset-top)) max(var(--v3-gutter), env(safe-area-inset-right)) calc(2rem + env(safe-area-inset-bottom)) max(var(--v3-gutter), env(safe-area-inset-left));
+  transform: translateX(103%);
+  transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.v3-drawer.is-open {
+  visibility: visible;
+}
+
+.v3-drawer.is-open .v3-drawer__overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.v3-drawer.is-open .v3-drawer__panel {
+  transform: none;
+}
+
+/* Bar tetap di atas drawer saat terbuka supaya tombol X selalu terjangkau;
+   panel mulai di bawah bar. */
+.v3-nav.is-open {
+  z-index: 72;
+}
+
+.v3-drawer__panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 0.8px solid var(--v3-line);
+}
+
+/* Entrance (naik berurutan, delay per baris dari komponen) hidup di li;
+   gerak hover hidup di tautannya — delay entrance tidak boleh ikut
+   menunda hover. */
+.v3-drawer__item {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 380ms ease,
+    transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.v3-drawer.is-open .v3-drawer__item {
+  opacity: 1;
+  transform: none;
+}
+
+.v3-drawer__link {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 0.8px solid var(--v3-line);
+  color: var(--v3-ink);
+  text-decoration: none;
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-style: normal;
+  font-size: clamp(2.25rem, 11vw, 3.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Kinetik per baris: miring + geser + panah masuk + nomor memerah. */
+.v3-drawer__link:hover,
+.v3-drawer__link:focus-visible {
+  font-style: italic;
+  transform: translateX(12px);
+}
+
+.v3-drawer__link:hover .v3-drawer__num,
+.v3-drawer__link:focus-visible .v3-drawer__num,
+.v3-drawer__link.is-active .v3-drawer__num {
+  color: var(--v3-red);
+}
+
+.v3-drawer__link:hover .v3-drawer__go,
+.v3-drawer__link:focus-visible .v3-drawer__go {
+  opacity: 1;
+  transform: none;
+}
+
+.v3-drawer__num {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  color: var(--v3-ink-faint);
+}
+
+.v3-drawer__go {
+  font-size: 0.75em;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition:
+    opacity 200ms ease,
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Kunci scroll halaman selama drawer terbuka. */
+html.v3-nav-open,
+html.v3-nav-open body {
+  overflow: hidden;
+}
+
+/* ── Bento, menggantikan hero ─────────────────────────────────────────
+
+   Penempatan diserahkan ke auto-placement CSS Grid, TIDAK ke koordinat baris
+   yang dipatok. Urutan DOM awal dengan span 6/2/4/6/2/6 kebetulan
+   menghasilkan tepat tata letak mockup-nya, dan menyerahkannya ke
+   auto-placement berarti setelah ubin ditukar posisi grid tetap terisi,
+   alih-alih meninggalkan lubang di koordinat yang ubinnya sudah pindah. */
+
+.v3-bento .v3-shell {
+  max-width: var(--v3-maxw-bento);
+}
+
+.v3-bento {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 7rem 0 clamp(2.5rem, 6vh, 4rem);
+}
+
+.v3-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: var(--v3-unit);
+  grid-auto-flow: row dense;
+  gap: 16px;
+}
+
+.v3-bento__hint {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--v3-ink-faint);
+}
+
+/* ── Ubin ─────────────────────────────────────────────────────────────── */
+
+.v3-tile {
+  /* Span datang lewat custom property, bukan lewat grid-column inline:
+     inline style menang atas stylesheet tanpa !important, dan itu membuat
+     media query tidak sanggup menyempitkan apa pun. */
+  grid-column: span var(--v3-span);
+  grid-row: span var(--v3-rows);
+
+  position: relative;
+  border-radius: 28px;
+  padding: 32px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-decoration: none;
+  color: inherit;
+  border: 0.8px solid transparent;
+}
+
+.v3-tile--paper {
+  background: var(--v3-card);
+  border-color: var(--v3-line);
+}
+
+.v3-tile--yellow {
+  background: var(--v3-yellow);
+  color: #101014;
+}
+
+.v3-tile--ink {
+  background: #000000;
+  color: #ffffff;
+}
+
+.v3-tile--blue {
+  background: var(--v3-blue);
+  color: #ffffff;
+}
+
+a.v3-tile {
+  cursor: pointer;
+}
+
+a.v3-tile:focus-visible {
+  outline: 3px solid var(--v3-blue-text);
+  outline-offset: 3px;
+}
+
+/* Tombol panah kiri bawah: lingkaran 48px dalam keadaan diam, mengembang
+   jadi kapsul berlabel saat ubinnya di-hover atau difokuskan keyboard. Tanpa
+   label (ubin tanpa cta) ia tetap lingkaran: tidak ada yang mengembang.
+   Tanpa hover (sentuh) ia tetap lingkaran, dan ubinnya sendiri tetap anchor
+   yang bisa diketuk. */
+.v3-tile__go {
+  position: absolute;
+  left: 32px;
+  bottom: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  height: 48px;
+  min-width: 48px;
+  box-sizing: border-box;
+  padding: 0 13px;
+  border-radius: 999px;
+  overflow: hidden;
+  white-space: nowrap;
+  background: #000000;
+  color: #ffffff;
+  text-decoration: none;
+  transition: gap 240ms ease;
+}
+
+/* Di ubin ber-cta tombolnya anchor sendiri (bukan seluruh ubin), jadi ia
+   butuh cincin fokusnya sendiri. */
+a.v3-tile__go:focus-visible {
+  outline: 3px solid var(--v3-blue-text);
+  outline-offset: 3px;
+}
+
+.v3-tile__go > svg {
+  flex: 0 0 auto;
+}
+
+.v3-tile__go-label {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition:
+    max-width 260ms ease,
+    opacity 180ms ease;
+}
+
+.v3-tile:hover .v3-tile__go,
+.v3-tile:focus-visible .v3-tile__go,
+.v3-tile__go:focus-visible {
+  gap: 0.5rem;
+}
+
+.v3-tile:hover .v3-tile__go-label,
+.v3-tile:focus-visible .v3-tile__go-label,
+.v3-tile__go:focus-visible .v3-tile__go-label {
+  max-width: 12rem;
+  opacity: 1;
+}
+
+/* Panah membalik terhadap ubinnya. */
+.v3-tile--ink .v3-tile__go,
+.v3-tile--blue .v3-tile__go {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* ── Isi ubin ─────────────────────────────────────────────────────────── */
+
+.v3-intro {
+  margin: 0;
+  font-size: clamp(1.25rem, 1.9vw, 1.6rem);
+  line-height: 1.2;
+  color: var(--v3-ink-soft);
+}
+
+/* Baris sapaan (mesin ketik): Fraunces italic display, satu tingkat di bawah
+   nama. nowrap supaya sapaan tidak patah di tengah pengetikan; frasa
+   terpanjang (こんにちは！, ~7em) muat di ubin tersempit di batas bawah. */
+.v3-intro__greet {
+  display: block;
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--v3-ink);
+  white-space: nowrap;
+}
+
+/* Baris nama: statis, dan tetap hal terbesar di ubinnya. Batas bawah
+   dihitung dari 14 karakternya di ubin tersempit (~272px isi): 2.5rem. */
+.v3-intro__name {
+  display: block;
+  margin-top: 0.1em;
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(2.5rem, 5vw, 4.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--v3-ink);
+}
+
+/* Kursor blok: inline-block 1em penuh supaya baris tidak ambruk tingginya
+   di jeda kosong antara hapus dan ketik. Berkedip lewat visibility (bukan
+   opacity) supaya tidak memicu compositing tiap kedip. */
+.v3-intro__caret {
+  display: inline-block;
+  width: 0.06em;
+  height: 0.95em;
+  margin-left: 0.08em;
+  vertical-align: -0.08em;
+  background: currentColor;
+  animation: v3-blink 1.1s steps(2, start) infinite;
+}
+
+@keyframes v3-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.v3-magnetic {
+  display: inline-block;
+}
+
+.v3-connect__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.v3-connect__copy {
+  min-width: 0;
+}
+
+/* Amplop: panel belakang SVG, tiga kartu HTML, kantong depan SVG. Bawah
+   kartu terselip di balik kantong yang dicat belakangan (= di atas).
+   Urutan cat mengikuti urutan DOM. */
+/* Sebagai anchor: tanpa garis bawah, dan cincin fokus sendiri karena ia
+   satu-satunya pintu di ubin ini. */
+.v3-mail {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(104px, 34%, 230px);
+  aspect-ratio: 8 / 5;
+  text-decoration: none;
+}
+
+a.v3-mail:focus-visible {
+  outline: 3px solid var(--v3-blue-text);
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+
+.v3-mail__decor {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.v3-mail__back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64%;
+}
+
+/* Kemiringan lewat properti `rotate` (bukan transform) supaya keyframes
+   layang yang menganimasikan transform tidak menimpanya. */
+.v3-mail__card {
+  position: absolute;
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1.2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  animation: v3-mail-bob 4s ease-in-out infinite;
+}
+
+.v3-mail__card--inbox {
+  left: 3%;
+  bottom: 32%;
+  width: 54%;
+  height: 56%;
+  rotate: -9deg;
+  background: var(--v3-blue);
+  color: #ffffff;
+  animation-duration: 3.6s;
+}
+
+.v3-mail__card--reach {
+  left: 30%;
+  bottom: 36%;
+  width: 54%;
+  height: 60%;
+  rotate: 6deg;
+  background: var(--v3-yellow);
+  color: #101014;
+  animation-duration: 4.3s;
+  animation-delay: -1.4s;
+}
+
+.v3-mail__card--hi {
+  left: 58%;
+  bottom: 30%;
+  width: 38%;
+  height: 64%;
+  rotate: 11deg;
+  background: #ffffff;
+  border: 0.8px solid var(--v3-line);
+  color: #101014;
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 1.05rem;
+  animation-duration: 5s;
+  animation-delay: -2.2s;
+}
+
+.v3-mail__front {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 52%;
+  overflow: visible;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.12));
+}
+
+@keyframes v3-mail-bob {
+  0%,
+  100% {
+    transform: translateY(3px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.v3-glyph {
+  display: grid;
+  place-items: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+/* Baris kecil di bawah ikon. Ubin CV dan LinkedIn sebelumnya cuma ikon di
+   tengah kotak: 172x165 piksel untuk satu glif, dan sisanya udara. */
+.v3-glyph__label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--v3-ink-faint);
+}
+
+.v3-tile--blue .v3-glyph__label {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* Avatar lingkaran + lencana terverifikasi. Foto di-crop cover, jadi aspek
+   berkas tidak penting; cincin putih memisahkan lencana biru dari foto di
+   tema apa pun. */
+.v3-avatar {
+  position: relative;
+  display: inline-block;
+  width: 76px;
+  height: 76px;
+}
+
+.v3-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.v3-avatar__badge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #1d9bf0;
+}
+
+/* Dua ikon satu sel: ceklis tampil, panah unduh menunggu skala nol. Hover
+   ubin menukar keduanya — janji visual bahwa ubin ini mengunduh. Panah
+   bertinta gelap di atas putih (kontras penuh di dua tema, lencana selalu
+   putih). */
+.v3-avatar__badge svg {
+  grid-area: 1 / 1;
+  transition:
+    transform 220ms ease,
+    opacity 180ms ease;
+}
+
+.v3-avatar__dl {
+  color: #101014;
+  transform: scale(0);
+  opacity: 0;
+}
+
+.v3-tile:hover .v3-avatar__check {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.v3-tile:hover .v3-avatar__dl {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.v3-projects {
+  align-self: start;
+}
+
+/* Kuning di atas hitam, bukan cyan. Cyan tidak ada di trikolor RX-78, dan
+   kuning di atas hitam 11.89:1: bacaannya lebih kuat sekaligus lebih tepat. */
+.v3-projects__head {
+  margin: 0 0 0.5em;
+  color: var(--v3-yellow);
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  letter-spacing: -0.01em;
+}
+
+.v3-projects__list {
+  list-style: none;
+  /* Zona tombol panah: 48px tombol plus jarak 32px dari tepi bawah. Tanpa
+     jarak ini "Website" berakhir 17px di dalam tombolnya. */
+  margin: 0 0 4.5rem;
+  padding: 0;
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.75rem, 3vw, 2.6rem);
+  line-height: 1.4;
+}
+
+/* Roll di tempat: tiap baris memuat dua salinan kata setinggi satu baris;
+   hover menggeser keduanya naik satu baris hingga salinan kuning yang
+   tampil. Tinggi dikunci 1.4em (= line-height) supaya tidak ada baris yang
+   mengintip sebelum waktunya. */
+.v3-roll {
+  display: block;
+  height: 1.4em;
+  overflow: hidden;
+}
+
+.v3-roll > span {
+  display: block;
+  height: 1.4em;
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.v3-roll > span:last-child {
+  color: var(--v3-yellow);
+}
+
+.v3-projects__list li:hover .v3-roll > span {
+  transform: translateY(-1.4em);
+}
+
+/* Nama sendiri, bukan .v3-tools, dan itu bukan soal selera penamaan.
+   Section Technologies memakai <ul class="v3-tools"> untuk daftar kartunya.
+   Waktu wadah ini juga bernama .v3-tools, aturan position:absolute di sini
+   ikut kena ke <ul> itu, dan aturan grid di section Technologies tidak
+   pernah menimpanya karena ia tidak menyebut position sama sekali. Akibatnya
+   daftar tool lepas dari alirannya lalu membentang ke leluhur berposisi
+   terdekat, yaitu seluruh halaman, dan menutupi hero dengan chip 88px.
+
+   Selektor turunan tidak cukup untuk kasus seperti ini: yang bertabrakan
+   bukan anaknya, tapi kelas wadahnya sendiri. */
+.v3-toolfield {
+  position: absolute;
+  inset: 0;
+}
+
+/* Lapis diam (top/left per chip) di luar, posisi fisika di dalam: simulasi
+   di ToolsTile menulis transform lapis dalam puluhan kali per detik, dan
+   keduanya tidak pernah berebut properti yang sama. */
+.v3-toolfield__spot {
+  position: absolute;
+  pointer-events: none;
+}
+
+.v3-toolfield__push {
+  display: block;
+  will-change: transform;
+}
+
+/* Dua aturan chip hidup di file ini: yang ini untuk bento, yang satu lagi
+   untuk section Technologies di bawah. Keduanya sempat memakai selektor yang
+   sama persis, dan yang ditulis belakangan menang di kedua tempat: chip
+   bento yang seharusnya bulat ikut jadi kotak rounded 10px. Selektor induk
+   yang memisahkan keduanya sekarang. */
+.v3-toolfield .v3-tool-chip {
+  display: grid;
+  place-items: center;
+  /* Fluid, karena ubinnya menyempit di dua breakpoint. Titik tengah chip
+     diukur dari DOM di ToolsTile, jadi ukurannya boleh berubah tanpa ada
+     angka kedua yang harus dijaga ikut berubah. Ukurannya sengaja longgar
+     sampai terpotong tepi: bidang yang penuh, bukan kotak berisi benda
+     kecil di tengah (lihat komentar SPOTS di ToolsTile). */
+  width: clamp(62px, 9vw, 104px);
+  height: clamp(62px, 9vw, 104px);
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.v3-connect {
+  margin: 0 0 0.6rem;
+  text-align: left;
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  color: var(--v3-blue);
+}
+
+/* Yang menahan orang mengirim pesan dingin bukan ragu soal alamatnya, tapi
+   ragu apakah akan dibalas. Satu baris, dan ia mengisi ubin yang tadinya
+   cuma memuat dua kata. */
+.v3-connect__reply {
+  margin: 0;
+  text-align: left;
+  font-size: 0.8125rem;
+  color: var(--v3-ink-faint);
+}
+
+.v3-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0.8rem 0.8rem 1.5rem;
+  border-radius: 999px;
+  background: var(--v3-blue);
+  color: #ffffff;
+  /* Putih di atas kedua biru sudah diukur: 10.26 di tema terang, 5.06 di
+     tema gelap. Keduanya lolos AA. */
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+/* Lingkaran kuning di dalam tombol biru: persis hubungan V-fin dengan
+   badan RX-78. Ini satu-satunya tempat kuning dipakai sebagai bidang, dan
+   panahnya bertinta gelap (11.89:1), tidak pernah putih. */
+.v3-btn__go {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--v3-yellow);
+  color: var(--v3-ink);
+}
+
+.v3-link-caps {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--v3-ink-soft);
+  text-decoration: none;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--v3-line);
+  padding-bottom: 2px;
+}
+
+.v3-link-caps:hover,
+.v3-link-caps:focus-visible {
+  color: var(--v3-ink);
+}
+
+/* ── Furnitur section ─────────────────────────────────────────────────── */
+
+.v3-section {
+  /* Nav-nya fixed setinggi ~54px. Tanpa ini, lompatan anchor menaruh judul
+     section persis di bawahnya dan pembaca mendarat di kalimat kedua. */
+  scroll-margin-top: 5.5rem;
+  padding: clamp(6.5rem, 15vh, 11rem) 0;
+  border-top: 0.8px solid var(--v3-line);
+}
+
+.v3-eyebrow {
+  margin: 0 0 1.25rem;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--v3-blue-text);
+}
+
+/* Naik dari 8vw/6rem ke 11vw/9rem. Di layar lebar judul section jadi elemen
+   terbesar di halaman — lebih besar dari nama di hero — dan itu memang
+   niatnya: tiap section dibuka satu pernyataan yang terbaca dari jauh.
+
+   Lantainya tetap 3rem, bukan ikut naik. Baris terpanjang ("Evidence from")
+   selebar 6.6em, dan di 375px isi shell cuma 335px: 3rem menyisakan 17px,
+   3.25rem sudah membungkus. Jadi yang berubah cuma kemiringan dan atapnya;
+   di ponsel ukurannya persis seperti sebelumnya. */
+.v3-section__title {
+  font-size: clamp(3rem, 8vw, 6rem);
+  margin-bottom: 1.5rem;
+}
+
+/* Judul Work dan Achievements dipaku di bawah nav sampai section-nya
+   selesai: position sticky di h2-nya (transform animasi mask ada di span
+   DALAM, jadi tidak memerangkap stickynya), fondasi opak supaya konten
+   yang lewat di bawahnya tidak mengotori huruf, z di bawah nav (50) dan
+   drawer (70+) tapi di atas kartu sticky testimoni. Murni CSS: tanpa JS
+   maupun di reduced-motion pakunya tetap jalan. */
+#work .v3-section__title,
+#achievements .v3-section__title {
+  position: sticky;
+  top: 4.5rem;
+  z-index: 30;
+  background: var(--v3-page);
+  padding: 0.5rem 0;
+}
+
+.v3-section__title > span {
+  display: block;
+}
+
+/* Mask reveal untuk judul section. Padding bawah memberi ruang untuk
+   descender italic (g, y, p) yang terpotong kalau mask-nya pas di baseline;
+   margin negatif menarik balik supaya ritme vertikalnya tidak berubah. */
+.v3-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.v3-mask__line {
+  display: block;
+  will-change: transform;
+}
+
+.v3-lede {
+  margin: 0 0 clamp(2.5rem, 5vh, 4rem);
+  max-width: 62ch;
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  line-height: 1.65;
+  color: var(--v3-ink-soft);
+}
+
+/* Kartu di atas latar mendekati hitam tidak bisa memisahkan diri lewat
+   terang saja tanpa berubah jadi abu. Garis rambut yang mengerjakannya.
+   Ini kebalikan dari pass sebelumnya, yang melarang border dan bayangan
+   di atas kertas krem. */
+.v3-card {
+  background: var(--v3-card);
+  border: 0.8px solid var(--v3-line);
+  border-radius: var(--v3-r-card);
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────── */
+
+/* Nav memakai breakpoint sendiri (900px): pil tujuh tautan selebar ~880px
+   dan mulai terpotong jauh sebelum ponsel. Di bawah sini pil jadi bilah
+   selebar layar. */
+@media (max-width: 900px) {
+  /* Dengan JS: barisan tautan diganti tombol hamburger kanan. Tanpa JS
+     (tanpa data-v3-js): barisan geser tetap tampil dan
+     tidak ada tombol mati, dengan scrollbar disembunyikan: bilah abu
+     setebal 15px di bawah nav terbaca sebagai kerusakan, bukan petunjuk.
+     Safe-area supaya bar tidak tertutup notch di kiri-kanan-atas. */
+  .v3-nav {
+    left: 0;
+    right: 0;
+    transform: none;
+    justify-content: flex-start;
+    gap: 1.1rem;
+    padding: calc(0.8rem + env(safe-area-inset-top)) max(var(--v3-gutter), env(safe-area-inset-right)) 0.8rem max(var(--v3-gutter), env(safe-area-inset-left));
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  html[data-v3-js] .v3-nav {
+    justify-content: flex-end;
+    align-items: center;
+    overflow-x: visible;
+  }
+
+  html[data-v3-js] .v3-nav__link {
+    display: none;
+  }
+
+  html[data-v3-js] .v3-nav__toggle {
+    display: grid;
+  }
+
+  .v3-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .v3-nav__link {
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+  }
+}
+
+@media (max-width: 640px) {
+
+  /* Rel menyempit mengikuti layar; nodus ikut karena ia dihitung dari
+     variabel yang sama. */
+  .v3-timeline {
+    --v3-rail: 1.75rem;
+  }
+
+  /* Ubin Connect menyamping: judul mengecil supaya muat bersisian dengan
+     amplop di ~312px isi. */
+  .v3-connect {
+    font-size: 1.5rem;
+  }
+
+  /* Bilah mobile lebih tinggi + safe-area: judul paku ikut turun. */
+  #work .v3-section__title,
+  #achievements .v3-section__title {
+    top: 5rem;
+  }
+
+  /* Ritme vertikal dirapatkan: padding section desktop (min 6.5rem tiap
+     sisi × 7 section) terlalu lapang untuk layar 700px. Bar hero ikut
+     turun karena bilah mobile lebih pendek dari pil desktop. */
+  .v3-section {
+    padding: 4.5rem 0;
+  }
+
+  .v3-bento {
+    padding-top: 5.5rem;
+  }
+
+}
+
+/* Bento jadi satu kolom: semua ubin span penuh, urut DOM. Span datang lewat
+   --v3-span (bukan inline), jadi media query bisa menimpanya — persis alasan
+   komentar di .v3-tile. Berlaku juga untuk ponsel landscape yang pendek:
+   grid 12 kolom di viewport 844×390 cuma menghasilkan ubin-ubin mungil. */
+@media (max-width: 640px), (max-height: 480px) and (orientation: landscape) {
+  .v3-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .v3-tile {
+    grid-column: span 1;
+    padding: 24px;
+    border-radius: 20px;
+  }
+
+  .v3-tile__go {
+    left: 24px;
+    bottom: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v3-nav__link {
+    transition: none;
+  }
+
+  .v3-mail__card {
+    animation: none;
+  }
+
+  .v3-roll > span,
+  .v3-avatar__badge svg {
+    transition: none;
+  }
+
+  .v3-drawer__overlay,
+  .v3-drawer__panel,
+  .v3-drawer__item,
+  .v3-drawer__link,
+  .v3-drawer__go,
+  .v3-cat {
+    transition: none;
+  }
+}
+
+/* ── Section: Experience ──────────────────────────────────────────────── */
+
+.v3-roles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+/* Rel timeline: daftar peran digantung di satu garis vertikal yang digambar
+   mengikuti scroll. Lebar rel hidup di custom property supaya satu angka
+   menggerakkan padding dan nodus sekaligus, termasuk di media query. */
+.v3-timeline {
+  --v3-rail: 2.5rem;
+  position: relative;
+  padding-left: var(--v3-rail);
+}
+
+.v3-timeline__track,
+.v3-timeline__fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0.8px;
+}
+
+.v3-timeline__track {
+  background: var(--v3-line);
+}
+
+/* Default scaleY(1), bukan 0: yang mengatur 0 adalah GSAP saat halaman hidup.
+   Tanpa JavaScript atau di reduced-motion garis tampil penuh; yang hilang
+   cuma gerak menggambarnya. */
+.v3-timeline__fill {
+  background: var(--v3-red);
+  transform: scaleY(1);
+  transform-origin: top center;
+  will-change: transform;
+}
+
+/* Nodus tiap kartu: cincin merah berisi warna halaman, jadi garis lewat di
+   belakangnya. Top-nya jatuh di zona judul kartu. */
+.v3-timeline .v3-role {
+  position: relative;
+}
+
+.v3-timeline .v3-role::after {
+  content: '';
+  position: absolute;
+  top: 1.9rem;
+  left: calc(var(--v3-rail) * -1 - 5.1px);
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--v3-page);
+  border: 1.5px solid var(--v3-red);
+}
+
+.v3-role__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.v3-role__title {
+  margin: 0 0 0.25rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.v3-role__org {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--v3-ink-soft);
+}
+
+.v3-role__dates {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  color: var(--v3-ink-faint);
+  white-space: nowrap;
+}
+
+.v3-role__detail {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--v3-blue-text);
+}
+
+.v3-role__bullets {
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+  border-top: 0.8px solid var(--v3-line);
+  padding-top: 1.1rem;
+}
+
+.v3-role__bullets li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--v3-ink-soft);
+}
+
+.v3-role__bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 5px;
+  height: 1px;
+  background: var(--v3-ink-faint);
+}
+
+/* Kepemimpinan organisasi dibedakan lewat ketiadaan kartu, bukan lewat
+   ukuran huruf yang lebih kecil. CV memisahkannya dari riwayat kerja
+   berbayar, dan menyamakan keduanya mengencerkan sinyal seniority. */
+.v3-roles--quiet {
+  gap: 0;
+}
+
+.v3-role--quiet {
+  padding: 1.1rem 0;
+  border-top: 0.8px solid var(--v3-line);
+}
+
+.v3-role--quiet .v3-role__title {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.v3-subhead {
+  margin: clamp(2.5rem, 5vh, 3.5rem) 0 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--v3-ink-faint);
+}
+
+/* ── Section: Work ────────────────────────────────────────────────────── */
+
+.v3-cat__head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 0.4rem 2rem;
+  margin: clamp(2.5rem, 5vh, 3.5rem) 0 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 0.8px solid var(--v3-line);
+  scroll-margin-top: 5.5rem;
+}
+
+/* Resetnya di-scope ke dalam .v3-cat: tanpa scope, kepala website (kepala
+   <header> pertama di antara anak Reveal sejak course/video/design
+   dibungkus div) ikut kehilangan garis dan jaraknya. */
+.v3-cat > .v3-cat__head:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* Blok yang menunggu giliran pin: disembunyikan total selama blok
+   sebelumnya dihabiskan. Visibility menjaga layout (pengukuran pin aman)
+   sekaligus mencabut fokus dari tautan tak terlihat; opacity memberi
+   lenyap yang halus. Timing visibility dua arah: muncul langsung, hilang
+   setelah fade selesai. */
+.v3-cat {
+  transition:
+    opacity 400ms ease,
+    visibility 0s linear 0s;
+}
+
+.v3-cat.is-waiting {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 400ms ease,
+    visibility 0s linear 400ms;
+}
+
+.v3-cat__label {
+  margin: 0;
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--v3-ink);
+}
+
+.v3-cat__num {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  color: var(--v3-ink-faint);
+  padding-bottom: 0.5rem;
+}
+
+.v3-cat__blurb {
+  grid-column: 1 / -1;
+  margin: 0;
+  max-width: 62ch;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--v3-ink-soft);
+}
+
+.v3-cards {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.v3-cards--three {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.v3-cards--two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* flex-direction: column wajib disebut.
+   Sebagian li di grid ini membungkus kartu (kartu course dibungkus <a>),
+   sebagian lagi ADALAH kartunya sendiri (kartu BUILT dan Website). Untuk
+   yang kedua, flex tanpa arah membuat judul, isi, dan chip berjajar
+   menyamping alih-alih bertumpuk. */
+.v3-cards > li {
+  display: flex;
+  flex-direction: column;
+}
+
+.v3-cards > li > * {
+  width: 100%;
+}
+
+.v3-card__title {
+  margin: 0 0 0.6rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.35;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.v3-card__body {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--v3-ink-soft);
+}
+
+.v3-card__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.v3-card__link:hover .v3-card__title,
+.v3-card__link:focus-visible .v3-card__title {
+  color: var(--v3-blue-text);
+}
+
+/* Label kategori struktural di kepala kartu. Kartu CRM memakai varian
+   --aside, dan warnanya berbeda karena labelnya memang mengerjakan hal yang
+   berbeda: ia memisahkan, bukan menggolongkan. */
+.v3-kind {
+  margin: 0 0 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6875rem;
+  color: var(--v3-blue-text);
+}
+
+.v3-kind--aside {
+  color: var(--v3-ink-faint);
+}
+
+.v3-course {
+  position: relative;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 160ms ease;
+}
+
+.v3-course:hover,
+.v3-course:focus-visible {
+  border-color: var(--v3-blue);
+}
+
+.v3-card__go {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  color: var(--v3-ink-faint);
+}
+
+.v3-chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+.v3-chips li {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6875rem;
+  padding: 0.3rem 0.6rem;
+  border: 0.8px solid var(--v3-line);
+  border-radius: 6px;
+  color: var(--v3-ink-soft);
+}
+
+.v3-aside {
+  margin-top: clamp(2.5rem, 5vh, 3.5rem);
+}
+
+/* Galeri berjalan sendiri menyamping (diurus GalleryRail), bukan menumpuk
+   ke bawah: kolom mengalir lewat grid-auto-flow. Tanpa scrollbar
+   (disembunyikan dua mesin); sentuh menggeser bawaan, mouse bisa menyeret,
+   keyboard Tab menembus tautan dan fokus otomatis menggeser strip.
+   contain menahan rantai scroll supaya halaman tidak ikut terseret.
+   Rasio kartu 4:5 seperti feed portrait. */
+/* Penjaga full-bleed galeri: 100vw sedikit lebih lebar dari viewport
+   kala scrollbar vertikal ada (Win/Linux), dan itu gulir horizontal
+   halaman. clip (bukan hidden): tidak membuat scroll container sehingga
+   sticky di dalamnya (tumpukan testimoni) tetap jalan. Fixed (nav,
+   blueprint, drawer) lolos dari clip karena containing block-nya viewport,
+   bukan root. */
+.v3-root {
+  overflow-x: clip;
+}
+
+.v3-gallery {
+  list-style: none;
+  margin: 0;
+  /* Full-bleed penuh ke dua tepi viewport, sejak paint pertama: kartu
+     pertama mulai tepat di x=0 dan kartu-kartu berikutnya mengalir sampai
+     terpotong tepi kanan — tidak ada inset sejajar teks, tidak ada ujung
+     strip yang menggantung di tengah layar. */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(12rem, 24vw, 19rem);
+  grid-template-columns: none;
+  gap: 0.75rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  cursor: grab;
+  position: relative;
+  /* WAJIB auto: root memakai scroll-behavior:smooth, dan nilai itu diwarisi
+     ke sini sehingga tiap penulisan scrollLeft (jalan otomatis + seret)
+     ikut beranimasi — kontennya ketinggalan kursor. */
+  scroll-behavior: auto;
+}
+
+.v3-gallery::-webkit-scrollbar {
+  display: none;
+}
+
+.v3-gallery > li {
+  min-width: 0;
+}
+
+.v3-gallery.is-drag {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.v3-gallery__item {
+  display: block;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 0.8px solid var(--v3-line);
+  color: inherit;
+  text-decoration: none;
+}
+
+.v3-gallery__item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  filter: saturate(0.9);
+  transition: filter 200ms ease, transform 200ms ease;
+  pointer-events: none;
+}
+
+.v3-gallery__item:hover img,
+.v3-gallery__item:focus-visible img {
+  filter: saturate(1.1);
+  transform: scale(1.03);
+}
+
+/* Judul dibaca screen reader dan muncul saat hover, tapi tidak pernah cuma
+   hover: pengguna ponsel dan pengguna keyboard tidak punya hover, jadi
+   teksnya tetap ada di DOM sepanjang waktu. */
+.v3-gallery__caption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 2.5rem 0.6rem 0.6rem;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: #ffffff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88), transparent);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.v3-gallery__item:hover .v3-gallery__caption,
+.v3-gallery__item:focus-visible .v3-gallery__caption {
+  opacity: 1;
+}
+
+@media (max-width: 980px) {
+  .v3-cards--three,
+  .v3-cards--two {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  /* Tanpa hover, caption harus selalu terlihat, bukan tidak pernah. */
+  .v3-gallery__caption {
+    opacity: 1;
+  }
+}
+
+/* ── Section: Technologies ────────────────────────────────────────────── */
+
+/* Kartu tools rapat ala referensi: bidang abu (bukan kartu putih), tanpa
+   garis tepi, logo + nama + sub-deskripsi. Empat kolom supaya sebelas tool
+   terbaca padat; sub-nya memakai field `use` yang memang sudah ada di
+   ledger. Logo mereknya tetap versi resmi di chip putih (keputusan lama
+   yang tidak ikut berubah), bukan kotak warna. */
+.v3-tools {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+/* Flex-nya pindah ke pembungkus Tilt di dalamnya: yang dimiringkan isi
+   kartu, bukan kartunya, dan perspective untuk putaran itu dipasang di
+   sini (properti perspective berlaku untuk transform anak-anaknya). */
+.v3-tool {
+  padding: 0.9rem 1rem;
+  background: #edede9;
+  border-color: transparent;
+  perspective: 700px;
+}
+
+.v3-tool__tilt {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+}
+
+/* Chip logo tetap putih. Ubin putih kecil di atas latar hitam adalah
+   satu-satunya cara logo merek terbaca tanpa harus punya versi monokrom
+   masing-masing. */
+/* Di tema gelap chip harus putih supaya logo merek terbaca. Di tema
+   terang putih di atas kartu putih tidak memisahkan apa pun, jadi ia jadi
+   abu sangat muda. */
+.v3-tool .v3-tool-chip {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--v3-chip-bg);
+}
+
+.v3-tool__name {
+  margin: 0 0 0.15rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.v3-tool__use {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--v3-ink-faint);
+}
+
+.v3-skills {
+  display: grid;
+  gap: 1.75rem;
+  margin-top: 1rem;
+}
+
+.v3-skills__label {
+  margin: 0 0 0.6rem;
+  font-size: 0.875rem;
+  color: var(--v3-ink-soft);
+}
+
+.v3-skills .v3-chips {
+  margin: 0;
+}
+
+/* ── Section: Achievements ────────────────────────────────────────────── */
+
+.v3-quotes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* Testimoni menumpuk: satu kolom kartu yang masing-masing sticky, kartu
+   berikutnya menggeser di atas yang tertahan. Top-nya menanjak per kartu
+   supaya tepi yang tertahan mengintip (indeks visual progres tumpukan);
+   aturan dasar tanpa top menampung kartu keempat dan seterusnya kalau daftar
+   bertambah. Scroll-native: tanpa JavaScript maupun di reduced-motion
+   tumpukannya tetap jalan, tidak ada gerak yang perlu dimatikan. */
+.v3-quotes--stack {
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 44rem;
+}
+
+.v3-quotes--stack > li {
+  position: sticky;
+  top: 5.5rem;
+}
+
+.v3-quotes--stack > li:nth-child(2) {
+  top: 6.5rem;
+}
+
+.v3-quotes--stack > li:nth-child(3) {
+  top: 7.5rem;
+}
+
+.v3-quotes--stack .v3-quote {
+  min-height: 14rem;
+}
+
+.v3-quote {
+  display: flex;
+  flex-direction: column;
+}
+
+.v3-quote__text {
+  margin: 0 0 1.1rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--v3-ink-soft);
+}
+
+.v3-quote__who {
+  margin: auto 0 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.v3-quote__role {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--v3-ink-faint);
+}
+
+/* ── Section: About ───────────────────────────────────────────────────── */
+
+.v3-bg {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.v3-bg__card {
+  display: flex;
+  flex-direction: column;
+}
+
+.v3-bg__logos {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  margin: 0 0 1.1rem;
+  padding: 0.9rem 0;
+  border-top: 0.8px solid var(--v3-line);
+  border-bottom: 0.8px solid var(--v3-line);
+  /* Tinggi minimum disamakan: jumlah logo beda per kartu, dan tanpa ini
+     baris logo yang pendek menarik body-nya naik sehingga isi ketiga kartu
+     tidak sejajar. 3.4rem = padding + satu baris logo 22px. */
+  min-height: 3.4rem;
+  box-sizing: content-box;
+}
+
+/* Logo tampil berwarna apa adanya. Berkasnya gelap di atas transparan dan
+   kartu di sini putih, jadi warna aslinya terbaca tanpa perlu dipaksa jadi
+   siluet (aturan siluet dulu ada untuk kartu gelap yang sudah tidak ada). */
+.v3-bg__logos img {
+  height: 22px;
+  width: auto;
+}
+
+.v3-bg__link {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding-top: 1.1rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--v3-blue-text);
+  text-decoration: none;
+}
+
+.v3-bg__link:hover,
+.v3-bg__link:focus-visible {
+  text-decoration: underline;
+}
+
+/* ── Section: Contact ─────────────────────────────────────────────────── */
+
+.v3-lookup {
+  margin: 0 0 2.5rem;
+  border-top: 0.8px solid var(--v3-line);
+}
+
+.v3-lookup__row {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 1.5rem;
+  padding: 1.05rem 0;
+  border-bottom: 0.8px solid var(--v3-line);
+}
+
+.v3-lookup__label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  color: var(--v3-ink-faint);
+  padding-top: 0.15rem;
+}
+
+.v3-lookup__value {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.v3-lookup__hint {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.8125rem;
+  color: var(--v3-ink-faint);
+}
+
+/* Pemicunya tabbable dan kotanya muncul saat fokus, bukan cuma hover:
+   konten yang hanya bisa didapat lewat hover tidak pernah sampai ke pengguna
+   ponsel maupun pengguna keyboard. Teksnya tetap di pohon aksesibilitas
+   sepanjang waktu, jadi screen reader membacanya tanpa interaksi apa pun. */
+.v3-reveal {
+  position: relative;
+  border-bottom: 1px dashed var(--v3-ink-faint);
+  cursor: help;
+}
+
+.v3-reveal__bubble {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 0.5rem);
+  z-index: 5;
+  width: max-content;
+  /* Di layar 360px, 20rem penuh plus gutter menabrak tepi kanan. */
+  max-width: min(20rem, calc(100vw - 4rem));
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  background: var(--v3-card);
+  border: 0.8px solid var(--v3-line);
+  font-size: 0.75rem;
+  color: var(--v3-ink-soft);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.v3-reveal:hover .v3-reveal__bubble,
+.v3-reveal:focus-visible .v3-reveal__bubble {
+  opacity: 1;
+}
+
+.v3-contact__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.v3-contact__reply {
+  margin: 0 0 0.4rem;
+  font-size: 0.875rem;
+  color: var(--v3-ink-soft);
+}
+
+.v3-contact__stamp {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6875rem;
+  color: var(--v3-ink-faint);
+}
+
+
+
+@media (max-width: 980px) {
+  .v3-tools,
+  .v3-quotes,
+  .v3-bg {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .v3-tools,
+  .v3-quotes,
+  .v3-bg {
+    grid-template-columns: 1fr;
+  }
+
+  .v3-lookup__row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+}
+
+/* ── Bar progres scroll ───────────────────────────────────────────────── */
+
+/* transform-origin kiri, dan scaleX yang digerakkan Framer Motion. Memakai
+   width akan memicu layout di setiap frame; scaleX hanya compositing. */
+.v3-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 60;
+  transform-origin: 0%;
+  background: var(--v3-blue);
+}
