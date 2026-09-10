@@ -261,3 +261,45 @@ This is the third direction in two days: devakshay's bento, Fajar's own bento
 mockup, and now this. The ledger block and its tests have survived all three
 because they describe content rather than appearance, which is the argument for
 keeping copy out of components. The visual layer has been rebuilt each time.
+
+---
+
+## Amandemen, 10 September 2026: dua tema, aksen Gundam
+
+Fajar meminta tema terang dengan warna aksen Gundam, dan memilih agar tema
+gelap tetap ada di balik sebuah tombol.
+
+**Terang jadi default, gelap jadi override.** Token terang hidup di
+`.v3-root`; token gelap di `[data-v3-theme='dark'] .v3-root`. Urutan itu
+disengaja: kalau skrip anti-kedip gagal jalan, yang muncul adalah tema terang
+yang utuh, bukan halaman setengah gelap.
+
+**Skrip anti-kedip menumpang yang sudah ada** di `<head>` `app/layout.tsx`,
+yang selama ini hanya melayani `/hire-me`. Ia sekarang menormalkan slash
+penutup lebih dulu, lalu bercabang per path. Bedanya dengan `/hire-me`: kalau
+belum ada pilihan tersimpan, `/v3` mengikuti `prefers-color-scheme` sistem,
+bukan langsung memilih satu tema. Logikanya diuji di enam kasus, termasuk
+`/v3/` dan `/v3.html` yang muncul di build statis.
+
+**Pembagian tugas trikolor RX-78-2**, dan ini yang menahan halaman dari
+terlihat seperti situs mainan:
+
+| Warna | Tugas | Jumlah tempat |
+|---|---|---|
+| Biru | semua yang struktural: eyebrow, tautan, tombol, bar progres, cincin fokus | banyak |
+| Merah | asterisk hero, garis bawah nav saat disentuh | dua |
+| Kuning | lingkaran panah di dalam tombol biru | satu |
+
+**Kuning tidak pernah jadi huruf.** `#ffc400` hanya 1.49:1 di atas kertas
+terang, dan itu tidak bisa diakali dengan menebalkan. Ia hanya bidang isi,
+dengan tinta gelap di atasnya (11.89:1).
+
+**Aksen diganti, bukan dipakai ulang, di tema gelap.** Biru RX-78 `#0f3a93`
+cuma 1.87:1 di atas `#0f0f0f`. Tema gelap memakai `#3a68d8` untuk isian
+tombol (putih di atasnya 5.06, terhadap halaman 3.79) dan `#5b8ae8` untuk
+teks (5.70). Merahnya jadi `#f0666d` (6.23).
+
+Palet lengkap dengan rasio terukurnya dipatok di komentar `app/v3/v3.css`.
+Audit dijalankan di browser terhadap dua belas pasangan teks/latar di kedua
+tema, termasuk panel ADDIE yang mewarisi warnanya lewat alias token: nol
+pasangan di bawah 4.5:1.

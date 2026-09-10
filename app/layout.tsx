@@ -131,7 +131,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             di `/hire-me/`. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var p=location.pathname;if(p!=='/hire-me'&&p!=='/hire-me/')return;var t=localStorage.getItem('story-theme')==='light'?'light':'dark';document.documentElement.setAttribute('data-story-theme',t);}catch(e){}})();`,
+            __html: `(function(){try{var p=location.pathname;if(p.length>1&&p.charAt(p.length-1)==='/')p=p.slice(0,-1);if(p==='/hire-me'){document.documentElement.setAttribute('data-story-theme',localStorage.getItem('story-theme')==='light'?'light':'dark');return;}if(p==='/v3'||p==='/v3.html'){var s=localStorage.getItem('v3-theme');var v=(s==='dark'||s==='light')?s:((window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-v3-theme',v);}}catch(e){}})();`,
           }}
         />
         {/* JSON-LD statis, dibangun dari konstanta di repo ini, tidak ada

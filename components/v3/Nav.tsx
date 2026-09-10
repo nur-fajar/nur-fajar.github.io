@@ -1,6 +1,7 @@
 'use client';
 
 import { V3_NAV } from '@/content/ledger';
+import ThemeToggle from './ThemeToggle';
 
 /**
  * Nav melayang di tengah atas: huruf kapital kecil berspasi lebar, di dalam
@@ -19,6 +20,7 @@ export default function Nav() {
           {link.label}
         </a>
       ))}
+      <ThemeToggle />
     </nav>
   );
 }

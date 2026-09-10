@@ -1,43 +1,52 @@
-/* Token v3 duduk di .v3-root, TIDAK di :root.
-   Situs lama masih live di / dan berbagi dokumen yang sama; menaruh token
-   ini di :root akan mengecat ulang halaman itu. */
+/* ── TEMA ───────────────────────────────────────────────────────────────
+   Terang adalah DEFAULT dan hidup di .v3-root; gelap adalah override di
+   [data-v3-theme='dark']. Urutan itu disengaja: kalau skrip anti-kedip
+   gagal jalan, yang muncul adalah tema terang yang utuh, bukan halaman
+   setengah gelap.
+
+   Token v3 duduk di .v3-root, TIDAK di :root. Situs lama masih live di /
+   dan berbagi dokumen yang sama; menaruhnya di :root akan mengecat ulang
+   halaman itu.
+
+   AKSEN mengikuti trikolor RX-78-2, dengan pembagian tugas yang tegas:
+     biru    semua yang struktural (eyebrow, tautan, tombol, bar progres)
+     merah   satu tusukan saja (asterisk hero, penanda nav)
+     kuning  HANYA bidang isi, tidak pernah jadi huruf
+
+   Kuning #ffc400 cuma 1.49:1 di atas kertas terang. Ia gagal untuk teks
+   apa pun, dan itu bukan sesuatu yang bisa diakali dengan menebalkannya.
+   Tulisan di atas bidang kuning selalu tinta gelap (11.89:1).
+*/
 .v3-root {
-  --v3-page: #0f0f0f;
-  --v3-card: #161616;
-  --v3-line: #252525;
+  /* ── Terang, default ── angka di komentar adalah rasio terukur ── */
+  --v3-page: #f7f7f5;
+  --v3-card: #ffffff;
+  --v3-line: #e3e3df;
+  --v3-nav-bg: rgba(247, 247, 245, 0.78);
+  --v3-chip-bg: #f2f2ef;
 
-  /* Ketiga tingkat tinta diukur, bukan dipilih. Angka kedua adalah rasio di
-     atas kartu #161616, karena caption dan chip duduk di sana, bukan di
-     atas latar halaman:
-       --v3-ink        16.82   -
-       --v3-ink-soft    7.18   6.78
-       --v3-ink-faint   4.88   4.61 */
-  --v3-ink: #f0f0f0;
-  --v3-ink-soft: #9e9ea2;
-  --v3-ink-faint: #808085;
+  --v3-ink: #101014;         /* 17.70 kertas · 18.98 kartu */
+  --v3-ink-soft: #4f4f57;    /*  7.56 kertas ·  8.11 kartu */
+  --v3-ink-faint: #6f6f77;   /*  4.64 kertas ·  4.98 kartu */
 
-  /* DUA biru, dan itu bukan kelebihan.
-     Referensinya memakai #2563eb untuk eyebrow 10.4px. Di atas #0f0f0f
-     rasionya 3.71:1, di bawah 4.5:1 yang diminta AA, dan itu teks terkecil
-     di halamannya. #2563eb di sini hanya untuk hal yang rasionya bukan
-     pertanyaan utama: bar progres 4px, isian tombol (putih di atasnya 5.17:1),
-     dan asterisk hero. Semua teks biru kecil memakai --v3-blue-text. */
-  --v3-blue: #2563eb;
-  --v3-blue-text: #60a5fa;
+  --v3-blue: #0f3a93;        /*  9.56 kertas · putih di atasnya 10.26 */
+  --v3-blue-text: #0f3a93;   /*  di kertas terang satu biru sudah cukup */
+  --v3-red: #ce2029;         /*  5.07 kertas */
+  --v3-yellow: #ffc400;      /*  bidang isi saja, tinta gelap di atasnya */
+  --v3-ok: #15803d;
 
-  --v3-ok: #22c55e;
-
-  --v3-maxw: 1240px;
-  --v3-gutter: clamp(1.25rem, 5vw, 4rem);
-  --v3-r-card: 12px;
+  /* Logo lembaga dikirim gelap di atas latar transparan, jadi di tema
+     terang ia dipakai apa adanya sebagai siluet hitam. */
+  --v3-logo-filter: brightness(0) saturate(0);
+  --v3-logo-opacity: 0.55;
 
   /* ── Alias ke token situs lama ──────────────────────────────────────
      app/globals.css meng-import sections.css, jadi seluruh kelas situs lama
      tersedia juga di halaman ini, dan kelas-kelas itu membaca warnanya dari
      variabel di :root. Menimpa nama variabel yang SAMA di sini membuat
-     komponen mana pun dari components/site otomatis ikut gelap begitu
-     dirender di dalam .v3-root, tanpa satu kelas pun disalin.
-     Yang memanfaatkan ini: panel ADDIE, 537 baris yang tidak perlu digandakan. */
+     komponen mana pun dari components/site otomatis ikut tema, tanpa satu
+     kelas pun disalin. Yang memanfaatkan ini: panel ADDIE, 537 baris yang
+     tidak perlu digandakan. */
   --paper: var(--v3-page);
   --card: var(--v3-card);
   --ink: var(--v3-ink);
@@ -45,26 +54,58 @@
   --ink-faint: var(--v3-ink-faint);
   --rule: var(--v3-line);
   --accent: var(--v3-blue-text);
-  --accent-soft: rgba(37, 99, 235, 0.16);
-  --g1: #2563eb;
-  --g2: #4d8df7;
-  --g3: #60a5fa;
+  --accent-soft: color-mix(in srgb, var(--v3-blue) 12%, transparent);
+  --g1: var(--v3-blue);
+  --g2: var(--v3-blue-text);
+  --g3: var(--v3-red);
   --gradient: linear-gradient(100deg, var(--g1), var(--g2) 55%, var(--g3));
-  --ok: #4ade80;
+  --ok: var(--v3-ok);
   --ok-dot: var(--v3-ok);
-  --ok-bg: rgba(34, 197, 94, 0.12);
-  --ok-border: rgba(34, 197, 94, 0.3);
+  --ok-bg: color-mix(in srgb, var(--v3-ok) 12%, transparent);
+  --ok-border: color-mix(in srgb, var(--v3-ok) 32%, transparent);
   --shadow-card: none;
   --shadow-float: none;
+
+  --v3-maxw: 1240px;
+  --v3-gutter: clamp(1.25rem, 5vw, 4rem);
+  --v3-r-card: 12px;
 
   background: var(--v3-page);
   color: var(--v3-ink);
   font-family: var(--font-v3-body), ui-sans-serif, system-ui, sans-serif;
 
-  /* Root layout memuat globals.css di setiap route, jadi --paper: #f7f8fb
-     milik situs lama tetap mengecat <body> di balik halaman ini. */
+  /* Root layout memuat globals.css di setiap route, jadi --paper milik
+     situs lama tetap mengecat <body> di balik halaman ini. */
   min-height: 100vh;
   isolation: isolate;
+}
+
+/* ── Gelap ────────────────────────────────────────────────────────────
+   Ketiga warna aksen diganti, bukan dipakai ulang. Biru RX-78 #0f3a93
+   cuma 1.87:1 di atas #0f0f0f: di tema gelap ia praktis tidak terlihat.
+   Isian tombol dan warna teks juga dipisah di sini, karena satu biru yang
+   sekaligus lolos sebagai teks kecil DAN sebagai bidang isian tidak ada
+   di atas latar sehitam ini. */
+[data-v3-theme='dark'] .v3-root {
+  --v3-page: #0f0f0f;
+  --v3-card: #161616;
+  --v3-line: #252525;
+  --v3-nav-bg: rgba(15, 15, 15, 0.72);
+  --v3-chip-bg: #ffffff;
+
+  --v3-ink: #f0f0f0;         /* 16.82 halaman */
+  --v3-ink-soft: #9e9ea2;    /*  7.18 halaman ·  6.78 kartu */
+  --v3-ink-faint: #808085;   /*  4.88 halaman ·  4.61 kartu */
+
+  --v3-blue: #3a68d8;        /*  isian tombol: putih di atasnya 5.06, vs halaman 3.79 */
+  --v3-blue-text: #5b8ae8;   /*  5.70 halaman ·  5.38 kartu */
+  --v3-red: #f0666d;         /*  6.23 halaman ·  5.88 kartu */
+  --v3-yellow: #ffc400;      /* 12.00 halaman, tetap bidang isi saja */
+  --v3-ok: #4ade80;
+
+  /* Di atas kartu gelap, siluet hitam hilang sama sekali. Dibalik jadi putih. */
+  --v3-logo-filter: brightness(0) invert(1);
+  --v3-logo-opacity: 0.62;
 }
 
 .v3-shell {
@@ -109,7 +150,7 @@
   display: flex;
   gap: clamp(1rem, 3vw, 2.75rem);
   padding: 1rem clamp(1.25rem, 3vw, 2.25rem);
-  background: rgba(15, 15, 15, 0.72);
+  background: var(--v3-nav-bg);
   backdrop-filter: blur(12px);
   border: 0.8px solid var(--v3-line);
   border-top: 0;
@@ -127,9 +168,40 @@
   transition: color 160ms ease;
 }
 
+/* Garis merah di bawah tautan yang disentuh. Tugas kedua dan terakhir
+   untuk merah di halaman ini, setelah asterisk hero. */
+.v3-nav__link {
+  border-bottom: 2px solid transparent;
+}
+
 .v3-nav__link:hover,
 .v3-nav__link:focus-visible {
   color: var(--v3-ink);
+  border-bottom-color: var(--v3-red);
+}
+
+/* ── Pengganti tema ───────────────────────────────────────────────────
+   Lebar dan tinggi dipatok, dan ikonnya baru muncul setelah hydrate. Kalau
+   ukurannya ikut isi, nav akan bergeser sesaat setelah halaman hidup. */
+.v3-theme-toggle {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin: -0.35rem 0 -0.35rem 0.25rem;
+  border: 0.8px solid var(--v3-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--v3-ink-soft);
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.v3-theme-toggle:hover,
+.v3-theme-toggle:focus-visible {
+  color: var(--v3-ink);
+  border-color: var(--v3-blue-text);
 }
 
 /* ── Penanda sudut ────────────────────────────────────────────────────── */
@@ -200,9 +272,11 @@
   display: block;
 }
 
-/* Asterisk biru menempel di ujung baris pertama, sejajar bahu hurufnya. */
+/* Satu-satunya merah di layar pertama. Di RX-78 merah adalah ventilasi
+   dada: bidang kecil dan tajam di badan yang didominasi putih dan biru,
+   bukan warna yang dipakai untuk apa pun yang panjang. */
 .v3-hero__star {
-  color: var(--v3-blue);
+  color: var(--v3-red);
   font-size: 0.3em;
   vertical-align: super;
   margin-left: 0.08em;
@@ -239,18 +313,24 @@
   border-radius: 999px;
   background: var(--v3-blue);
   color: #ffffff;
+  /* Putih di atas kedua biru sudah diukur: 10.26 di tema terang, 5.06 di
+     tema gelap. Keduanya lolos AA. */
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9375rem;
 }
 
+/* Lingkaran kuning di dalam tombol biru: persis hubungan V-fin dengan
+   badan RX-78. Ini satu-satunya tempat kuning dipakai sebagai bidang, dan
+   panahnya bertinta gelap (11.89:1), tidak pernah putih. */
 .v3-btn__go {
   display: grid;
   place-items: center;
   width: 32px;
   height: 32px;
   border-radius: 999px;
-  background: #000000;
+  background: var(--v3-yellow);
+  color: var(--v3-ink);
 }
 
 .v3-link-caps {
@@ -814,6 +894,9 @@
 /* Chip logo tetap putih. Ubin putih kecil di atas latar hitam adalah
    satu-satunya cara logo merek terbaca tanpa harus punya versi monokrom
    masing-masing. */
+/* Di tema gelap chip harus putih supaya logo merek terbaca. Di tema
+   terang putih di atas kartu putih tidak memisahkan apa pun, jadi ia jadi
+   abu sangat muda. */
 .v3-tool-chip {
   flex: 0 0 auto;
   display: grid;
@@ -821,7 +904,7 @@
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--v3-chip-bg);
 }
 
 .v3-tool__name {
@@ -971,8 +1054,8 @@
 .v3-bg__logos img {
   height: 22px;
   width: auto;
-  filter: brightness(0) invert(1);
-  opacity: 0.62;
+  filter: var(--v3-logo-filter);
+  opacity: var(--v3-logo-opacity);
   transition: opacity 200ms ease;
 }
 
