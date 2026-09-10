@@ -66,7 +66,20 @@
   --shadow-card: none;
   --shadow-float: none;
 
+  /* Dua lebar, dan pemisahannya disengaja. 1240px adalah ukuran untuk
+     kolom teks, dan ketujuh section lain memang membacanya. Bento bukan
+     kolom teks: di 1240px ia menyisakan pita kosong 404px di kiri dan kanan
+     layar 1920px, dan grid-nya cuma mengisi 32% luas layar. */
   --v3-maxw: 1240px;
+  /* 1560, bukan 1440: .v3-shell memakan 64px gutter di tiap sisi, jadi
+     grid yang sebenarnya selalu 128px lebih sempit dari angka ini. */
+  --v3-maxw-bento: 1560px;
+
+  /* Tinggi satu baris grid. 165px juga peninggalan dari hero versi teks;
+     di layar 945px tiga baris cuma setinggi 527px. */
+  /* 23vh, bukan 19vh: di layar setinggi 945px, 19vh menghasilkan 179px dan
+     kalah dari batas minimumnya sendiri, jadi clamp-nya tidak pernah aktif. */
+  --v3-unit: clamp(180px, 23vh, 240px);
   --v3-gutter: clamp(1.25rem, 5vw, 4rem);
   --v3-r-card: 12px;
 
@@ -212,6 +225,10 @@
    auto-placement berarti setelah ubin ditukar posisi grid tetap terisi,
    alih-alih meninggalkan lubang di koordinat yang ubinnya sudah pindah. */
 
+.v3-bento .v3-shell {
+  max-width: var(--v3-maxw-bento);
+}
+
 .v3-bento {
   min-height: 100svh;
   display: flex;
@@ -223,7 +240,7 @@
 .v3-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: var(--v3-unit, 165px);
+  grid-auto-rows: var(--v3-unit);
   grid-auto-flow: row dense;
   gap: 16px;
 }
@@ -338,22 +355,44 @@ a.v3-tile:focus-visible {
 
 .v3-intro {
   margin: 0;
-  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
-  line-height: 1.25;
+  font-size: clamp(1.25rem, 1.9vw, 1.6rem);
+  line-height: 1.2;
+  color: var(--v3-ink-soft);
 }
 
+/* Ukuran hero, bukan ukuran label. 48px di ubin selebar 548px terbaca
+   sebagai keterangan; nama di layar pertama harus jadi hal terbesar di
+   ubinnya. */
 .v3-intro__name {
   display: block;
+  margin-top: 0.1em;
   font-family: var(--font-v3-display), Georgia, serif;
   font-weight: 300;
   font-style: italic;
-  font-size: 1.35em;
-  letter-spacing: -0.02em;
+  font-size: clamp(2.75rem, 5vw, 4.75rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--v3-ink);
 }
 
 .v3-glyph {
   display: grid;
   place-items: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+/* Baris kecil di bawah ikon. Ubin CV dan LinkedIn sebelumnya cuma ikon di
+   tengah kotak: 172x165 piksel untuk satu glif, dan sisanya udara. */
+.v3-glyph__label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--v3-ink-faint);
+}
+
+.v3-tile--blue .v3-glyph__label {
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .v3-projects {
@@ -368,19 +407,21 @@ a.v3-tile:focus-visible {
   font-family: var(--font-v3-display), Georgia, serif;
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(1.5rem, 2.4vw, 2.125rem);
+  font-size: clamp(1.75rem, 2.8vw, 2.5rem);
   letter-spacing: -0.01em;
 }
 
 .v3-projects__list {
   list-style: none;
-  margin: 0;
+  /* Zona tombol panah: 48px tombol plus jarak 32px dari tepi bawah. Tanpa
+     jarak ini "Website" berakhir 17px di dalam tombolnya. */
+  margin: 0 0 4.5rem;
   padding: 0;
   font-family: var(--font-v3-display), Georgia, serif;
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(1.125rem, 1.9vw, 1.625rem);
-  line-height: 1.4;
+  font-size: clamp(1.25rem, 2.1vw, 1.875rem);
+  line-height: 1.5;
 }
 
 /* Nama sendiri, bukan .v3-tools, dan itu bukan soal selera penamaan.
@@ -423,7 +464,7 @@ a.v3-tile:focus-visible {
 }
 
 .v3-connect {
-  margin: 0;
+  margin: 0 0 0.6rem;
   text-align: center;
   font-family: var(--font-v3-display), Georgia, serif;
   font-weight: 300;
@@ -434,6 +475,16 @@ a.v3-tile:focus-visible {
 
 [data-v3-theme='dark'] .v3-connect {
   color: var(--v3-blue-text);
+}
+
+/* Yang menahan orang mengirim pesan dingin bukan ragu soal alamatnya, tapi
+   ragu apakah akan dibalas. Satu baris, dan ia mengisi ubin yang tadinya
+   cuma memuat dua kata. */
+.v3-connect__reply {
+  margin: 0;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--v3-ink-faint);
 }
 
 .v3-btn {

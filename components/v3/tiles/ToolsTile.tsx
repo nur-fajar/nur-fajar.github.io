@@ -14,9 +14,14 @@ import { V3_TOOLS } from '@/content/ledger';
    tepi terbaca sebagai bidang yang penuh, bukan sebagai kotak berisi
    benda-benda kecil di tengah.
 
-   Pojok kiri bawah tetap kosong. Di sanalah tombol panah ubin duduk. */
+   Pojok kiri bawah tetap kosong. Di sanalah tombol panah ubin duduk.
+
+   Chip pertama TIDAK diletakkan di pojok. Chip yang terpotong satu sisi
+   terbaca sebagai bidang yang meluas ke luar bingkai; chip yang terpotong
+   dua sisi sekaligus di sudut terbaca sebagai potongan yang lupa
+   dirapikan. */
 const SPOTS = [
-  { top: '-3%', left: '-2%' },
+  { top: '5%', left: '2%' },
   { top: '-1%', left: '24%' },
   { top: '-4%', left: '50%' },
   { top: '2%', left: '78%' },
