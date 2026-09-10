@@ -88,7 +88,7 @@ function Chip({
   );
 
   return (
-    <m.span className="v3-tools__spot" style={still ? spot : { ...spot, x, y }}>
+    <m.span className="v3-toolfield__spot" style={still ? spot : { ...spot, x, y }}>
       <ToolLogo id={tool.id} name={tool.name} size={34} />
     </m.span>
   );
@@ -146,7 +146,7 @@ export default function ToolsTile() {
   return (
     <div
       ref={boxRef}
-      className="v3-tools"
+      className="v3-toolfield"
       aria-hidden="true"
       onPointerMove={(event) => {
         if (reduced) return;

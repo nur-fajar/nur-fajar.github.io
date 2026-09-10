@@ -383,12 +383,22 @@ a.v3-tile:focus-visible {
   line-height: 1.4;
 }
 
-.v3-tools {
+/* Nama sendiri, bukan .v3-tools, dan itu bukan soal selera penamaan.
+   Section Technologies memakai <ul class="v3-tools"> untuk daftar kartunya.
+   Waktu wadah ini juga bernama .v3-tools, aturan position:absolute di sini
+   ikut kena ke <ul> itu, dan aturan grid di section Technologies tidak
+   pernah menimpanya karena ia tidak menyebut position sama sekali. Akibatnya
+   daftar tool lepas dari alirannya lalu membentang ke leluhur berposisi
+   terdekat, yaitu seluruh halaman, dan menutupi hero dengan chip 88px.
+
+   Selektor turunan tidak cukup untuk kasus seperti ini: yang bertabrakan
+   bukan anaknya, tapi kelas wadahnya sendiri. */
+.v3-toolfield {
   position: absolute;
   inset: 0;
 }
 
-.v3-tools__spot {
+.v3-toolfield__spot {
   position: absolute;
   pointer-events: none;
   will-change: transform;
@@ -398,8 +408,8 @@ a.v3-tile:focus-visible {
    untuk section Technologies di bawah. Keduanya sempat memakai selektor yang
    sama persis, dan yang ditulis belakangan menang di kedua tempat: chip
    bento yang seharusnya bulat ikut jadi kotak rounded 10px. Selektor induk
-   .v3-tools yang memisahkan keduanya sekarang. */
-.v3-tools .v3-tool-chip {
+   yang memisahkan keduanya sekarang. */
+.v3-toolfield .v3-tool-chip {
   display: grid;
   place-items: center;
   /* Fluid, karena ubinnya menyempit di dua breakpoint. Titik tengah chip
