@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Hero from '@/components/v3/Hero';
+import Bento from '@/components/v3/Bento';
 import About from '@/components/v3/sections/About';
 import Achievements from '@/components/v3/sections/Achievements';
 import Contact from '@/components/v3/sections/Contact';
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default function V3Page() {
   return (
     <>
-      <Hero />
+      <Bento />
       <Proof />
       <Work />
       <Experience />

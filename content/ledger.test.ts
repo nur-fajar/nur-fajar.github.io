@@ -20,6 +20,7 @@ import {
   SKILLS,
   TESTIMONIALS,
   V3_GALLERY_CATEGORY,
+  V3_HOME_TILES,
   V3_SECTIONS,
   V3_NAV,
   V3_PROJECT_CATEGORIES,
@@ -770,6 +771,49 @@ describe('amandemen Agustus 2026, koreksi fakta dari Fajar', () => {
 });
 
 describe('v3 , halaman scroll gelap', () => {
+  it('setiap baris bento tertutup penuh 12 kolom, tidak lebih tidak kurang', () => {
+    // Kegagalannya murni visual: satu span yang bergeser melipat grid jadi
+    // baris keempat dan tidak ada satu pun baris kode yang terlihat salah.
+    for (const row of [1, 2, 3]) {
+      const occupying = V3_HOME_TILES.filter(
+        (tile) => tile.row <= row && row < tile.row + tile.rows,
+      );
+      const total = occupying.reduce((sum, tile) => sum + tile.span, 0);
+      expect(total, `baris ${row} berisi ${total} kolom`).toBe(12);
+    }
+    const last = Math.max(...V3_HOME_TILES.map((tile) => tile.row + tile.rows - 1));
+    expect(last, 'bento tidak berhenti di tiga baris').toBe(3);
+  });
+
+  it('setiap ubin yang menunjuk anchor punya section dengan id itu', () => {
+    // Ubin yang menunjuk ruang kosong gagal di sini, bukan ketahuan saat
+    // seseorang mengkliknya dan halaman diam saja.
+    const ids = V3_SECTIONS.map((section) => section.id);
+    const anchors = V3_HOME_TILES.filter((tile) => tile.href?.startsWith('#'));
+    expect(anchors.length, 'tidak ada satu pun ubin yang menggulir').toBeGreaterThan(0);
+    for (const tile of anchors) {
+      expect(ids, `ubin ${tile.id} menunjuk ${tile.href} yang tidak ada`).toContain(
+        tile.href!.slice(1),
+      );
+    }
+  });
+
+  it('ubin tanpa target tidak pernah mengaku bisa diklik', () => {
+    // Panah hanya dipasang di ubin ber-href. Ubin intro tidak kemana-mana,
+    // jadi ia juga tidak boleh terlihat seperti pintu.
+    const intro = V3_HOME_TILES.find((tile) => tile.id === 'intro');
+    expect(intro?.href).toBeUndefined();
+  });
+
+  it('setiap tool punya berkas logonya sendiri di public/logos/tools', () => {
+    // Nama berkas mengikuti id tool, jadi tidak ada tabel pemetaan yang bisa
+    // basi. Tes ini yang menangkap tool baru yang lupa dibuatkan logonya.
+    for (const tool of V3_TOOLS) {
+      const file = path.join(process.cwd(), 'public', 'logos', 'tools', `${tool.id}.svg`);
+      expect(existsSync(file), `logo ${tool.id}.svg tidak ada`).toBe(true);
+    }
+  });
+
   it('setiap section punya eyebrow, dua baris judul, dan lede', () => {
     for (const section of V3_SECTIONS) {
       expect(section.id.trim().length, 'section tanpa id').toBeGreaterThan(0);

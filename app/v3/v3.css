@@ -204,105 +204,215 @@
   border-color: var(--v3-blue-text);
 }
 
-/* ── Penanda sudut ────────────────────────────────────────────────────── */
+/* ── Bento, menggantikan hero ─────────────────────────────────────────
 
-.v3-mark {
-  position: absolute;
-  top: 1.75rem;
-  left: var(--v3-gutter);
-  width: 36px;
-  height: 36px;
-  border-radius: 9px;
-  background: var(--v3-blue);
-  color: #ffffff;
-  display: grid;
-  place-items: center;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
+   Penempatan diserahkan ke auto-placement CSS Grid, TIDAK ke koordinat baris
+   yang dipatok. Urutan DOM awal dengan span 6/2/4/6/2/6 kebetulan
+   menghasilkan tepat tata letak mockup-nya, dan menyerahkannya ke
+   auto-placement berarti setelah ubin ditukar posisi grid tetap terisi,
+   alih-alih meninggalkan lubang di koordinat yang ubinnya sudah pindah. */
 
-.v3-status {
-  position: absolute;
-  top: 2.1rem;
-  right: var(--v3-gutter);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--v3-ink-soft);
-}
-
-.v3-status::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--v3-ok);
-}
-
-/* ── Hero ─────────────────────────────────────────────────────────────── */
-
-.v3-hero {
-  position: relative;
+.v3-bento {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: clamp(3rem, 8vh, 6rem);
-  padding-top: 7rem;
+  justify-content: center;
+  padding: 7rem 0 clamp(2.5rem, 6vh, 4rem);
 }
 
-.v3-hero__grid {
+.v3-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
-  gap: clamp(2rem, 5vw, 4rem);
-  align-items: end;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: var(--v3-unit, 165px);
+  grid-auto-flow: row dense;
+  gap: 16px;
 }
 
-.v3-hero__name {
-  font-size: clamp(4rem, 12vw, 11rem);
-}
-
-/* Tanda > penting: tanpanya aturan ini kena juga ke span asterisk di dalam
-   baris, dan asterisknya turun jadi blok sendiri di bawah nama. */
-.v3-hero__name > span {
-  display: block;
-}
-
-/* Satu-satunya merah di layar pertama. Di RX-78 merah adalah ventilasi
-   dada: bidang kecil dan tajam di badan yang didominasi putih dan biru,
-   bukan warna yang dipakai untuk apa pun yang panjang. */
-.v3-hero__star {
-  color: var(--v3-red);
-  font-size: 0.3em;
-  vertical-align: super;
-  margin-left: 0.08em;
-}
-
-.v3-hero__claim {
-  font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
-  line-height: 1.45;
-  margin: 0 0 1rem;
-  max-width: 34ch;
-}
-
-.v3-hero__support {
-  font-size: 0.875rem;
-  line-height: 1.6;
+.v3-bento__meta,
+.v3-bento__hint {
+  margin: 1.5rem 0 0;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--v3-ink-faint);
-  margin: 0 0 1.75rem;
-  max-width: 46ch;
 }
 
-.v3-hero__actions {
+.v3-bento__hint {
+  margin-top: 0.4rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-size: 0.75rem;
+}
+
+/* Titik hijau di depan baris meta menjawab pertanyaan screening pertama
+   sebelum pembaca sempat menggulir. */
+.v3-bento__meta::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.55rem;
+  border-radius: 999px;
+  background: var(--v3-ok);
+  vertical-align: middle;
+}
+
+/* ── Ubin ─────────────────────────────────────────────────────────────── */
+
+.v3-tile {
+  /* Span datang lewat custom property, bukan lewat grid-column inline:
+     inline style menang atas stylesheet tanpa !important, dan itu membuat
+     media query tidak sanggup menyempitkan apa pun. */
+  grid-column: span var(--v3-span);
+  grid-row: span var(--v3-rows);
+
+  position: relative;
+  border-radius: 28px;
+  padding: 32px;
+  overflow: hidden;
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+  flex-direction: column;
+  justify-content: center;
+  text-decoration: none;
+  color: inherit;
+  border: 0.8px solid transparent;
+}
+
+.v3-tile--paper {
+  background: var(--v3-card);
+  border-color: var(--v3-line);
+}
+
+.v3-tile--yellow {
+  background: var(--v3-yellow);
+  color: #101014;
+}
+
+/* Hitam pekat bekerja di tema terang. Di tema gelap ia lenyap ke dalam
+   halaman, jadi ia naik jadi arang dan garis rambutnya yang memisahkan. */
+.v3-tile--ink {
+  background: #000000;
+  color: #ffffff;
+}
+
+[data-v3-theme='dark'] .v3-tile--ink {
+  background: #1c1c1c;
+  border-color: #333333;
+}
+
+.v3-tile--blue {
+  background: var(--v3-blue);
+  color: #ffffff;
+}
+
+a.v3-tile {
+  cursor: pointer;
+}
+
+a.v3-tile:focus-visible {
+  outline: 3px solid var(--v3-blue-text);
+  outline-offset: 3px;
+}
+
+.v3-tile__go {
+  position: absolute;
+  left: 32px;
+  bottom: 32px;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #000000;
+  color: #ffffff;
+}
+
+/* Panah membalik terhadap ubinnya. */
+.v3-tile--ink .v3-tile__go,
+.v3-tile--blue .v3-tile__go {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* ── Isi ubin ─────────────────────────────────────────────────────────── */
+
+.v3-intro {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  line-height: 1.25;
+}
+
+.v3-intro__name {
+  display: block;
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 1.35em;
+  letter-spacing: -0.02em;
+}
+
+.v3-glyph {
+  display: grid;
+  place-items: center;
+}
+
+.v3-projects {
+  align-self: start;
+}
+
+/* Kuning di atas hitam, bukan cyan. Cyan tidak ada di trikolor RX-78, dan
+   kuning di atas hitam 11.89:1: bacaannya lebih kuat sekaligus lebih tepat. */
+.v3-projects__head {
+  margin: 0 0 0.5em;
+  color: var(--v3-yellow);
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.5rem, 2.4vw, 2.125rem);
+  letter-spacing: -0.01em;
+}
+
+.v3-projects__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.125rem, 1.9vw, 1.625rem);
+  line-height: 1.4;
+}
+
+.v3-tools {
+  position: absolute;
+  inset: 0;
+}
+
+.v3-tools__spot {
+  position: absolute;
+}
+
+.v3-tool-chip {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.v3-connect {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-v3-display), Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  color: var(--v3-blue);
+}
+
+[data-v3-theme='dark'] .v3-connect {
+  color: var(--v3-blue-text);
 }
 
 .v3-btn {

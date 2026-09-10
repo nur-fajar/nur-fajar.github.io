@@ -1137,6 +1137,65 @@ export const WORK_GALLERY: GalleryItem[] = [
 
 /** Nav menunjuk anchor di halaman yang sama, bukan route. Sebuah tes
  *  memastikan setiap href di sini punya section dengan id yang sama. */
+export type V3Surface = 'paper' | 'yellow' | 'ink' | 'blue';
+
+export interface V3Tile {
+  id: string;
+  /** Nama yang dibaca screen reader. Isi visualnya diurus komponen per-ubin. */
+  label: string;
+  /** Lebar dalam kolom, 1 sampai 12. */
+  span: number;
+  /** Baris awal, 1-indexed. */
+  row: number;
+  /** Berapa baris yang ditempati. */
+  rows: number;
+  surface: V3Surface;
+  /**
+   * Kemana ubin ini membawa pembaca.
+   *
+   *   '#id'   menggulir ke section di halaman yang sama
+   *   'http'  keluar situs, dibuka di tab baru
+   *   '/x'    berkas di origin ini, misalnya PDF
+   *   absen   ubin ini tidak kemana-mana dan tidak dapat tombol panah
+   *
+   * Sebuah tes memastikan setiap target berawalan '#' punya section dengan
+   * id yang sama, jadi ubin yang menunjuk ke ruang kosong gagal di CI, bukan
+   * ketahuan saat seseorang mengkliknya.
+   */
+  href?: string;
+  external?: boolean;
+}
+
+/**
+ * Enam ubin, tiga baris, dua belas kolom, nol sel sisa.
+ *
+ * Span-nya data, bukan nama kelas CSS, supaya tiling-nya bisa diuji. Satu
+ * span yang bergeser melipat grid jadi baris keempat, dan kegagalan itu cuma
+ * kelihatan di layar; di kode tidak ada yang terlihat salah.
+ *
+ * Ubin ini menggantikan hero. Karena itu targetnya anchor, bukan route:
+ * halaman ini satu gulungan panjang, dan ubin yang memuat ulang halaman
+ * untuk pergi ke bagian yang sudah ada di bawahnya cuma membuang waktu
+ * pembaca.
+ */
+export const V3_HOME_TILES: V3Tile[] = [
+  { id: 'intro', label: "hi! I'm Nur Fajar", span: 6, row: 1, rows: 1, surface: 'paper' },
+  { id: 'cv', label: 'Download my CV', span: 2, row: 1, rows: 1, surface: 'paper', href: CONTACT.cv },
+  { id: 'projects', label: 'Jump to Work', span: 4, row: 1, rows: 2, surface: 'ink', href: '#work' },
+  { id: 'tools', label: 'Jump to Technologies', span: 6, row: 2, rows: 2, surface: 'yellow', href: '#technologies' },
+  {
+    id: 'linkedin',
+    label: 'LinkedIn',
+    span: 2,
+    row: 2,
+    rows: 1,
+    surface: 'blue',
+    href: CONTACT.linkedin,
+    external: true,
+  },
+  { id: 'connect', label: 'Jump to Contact', span: 6, row: 3, rows: 1, surface: 'paper', href: '#contact' },
+];
+
 export const V3_NAV = [
   { href: '#work', label: 'Work' },
   { href: '#experience', label: 'Experience' },
@@ -1220,6 +1279,8 @@ export const V3_TOOLS: V3Tool[] = [
   { id: 'capcut', name: 'CapCut', use: 'Video editing.' },
   { id: 'openai', name: 'OpenAI', use: 'Large language model.' },
   { id: 'gemini', name: 'Gemini', use: 'Large language model.' },
+  { id: 'vercel', name: 'Vercel', use: 'Hosting and deploys.' },
+  { id: 'supabase', name: 'Supabase', use: 'Database and authentication.' },
 ];
 
 /** Chip peran di kepala /v3/about. Ditulis di sini, bukan di komponennya,
