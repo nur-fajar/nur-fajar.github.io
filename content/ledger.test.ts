@@ -809,8 +809,8 @@ describe('v3 , halaman scroll gelap', () => {
     // Nama berkas mengikuti id tool, jadi tidak ada tabel pemetaan yang bisa
     // basi. Tes ini yang menangkap tool baru yang lupa dibuatkan logonya.
     for (const tool of V3_TOOLS) {
-      const file = path.join(process.cwd(), 'public', 'logos', 'tools', `${tool.id}.svg`);
-      expect(existsSync(file), `logo ${tool.id}.svg tidak ada`).toBe(true);
+      const file = path.join(process.cwd(), 'public', 'logos', 'tools', `${tool.id}.png`);
+      expect(existsSync(file), `logo ${tool.id}.png tidak ada`).toBe(true);
     }
   });
 
