@@ -1,4 +1,5 @@
 import Reveal from '@/components/site/Reveal';
+import MaskedLines from './MaskedLines';
 import type { V3Section } from '@/content/ledger';
 
 /**
@@ -31,18 +32,26 @@ export default function Section({
             lantainya: tanpa JavaScript, section ini tetap terbaca lengkap.
             Referensinya tidak punya lantai itu, dan menggulirnya menghasilkan
             layar hitam kosong berkali-kali. */}
-        <Reveal>
-          <p className="v3-eyebrow">{section.eyebrow}</p>
+        {/* Eyebrow kosong (milik Work) tidak dirender, sama seperti lede:
+            bukan elemen kosong. */}
+        {section.eyebrow ? (
+          <Reveal>
+            <p className="v3-eyebrow">{section.eyebrow}</p>
+          </Reveal>
+        ) : null}
 
-          <h2 className="v3-display v3-section__title" id={titleId}>
-            <span>{section.heading[0]}</span>
-            <span>
-              <em>{section.heading[1]}</em>
-            </span>
-          </h2>
+        {/* Judul keluar dari Reveal-nya sendiri: dua barisnya naik dari
+            balik mask, bukan sekadar memudar bersama blok. */}
+        <MaskedLines id={titleId} lines={section.heading} />
 
-          <p className="v3-lede">{section.lede}</p>
-        </Reveal>
+        {/* Lede kosong (milik Work) tidak dirender sama sekali, bukan
+            paragraf kosong: elemen kosong tetap memakan margin dan dibaca
+            screen reader sebagai jeda aneh. */}
+        {section.lede ? (
+          <Reveal delay={0.14}>
+            <p className="v3-lede">{section.lede}</p>
+          </Reveal>
+        ) : null}
 
         {/* amount={0}, bukan 0.25 yang jadi default Reveal.
             Default itu menunggu seperempat elemen terlihat sebelum memicu,

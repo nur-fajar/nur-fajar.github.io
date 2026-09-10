@@ -78,3 +78,46 @@ describe('v3 , tata nama kelas', () => {
     }
   });
 });
+
+/**
+ * Tes ini lahir dari bug kedua yang sama tidak kelihatannya: judul ketujuh
+ * section tidak pernah muncul sama sekali.
+ *
+ * MaskedLines menaruh `whileInView` di elemen yang ia sembunyikan sendiri.
+ * Baris judul digeser `y: 112%` ke bawah, dan induknya `.v3-mask` punya
+ * `overflow: hidden`. IntersectionObserver memotong kotak target dengan klip
+ * milik leluhur, jadi yang terhitung "terlihat" cuma sisa 0.12em padding
+ * descender: rasionya 0.0104, diukur langsung di browser dengan judul persis
+ * di tengah viewport. `viewport.amount` 0.4 meminta 0.4. Ambang itu tidak bisa
+ * dicapai di posisi scroll mana pun, jadi animasinya tidak pernah jalan dan
+ * judulnya tetap terjepit di balik mask selamanya.
+ *
+ * Yang membuatnya sulit: tidak ada yang error, dan rasio 0.0104 itu tidak
+ * bergantung pada ukuran font, jadi ia tidak akan pernah "kebetulan sembuh".
+ *
+ * Aturannya: yang diamati harus mask-nya, yang tidak terpotong. Baris di
+ * dalamnya ikut lewat variants.
+ */
+describe('v3 , mask reveal', () => {
+  it('whileInView tidak dipasang di elemen yang diklip induknya', () => {
+    // Kelas yang diklip: induknya diberi overflow:hidden oleh CSS.
+    const clipped = ['v3-mask__line'];
+
+    for (const file of componentFiles(COMPONENTS)) {
+      const text = readFileSync(file, 'utf8');
+      // Pisah per tag pembuka <m.* ...> lalu periksa atribut tiap tag.
+      for (const tag of text.matchAll(/<m\.[a-zA-Z]+([^>]*)>/g)) {
+        const attrs = tag[1];
+        if (!/whileInView/.test(attrs)) continue;
+        for (const className of clipped) {
+          expect(
+            attrs.includes(className),
+            `${path.basename(file)}: whileInView dipasang di .${className}, yang ` +
+              'diklip induknya. IntersectionObserver ikut memotong, rasionya ' +
+              'mentok ~0.01, dan ambang amount tidak akan pernah tercapai.',
+          ).toBe(false);
+        }
+      }
+    }
+  });
+});

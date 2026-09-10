@@ -817,17 +817,38 @@ describe('v3 , halaman scroll gelap', () => {
   it('setiap section punya eyebrow, dua baris judul, dan lede', () => {
     for (const section of V3_SECTIONS) {
       expect(section.id.trim().length, 'section tanpa id').toBeGreaterThan(0);
-      expect(section.eyebrow.trim().length, `${section.id} tanpa eyebrow`).toBeGreaterThan(0);
-      expect(section.heading, `${section.id} judulnya bukan dua baris`).toHaveLength(2);
-      for (const line of section.heading) {
-        expect(line.trim().length, `${section.id} punya baris judul kosong`).toBeGreaterThan(0);
+      /* Work tampil tanpa eyebrow dan judul sebaris ("What I've built." satu
+         baris penuh): kekosongan yang disengaja, dikunci di sini supaya
+         tidak ada yang "melengkapi" kembali. */
+      if (section.id === 'work') {
+        expect(section.eyebrow, 'eyebrow Work kembali terisi').toBe('');
+      } else {
+        expect(section.eyebrow.trim().length, `${section.id} tanpa eyebrow`).toBeGreaterThan(0);
       }
-      expect(section.lede.trim().length, `${section.id} tanpa lede`).toBeGreaterThan(0);
+      expect(section.heading, `${section.id} judulnya bukan dua baris`).toHaveLength(2);
+      section.heading.forEach((line, position) => {
+        if (section.id === 'work' && position === 1) {
+          expect(line, 'baris kedua Work kembali terisi').toBe('');
+        } else {
+          expect(line.trim().length, `${section.id} punya baris judul kosong`).toBeGreaterThan(0);
+        }
+      });
+      if (section.id === 'work' || section.id === 'contact' || section.id === 'achievements') {
+        /* Tanpa lede dengan sengaja: Work diwakili indeks + blurb kategori,
+           Contact diwakili baris lookup + tombol, Achievements langsung ke
+           kartu testimoni. Tes ini yang mencegah seseorang "memperbaiki"
+           kekosongan itu kembali. */
+        expect(section.lede, `lede ${section.id} kembali terisi`).toBe('');
+      } else {
+        expect(section.lede.trim().length, `${section.id} tanpa lede`).toBeGreaterThan(0);
+      }
     }
   });
 
   it('setiap tautan nav menunjuk section yang benar-benar ada', () => {
-    const ids = V3_SECTIONS.map((section) => section.id);
+    // Hero (bento) bukan V3Section karena tidak memakai furnitur eyebrow +
+    // judul + lede, tapi ia membawa id="top" sebagai jangkar Home.
+    const ids = [...V3_SECTIONS.map((section) => section.id), 'top'];
     for (const link of V3_NAV) {
       expect(ids, `${link.href} tidak punya section`).toContain(link.href.slice(1));
     }

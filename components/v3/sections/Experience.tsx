@@ -1,6 +1,7 @@
 import { LEADERSHIP, V3_SECTIONS, WORK_HISTORY, type Role } from '@/content/ledger';
 import { formatRange } from '@/lib/dates';
 import Section, { findSection } from '../Section';
+import TimelineDraw from '../TimelineDraw';
 
 /* Tanggal tidak pernah diformat di sini. lib/dates.ts satu-satunya yang boleh
    menerjemahkan format simpanan ("2024 FEB") ke format tampilan, karena versi
@@ -46,11 +47,19 @@ export default function Experience() {
 
   return (
     <Section section={section}>
-      <ul className="v3-roles">
-        {WORK_HISTORY.map((role) => (
-          <RoleCard key={`${role.org}-${role.start}`} role={role} />
-        ))}
-      </ul>
+      {/* Rel timeline cuma membungkus riwayat berbayar. Daftar kepemimpinan
+          di bawahnya sengaja tidak ikut: rel ini menandai kronologi peran,
+          dan CV memisahkan keduanya. */}
+      <div className="v3-timeline">
+        <TimelineDraw />
+        <span className="v3-timeline__track" aria-hidden="true" />
+        <span className="v3-timeline__fill" aria-hidden="true" />
+        <ul className="v3-roles">
+          {WORK_HISTORY.map((role) => (
+            <RoleCard key={`${role.org}-${role.start}`} role={role} />
+          ))}
+        </ul>
+      </div>
 
       <h3 className="v3-subhead">Leadership and organizations</h3>
       <ul className="v3-roles v3-roles--quiet">

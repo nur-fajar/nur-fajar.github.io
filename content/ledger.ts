@@ -1164,6 +1164,22 @@ export interface V3Tile {
    */
   href?: string;
   external?: boolean;
+  /**
+   * true → ubin dirender sebagai div dan KOMPONEN ISINYA yang menyediakan
+   * anchor sendiri ke href yang sama. Dipakai Connect: yang bisa diklik
+   * cuma amplopnya. Tes anchor di bawah tidak melihat ke dalam komponen,
+   * jadi flag ini mewajibkan komponennya memang merender anchor itu —
+   * jangan asal menaruh true.
+   */
+  innerLink?: boolean;
+  /**
+   * Teks kapsul di tombol panah ubin. Field ini SEKALIGUS pemisah perilaku:
+   * ubin yang memilikinya dirender sebagai div dan CUMA tombol kapsulnya
+   * yang bisa diklik (seluruh permukaan sisanya pegangan seret); ubin
+   * ber-href tanpa cta seluruhnya jadi anchor. Cuma untuk ubin dua baris,
+   * satu-satunya yang muat tombol 48px tanpa menimpa isi.
+   */
+  cta?: string;
 }
 
 /**
@@ -1181,8 +1197,8 @@ export interface V3Tile {
 export const V3_HOME_TILES: V3Tile[] = [
   { id: 'intro', label: "hi! I'm Nur Fajar", span: 6, row: 1, rows: 1, surface: 'paper' },
   { id: 'cv', label: 'Download my CV', span: 2, row: 1, rows: 1, surface: 'paper', href: CONTACT.cv },
-  { id: 'projects', label: 'Jump to Work', span: 4, row: 1, rows: 2, surface: 'ink', href: '#work' },
-  { id: 'tools', label: 'Jump to Technologies', span: 6, row: 2, rows: 2, surface: 'yellow', href: '#technologies' },
+  { id: 'projects', label: 'Jump to Work', span: 4, row: 1, rows: 2, surface: 'ink', href: '#work', cta: 'See all projects' },
+  { id: 'tools', label: 'Jump to Technologies', span: 6, row: 2, rows: 2, surface: 'yellow', href: '#technologies', cta: 'See all tools & skills' },
   {
     id: 'linkedin',
     label: 'LinkedIn',
@@ -1193,14 +1209,14 @@ export const V3_HOME_TILES: V3Tile[] = [
     href: CONTACT.linkedin,
     external: true,
   },
-  { id: 'connect', label: 'Jump to Contact', span: 6, row: 3, rows: 1, surface: 'paper', href: '#contact' },
+  { id: 'connect', label: 'Jump to Contact', span: 6, row: 3, rows: 1, surface: 'paper', href: '#contact', innerLink: true },
 ];
 
 export const V3_NAV = [
-  { href: '#work', label: 'Work' },
+  { href: '#top', label: 'Home' },
+  { href: '#work', label: 'Project' },
   { href: '#experience', label: 'Experience' },
-  { href: '#technologies', label: 'Technologies' },
-  { href: '#achievements', label: 'Achievements' },
+  { href: '#technologies', label: 'Tools' },
   { href: '#about', label: 'About' },
   { href: '#contact', label: 'Contact' },
 ] as const;
@@ -1329,9 +1345,15 @@ export const V3_SECTIONS: readonly V3Section[] = [
   },
   {
     id: 'work',
-    eyebrow: 'Work',
-    heading: ["What I've", 'built.'],
-    lede: "Three of these are live and public. Take a look and see what's inside.",
+    /* Tanpa eyebrow, judul sebaris: "What I've built." satu baris penuh.
+       Baris kedua kosong disengaja (bukan lupa) — lihat tes. */
+    eyebrow: '',
+    heading: ["What I've built.", ''],
+    /* Sengaja kosong: indeks kategori + blurb tiap kategori sudah mengerjakan
+       tugas lede (memberi tahu apa di bawah dan ke mana melompat), jadi lede
+       di sini cuma mengulang. Section lain tetap wajib punya lede — ada tes
+       yang mengunci kekosongan ini khusus untuk work. */
+    lede: '',
   },
   {
     id: 'experience',
@@ -1349,7 +1371,9 @@ export const V3_SECTIONS: readonly V3Section[] = [
     id: 'achievements',
     eyebrow: 'Achievements',
     heading: ['Evidence from', 'other people.'],
-    lede: 'Certificates that can be checked one by one, and references chosen for different vantage points.',
+    /* Sengaja kosong: kartunya langsung bicara. Lihat tes untuk daftar
+       section yang diizinkan tanpa lede. */
+    lede: '',
   },
   {
     id: 'about',
@@ -1361,6 +1385,9 @@ export const V3_SECTIONS: readonly V3Section[] = [
     id: 'contact',
     eyebrow: 'Contact',
     heading: ["Let's work", 'together.'],
-    lede: 'What I am looking for, and four ways to reach me.',
+    /* Sengaja kosong seperti Work: baris lookup + tombol di bawahnya sudah
+       menjawab semuanya, lede cuma mengulang. Lihat tes untuk daftar
+       section yang diizinkan tanpa lede. */
+    lede: '',
   },
 ] as const;

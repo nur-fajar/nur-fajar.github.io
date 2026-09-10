@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
-import InsideOneProgram from '@/components/site/InsideOneProgram';
 import {
   BUILT,
   CRM_PROJECT,
@@ -12,32 +11,31 @@ import {
   WORK_GALLERY,
   type V3Category,
 } from '@/content/ledger';
+import GalleryPin from '../GalleryPin';
+import GalleryRail from '../GalleryRail';
 import Section, { findSection } from '../Section';
 
 /**
- * Empat kategori, lalu satu kartu yang sengaja berdiri di luar keempatnya,
- * lalu panel ADDIE.
- *
- * PANEL ADDIE DIPAKAI ULANG, bukan disalin. app/globals.css meng-import
- * sections.css, jadi kelas komponen itu tersedia di sini, dan alias token di
- * .v3-root membuatnya ikut gelap. Menyalin 537 barisnya berarti dua salinan
- * mekanika tab dan penanganan keyboard yang harus dijaga sinkron, untuk hasil
- * yang persis sama.
- *
- * Bentuk panelnya sendiri tidak diubah, dan itu keputusan yang sudah pernah
- * diambil: komentar di kepala InsideOneProgram.tsx mencatat bahwa grid bento
- * lima kartu dan accordion keduanya sudah dicoba lalu dibuang, yang pertama
- * karena menaruh isi tiap fase di balik dialog, yang kedua karena panjang
- * fasenya tidak seragam sehingga membuka fase terakhir menggeser separuh
- * halaman.
+ * Empat kategori, lalu satu kartu yang sengaja berdiri di luar keempatnya.
+ * Panel ADDIE ("Behind the work") sudah tidak tampil di sini — ia tetap
+ * hidup di homepage lama lewat components/site/Work.tsx.
  */
 function CategoryHead({ id }: { id: V3Category }) {
   const category = V3_PROJECT_CATEGORIES.find((entry) => entry.id === id);
   if (!category) throw new Error(`Kategori "${id}" tidak ada di V3_PROJECT_CATEGORIES`);
+  /* Nomor cerminan indeks (01–04), dihitung dari urutan yang sama — bukan
+     konstanta baru yang bisa basi sebelah. */
+  const num = String(V3_PROJECT_CATEGORIES.findIndex((entry) => entry.id === id) + 1).padStart(
+    2,
+    '0',
+  );
 
   return (
-    <header className="v3-cat__head">
+    <header className="v3-cat__head" id={`work-${id}`}>
       <h3 className="v3-cat__label">{category.label}</h3>
+      <span className="v3-cat__num" aria-hidden="true">
+        {num}
+      </span>
       <p className="v3-cat__blurb">{category.blurb}</p>
     </header>
   );
@@ -47,10 +45,12 @@ function GalleryGrid({ target }: { target: V3Category }) {
   const items = WORK_GALLERY.filter((item) => V3_GALLERY_CATEGORY[item.category] === target);
 
   return (
-    <ul className="v3-gallery">
+    <GalleryRail>
       {items.map((item) => (
         <li key={item.id}>
           <a className="v3-gallery__item" href={item.href} target="_blank" rel="noreferrer">
+            {/* Seret mouse memakai pointer events sendiri; ghost drag bawaan
+                gambar wajib mati supaya tidak menimpa seret itu. */}
             {/* Breakpoint situs ini 980px dan 640px, bukan lebar --v3-maxw.
                 sizes yang memakai angka yang salah diam-diam mengunduh berkas
                 lebih besar daripada yang pernah ditampilkan. */}
@@ -58,14 +58,15 @@ function GalleryGrid({ target }: { target: V3Category }) {
               src={item.thumbnail}
               alt={item.title}
               width={640}
-              height={640}
+              height={800}
               sizes="(max-width: 640px) 50vw, (max-width: 980px) 33vw, 20vw"
+              draggable={false}
             />
             <span className="v3-gallery__caption">{item.title}</span>
           </a>
         </li>
       ))}
-    </ul>
+    </GalleryRail>
   );
 }
 
@@ -74,6 +75,8 @@ export default function Work() {
 
   return (
     <Section section={section}>
+      <GalleryPin />
+
       {/* ── Course ─────────────────────────────────────────────────────── */}
       <CategoryHead id="course" />
 
@@ -107,11 +110,18 @@ export default function Work() {
       </ul>
 
       {/* ── Video, then Design ─────────────────────────────────────────── */}
-      <CategoryHead id="video" />
-      <GalleryGrid target="video" />
+      {/* Tiap pasangan kepala + rel dibungkus .v3-cat: GalleryPin mem-pin
+          blok ini utuh (kepala ikut menempel) selama scroll vertikal
+          dipakai menghabiskan pan horizontal relnya. */}
+      <div className="v3-cat">
+        <CategoryHead id="video" />
+        <GalleryGrid target="video" />
+      </div>
 
-      <CategoryHead id="design" />
-      <GalleryGrid target="design" />
+      <div className="v3-cat">
+        <CategoryHead id="design" />
+        <GalleryGrid target="design" />
+      </div>
 
       {/* ── Website ────────────────────────────────────────────────────── */}
       <CategoryHead id="website" />
@@ -147,10 +157,6 @@ export default function Work() {
             <li key={metric}>{metric}</li>
           ))}
         </ul>
-      </div>
-
-      <div className="v3-program">
-        <InsideOneProgram />
       </div>
     </Section>
   );

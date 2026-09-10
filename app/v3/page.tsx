@@ -4,7 +4,6 @@ import About from '@/components/v3/sections/About';
 import Achievements from '@/components/v3/sections/Achievements';
 import Contact from '@/components/v3/sections/Contact';
 import Experience from '@/components/v3/sections/Experience';
-import Proof from '@/components/v3/sections/Proof';
 import Technologies from '@/components/v3/sections/Technologies';
 import Work from '@/components/v3/sections/Work';
 
@@ -28,7 +27,6 @@ export default function V3Page() {
   return (
     <>
       <Bento />
-      <Proof />
       <Work />
       <Experience />
       <Technologies />

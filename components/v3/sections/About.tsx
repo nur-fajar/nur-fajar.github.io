@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
-import { BACKGROUND, V3_ROLE_CHIPS, V3_SECTIONS } from '@/content/ledger';
+import { BACKGROUND, V3_SECTIONS } from '@/content/ledger';
+import CardsDrift from '../CardsDrift';
 import Section, { findSection } from '../Section';
 
 /**
@@ -16,12 +17,7 @@ export default function About() {
 
   return (
     <Section section={section}>
-      <ul className="v3-chips v3-chips--roles">
-        {V3_ROLE_CHIPS.map((chip) => (
-          <li key={chip}>{chip}</li>
-        ))}
-      </ul>
-
+      <CardsDrift />
       <ul className="v3-bg">
         {BACKGROUND.map((card) => (
           <li className="v3-card v3-bg__card" key={card.id}>
@@ -31,10 +27,6 @@ export default function About() {
             <ul className="v3-bg__logos">
               {card.logos.map((logo) => (
                 <li key={logo.src}>
-                  {/* Logo lembaga dibuat abu dan baru berwarna saat kartunya
-                      di-hover: di atas latar hitam, tujuh logo penuh warna
-                      berjajar menarik perhatian lebih besar daripada bobot
-                      informasinya. */}
                   <Image
                     src={logo.src}
                     alt={logo.alt}

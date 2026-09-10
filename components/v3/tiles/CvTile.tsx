@@ -1,20 +1,29 @@
-import { ReadCvLogo } from '@phosphor-icons/react/dist/ssr';
+import Image from 'next/image';
+import { DownloadSimple, SealCheck } from '@phosphor-icons/react/dist/ssr';
 
 /**
- * Bobot fill, bukan duotone.
+ * Foto profil (avatar yang sama dengan nav dan OG image) plus lencana
+ * centang biru gaya terverifikasi di kanan bawahnya, lalu tulisan
+ * "Download Resume/CV".
  *
- * Duotone menggambar separuh bentuknya dengan opacity rendah, dan di ubin
- * putih hasilnya terbaca sebagai ikon abu yang pudar, bukan sebagai mark.
- *
- * Label di bawahnya ada karena ubin ini 172x165 piksel dan sebelumnya cuma
- * berisi satu glif di tengah. Ia juga menjawab pertanyaan yang tidak dijawab
- * ikon mana pun: yang diunduh ini berkas apa.
+ * Seluruh ubin tetap satu anchor unduhan PDF (diurus Tile): foto dan
+ * lencananya aria-hidden karena nama tautannya sudah dibawa label ubin.
+ * Foto di-crop lingkaran lewat CSS, jadi aspek berkas aslinya tidak
+ * penting. Saat ubin di-hover, lencana ceklis bermorf jadi panah unduh:
+ * dua ikon bertumpuk di sel grid yang sama, saling menggantikan lewat
+ * skala dan opacity.
  */
 export default function CvTile() {
   return (
     <span className="v3-glyph" aria-hidden="true">
-      <ReadCvLogo size={56} weight="fill" />
-      <span className="v3-glyph__label">Resume, PDF</span>
+      <span className="v3-avatar">
+        <Image src="/foto-profile-nf-avatar.jpg" alt="" width={76} height={76} />
+        <span className="v3-avatar__badge">
+          <SealCheck className="v3-avatar__check" size={20} weight="fill" />
+          <DownloadSimple className="v3-avatar__dl" size={17} weight="bold" />
+        </span>
+      </span>
+      <span className="v3-glyph__label">Download Resume/CV</span>
     </span>
   );
 }

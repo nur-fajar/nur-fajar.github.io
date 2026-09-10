@@ -1,13 +1,15 @@
 'use client';
 
-import { m, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { m, motionValue, useReducedMotion, type MotionValue } from 'framer-motion';
+import { useEffect, useMemo, useRef } from 'react';
 import ToolLogo from '../ToolLogo';
 import { V3_TOOLS } from '@/content/ledger';
 
-/* Posisi kesebelas chip ditulis tetap, bukan diacak. Penempatan acak akan
-   berbeda antara render server dan client lalu memicu hydration mismatch,
-   dan di build statis ia membeku pada satu susunan hasil undian saat build.
+/* Posisi awal kesebelas chip ditulis tetap, bukan diacak. Penempatan acak
+   akan berbeda antara render server dan client lalu memicu hydration
+   mismatch, dan di build statis ia membeku pada satu susunan hasil undian
+   saat build. Dari sinilah tiap chip mulai melayang; arah awalnya disebar
+   merata lewat sudut emas di bawah.
 
    Sebarannya menutup seluruh bidang, dan beberapa chip sengaja diletakkan
    sampai menyentuh tepi: ubinnya overflow:hidden, jadi chip yang terpotong
@@ -34,77 +36,52 @@ const SPOTS = [
   { top: '63%', left: '79%' },
 ];
 
-/** Sejauh mana pengaruh kursor terasa, dalam piksel. */
+/** Jangkauan tolak kursor, dalam piksel. */
 const RADIUS = 190;
 
-/** Seberapa jauh chip terdorong saat kursor tepat di atasnya. */
-const PUSH = 46;
+/** Percepatan tolak maksimum saat kursor tepat di atas chip, px/s². */
+const PUSH = 1500;
 
-/* Titik tengah chip TIDAK dihitung dari konstanta ukuran.
-   Ukuran chip fluid lewat clamp() di CSS, jadi angka tetap di sini akan
-   meleset di setiap lebar layar kecuali satu. Titik tengahnya diukur sekali
-   dari DOM, lalu diukur ulang hanya saat ubinnya berubah ukuran. Mengukur
-   per frame akan memaksa layout sebelas kali tiap gerakan kursor. */
+/** Batas laju supaya sentilan kursor tidak liar, px/s. */
+const MAX_SPEED = 280;
+
+/* ponytail: tumbukan O(n²) berpasangan tiap frame (55 pasang untuk 11 chip).
+   Untuk ratusan benda pakai spatial hash; di sini n tetap 11 dan biayanya
+   tidak terukur, jadi grid partisi cuma menambah kode. */
+const COUNT = V3_TOOLS.length;
 
 function Chip({
   index,
   tool,
-  pointerX,
-  pointerY,
-  centersRef,
-  still,
+  x,
+  y,
 }: {
   index: number;
   tool: (typeof V3_TOOLS)[number];
-  pointerX: ReturnType<typeof useMotionValue<number>>;
-  pointerY: ReturnType<typeof useMotionValue<number>>;
-  centersRef: React.RefObject<{ x: number; y: number }[]>;
-  still: boolean;
+  x: MotionValue<number>;
+  y: MotionValue<number>;
 }) {
-  const spot = SPOTS[index];
-
-  /* Dorongan dihitung di dalam useTransform, bukan di state React.
-     Pointermove menyala puluhan kali per detik; kalau tiap gerakan memicu
-     render ulang, sebelas chip ikut dirender ulang setiap kali. Motion value
-     melewati React sepenuhnya dan menulis langsung ke transform. */
-  const offset = useTransform<number, number[]>([pointerX, pointerY], ([px, py]) => {
-    const centre = centersRef.current[index];
-    if (!centre || px < 0) return [0, 0];
-
-    const dx = centre.x - px;
-    const dy = centre.y - py;
-    const distance = Math.hypot(dx, dy);
-    if (distance > RADIUS) return [0, 0];
-
-    /* Jarak nol berarti kursor tepat di titik tengah chip, dan pembagian
-       dengan nol di sana menghasilkan NaN yang membuat chipnya lenyap. */
-    const safe = Math.max(distance, 1);
-    const strength = ((RADIUS - distance) / RADIUS) * PUSH;
-    return [(dx / safe) * strength, (dy / safe) * strength];
-  });
-
-  const x = useSpring(
-    useTransform(offset, (value) => value[0]),
-    { stiffness: 240, damping: 22, mass: 0.4 },
-  );
-  const y = useSpring(
-    useTransform(offset, (value) => value[1]),
-    { stiffness: 240, damping: 22, mass: 0.4 },
-  );
-
   return (
-    <m.span className="v3-toolfield__spot" style={still ? spot : { ...spot, x, y }}>
-      <ToolLogo id={tool.id} name={tool.name} size={34} />
-    </m.span>
+    <span className="v3-toolfield__spot" style={SPOTS[index]}>
+      <m.span className="v3-toolfield__push" style={{ x, y }}>
+        <ToolLogo id={tool.id} name={tool.name} size={40} />
+      </m.span>
+    </span>
   );
 }
 
 /**
- * Sebelas chip bulat memenuhi bidang kuning, dan menjauh dari kursor.
+ * Sebelas chip bulat memenuhi bidang kuning dan MELAYANG BEBAS: tiap chip
+ * punya posisi dan kecepatan sendiri, memantul lenting sesama chip dan
+ * dinding ubin, dan tersentil menjauh saat kursor mendekat.
  *
- * Efek menjauhnya murni tambahan: tanpa JavaScript, tanpa pointer, dan di
- * bawah prefers-reduced-motion, chipnya tetap berada di posisinya dan ubin
- * ini tetap terbaca utuh. Yang hilang cuma gerakannya.
+ * Satu rAF loop menulis langsung ke motion value tiap chip, jadi tidak ada
+ * satu pun render ulang React per frame. Jari-jari dan batas ubin diukur
+ * dari DOM (ukuran chip fluid lewat clamp(), jadi angka tetap akan meleset
+ * di semua lebar kecuali satu) dan diukur ulang saat ubin berubah ukuran.
+ *
+ * Tanpa JavaScript, tanpa pointer, dan di prefers-reduced-motion, chipnya
+ * diam di posisinya dan ubin tetap terbaca utuh. Yang hilang cuma geraknya.
  *
  * aria-hidden karena pembungkus Tile sudah membawa aria-label ubin ini.
  * Tanpa itu, screen reader membacakan sebelas nama merek sebelum sampai ke
@@ -112,34 +89,61 @@ function Chip({
  */
 export default function ToolsTile() {
   const boxRef = useRef<HTMLDivElement | null>(null);
-  const centersRef = useRef<{ x: number; y: number }[]>([]);
-  const pointerX = useMotionValue(-1);
-  const pointerY = useMotionValue(-1);
   const reduced = useReducedMotion();
 
-  /* Titik tengah tiap chip diukur dari DOM, bukan dihitung dari persentase
-     dan konstanta ukuran. Ubin ini berubah lebar di dua breakpoint dan
-     ukuran chipnya fluid, jadi angka yang dihitung sekali di kepala file
-     akan benar di satu lebar saja. ResizeObserver mengukur ulang tepat saat
-     ukurannya berubah, bukan tiap frame. */
+  /* Offset tiap chip dari titik awalnya. useMemo, bukan state: nilainya
+     ditulis loop fisika puluhan kali per detik dan tidak boleh me-render
+     ulang siapa pun. */
+  const offsets = useMemo(
+    () => V3_TOOLS.map(() => ({ x: motionValue(0), y: motionValue(0) })),
+    [],
+  );
+
+  const sim = useRef({
+    pos: [] as { x: number; y: number }[],
+    vel: [] as { x: number; y: number }[],
+    rad: [] as number[],
+    home: [] as { x: number; y: number }[],
+    bounds: { w: 0, h: 0 },
+    cursor: { x: -1, y: -1 },
+    ready: false,
+  });
+
+  /* Ukur batas, jari-jari, dan titik awal dari DOM. OffsetLeft/offsetTop,
+     bukan getBoundingClientRect: rect ikut membaca transform, jadi mengukur
+     ulang saat sebuah chip sedang bergeser akan mencatat titik awalnya di
+     posisi geser itu, bukan posisi diamnya. Kotak ini position:absolute,
+     jadi ia offsetParent anak-anaknya dan offsetLeft sudah relatif
+     terhadapnya. */
   useEffect(() => {
     const box = boxRef.current;
     if (!box) return;
+    const S = sim.current;
 
-    /* offsetLeft, bukan getBoundingClientRect: rect ikut membaca transform,
-       jadi mengukur ulang saat sebuah chip sedang terdorong akan mencatat
-       titik tengahnya di posisi dorongan itu, bukan posisi diamnya. Sekali
-       itu terjadi, chip tersebut akan salah menghitung dorongan berikutnya
-       selamanya. Kotak ini position:absolute, jadi ia offsetParent
-       anak-anaknya dan offsetLeft sudah relatif terhadapnya. */
     const measure = () => {
-      centersRef.current = [...box.children].map((node) => {
+      const w = box.clientWidth;
+      const h = box.clientHeight;
+      S.bounds = { w, h };
+      S.rad = [...box.children].map((node) => (node as HTMLElement).offsetWidth / 2);
+      S.home = [...box.children].map((node) => {
         const child = node as HTMLElement;
         return {
           x: child.offsetLeft + child.offsetWidth / 2,
           y: child.offsetTop + child.offsetHeight / 2,
         };
       });
+      if (!S.ready && w > 0) {
+        S.ready = true;
+        S.pos = S.home.map((point) => ({ ...point }));
+        /* Arah awal disebar merata (sudut emas) dan laju dibuat beda-beda:
+           deterministik dari index, jadi server dan client selalu sama dan
+           tidak ada dua chip yang melaju sejajar selamanya. */
+        S.vel = S.home.map((_, i) => {
+          const angle = i * 2.39996;
+          const speed = 36 + ((i * 13) % 24);
+          return { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
+        });
+      }
     };
 
     measure();
@@ -148,35 +152,148 @@ export default function ToolsTile() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (reduced) return;
+    const S = sim.current;
+    let raf = 0;
+    let last = performance.now();
+
+    const step = (now: number) => {
+      /* Tab yang lama tersembunyi: rAF berhenti, dan tanpa clamp bingkai
+         pertama setelah kembali akan melontarkan semua chip. */
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      const { w, h } = S.bounds;
+
+      if (S.ready && w > 0) {
+        for (let i = 0; i < COUNT; i++) {
+          const p = S.pos[i];
+          const v = S.vel[i];
+          const r = S.rad[i] || 0;
+
+          /* Kursor menolak, bukan menarik: percepatan menjauhi titik kursor
+             yang melemah sampai nol di tepi jangkauan. */
+          if (S.cursor.x >= 0) {
+            const dx = p.x - S.cursor.x;
+            const dy = p.y - S.cursor.y;
+            const d = Math.hypot(dx, dy);
+            if (d < RADIUS && d > 1) {
+              const force = ((RADIUS - d) / RADIUS) * PUSH;
+              v.x += (dx / d) * force * dt;
+              v.y += (dy / d) * force * dt;
+            }
+          }
+
+          /* Kemudi jelajah: laju ditarik pelan ke targetnya sendiri supaya
+             tumbukan tidak lama-lama menidurkan atau menggelisahkan gerak. */
+          const cruise = 36 + ((i * 13) % 24);
+          const speed = Math.hypot(v.x, v.y);
+          if (speed > 0.01) {
+            const next = speed + (cruise - speed) * Math.min(1, 2 * dt);
+            const capped = Math.min(next, MAX_SPEED);
+            v.x = (v.x / speed) * capped;
+            v.y = (v.y / speed) * capped;
+          }
+
+          p.x += v.x * dt;
+          p.y += v.y * dt;
+
+          /* Dinding: pantul penuh dan jepit posisi supaya tidak ada chip
+             yang terjepit di luar batas setelah resize. */
+          if (p.x < r) {
+            p.x = r;
+            v.x = Math.abs(v.x);
+          } else if (p.x > w - r) {
+            p.x = w - r;
+            v.x = -Math.abs(v.x);
+          }
+          if (p.y < r) {
+            p.y = r;
+            v.y = Math.abs(v.y);
+          } else if (p.y > h - r) {
+            p.y = h - r;
+            v.y = -Math.abs(v.y);
+          }
+        }
+
+        /* Tumbukan lenting bermassa sama: komponen kecepatan sepanjang garis
+           tengah dipertukarkan, sisanya diteruskan; tumpang-tindih dibagi
+           dua supaya tidak lengket. */
+        for (let i = 0; i < COUNT; i++) {
+          for (let j = i + 1; j < COUNT; j++) {
+            const a = S.pos[i];
+            const b = S.pos[j];
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+            const min = (S.rad[i] || 0) + (S.rad[j] || 0);
+            const d = Math.hypot(dx, dy);
+            if (d <= 0 || d >= min) continue;
+            const nx = dx / d;
+            const ny = dy / d;
+            const overlap = (min - d) / 2;
+            a.x -= nx * overlap;
+            a.y -= ny * overlap;
+            b.x += nx * overlap;
+            b.y += ny * overlap;
+            const va = S.vel[i];
+            const vb = S.vel[j];
+            const rel = (vb.x - va.x) * nx + (vb.y - va.y) * ny;
+            if (rel >= 0) continue;
+            const impulse = -rel;
+            va.x -= impulse * nx;
+            va.y -= impulse * ny;
+            vb.x += impulse * nx;
+            vb.y += impulse * ny;
+          }
+        }
+
+        for (let i = 0; i < COUNT; i++) {
+          offsets[i].x.set(S.pos[i].x - S.home[i].x);
+          offsets[i].y.set(S.pos[i].y - S.home[i].y);
+        }
+      }
+
+      raf = requestAnimationFrame(step);
+    };
+
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [reduced, offsets]);
+
+  /* Tanpa gerak (reduced-motion): chip statis di titik awalnya. Tanpa JS:
+     HTML server memang hanya berisi ini. */
+  if (reduced) {
+    return (
+      <div className="v3-toolfield" aria-hidden="true">
+        {V3_TOOLS.map((tool, index) => (
+          <span className="v3-toolfield__spot" style={SPOTS[index]} key={tool.id}>
+            <ToolLogo id={tool.id} name={tool.name} size={40} />
+          </span>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div
       ref={boxRef}
       className="v3-toolfield"
       aria-hidden="true"
       onPointerMove={(event) => {
-        if (reduced) return;
         const rect = event.currentTarget.getBoundingClientRect();
-        pointerX.set(event.clientX - rect.left);
-        pointerY.set(event.clientY - rect.top);
+        sim.current.cursor = {
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top,
+        };
       }}
-      /* -1 adalah penanda "kursor tidak ada di sini", dan dibaca lagi di
-         useTransform. Memakai null akan memaksa tipe motion value jadi
-         nullable di sepanjang rantainya. */
+      /* -1 adalah penanda "kursor tidak ada di sini". Memakai null akan
+         memaksa tipe nullable di sepanjang rantai baca. */
       onPointerLeave={() => {
-        pointerX.set(-1);
-        pointerY.set(-1);
+        sim.current.cursor = { x: -1, y: -1 };
       }}
     >
       {V3_TOOLS.map((tool, index) => (
-        <Chip
-          key={tool.id}
-          index={index}
-          tool={tool}
-          pointerX={pointerX}
-          pointerY={pointerY}
-          centersRef={centersRef}
-          still={Boolean(reduced)}
-        />
+        <Chip key={tool.id} index={index} tool={tool} x={offsets[index].x} y={offsets[index].y} />
       ))}
     </div>
   );

@@ -3,6 +3,7 @@
 import { domMax, LazyMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { V3_HOME_TILES, type V3Tile as V3TileData } from '@/content/ledger';
+import HeroDrift from './HeroDrift';
 import Tile from './Tile';
 import ConnectTile from './tiles/ConnectTile';
 import CvTile from './tiles/CvTile';
@@ -20,8 +21,10 @@ const CONTENT: Record<string, React.ComponentType> = {
   connect: ConnectTile,
 };
 
-/** Di bawah lebar ini seret dimatikan: di layar sentuh, menyeret ubin
- *  bertabrakan dengan menggulir halaman, dan yang kalah selalu scroll. */
+/** Seret cuma nyala di layar cukup lebar DAN berkursor. Di layar sentuh,
+ *  menyeret ubin bertabrakan dengan menggulir halaman, dan yang kalah
+ *  selalu scroll — tablet 768px pun tidak luput, jadi lebar saja tidak
+ *  cukup sebagai syarat. */
 const DRAG_MIN_WIDTH = 641;
 
 /** Jarak seret minimum sebelum dianggap niat menukar, bukan klik yang
@@ -52,14 +55,16 @@ export default function Bento() {
   const [tiles, setTiles] = useState<V3TileData[]>(V3_HOME_TILES);
   const [dragEnabled, setDragEnabled] = useState(false);
   const draggedRef = useRef(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   /* Seret baru dinyalakan setelah mount, dan itu disengaja: kalau `drag`
      dipasang saat render server, HTML yang terkirim membawa atribut yang
      berbeda dari hasil hydrate. Selain itu lebar viewport tidak diketahui di
      server, jadi keputusan "layar ini cukup lebar" memang tidak bisa diambil
-     di sana. */
+     di sana. Syarat hover: di layar sentuh tidak ada kursor, dan seret ubin
+     bertabrakan dengan scroll halaman — yang kalah selalu scroll. */
   useEffect(() => {
-    const query = window.matchMedia(`(min-width: ${DRAG_MIN_WIDTH}px)`);
+    const query = window.matchMedia(`(min-width: ${DRAG_MIN_WIDTH}px) and (hover: hover)`);
     const apply = () => setDragEnabled(query.matches);
     apply();
     query.addEventListener('change', apply);
@@ -95,7 +100,8 @@ export default function Bento() {
      butuh; membungkus di sini membatasinya ke satu komponen. */
   return (
     <LazyMotion features={domMax}>
-      <section className="v3-bento" aria-label="Nur Fajar">
+      <section className="v3-bento" id="top" aria-label="Nur Fajar" ref={sectionRef}>
+      <HeroDrift triggerRef={sectionRef} />
       <div className="v3-shell">
         <div className="v3-grid">
           {tiles.map((tile, index) => {

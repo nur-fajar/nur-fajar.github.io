@@ -9,11 +9,16 @@ import type { V3Tile as V3TileData } from '@/content/ledger';
  *
  * TIGA HAL YANG PERLU DIBACA SEBELUM MENGUBAH FILE INI.
  *
- * 1. Ubin ber-target selalu dirender sebagai <a> dengan href sungguhan.
- *    Bukan div ber-onClick. Karena itu, tanpa JavaScript sekalipun, mengklik
- *    ubin Projects tetap melompat ke section Work: itu perilaku bawaan
- *    anchor, bukan sesuatu yang perlu kita jalankan. Seret dan animasi masuk
- *    adalah lapisan tambahan di atas dasar yang sudah bekerja.
+ * 1. Ubin ber-target SELALU punya <a> dengan href sungguhan, bukan div
+ *    ber-onClick. Bedanya di mana anchor itu duduk: ubin biasa SELURUHNYA
+ *    jadi anchor; ubin ber-cta (projects, tools) dirender sebagai div dan
+ *    cuma tombol kapsulnya yang jadi anchor; ubin ber-innerLink (connect)
+ *    juga div dan komponen isinya yang menyediakan anchor sendiri
+ *    (amplopnya). Alasannya bentrok mainan: ubin-ubin itu bisa diseret
+ *    untuk bertukar tempat, dan seluruh permukaan yang sekaligus pintu
+ *    sekaligus pegangan membuat setiap lepas-seret ambigu. Tanpa JavaScript
+ *    sekalipun ketiga pola tetap melompat: itu perilaku bawaan anchor,
+ *    bukan sesuatu yang perlu kita jalankan.
  *
  * 2. Span dikirim ke CSS sebagai custom property, bukan sebagai `grid-column`
  *    inline. Inline style menang atas stylesheet tanpa !important, dan versi
@@ -56,13 +61,30 @@ export default function Tile({
 
   /* Panah cuma muncul di ubin setinggi dua satuan, mengikuti mockup. Bukan
      selera: tombol 48px plus jarak 32px memakan 80px dari ubin setinggi
-     165px, dan isinya yang rata tengah pasti tertimpa. Ubin satu satuan
-     tetap sepenuhnya bisa diklik. */
+     165px, dan isinya yang rata tengah pasti tertimpa.
+     Dua peran: di ubin-anchor biasa ia dekorasi (aria-hidden, ubinnya yang
+     bersuara); di ubin ber-cta ia TOMBOLNYA SENDIRI (anchor sungguhan,
+     labelnya terbaca screen reader supaya nama aksesibelnya sama dengan
+     teks kapsul yang terlihat). */
   const arrow =
-    tile.href && tile.rows > 1 ? (
+    tile.href && tile.rows > 1 && !tile.cta ? (
       <span className="v3-tile__go" aria-hidden="true">
         <ArrowUpRight size={22} weight="bold" />
       </span>
+    ) : null;
+
+  const ctaButton =
+    tile.href && tile.cta ? (
+      <a
+        className="v3-tile__go"
+        href={tile.href}
+        onClick={(event) => {
+          if (suppressClick()) event.preventDefault();
+        }}
+      >
+        <span className="v3-tile__go-label">{tile.cta}</span>
+        <ArrowUpRight size={22} weight="bold" aria-hidden="true" />
+      </a>
     ) : null;
 
   const motionProps = {
@@ -88,17 +110,15 @@ export default function Tile({
       : {}),
   };
 
-  const body = (
-    <>
-      {children}
-      {arrow}
-    </>
-  );
-
-  if (!tile.href) {
+  /* Ubin ber-cta / ber-innerLink bukan anchor: href-nya dibawa tombol
+     kapsul (cta) atau anchor di dalam isi (innerLink). Seluruh permukaan
+     sisanya pegangan seret. */
+  if (!tile.href || tile.cta || tile.innerLink) {
     return (
       <m.div className={className} style={style} data-tile={tile.id} {...motionProps}>
-        {body}
+        {children}
+        {arrow}
+        {ctaButton}
       </m.div>
     );
   }
@@ -117,7 +137,8 @@ export default function Tile({
       {...(tile.href.endsWith('.pdf') ? { download: '' } : {})}
       {...motionProps}
     >
-      {body}
+      {children}
+      {arrow}
     </m.a>
   );
 }
