@@ -1,0 +1,290 @@
+/* ── TEMA v4 ─────────────────────────────────────────────────────────────
+   Editorial / Swiss kinetic. Terang saja, tidak ada opsi gelap.
+
+   Token v4 duduk di .v4-root, TIDAK di :root. Alasannya sama persis dengan
+   alasan v3 dulu: homepage lama masih live di / dan berbagi dokumen yang
+   sama, jadi token di :root akan mengecat ulang halaman itu. Sebuah tes di
+   app/v4/v4.test.ts menjaga aturan ini.
+
+   PALET tidak diubah dari v3, dan itu keputusan sadar. Rasio kontras tiap
+   token sudah diukur dan ditulis, kuning sudah dilarang membawa huruf, dan
+   merah sudah dibatasi satu tusukan per halaman. Yang kurang dari v3 bukan
+   warnanya, melainkan skala tipografi dan giliran permukaannya. Dua itu
+   yang ditambahkan di sini.
+
+   Kelas .v3-* dipakai ulang apa adanya: v3.css hampir seluruhnya berbasis
+   kelas (cuma 7 aturan yang terikat .v3-root), jadi mewarisi token dari
+   .v4-root sudah cukup untuk membuatnya ikut tema v4. Yang perlu ditulis
+   ulang di bawah hanya keempat aturan yang memang terikat root.
+*/
+.v4-root {
+  /* ── Warna ── angka di komentar adalah rasio terukur, dari v3 ── */
+  --v4-page: #f7f7f5;
+  --v4-card: #ffffff;
+  --v4-line: #e3e3df;
+  --v4-chip-bg: #f2f2ef;
+
+  --v4-ink: #101014;         /* 17.70 kertas · 18.98 kartu */
+  --v4-ink-soft: #4f4f57;    /*  7.56 kertas ·  8.11 kartu */
+  --v4-ink-faint: #6f6f77;   /*  4.64 kertas ·  4.98 kartu */
+
+  --v4-blue: #0f3a93;        /*  9.56 kertas · putih di atasnya 10.26 */
+  --v4-red: #ce2029;         /*  5.07 kertas */
+  --v4-yellow: #ffc400;      /*  bidang isi saja, tidak pernah jadi huruf */
+  --v4-ok: #15803d;
+
+  /* Permukaan gelap. Bento v3 memakai #000 mentah yang ditulis langsung di
+     JSX; di v4 ia jadi token supaya section mana pun bisa mengambil giliran
+     permukaan tanpa menyalin nilainya. */
+  --v4-ink-surface: #101014;
+  --v4-on-ink: #f7f7f5;
+  --v4-line-on-ink: #2a2a33;
+
+  /* ── Skala tipografi ────────────────────────────────────────────────
+     Ini perbaikan utama v4 atas v3. Di v3 lompatannya ekstrem: judul
+     section clamp(3rem, 8vw, 6rem) lalu langsung ke body 0.875rem, dan
+     nyaris tidak ada apa pun di antaranya. Akibatnya setiap hal yang bukan
+     judul dan bukan body dipaksa jadi salah satunya, dan kutipan seukuran
+     caption kehilangan bobot yang seharusnya ia punya.
+
+     Enam register, dari yang terbesar. Semuanya fluid supaya tidak ada
+     breakpoint yang perlu mengurus ukuran huruf. */
+
+  /* Angka PROOF. Sengaja LEBIH BESAR dari judul section: di halaman ini
+     angkanya memang karya seninya, dan tiap angka membawa baris metodenya
+     sendiri tepat di sebelahnya. */
+  --v4-fs-stat: clamp(4.5rem, 16vw, 13rem);
+  /* Judul section, diwarisi dari v3 tanpa perubahan. */
+  --v4-fs-title: clamp(3rem, 8vw, 6rem);
+  /* Headline hero. Sedikit di bawah judul section, karena ia empat baris
+     sementara judul section dua. */
+  --v4-fs-display: clamp(2.5rem, 6vw, 5.5rem);
+  /* Register tengah pertama: kutipan testimonial, dan sub-headline hero. */
+  --v4-fs-quote: clamp(1.5rem, 3.2vw, 2.5rem);
+  /* Register tengah kedua: lede yang perlu bobot, nama peran di Experience. */
+  --v4-fs-sub: clamp(1.125rem, 2vw, 1.625rem);
+  /* Lede biasa. */
+  --v4-fs-lede: clamp(1rem, 1.4vw, 1.125rem);
+
+  --v4-fs-body: 0.9375rem;
+  --v4-fs-label: 0.8125rem;
+  --v4-fs-caps: 0.6875rem;
+
+  --v4-tracking-tight: -0.02em;
+  --v4-tracking-caps: 0.16em;
+
+  /* ── Ruang ── */
+  --v4-maxw: 1240px;
+  --v4-maxw-wide: 1560px;
+  --v4-gutter: clamp(1.25rem, 5vw, 4rem);
+  --v4-section-y: clamp(6.5rem, 15vh, 11rem);
+  --v4-r-card: 12px;
+
+  /* ── Gerak ── satu easing untuk seluruh halaman, sama seperti v3 ── */
+  --v4-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ── Alias ke nama token v3 ─────────────────────────────────────────
+     Seluruh kelas .v3-* membaca warnanya dari --v3-*. Menimpa nama yang
+     sama di sini membuat setiap komponen v3 ikut tema v4 tanpa satu kelas
+     pun disalin, dan tanpa perang specificity: .v4-root tidak pernah
+     dipasang bersama .v3-root di elemen yang sama.
+
+     Ini trik yang memang sudah dipakai repo ini: .v3-root meng-alias token
+     situs AURORA lama dengan cara yang persis sama. */
+  --v3-page: var(--v4-page);
+  --v3-card: var(--v4-card);
+  --v3-line: var(--v4-line);
+  --v3-nav-bg: rgba(247, 247, 245, 0.78);
+  --v3-chip-bg: var(--v4-chip-bg);
+  --v3-ink: var(--v4-ink);
+  --v3-ink-soft: var(--v4-ink-soft);
+  --v3-ink-faint: var(--v4-ink-faint);
+  --v3-blue: var(--v4-blue);
+  --v3-blue-text: var(--v4-blue);
+  --v3-red: var(--v4-red);
+  --v3-yellow: var(--v4-yellow);
+  --v3-ok: var(--v4-ok);
+  --v3-maxw: var(--v4-maxw);
+  --v3-maxw-bento: var(--v4-maxw-wide);
+  --v3-unit: clamp(180px, 23vh, 240px);
+  --v3-gutter: var(--v4-gutter);
+  --v3-r-card: var(--v4-r-card);
+
+  /* Alias lapis kedua: kelas dari components/site (panel ADDIE, 545 baris)
+     membaca nama token AURORA. v3 sudah meng-alias-nya dan v4 meneruskan,
+     karena section ADDIE justru akan dipakai di sini. */
+  --paper: var(--v4-page);
+  --card: var(--v4-card);
+  --ink: var(--v4-ink);
+  --ink-soft: var(--v4-ink-soft);
+  --ink-faint: var(--v4-ink-faint);
+  --rule: var(--v4-line);
+  --accent: var(--v4-blue);
+  --accent-soft: color-mix(in srgb, var(--v4-blue) 12%, transparent);
+  --g1: var(--v4-blue);
+  --g2: var(--v4-blue);
+  --g3: var(--v4-red);
+  --gradient: linear-gradient(100deg, var(--g1), var(--g2) 55%, var(--g3));
+  --ok: var(--v4-ok);
+  --ok-dot: var(--v4-ok);
+  --ok-bg: color-mix(in srgb, var(--v4-ok) 12%, transparent);
+  --ok-border: color-mix(in srgb, var(--v4-ok) 32%, transparent);
+  --shadow-card: none;
+  --shadow-float: none;
+
+  background: var(--v4-page);
+  color: var(--v4-ink);
+  font-family: var(--font-v4-body), ui-sans-serif, system-ui, sans-serif;
+
+  min-height: 100vh;
+  isolation: isolate;
+
+  /* Penjaga full-bleed: 100vw sedikit lebih lebar dari viewport saat
+     scrollbar vertikal ada (Win/Linux), dan selisih itu jadi gulir
+     horizontal halaman. clip, bukan hidden: hidden membuat scroll container
+     dan itu mematikan position:sticky di dalamnya. */
+  overflow-x: clip;
+}
+
+/* Keempat aturan di bawah adalah satu-satunya bagian v3.css yang terikat
+   ke elemen root, jadi mereka tidak ikut terbawa lewat pewarisan token dan
+   harus ditulis ulang untuk .v4-root. */
+
+/* Teks terseleksi mengambil satu-satunya tugas kuning yang tersisa:
+   bidang isi dengan tinta gelap di atasnya (11.89:1). */
+.v4-root ::selection {
+  background: var(--v4-yellow);
+  color: #101014;
+}
+
+.v4-root main {
+  position: relative;
+  z-index: 1;
+}
+
+/* Grain halus di atas segalanya. Satu pseudo-element fixed, jadi GPU tidak
+   pernah mengecat ulangnya saat halaman bergulir. Opacity-nya cukup untuk
+   membunuh rasa "render digital", tidak cukup untuk terbaca sebagai noise. */
+.v4-root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+}
+
+/* ── Furnitur dasar ──────────────────────────────────────────────────── */
+
+.v4-shell {
+  /* width:100% wajib: tanpanya `margin: 0 auto` di dalam induk flex membuat
+     margin otomatis menyerap sisa ruang, dan kotaknya menyusut ke lebar
+     isinya alih-alih melebar sampai max-width. */
+  width: 100%;
+  max-width: var(--v4-maxw);
+  margin: 0 auto;
+  padding-inline: var(--v4-gutter);
+}
+
+.v4-shell--wide {
+  max-width: var(--v4-maxw-wide);
+}
+
+.v4-section {
+  position: relative;
+  padding-block: var(--v4-section-y);
+  scroll-margin-top: 5.5rem;
+}
+
+/* Giliran permukaan. v3 berhenti memakai empat permukaannya tepat setelah
+   bento, dan enam section sesudahnya semuanya kartu putih di atas kertas
+   yang sama. Modifier di bawah yang mengembalikan ritmenya. */
+.v4-section--ink {
+  background: var(--v4-ink-surface);
+  color: var(--v4-on-ink);
+  --v4-line: var(--v4-line-on-ink);
+  --v4-ink: var(--v4-on-ink);
+  --v4-ink-soft: #a8a8b2;   /*  7.12 di atas #101014 */
+  --v4-ink-faint: #82828d;  /*  4.61 di atas #101014 */
+  --v3-line: var(--v4-line-on-ink);
+  --v3-ink: var(--v4-on-ink);
+  --v3-ink-soft: #a8a8b2;
+  --v3-ink-faint: #82828d;
+  --v3-card: #1a1a21;
+  --v3-chip-bg: #1a1a21;
+}
+
+.v4-eyebrow {
+  margin: 0;
+  font-size: var(--v4-fs-caps);
+  font-weight: 500;
+  letter-spacing: var(--v4-tracking-caps);
+  text-transform: uppercase;
+  color: var(--v4-blue);
+}
+
+.v4-section--ink .v4-eyebrow {
+  /* Biru 9.56:1 di kertas terang, tapi hanya 1.86:1 di atas tinta. Di
+     permukaan gelap eyebrow pindah ke kuning, yang di sini justru aman
+     (11.89:1) karena perannya terbalik: ia huruf di atas bidang gelap,
+     bukan huruf di atas bidang kuning. */
+  color: var(--v4-yellow);
+}
+
+.v4-title {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-v4-display), Georgia, serif;
+  font-weight: 300;
+  font-size: var(--v4-fs-title);
+  line-height: 0.92;
+  letter-spacing: var(--v4-tracking-tight);
+}
+
+.v4-title em {
+  font-style: italic;
+}
+
+.v4-lede {
+  margin: 1.5rem 0 0;
+  max-width: 62ch;
+  font-size: var(--v4-fs-lede);
+  line-height: 1.65;
+  color: var(--v4-ink-soft);
+}
+
+/* ── Breakpoint ──────────────────────────────────────────────────────────
+   Tiga, bukan sebelas. v3 menyebar 400/420/560/640/700/720/760/860/900/980/
+   1020 di lima berkas CSS, dan tiap pass responsif jadi tebak-tebakan soal
+   nilai mana yang berlaku di berkas mana.
+
+   640   telepon → tablet kecil
+   980   tablet  → laptop (ambang yang dipakai kanvas blueprint & galeri pin)
+   1240  laptop  → lebar penuh (sama dengan --v4-maxw)
+
+   CSS belum punya custom media query yang bisa dipakai produksi, jadi
+   ketiga angka ini tidak bisa disimpan di variabel. Yang bisa dijaga adalah
+   disiplinnya: tidak ada nilai keempat di berkas ini.
+*/
+@media (max-width: 980px) {
+  .v4-section {
+    scroll-margin-top: 4.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .v4-root {
+    --v4-section-y: 4.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v4-root *,
+  .v4-root *::before,
+  .v4-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
