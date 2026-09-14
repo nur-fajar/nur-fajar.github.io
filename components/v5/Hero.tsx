@@ -12,6 +12,30 @@ import PuzzleField from './PuzzleField';
 
 gsap.registerPlugin(ScrollTrigger);
 
+/** Satu kalimat jadi kata-kata berisi mask karakter, stagger global di
+ *  dalam baris. Space antar kata = text node biasa, satu-satunya titik
+ *  yang boleh dipecah barisnya. */
+function CharLine({ text, serif = false }: { text: string; serif?: boolean }) {
+  return (
+    <>
+      {text.split(' ').map((word, w, words) => (
+        <span key={w} aria-hidden="true">
+          <span className="v5-word">
+            {[...word].map((ch, i) => (
+              <span className="v5-ch" key={i}>
+                <span className={serif ? 'v5-ch__c v5-ch__c--serif' : 'v5-ch__c'} style={{ ['--ci' as string]: i }}>
+                  {ch}
+                </span>
+              </span>
+            ))}
+          </span>
+          {w < words.length - 1 ? ' ' : null}
+        </span>
+      ))}
+    </>
+  );
+}
+
 /**
  * v5 hero, statement pass. Foto dan "Fajar" terlihat sejak awal, tanpa
  * hold-scroll dan tanpa hijack. Koreografinya digerakkan scroll (GSAP
@@ -55,30 +79,18 @@ export default function Hero() {
       <PuzzleField />
       <div className="v5-shell v5-hero__inner">
         <h1 className="v5-mega">
-          {/* Char-rise ala HorizonX: tiap karakter dalam mask sendiri, naik
-              dengan rotasi kecil, stagger 20ms per index. Baris serif pakai
-              rotasi lebih kecil (2deg) dan jeda lebih besar; foto + "Fajar"
-              fade-scale sebagai satu unit, bukan per karakter. */}
+          {/* Char-rise ala HorizonX. Karakter dikelompokkan per kata dalam
+              span nowrap: tanpa itu browser bebas memecah baris di antara
+              dua huruf (pernah terjadi: "MISSI / NG PIECE?"). Break hanya
+              boleh terjadi di spasi antar kata. */}
           <span className="v5-mega__line" aria-label={V5_HERO.titleLead}>
-            {[...V5_HERO.titleLead].map((ch, i) => (
-              <span className="v5-ch" key={i} aria-hidden="true">
-                <span className="v5-ch__c" style={{ ['--ci' as string]: i }}>
-                  {ch === ' ' ? '\u00A0' : ch}
-                </span>
-              </span>
-            ))}
+            <CharLine text={V5_HERO.titleLead} />
           </span>
-          <span className="v5-mega__line v5-mega__line--serif" aria-label={`${V5_HERO.indexPrompt} Fajar`}>
-            {[...V5_HERO.indexPrompt].map((ch, i) => (
-              <span className="v5-ch" key={i} aria-hidden="true">
-                <span
-                  className="v5-ch__c v5-ch__c--serif"
-                  style={{ ['--ci' as string]: i }}
-                >
-                  {ch === ' ' ? '\u00A0' : ch}
-                </span>
-              </span>
-            ))}
+          <span
+            className="v5-mega__line v5-mega__line--serif"
+            aria-label={`${V5_HERO.indexPrompt} Fajar`}
+          >
+            <CharLine text={V5_HERO.indexPrompt} serif />
             <span className="v5-mega__mark v5-fadescale" aria-hidden="true">
               <Image
                 className="v5-mega__face"

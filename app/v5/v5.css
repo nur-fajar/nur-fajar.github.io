@@ -680,6 +680,12 @@ html.v5-nav-open {
   overflow: hidden;
   padding: 0 0.02em 0.12em 0.02em;
 }
+/* Kata digrouptan: baris hanya boleh pecah di spasi, tidak pernah di
+   tengah kata. */
+.v5-word {
+  display: inline-block;
+  white-space: nowrap;
+}
 .v5-ch__c {
   display: inline-block;
 }
@@ -1858,6 +1864,7 @@ html.v5-nav-open {
   font-variant-numeric: tabular-nums;
 }
 .v5-mailmega {
+  position: relative;
   display: block;
   margin: 1.6rem 0 0;
   text-decoration: none;
