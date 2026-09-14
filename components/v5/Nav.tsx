@@ -162,7 +162,8 @@ export default function Nav() {
             <span className="v5-drawer__brand" aria-hidden="true">
               <Image src="/foto-profile-nf-avatar.jpg" alt="" width={32} height={32} sizes="32px" />
             </span>
-            <button
+            <span className="v5-nav__tab" aria-hidden="true" />
+          <button
               ref={closeRef}
               type="button"
               className="v5-drawer__close"
