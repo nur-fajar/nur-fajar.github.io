@@ -132,7 +132,6 @@ export default async function OpengraphImage() {
           </div>
         </div>
 
-        {/* eslint-disable-next-line @next/next/no-img-element -- ImageResponse merender di luar pipeline next/image */}
         <img
           src={photoSrc}
           alt=""

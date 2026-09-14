@@ -20,8 +20,9 @@ export default function Hero() {
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.scrollY > 4) {
-      setRevealed(true);
-      return;
+      /* Langsung via rAF, bukan sinkron di badan effect (aturan set-state-in-effect). */
+      const raf = requestAnimationFrame(() => setRevealed(true));
+      return () => cancelAnimationFrame(raf);
     }
     const root = document.documentElement;
     root.classList.add('v5-hero-hold');
@@ -71,7 +72,6 @@ export default function Hero() {
       off();
       root.classList.remove('v5-hero-hold');
     };
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
 
   return (
