@@ -6,6 +6,7 @@ import { CONTACT, LAST_UPDATED } from '@/content/ledger';
 import { V5_FOUNDER_MAILTO, V5_SECTIONS } from '@/content/v5';
 import LocalTime from './LocalTime';
 import PuzzleField from './PuzzleField';
+import Reveal from '@/components/site/Reveal';
 import Section, { findSection } from './Section';
 
 /** Copy-email fallback for visitors without a mail client or with cal.com blocked. */
@@ -50,12 +51,15 @@ export default function Contact() {
         Jakarta <LocalTime className="v5-avail__time" /> GMT+7
       </p>
       {/* Email duduk di dalam satu keping puzzle: slot kosong di latar
-          yang baru saja terisi. Knob + socket di sisinya dari CSS murni. */}
-      <div className="v5-piece">
-        <a className="v5-mailmega" href={V5_FOUNDER_MAILTO} data-cursor="Say hi">
-          <span className="v5-mailmega__addr">{CONTACT.email}</span>
-        </a>
-      </div>
+          yang baru saja terisi. Knob + socket di sisinya dari CSS murni;
+          kepingnya masuk lewat Reveal biar "terpasang", bukan muncul. */}
+      <Reveal delay={0.2}>
+        <div className="v5-piece">
+          <a className="v5-mailmega" href={V5_FOUNDER_MAILTO} data-cursor="Say hi">
+            <span className="v5-mailmega__addr">{CONTACT.email}</span>
+          </a>
+        </div>
+      </Reveal>
       <p className="v5-contact__more">
         <a href={CONTACT.linkedin} target="_blank" rel="noreferrer">
           LinkedIn
