@@ -148,7 +148,7 @@ export default async function OpengraphImage() {
             />
             <PuzzlePiece />
             <div style={{ fontSize: 27, color: INK_SOFT, marginTop: 20, maxWidth: 620 }}>
-              Every team has a shape with one piece missing. One hire fills it: build, AI, programs, content.
+              Your team already has a shape. One hire that makes it click: build, AI, programs, content.
             </div>
           </div>
 
