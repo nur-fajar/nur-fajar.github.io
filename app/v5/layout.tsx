@@ -1,6 +1,7 @@
 import type { Viewport } from 'next';
 import { Fraunces, Inter } from 'next/font/google';
 import SmoothScroll from '@/components/v3/SmoothScroll';
+import Cursor from '@/components/v5/Cursor';
 import HireDock from '@/components/v5/HireDock';
 import Nav from '@/components/v5/Nav';
 import ScrollProgress from '@/components/v5/ScrollProgress';
@@ -35,6 +36,7 @@ export default function V5Layout({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
       <ScrollProgress />
+      <Cursor />
       <Nav />
       <SmoothScroll />
       <V5Loader />

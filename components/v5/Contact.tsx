@@ -49,7 +49,7 @@ export default function Contact() {
         </span>
         Jakarta <LocalTime className="v5-avail__time" /> GMT+7
       </p>
-      <a className="v5-mailmega" href={V5_FOUNDER_MAILTO}>
+      <a className="v5-mailmega" href={V5_FOUNDER_MAILTO} data-cursor="Say hi">
         <span className="v5-mailmega__addr">{CONTACT.email}</span>
       </a>
       <p className="v5-contact__more">
