@@ -35,7 +35,9 @@ export const V5_HERO = {
   availability: 'Open to full-time',
   titleLead: 'The missing piece?',
   indexPrompt: "That's me.",
-  sub: [] as const,
+  /* Dua baris, batas maksimal tes v5: motif "keping" dari headline
+     ditarik turun jadi positioning, bukan klaim baru. */
+  sub: ['Every team has a shape with one piece missing.', 'Mine is the piece that ships.'] as const,
   ticker: [
     'Websites and web apps',
     'AI agents and automations',
@@ -285,8 +287,8 @@ export const V5_SECTIONS: V5Section[] = [
   {
     id: 'capabilities',
     eyebrow: 'What I bring to the table',
-    heading: ['Versatile skillset', 'for your growth.'],
-    lede: 'Websites, AI, programs, and content: one hire that grows with your company.',
+    heading: ['The pieces', 'your team is missing.'],
+    lede: 'Websites, AI agents, programs, and content: four shapes I fill, one hire that grows with your company.',
   },
   {
     id: 'work',
