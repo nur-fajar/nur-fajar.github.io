@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { List, X, LinkedinLogo } from '@phosphor-icons/react';
+import { List, X, LinkedinLogo } from '@phosphor-icons/react/dist/ssr';
 import { useEffect, useRef, useState } from 'react';
 import { CONTACT } from '@/content/ledger';
 

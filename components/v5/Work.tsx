@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight } from '@phosphor-icons/react';
+import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
 import { V5_CASES, V5_PIPELINE_STAGES, V5_PROOF, V5_PROOF_HIGHLIGHT, V5_SECTIONS, type V5Case } from '@/content/v5';
 import MaskedLines from './MaskedLines';
 import Reveal from '@/components/site/Reveal';

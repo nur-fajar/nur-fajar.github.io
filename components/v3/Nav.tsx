@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { List, X } from '@phosphor-icons/react';
+import { List, X } from '@phosphor-icons/react/dist/ssr';
 import { V3_NAV } from '@/content/ledger';
 import SwapWord from './SwapWord';
 

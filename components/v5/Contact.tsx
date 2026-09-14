@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, CopySimple } from '@phosphor-icons/react';
+import { Check, CopySimple } from '@phosphor-icons/react/dist/ssr';
 import { CONTACT, LAST_UPDATED } from '@/content/ledger';
 import { V5_FOUNDER_MAILTO, V5_SECTIONS } from '@/content/v5';
 import LocalTime from './LocalTime';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight } from '@phosphor-icons/react/dist/ssr';
 import { V5_SECTIONS, V5_VOICES } from '@/content/v5';
 import Section, { findSection } from './Section';
 
