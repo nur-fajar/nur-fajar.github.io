@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Check, CopySimple } from '@phosphor-icons/react';
 import { CONTACT, LAST_UPDATED } from '@/content/ledger';
-import { V5_CONTACT_CLOSE, V5_FOUNDER_MAILTO, V5_SECTIONS } from '@/content/v5';
+import { V5_FOUNDER_MAILTO, V5_SECTIONS } from '@/content/v5';
 import LocalTime from './LocalTime';
 import PuzzleField from './PuzzleField';
 import Section, { findSection } from './Section';
@@ -52,7 +52,6 @@ export default function Contact() {
       <a className="v5-mailmega" href={V5_FOUNDER_MAILTO}>
         <span className="v5-mailmega__addr">{CONTACT.email}</span>
       </a>
-      <p className="v5-contact__close">{V5_CONTACT_CLOSE}</p>
       <p className="v5-contact__more">
         <a href={CONTACT.linkedin} target="_blank" rel="noreferrer">
           LinkedIn

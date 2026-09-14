@@ -1431,14 +1431,6 @@ html.v5-nav-open {
 .v5-link-caps--btn:hover {
   border-bottom-color: var(--v5-blue);
 }
-.v5-contact__close {
-  margin: 1.6rem auto 0;
-  max-width: 34ch;
-  font-family: var(--font-v5-display, var(--font-v5-display-fb));
-  font-size: clamp(1.2rem, 1.8vw + 0.9rem, 1.6rem);
-  line-height: 1.4;
-  letter-spacing: -0.01em;
-}
 .v5-contact__more {
   display: inline-flex;
   flex-wrap: wrap;

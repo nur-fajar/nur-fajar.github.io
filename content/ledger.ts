@@ -799,7 +799,7 @@ export const LOOKING_FOR: LookingForRow[] = [
 ];
 
 /** Dibaca oleh footer dan JSON-LD. Diperbarui bersamaan dengan konten. */
-export const LAST_UPDATED = 'August 2026';
+export const LAST_UPDATED = 'September 2026';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Turunan
