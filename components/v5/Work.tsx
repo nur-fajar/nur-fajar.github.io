@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
 import { V5_CASES, V5_PIPELINE_STAGES, V5_PROOF, V5_PROOF_HIGHLIGHT, V5_SECTIONS, type V5Case } from '@/content/v5';
 import MaskedLines from './MaskedLines';
+import BlurIn from './BlurIn';
 import Reveal from '@/components/site/Reveal';
 import Section, { findSection } from './Section';
 
@@ -220,9 +221,9 @@ export default function Work() {
               <p className="v5-eyebrow">{section.eyebrow}</p>
             </Reveal>
             <MaskedLines id={titleId} lines={section.heading} />
-            <Reveal delay={0.14}>
-              <p className="v5-lede">{section.lede}</p>
-            </Reveal>
+            <BlurIn delay={0.14} className="v5-lede">
+              {section.lede}
+            </BlurIn>
             <div className="v5-workpin__bar">
               {V5_CASES.map((item, i) => (
                 <button

@@ -671,6 +671,58 @@ html.v5-nav-open {
   padding: 0 0.08em 0.12em 0.08em;
   margin-bottom: -0.12em;
 }
+/* Char-rise ala HorizonX: tiap karakter dalam mask sendiri (padding bawah
+   memberi ruang descender), naik 110% dengan rotasi kecil, stagger 20ms
+   per index. Murni CSS - jalan tanpa hydration. */
+.v5-ch {
+  display: inline-block;
+  vertical-align: bottom;
+  overflow: hidden;
+  padding: 0 0.02em 0.12em 0.02em;
+}
+.v5-ch__c {
+  display: inline-block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .v5-ch__c {
+    animation: v5-char-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(80ms + var(--ci, 0) * 20ms);
+    will-change: transform, opacity;
+  }
+  .v5-ch__c--serif {
+    --v5-rot: 2deg;
+    animation-duration: 0.7s;
+    animation-delay: calc(0.4s + var(--ci, 0) * 24ms);
+  }
+  .v5-fadescale {
+    transform-origin: 50% 100%;
+    animation: v5-fadescale 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: 0.75s;
+  }
+  .v5-fadescale--late {
+    animation-delay: 0.9s;
+  }
+}
+@keyframes v5-char-rise {
+  from {
+    opacity: 0;
+    transform: translateY(110%) rotate(var(--v5-rot, 4deg));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes v5-fadescale {
+  from {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 .v5-mega__line--serif {
   font-family: var(--font-v5-display, var(--font-v5-display-fb));
   font-weight: 300;
@@ -720,10 +772,15 @@ html.v5-nav-open {
   border-radius: var(--v5-pill);
   min-height: 52px;
   border: none;
-  box-shadow: 0 12px 24px -14px color-mix(in srgb, var(--v5-ink) 55%, transparent);
+  box-shadow: 0 1px 3px rgba(16, 20, 24, 0.08);
 }
 .v5-btn:hover {
   background: var(--v5-blue);
+  box-shadow: 0 12px 28px rgba(16, 20, 24, 0.24);
+}
+.v5-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px rgba(16, 20, 24, 0.1);
 }
 .v5-btn__go {
   display: inline-flex;
@@ -2022,6 +2079,14 @@ html.v5-cursor-on .v5-root,
 html.v5-cursor-on .v5-root a,
 html.v5-cursor-on .v5-root button {
   cursor: none;
+}
+
+/* Section dengan isi berat di bawah lipatan: skip render saat tak terlihat
+   (pola HorizonX), intrinsic-size menjaga tinggi scroll bar tetap benar. */
+#voices,
+#about {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 120vh;
 }
 
 /* responsive: only 640 / 980 / 1240 */

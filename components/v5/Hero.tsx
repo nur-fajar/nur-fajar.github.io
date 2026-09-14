@@ -55,15 +55,31 @@ export default function Hero() {
       <PuzzleField />
       <div className="v5-shell v5-hero__inner">
         <h1 className="v5-mega">
-          <span className="v5-mega__line v5-rise" style={{ ['--v5-rise-delay' as string]: '120ms' }}>
-            {V5_HERO.titleLead}
+          {/* Char-rise ala HorizonX: tiap karakter dalam mask sendiri, naik
+              dengan rotasi kecil, stagger 20ms per index. Baris serif pakai
+              rotasi lebih kecil (2deg) dan jeda lebih besar; foto + "Fajar"
+              fade-scale sebagai satu unit, bukan per karakter. */}
+          <span className="v5-mega__line" aria-label={V5_HERO.titleLead}>
+            {[...V5_HERO.titleLead].map((ch, i) => (
+              <span className="v5-ch" key={i} aria-hidden="true">
+                <span className="v5-ch__c" style={{ ['--ci' as string]: i }}>
+                  {ch === ' ' ? '\u00A0' : ch}
+                </span>
+              </span>
+            ))}
           </span>
-          <span
-            className="v5-mega__line v5-mega__line--serif v5-rise"
-            style={{ ['--v5-rise-delay' as string]: '230ms' }}
-          >
-            {V5_HERO.indexPrompt}
-            <span className="v5-mega__mark" aria-hidden="true">
+          <span className="v5-mega__line v5-mega__line--serif" aria-label={`${V5_HERO.indexPrompt} Fajar`}>
+            {[...V5_HERO.indexPrompt].map((ch, i) => (
+              <span className="v5-ch" key={i} aria-hidden="true">
+                <span
+                  className="v5-ch__c v5-ch__c--serif"
+                  style={{ ['--ci' as string]: i }}
+                >
+                  {ch === ' ' ? '\u00A0' : ch}
+                </span>
+              </span>
+            ))}
+            <span className="v5-mega__mark v5-fadescale" aria-hidden="true">
               <Image
                 className="v5-mega__face"
                 src="/foto-profile-nf-avatar.jpg"
@@ -73,7 +89,7 @@ export default function Hero() {
                 sizes="(max-width: 640px) 3rem, 9rem"
               />
             </span>
-            <span className="v5-mega__fajar">Fajar</span>
+            <span className="v5-mega__fajar v5-fadescale v5-fadescale--late">Fajar</span>
           </span>
         </h1>
 
