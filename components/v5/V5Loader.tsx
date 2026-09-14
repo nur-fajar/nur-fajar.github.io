@@ -1,10 +1,16 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 
 /**
- * v5 loader: NF monogram plus a 0-100 counter, ~900ms.
+ * v5 loader: NF monogram plus a thin CSS progress line, ~500ms.
  * Skips on revisit via sessionStorage and under reduced motion.
+ *
+ * Sengaja TIDAK ada counter angka: teks yang berubah tiap frame
+ * mendaftarkan ulang kandidat LCP sampai akhir hydration (terukur:
+ * LCP naik ke 4.4s karena update terakhir counter). Bar progres
+ * bergerak lewat transform CSS di compositor, jadi tidak pernah
+ * repaint dan tidak menyentuh LCP.
  */
 export default function V5Loader() {
   const [done, setDone] = useState(() => {
@@ -16,38 +22,27 @@ export default function V5Loader() {
       return false;
     }
   });
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (done) return;
-    let raf = 0;
-    const start = performance.now();
-    const span = 850;
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - start) / span);
-      setCount(Math.round(p * 100));
-      if (p < 1) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        window.setTimeout(() => {
-          setDone(true);
-          try {
-            sessionStorage.setItem('v5-seen', '1');
-          } catch {
-            /* private mode: play once, never persist */
-          }
-        }, 120);
+    const id = window.setTimeout(() => {
+      setDone(true);
+      try {
+        sessionStorage.setItem('v5-seen', '1');
+      } catch {
+        /* private mode: play once, never persist */
       }
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    }, 520);
+    return () => window.clearTimeout(id);
   }, [done]);
 
   if (done) return null;
   return (
     <div className="v5-loader" aria-hidden="true">
       <p className="v5-loader__word">NF</p>
-      <p className="v5-loader__count">{count}</p>
+      <div className="v5-loader__bar" />
     </div>
   );
 }
+
+

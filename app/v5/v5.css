@@ -190,7 +190,7 @@
   display: grid;
   place-items: center;
   background: var(--v5-paper);
-  animation: v5-loader-out 0.4s ease 0.45s forwards;
+  animation: v5-loader-out 0.3s ease 0.2s forwards;
 }
 .v5-loader__word {
   font-family: var(--font-v5-display, var(--font-v5-display-fb));
@@ -199,13 +199,26 @@
   color: var(--v5-blue);
   margin: 0;
 }
-.v5-loader__count {
-  margin: 0.4rem 0 0;
-  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-  font-size: 0.85rem;
-  letter-spacing: 0.2em;
-  color: var(--v5-muted);
-  font-variant-numeric: tabular-nums;
+/* Garis progres murni CSS: scaleX di compositor, tanpa repaint teks. */
+.v5-loader__bar {
+  width: 7rem;
+  height: 2px;
+  margin-top: 0.8rem;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--v5-ink) 12%, transparent);
+  overflow: hidden;
+}
+.v5-loader__bar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  background: var(--v5-blue);
+  transform-origin: left;
+  animation: v5-loader-bar 0.5s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+@keyframes v5-loader-bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 @keyframes v5-loader-out {
   to { opacity: 0; visibility: hidden; }

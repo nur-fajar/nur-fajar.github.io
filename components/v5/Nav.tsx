@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { List, X } from '@phosphor-icons/react';
+import { List, X } from '@phosphor-icons/react/dist/ssr';
 import { V5_NAV } from '@/content/v5';
 
 /**
@@ -106,7 +106,18 @@ export default function Nav() {
           aria-label="Nur Fajar, back to top"
           aria-current={active === null ? 'true' : undefined}
         >
-          <Image src="/foto-profile-nf-avatar.jpg" alt="Nur Fajar" width={32} height={32} sizes="32px" />
+          {/* img polos, bukan next/image: srcset swap pasca-hydration membuat
+              avatar ini mendaftar ulang sebagai kandidat LCP di akhir load
+              (terukur di Lighthouse). 32px tidak butuh optimizer. */}
+          {/* eslint-disable-next-line @next/next/no-img-element -- 32px avatar, src stabil mengalahkan optimasi */}
+          <img
+            src="/foto-profile-nf-avatar.jpg"
+            alt="Nur Fajar"
+            width={32}
+            height={32}
+            fetchPriority="high"
+            decoding="async"
+          />
         </a>
         <span className="v5-nav__links">
           {V5_NAV.filter((link) => link.href !== '#contact').map((link) => (

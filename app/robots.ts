@@ -1,5 +1,9 @@
 import type { MetadataRoute } from 'next';
 
+/* Static export (GitHub Pages) menuntut ini eksplisit, sama seperti
+   opengraph-image.tsx. */
+export const dynamic = 'force-static';
+
 /**
  * Archive routes (/v3 /v4 /v5) noindex lewat metadata masing-masing; di
  * robots.txt juga ditolak supaya crawler tidak membuang budget di arsip.
