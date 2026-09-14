@@ -479,6 +479,27 @@ html.v5-nav-open {
   height: 100%;
   opacity: 0.55;
 }
+/* Lapisan interaksi: tilt 3D + sorot radial. Variabelnya dipasang dari
+   efek pointer di PuzzleField; tanpa JS keduanya netral (0deg / tidak ada). */
+.v5-puzzlefield {
+  transform: perspective(1200px) rotateX(var(--v5-tiltx, 0deg)) rotateY(var(--v5-tilty, 0deg));
+  will-change: transform;
+}
+.v5-puzzlefield__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    320px circle at var(--v5-gx, 50%) var(--v5-gy, 50%),
+    rgba(255, 255, 255, 0.22),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.v5-puzzlefield.is-live .v5-puzzlefield__glow {
+  opacity: 1;
+}
 .v5-route {
   fill: none;
   stroke-width: 1.5;
@@ -527,9 +548,9 @@ html.v5-nav-open {
   font-style: normal;
   margin-left: 0.06em;
 }
-/* Bintang yang ber-morph jadi foto profil saat scroll pertama. Foto duduk
-   persis di tempat bintang, seukuran x-height teks; "Fajar" tampil kecil ala
-   signature, serif italic biru nyambung dengan line-nya. */
+/* Foto profil duduk pas di tempat mark, seukuran x-height teks; "Fajar"
+   tampil kecil ala signature, serif italic biru nyambung dengan line-nya.
+   Terlihat sejak awal, tanpa morph dan tanpa hold. */
 .v5-mega__mark {
   position: relative;
   display: inline-flex;
@@ -540,16 +561,6 @@ html.v5-nav-open {
   vertical-align: -0.04em;
   margin-left: 0.1em;
 }
-.v5-mega__star {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.62em;
-  line-height: 1;
-  transition: transform 0.5s cubic-bezier(0.5, 0, 0.75, 0.5), opacity 0.35s ease;
-}
 .v5-mega__face {
   position: absolute;
   inset: 0;
@@ -557,17 +568,6 @@ html.v5-nav-open {
   height: 100%;
   object-fit: cover;
   border-radius: 999px;
-  opacity: 0;
-  transform: scale(0.2) rotate(-24deg);
-  transition: opacity 0.4s ease 0.12s, transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s;
-}
-.v5-mega__mark[data-revealed] .v5-mega__star {
-  transform: scale(0.1) rotate(160deg);
-  opacity: 0;
-}
-.v5-mega__mark[data-revealed] .v5-mega__face {
-  opacity: 1;
-  transform: scale(1) rotate(0deg);
 }
 .v5-mega__fajar {
   display: inline-block;
@@ -576,19 +576,6 @@ html.v5-nav-open {
   font-weight: 300;
   color: inherit;
   white-space: nowrap;
-  opacity: 0;
-  transform: translateX(-0.5em) rotate(-2deg);
-  transition: opacity 0.45s ease 0.28s, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.28s;
-}
-.v5-mega__fajar.is-in {
-  opacity: 1;
-  transform: none;
-}
-/* Hold scroll pertama: halaman diam di hero sampai morph selesai. */
-html.v5-hero-hold,
-html.v5-hero-hold body {
-  overflow: hidden;
-  overscroll-behavior: none;
 }
 /* capability menu: three lanes down to the section */
 .v5-hero__menu {
@@ -657,14 +644,18 @@ html.v5-hero-hold body {
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--v5-ink);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-color: var(--v5-line);
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 2px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  padding-bottom: 4px;
   min-height: 44px;
+  transition: background-size 0.4s cubic-bezier(0.32, 0.72, 0, 1), color 0.3s ease;
 }
 .v5-hero__secondary:hover {
-  text-decoration-color: var(--v5-blue);
   color: var(--v5-blue);
+  background-size: 0% 2px;
 }
 /* proof line under the CTAs */
 .v5-btn {
@@ -961,7 +952,8 @@ html.v5-hero-hold body {
   transition:
     background 0.3s cubic-bezier(0.32, 0.72, 0, 1),
     color 0.3s ease,
-    border-color 0.3s ease;
+    border-color 0.3s ease,
+    transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .v5-tab__index {
   font-family: ui-monospace, 'SF Mono', Menlo, monospace;
@@ -972,6 +964,7 @@ html.v5-hero-hold body {
 }
 .v5-tab:hover {
   border-color: var(--v5-ink);
+  transform: translateY(-2px);
 }
 .v5-tab.is-active {
   background: var(--v5-ink);
@@ -1654,6 +1647,61 @@ html.v5-hero-hold body {
   align-items: center;
 }
 
+/* kursor custom: dot tinta + label kontekstual. Kelas v5-cursor-on dipasang
+   dari efek Cursor (pointer halus, tanpa reduced-motion), jadi tanpa JS
+   kursor asli browser tetap dipakai. */
+.v5-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 130;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--v5-ink);
+  border: 1.5px solid transparent;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.25s ease,
+    width 0.25s ease,
+    height 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+.v5-cursor.is-link {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border-color: var(--v5-ink);
+}
+.v5-cursor__label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(10px, -50%);
+  background: var(--v5-ink);
+  color: var(--v5-white);
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.32rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.v5-cursor.has-label .v5-cursor__label {
+  opacity: 1;
+}
+html.v5-cursor-on .v5-root,
+html.v5-cursor-on .v5-root a,
+html.v5-cursor-on .v5-root button {
+  cursor: none;
+}
+
 /* responsive: only 640 / 980 / 1240 */
 @media (max-width: 980px) {
   .v5-stack__card {
@@ -1751,18 +1799,21 @@ html.v5-hero-hold body {
     transform: none;
     animation: none;
   }
-  /* Foto sudah terlihat sejak awal, tanpa morph dan tanpa hold. */
-  .v5-mega__star {
+  /* Tilt dan sorot radial tidak pernah aktif; dua-duanya dipasang dari
+     efek yang sudah mengecek reduced-motion. Ini penjaga gawang CSS. */
+  .v5-puzzlefield {
+    transform: none;
+  }
+  .v5-puzzlefield__glow {
     display: none;
   }
-  .v5-mega__face {
-    opacity: 1;
-    transform: none;
+  .v5-cursor {
+    display: none;
+  }
+  .v5-tab {
     transition: none;
   }
-  .v5-mega__fajar {
-    opacity: 1;
-    transform: none;
+  .v5-hero__secondary {
     transition: none;
   }
   .v5-avail__dot::after {

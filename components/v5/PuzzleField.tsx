@@ -1,10 +1,18 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
 /**
  * Latar hero: puzzle penuh + tiga cahaya yang mengembara lintas keping.
  *
  * Semua geometri deterministik (seed tetap) supaya SSR dan client identik
  * tanpa efek. Rute cahaya adalah random walk di lattice seam dan memakai
  * vektor tonjolan yang SAMA dengan keping dasar, jadi cahayanya duduk
- * persis di atas garis puzzle, dari puzzle ke puzzle. Server component.
+ * persis di atas garis puzzle, dari puzzle ke puzzle.
+ *
+ * Lapisan interaksi (pointer halus saja): tilt 3D tipis + sorot radial
+ * mengikuti kursor, dua-duanya lewat CSS variable dengan lerp di rAF —
+ * reduced motion tidak pernah memasangnya.
  */
 
 const COLS = 14;
@@ -189,8 +197,57 @@ function buildRoute(seed: number, startC: number, startR: number, steps: number)
 const PATHS = ROUTES.map((t) => ({ ...t, ...buildRoute(t.seed, t.start[0], t.start[1], t.steps) }));
 
 export default function PuzzleField() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = wrapRef.current;
+    if (!el) return;
+    let tx = 0;
+    let ty = 0;
+    let cx = 0;
+    let cy = 0;
+    let raf = 0;
+
+    const tick = () => {
+      cx += (tx - cx) * 0.08;
+      cy += (ty - cy) * 0.08;
+      el.style.setProperty('--v5-tiltx', `${(-cy * 2.2).toFixed(3)}deg`);
+      el.style.setProperty('--v5-tilty', `${(cx * 2.6).toFixed(3)}deg`);
+      if (Math.abs(tx - cx) < 0.001 && Math.abs(ty - cy) < 0.001) raf = 0;
+      else raf = requestAnimationFrame(tick);
+    };
+    const wake = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const move = (e: PointerEvent) => {
+      const rect = el.getBoundingClientRect();
+      tx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      ty = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      el.style.setProperty('--v5-gx', `${(((e.clientX - rect.left) / rect.width) * 100).toFixed(1)}%`);
+      el.style.setProperty('--v5-gy', `${(((e.clientY - rect.top) / rect.height) * 100).toFixed(1)}%`);
+      el.classList.add('is-live');
+      wake();
+    };
+    const leave = () => {
+      tx = 0;
+      ty = 0;
+      el.classList.remove('is-live');
+      wake();
+    };
+
+    window.addEventListener('pointermove', move, { passive: true });
+    document.documentElement.addEventListener('pointerleave', leave);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('pointermove', move);
+      document.documentElement.removeEventListener('pointerleave', leave);
+    };
+  }, []);
+
   return (
-    <div className="v5-puzzlefield" aria-hidden="true">
+    <div className="v5-puzzlefield" aria-hidden="true" ref={wrapRef}>
       <svg className="v5-puzzlefield__base" viewBox={`0 0 ${COLS * CELL} ${ROWS * CELL}`} preserveAspectRatio="xMidYMid slice" focusable="false">
         {CELLS.map((cell) => (
           <path key={`${cell.c}-${cell.r}`} d={cell.d} fill={cell.fill} stroke={SEAM} strokeWidth="2" strokeLinejoin="round" />
@@ -214,6 +271,7 @@ export default function PuzzleField() {
           />
         ))}
       </svg>
+      <span className="v5-puzzlefield__glow" />
     </div>
   );
 }

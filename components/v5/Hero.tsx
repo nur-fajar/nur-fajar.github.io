@@ -1,81 +1,57 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { ArrowDown, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Magnetic from '@/components/v3/Magnetic';
 import { CONTACT } from '@/content/ledger';
 import { V5_FOUNDER_MAILTO, V5_HERO, V5_PILLARS } from '@/content/v5';
 import PuzzleField from './PuzzleField';
 
+gsap.registerPlugin(ScrollTrigger);
+
 /**
- * v5 hero, statement pass. Gestur scroll PERTAMA di puncak hero tidak
- * menggulir halaman: bintang ✳ ber-morph menjadi foto profil dan teks
- * "Fajar" muncul di kanannya (hero tetap diam). Scroll berikutnya baru
- * menggulir ke bawah. Tanpa JS maupun reduced-motion: foto sudah terlihat,
- * tidak ada hold.
+ * v5 hero, statement pass. Foto dan "Fajar" terlihat sejak awal, tanpa
+ * hold-scroll dan tanpa hijack. Koreografinya digerakkan scroll (GSAP
+ * scrub, dihaluskan Lenis): headline melayan lebih lambat dari halaman,
+ * menu + CTA memudar lebih dulu, latar puzzle menyusul dengan easing
+ * sendiri. Tanpa JS maupun reduced motion: semuanya statis, isi tetap
+ * lengkap.
  */
 export default function Hero() {
-  const [revealed, setRevealed] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.scrollY > 4) {
-      /* Langsung via rAF, bukan sinkron di badan effect (aturan set-state-in-effect). */
-      const raf = requestAnimationFrame(() => setRevealed(true));
-      return () => cancelAnimationFrame(raf);
-    }
-    const root = document.documentElement;
-    root.classList.add('v5-hero-hold');
-    let timer = 0;
-    let done = false;
-
-    const off = () => {
-      window.removeEventListener('wheel', wheel, true);
-      window.removeEventListener('touchmove', touch, true);
-      window.removeEventListener('keydown', key, true);
-    };
-    const trigger = () => {
-      if (done) return;
-      done = true;
-      setRevealed(true);
-      /* Hold dilepas setelah morph selesai; scroll berikutnya jalan normal. */
-      timer = window.setTimeout(() => {
-        root.classList.remove('v5-hero-hold');
-        off();
-      }, 950);
-    };
-    const wheel = (e: WheelEvent) => {
-      if (e.deltaY <= 0 || window.scrollY > 4) return;
-      e.preventDefault();
-      e.stopPropagation();
-      trigger();
-    };
-    const touch = (e: TouchEvent) => {
-      if (window.scrollY > 4) return;
-      e.preventDefault();
-      e.stopPropagation();
-      trigger();
-    };
-    const key = (e: KeyboardEvent) => {
-      if (!['ArrowDown', 'PageDown', ' '].includes(e.key)) return;
-      if (window.scrollY > 4) return;
-      e.preventDefault();
-      e.stopPropagation();
-      trigger();
-    };
-
-    window.addEventListener('wheel', wheel, { capture: true, passive: false });
-    window.addEventListener('touchmove', touch, { capture: true, passive: false });
-    window.addEventListener('keydown', key, true);
-    return () => {
-      window.clearTimeout(timer);
-      off();
-      root.classList.remove('v5-hero-hold');
-    };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ctx = gsap.context(() => {
+      const hero = heroRef.current;
+      if (!hero) return;
+      /* Satu pemicu per lapisan, kecepatan scrub beda: three planes of depth. */
+      gsap.to('.v5-mega', {
+        yPercent: -12,
+        ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 },
+      });
+      gsap.to('.v5-hero__after', {
+        opacity: 0.2,
+        yPercent: -6,
+        ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: '55% top', scrub: 0.6 },
+      });
+      gsap.to('.v5-puzzlefield', {
+        yPercent: 10,
+        scale: 1.06,
+        ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 },
+      });
+    }, heroRef);
+    return () => ctx.revert();
   }, []);
 
   return (
-    <header className="v5-hero" id="top">
+    <header className="v5-hero" id="top" ref={heroRef}>
       <PuzzleField />
       <div className="v5-shell v5-hero__inner">
         <h1 className="v5-mega">
@@ -87,8 +63,7 @@ export default function Hero() {
             style={{ ['--v5-rise-delay' as string]: '230ms' }}
           >
             {V5_HERO.indexPrompt}
-            <span className="v5-mega__mark" data-revealed={revealed || undefined} aria-hidden="true">
-              <span className="v5-mega__star">✳</span>
+            <span className="v5-mega__mark" aria-hidden="true">
               <Image
                 className="v5-mega__face"
                 src="/foto-profile-nf-avatar.jpg"
@@ -98,7 +73,7 @@ export default function Hero() {
                 sizes="(max-width: 640px) 3rem, 9rem"
               />
             </span>
-            <span className={`v5-mega__fajar${revealed ? ' is-in' : ''}`}>Fajar</span>
+            <span className="v5-mega__fajar">Fajar</span>
           </span>
         </h1>
 
@@ -110,32 +85,35 @@ export default function Hero() {
           </div>
         ) : null}
 
-        <ul className="v5-hero__menu v5-rise" style={{ ['--v5-rise-delay' as string]: '480ms' }} aria-label="Where I help">
-          {V5_PILLARS.map((pillar) => (
-            <li key={pillar.id}>
-              <a href="#capabilities">
-                <span className="v5-hero__menu-tag">{pillar.tag}</span>
-                <span className="v5-hero__menu-title">{pillar.title}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div className="v5-hero__after">
+          <ul className="v5-hero__menu v5-rise" style={{ ['--v5-rise-delay' as string]: '480ms' }} aria-label="Where I help">
+            {V5_PILLARS.map((pillar) => (
+              <li key={pillar.id}>
+                <a href="#capabilities">
+                  <span className="v5-hero__menu-tag">{pillar.tag}</span>
+                  <span className="v5-hero__menu-title">{pillar.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        <div className="v5-hero__ctas v5-rise" style={{ ['--v5-rise-delay' as string]: '520ms' }}>
-          <Magnetic strength={0.25}>
-            <a
-              className="v5-btn v5-btn--big"
-              href={V5_FOUNDER_MAILTO}
-              aria-label="Email Nur Fajar"
-            >
-              <EnvelopeSimple size={19} weight="bold" aria-hidden="true" />
-              {CONTACT.email}
+          <div className="v5-hero__ctas v5-rise" style={{ ['--v5-rise-delay' as string]: '520ms' }}>
+            <Magnetic strength={0.25}>
+              <a
+                className="v5-btn v5-btn--big"
+                href={V5_FOUNDER_MAILTO}
+                aria-label="Email Nur Fajar"
+                data-cursor="Say hi"
+              >
+                <EnvelopeSimple size={19} weight="bold" aria-hidden="true" />
+                {CONTACT.email}
+              </a>
+            </Magnetic>
+            <a className="v5-hero__secondary" href="#work">
+              {V5_HERO.secondaryCta}
+              <ArrowDown size={15} weight="bold" aria-hidden="true" />
             </a>
-          </Magnetic>
-          <a className="v5-hero__secondary" href="#work">
-            {V5_HERO.secondaryCta}
-            <ArrowDown size={15} weight="bold" aria-hidden="true" />
-          </a>
+          </div>
         </div>
 
       </div>

@@ -180,6 +180,7 @@ export default function Work() {
               aria-controls={`work-${item.id}-panel`}
               tabIndex={i === active ? undefined : -1}
               className={i === active ? 'v5-tab is-active' : 'v5-tab'}
+              data-cursor="Open case"
               onClick={() => setActive(i)}
             >
               <span className="v5-tab__index" aria-hidden="true">
@@ -230,6 +231,7 @@ export default function Work() {
                   className={i === active ? 'v5-tab is-active' : 'v5-tab'}
                   aria-label={`Go to case ${item.index}: ${item.title}`}
                   aria-current={i === active ? 'true' : undefined}
+                  data-cursor="Open case"
                   onClick={() => scrollToCase(i)}
                 >
                   <span className="v5-tab__index" aria-hidden="true">
