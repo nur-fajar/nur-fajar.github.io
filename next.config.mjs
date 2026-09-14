@@ -11,26 +11,16 @@
 // cover both correctly (Next middleware can mint one per request now that
 // there's a real server), but that's a bigger change than this pass — noted
 // here as the upgrade path, not done speculatively.
-// React dev (and Turbopack dev) reconstructs call stacks via eval(), which
-// the production script-src below blocks. Development-only relaxation:
-// production keeps the strict policy, `next dev` appends 'unsafe-eval'.
-const IS_DEV = process.env.NODE_ENV !== 'production';
-const CSP = [
-  'default-src \'self\'',
-  `script-src 'self' 'unsafe-inline'${IS_DEV ? " 'unsafe-eval'" : ''}`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data:",
-  "font-src 'self'",
-  // Contact form's "drop a message" box posts straight to Web3Forms
-  // (web3forms.com) — no backend of our own, see components/Contact.tsx.
-  "connect-src 'self' https://api.web3forms.com",
-  // Contact section embeds a Cal.com booking iframe (cal.com/nurfajar/15min).
-  "frame-src https://cal.com https://app.cal.com",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "frame-ancestors 'none'",
-].join('; ');
+//
+// Phase dibandingkan sebagai string literal, bukan import 'next/constants':
+// resolver ESM murni Node menolak subpath tanpa ekstensi itu saat config
+// dimuat, sementara string 'phase-development-server' stabil sejak lama.
+// Versi sebelumnya membaca process.env.NODE_ENV di modul ini, tapi hasil
+// ukur di lapangan: header yang disajikan dev server TIDAK mengandung
+// 'unsafe-eval' (NODE_ENV ternyata 'production' saat config dimuat).
+// Akibatnya React dev + Turbopack yang butuh eval() untuk call stack
+// diblokir CSP sendiri. Jangan kembali ke NODE_ENV di sini.
+const PHASE_DEVELOPMENT_SERVER = 'phase-development-server';
 
 // Two deploy targets share this file now:
 //   - Vercel (nurfajar.com / *.vercel.app) — a real Next.js server, so it
@@ -45,39 +35,62 @@ const CSP = [
 //     next/image unoptimized (the optimizer needs a server too).
 const STATIC_EXPORT = process.env.NEXT_STATIC_EXPORT === 'true';
 
-/** @type {import('next').NextConfig} */
-const nextConfig = STATIC_EXPORT
-  ? {
+/** @type {(phase: string) => import('next').NextConfig} */
+export default function nextConfigForPhase(phase) {
+  const IS_DEV = phase === PHASE_DEVELOPMENT_SERVER;
+  const CSP = [
+    'default-src \'self\'',
+    // React dev (and Turbopack dev) reconstructs call stacks via eval(),
+    // which the production script-src blocks. Development-only relaxation:
+    // production keeps the strict policy, `next dev` appends 'unsafe-eval'.
+    `script-src 'self' 'unsafe-inline'${IS_DEV ? " 'unsafe-eval'" : ''}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data:",
+    "font-src 'self'",
+    // Contact form's "drop a message" box posts straight to Web3Forms
+    // (web3forms.com) — no backend of our own, see components/Contact.tsx.
+    "connect-src 'self' https://api.web3forms.com",
+    // Contact section embeds a Cal.com booking iframe (cal.com/nurfajar/15min).
+    "frame-src https://cal.com https://app.cal.com",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+  ].join('; ');
+
+  if (STATIC_EXPORT) {
+    return {
       output: 'export',
       images: { unoptimized: true },
-    }
-  : {
-      // Situs lama menautkan resume sebagai /nf.pdf, dan URL itu sudah duduk di
-      // riwayat browser serta email orang. File-nya sendiri diganti versi
-      // terbaru dengan nama yang deskriptif, jadi tautan lamanya diarahkan ke
-      // sana alih-alih dibiarkan jadi 404.
-      async redirects() {
-        return [
-          {
-            source: '/nf.pdf',
-            destination: '/Nur-Fajar-Resume.pdf',
-            permanent: true,
-          },
-        ];
-      },
-      async headers() {
-        return [
-          {
-            source: '/:path*',
-            headers: [
-              { key: 'Content-Security-Policy', value: CSP },
-              { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-              { key: 'X-Frame-Options', value: 'DENY' },
-              { key: 'X-Content-Type-Options', value: 'nosniff' },
-            ],
-          },
-        ];
-      },
     };
+  }
 
-export default nextConfig;
+  return {
+    // Situs lama menautkan resume sebagai /nf.pdf, dan URL itu sudah duduk di
+    // riwayat browser serta email orang. File-nya sendiri diganti versi
+    // terbaru dengan nama yang deskriptif, jadi tautan lamanya diarahkan ke
+    // sana alih-alih dibiarkan jadi 404.
+    async redirects() {
+      return [
+        {
+          source: '/nf.pdf',
+          destination: '/Nur-Fajar-Resume.pdf',
+          permanent: true,
+        },
+      ];
+    },
+    async headers() {
+      return [
+        {
+          source: '/:path*',
+          headers: [
+            { key: 'Content-Security-Policy', value: CSP },
+            { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+            { key: 'X-Frame-Options', value: 'DENY' },
+            { key: 'X-Content-Type-Options', value: 'nosniff' },
+          ],
+        },
+      ];
+    },
+  };
+}

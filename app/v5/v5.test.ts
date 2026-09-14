@@ -53,6 +53,24 @@ describe('v5 class scoping', () => {
   });
 });
 
+describe('v5 nav scrollspy', () => {
+  it('resolves sections fresh on every pick (Work remounts on pin <-> tab switch)', () => {
+    /* Regresi: Nav pernah cache getElementById sekali saat mount. Work
+       ganti mode pin <-> tab dengan me-remount <section id="work">, jadi
+       cache menunjuk node mati (rect nol) dan highlight nyangkut di Work
+       padahal masih di Capabilities. */
+    const nav = readFileSync(path.join(COMPONENTS, 'Nav.tsx'), 'utf8');
+    expect(nav).toMatch(/addEventListener\('scroll'/);
+    const pickBody = nav.slice(nav.indexOf('const pick'));
+    expect(pickBody).toMatch(/document\.getElementById/);
+  });
+
+  it('renders Contact as a right-end CTA, not a centered link', () => {
+    const nav = readFileSync(path.join(COMPONENTS, 'Nav.tsx'), 'utf8');
+    expect(nav).toMatch(/v5-nav__cta/);
+    expect(nav).toMatch(/#contact/);
+  });
+});
 describe('v5 mask reveal', () => {  it('whileInView is never on the clipped line', () => {
     const clipped = ['v5-mask__line'];
     for (const file of componentFiles(COMPONENTS)) {
