@@ -2,11 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight } from '@phosphor-icons/react';
-import { V5_CASES, V5_PROOF, V5_PROOF_HIGHLIGHT, V5_SECTIONS, type V5Case } from '@/content/v5';
+import { V5_CASES, V5_PIPELINE_STAGES, V5_PROOF, V5_PROOF_HIGHLIGHT, V5_SECTIONS, type V5Case } from '@/content/v5';
 import MaskedLines from './MaskedLines';
 import Reveal from '@/components/site/Reveal';
 import Section, { findSection } from './Section';
-import WorkVisual from './WorkVisual';
 
 /**
  * Numbers with method, living at the foot of Work instead of its own
@@ -34,43 +33,51 @@ function WorkNumbers() {
   );
 }
 
-/** Isi satu case, dipakai mode pin dan mode tab biasa: teks kiri, visual kanan. */
+/** Isi satu case, dipakai mode pin dan mode tab biasa. */
 function CaseBody({ c }: { c: V5Case }) {
   return (
-    <div className="v5-case">
-      <div className="v5-case__text">
-        <p className="v5-kind">{c.kind}</p>
-        <h3 className="v5-stagepanel__title">{c.title}</h3>
-        <p className="v5-case__context">{c.context}</p>
-        <ul className="v5-case__build">
-          {c.build.map((b) => (
-            <li key={b}>{b}</li>
-          ))}
-        </ul>
+    <>
+      <p className="v5-kind">{c.kind}</p>
+      <h3 className="v5-stagepanel__title">{c.title}</h3>
+      <p className="v5-case__context">{c.context}</p>
+      <ul className="v5-case__build">
+        {c.build.map((b) => (
+          <li key={b}>{b}</li>
+        ))}
+      </ul>
 
-        <ul className="v5-chips" aria-label="Results and stack">
-          {c.metrics.map((m) => (
-            <li key={m}>{m}</li>
+      {c.id === 'crm-pipeline' ? (
+        <ol className="v5-pipe" aria-label="Simplified pipeline stages">
+          {V5_PIPELINE_STAGES.map((stage, s) => (
+            <li key={stage} className="v5-pipe__stage">
+              <span className="v5-pipe__dot" aria-hidden="true">
+                {s + 1}
+              </span>
+              {stage}
+            </li>
+          ))}
+        </ol>
+      ) : null}
+
+      <ul className="v5-chips" aria-label="Results and stack">
+        {c.metrics.map((m) => (
+          <li key={m}>{m}</li>
+        ))}
+      </ul>
+      {c.note ? <p className="v5-case__note">{c.note}</p> : null}
+      {c.links.length ? (
+        <ul className="v5-case__links">
+          {c.links.map((l) => (
+            <li key={l.label}>
+              <a href={l.href} target="_blank" rel="noreferrer">
+                {l.label}
+                <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
+              </a>
+            </li>
           ))}
         </ul>
-        {c.note ? <p className="v5-case__note">{c.note}</p> : null}
-        {c.links.length ? (
-          <ul className="v5-case__links">
-            {c.links.map((l) => (
-              <li key={l.label}>
-                <a href={l.href} target="_blank" rel="noreferrer">
-                  {l.label}
-                  <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-      </div>
-      <div className="v5-case__visual">
-        <WorkVisual id={c.id} />
-      </div>
-    </div>
+      ) : null}
+    </>
   );
 }
 
