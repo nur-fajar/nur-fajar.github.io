@@ -35,21 +35,20 @@ export const dynamic = 'force-static';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 export const alt =
-  'Nur Fajar, Learning & Development Specialist. Teaches generative AI, three courses public. ' +
-  '300+ learners across 3 roles, 5 programs run end to end, 9.0/10 satisfaction.';
+  'Nur Fajar, versatile generalist for ambitious teams: web and software, AI agents and automations, ' +
+  'programs and training, social and content. 300+ learners across 3 roles, 5 programs end to end, 9.0/10 satisfaction.';
 
-// Token diambil dari mode terang design system (globals.css). Dipakai apa
-// adanya supaya preview link terlihat sebagai potongan dari situs yang sama.
-const PAPER = '#F7F8FB';
-const INK = '#0F1222';
-const INK_SOFT = '#4A5066';
-const INK_FAINT = '#686E86';
-const ACCENT = '#9333EA';
-const RULE = '#E6E9F2';
-/* Gradient yang sama dengan tombol dan separuh headline di situs. Preview
-   link adalah potongan pertama situs yang dilihat orang, jadi ia harus
-   memakai keluarga warna yang sama, bukan palet lain yang kebetulan cocok. */
-const GRADIENT = 'linear-gradient(100deg, #2A6FE6, #9333EA 55%, #D81B7C)';
+/* Token diambil dari .v5-root (app/v5/v5.css). Dipakai apa adanya supaya
+   preview link terlihat sebagai potongan dari situs yang sama: paper hangat,
+   tinta gelap, biru brand, aksen merah-kuning motif puzzle. */
+const PAPER = '#fafaf8';
+const INK = '#101418';
+const INK_SOFT = '#5b6470';
+const INK_FAINT = '#8a919c';
+const BLUE = '#0f3a93';
+const RED = '#ce2029';
+const YELLOW = '#ffc400';
+const RULE = '#e6e2d9';
 
 /** Tiap angka membawa cakupannya. Tanpa itu ketiganya terbaca sebagai satu
  *  populasi, dan "5 programs" (satu tahun) akan menempel ke "300+ learners"
@@ -59,6 +58,36 @@ const STATS: Array<[string, string]> = [
   ['5', 'programs end to end, 2025 to 2026'],
   ['9.0/10', 'satisfaction, 2024 to 2025'],
 ];
+
+/** Satu keping puzzle: kotak kuning dengan knob di kanan. Motif "missing
+ *  piece" dari situs, digambar dua div supaya tetap sekali render build. */
+function PuzzlePiece() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', marginTop: 30 }}>
+      <div
+        style={{
+          display: 'flex',
+          width: 54,
+          height: 54,
+          borderRadius: 12,
+          background: YELLOW,
+          border: `2px solid ${INK}`,
+        }}
+      />
+      <div
+        style={{
+          display: 'flex',
+          width: 26,
+          height: 26,
+          borderRadius: 999,
+          background: YELLOW,
+          border: `2px solid ${INK}`,
+          marginLeft: -6,
+        }}
+      />
+    </div>
+  );
+}
 
 /** Foto fasilitasi kalau ada, avatar kalau belum. Urutan yang sama dengan
  *  hero: artefak orang yang sedang bekerja mengalahkan potret. */
@@ -97,16 +126,16 @@ export default async function OpengraphImage() {
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ fontSize: 22, letterSpacing: 4, textTransform: 'uppercase', color: INK_FAINT }}>
-              Instructional Design · Curriculum Development
+            <div style={{ fontSize: 22, letterSpacing: 4, textTransform: 'uppercase', color: RED }}>
+              Folio 2026 · Open to full-time
             </div>
             <div style={{ fontSize: 96, fontWeight: 700, letterSpacing: -3, marginTop: 14 }}>
               Nur Fajar
             </div>
-            <div style={{ fontSize: 44, fontWeight: 600, color: ACCENT, marginTop: 2 }}>
-              Learning &amp; Development Specialist
+            <div style={{ fontSize: 44, fontWeight: 600, color: BLUE, marginTop: 2 }}>
+              Your Team’s Utility Player
             </div>
-            {/* Satu rule bergradient, elemen grafis tunggal di gambar ini. */}
+            {/* Satu rule merah + keping kuning: elemen grafis tunggal di gambar ini. */}
             <div
               style={{
                 display: 'flex',
@@ -114,11 +143,12 @@ export default async function OpengraphImage() {
                 width: 180,
                 marginTop: 26,
                 borderRadius: 999,
-                background: GRADIENT,
+                background: RED,
               }}
             />
-            <div style={{ fontSize: 27, color: INK_SOFT, marginTop: 24, maxWidth: 620 }}>
-              I teach generative AI. Three of those courses are public.
+            <PuzzlePiece />
+            <div style={{ fontSize: 27, color: INK_SOFT, marginTop: 20, maxWidth: 620 }}>
+              Your team already has a shape. One hire that makes it click: build, AI, programs, content.
             </div>
           </div>
 

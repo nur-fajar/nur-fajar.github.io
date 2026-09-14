@@ -7,6 +7,9 @@ import Section, { findSection } from './Section';
 
 const DWELL = 6000;
 
+/** Warna monogram per suara: biru, merah, kuning - rotasi, bukan acak. */
+const SPOT_COLORS = ['blue', 'red', 'yellow'] as const;
+
 /**
  * Voices as a spotlight rotator: one giant quote at a time, advancing
  * automatically with a progress bar. Hover or focus pauses both the timer
@@ -57,8 +60,15 @@ export default function Voices() {
         <blockquote key={voice.name} className="v5-spot__quote" aria-live="polite">
           <p>{voice.quote}</p>
         </blockquote>
-        <p className="v5-spot__name">{voice.name}</p>
-        <p className="v5-spot__role">{voice.role}</p>
+        <div className="v5-spot__who">
+          <span className={`v5-spot__avatar v5-spot__avatar--${SPOT_COLORS[index % SPOT_COLORS.length]}`} aria-hidden="true">
+            {voice.name.charAt(0)}
+          </span>
+          <div>
+            <p className="v5-spot__name">{voice.name}</p>
+            <p className="v5-spot__role">{voice.role}</p>
+          </div>
+        </div>
         <div className="v5-spot__controls">
           <button
             type="button"
