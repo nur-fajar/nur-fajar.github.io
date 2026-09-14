@@ -213,6 +213,11 @@ html.v5-nav-open .v5-nav {
   border-radius: 50%;
   object-fit: cover;
 }
+/* Di hero (tidak ada section aktif), avatar yang menyala. */
+.v5-nav__brand.is-active img {
+  outline: 2px solid var(--v5-blue);
+  outline-offset: 2px;
+}
 .v5-nav__links {
   display: flex;
   gap: 0.15rem;
@@ -237,6 +242,30 @@ html.v5-nav-open .v5-nav {
 .v5-nav__link.is-active {
   color: var(--v5-blue);
   background: color-mix(in srgb, var(--v5-blue) 10%, transparent);
+}
+/* Contact sebagai CTA di ujung kanan navbar. */
+.v5-nav__cta {
+  font-size: 0.83rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--v5-white);
+  background: var(--v5-ink);
+  text-decoration: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--v5-pill);
+  border: 1px solid var(--v5-ink);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.v5-nav__cta:hover {
+  background: var(--v5-blue);
+  border-color: var(--v5-blue);
+}
+.v5-nav__cta.is-active {
+  background: var(--v5-blue);
+  border-color: var(--v5-blue);
 }
 .v5-nav__toggle {
   display: none;
@@ -340,6 +369,13 @@ html.v5-nav-open .v5-nav {
   color: var(--v5-ink);
   text-decoration: none;
   border-bottom: 1px solid var(--v5-line);
+}
+/* Highlight ikut section aktif, sama seperti nav desktop. */
+.v5-drawer__link.is-active {
+  color: var(--v5-blue);
+}
+.v5-drawer__link.is-active .v5-drawer__num {
+  color: var(--v5-blue);
 }
 .v5-drawer__num {
   font-family: var(--font-v5-body, sans-serif);
@@ -1521,6 +1557,9 @@ html.v5-nav-open {
   .v5-nav__links {
     display: none;
   }
+  .v5-nav__cta {
+    display: none;
+  }
   .v5-nav__toggle {
     display: inline-flex;
     margin-left: auto;
@@ -1570,6 +1609,21 @@ html.v5-nav-open {
   }
   .v5-dock {
     display: flex;
+  }
+  /* Tab work 2x2 di mobile: keempat case langsung kelihatan tanpa geser,
+     judul boleh 2 baris. */
+  .v5-tabs,
+  .v5-workpin__bar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    overflow-x: visible;
+  }
+  .v5-tab {
+    white-space: normal;
+    line-height: 1.35;
+    padding: 0.7rem 0.9rem;
+    min-height: 0;
+    font-size: 0.85rem;
   }
 }
 

@@ -18,9 +18,14 @@ export default function Nav() {
   const wasOpen = useRef(false);
 
   useEffect(() => {
-    const sections = V5_NAV.map((link) => document.getElementById(link.href.slice(1))).filter(
-      (s): s is HTMLElement => s !== null,
-    );
+    /* Lookup fresh tiap pick: <section id="work"> di-remount saat Work
+       ganti mode pin <-> tab (desktop <-> mobile), jadi referensi yang
+       di-cache sekali saat mount menunjuk node mati (rect nol, top 0) dan
+       highlight nyangkut di Work padahal masih di Capabilities.
+       ponytail: scroll listener O(5 rect) per frame, ganti ke observer
+       ulang saat node stabil kalau section membengkak. */
+    const ids = V5_NAV.map((link) => link.href.slice(1));
+    let raf = 0;
     /* Satu keputusan per pemicu: section terakhir yang sudah melewati garis
        40% viewport. Versi lama menulis active per entry yang intersect,
        jadi dua section yang masuk zona bersamaan berebut dan highlight
@@ -28,17 +33,24 @@ export default function Nav() {
     const pick = () => {
       const line = window.innerHeight * 0.4;
       let current: string | null = null;
-      for (const s of sections) {
-        if (s.getBoundingClientRect().top <= line) current = `#${s.id}`;
+      for (const id of ids) {
+        const s = document.getElementById(id);
+        if (s && s.getBoundingClientRect().top <= line) current = `#${id}`;
       }
       setActive(current);
     };
+    const schedule = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(pick);
+    };
     pick();
-    const observer = new IntersectionObserver(() => pick(), {
-      rootMargin: '-40% 0px -55% 0px',
-    });
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+    };
   }, []);
 
   useEffect(() => {
@@ -88,20 +100,37 @@ export default function Nav() {
   return (
     <>
       <nav className={`v5-nav${open ? ' is-open' : ''}`} aria-label="Main">
-        <a className="v5-nav__brand" href="#top" aria-label="Nur Fajar, back to top">
+        <a
+          className={`v5-nav__brand${active === null ? ' is-active' : ''}`}
+          href="#top"
+          aria-label="Nur Fajar, back to top"
+          aria-current={active === null ? 'true' : undefined}
+        >
           <Image src="/foto-profile-nf-avatar.jpg" alt="Nur Fajar" width={32} height={32} sizes="32px" />
         </a>
         <span className="v5-nav__links">
-          {V5_NAV.map((link) => (
+          {V5_NAV.filter((link) => link.href !== '#contact').map((link) => (
             <a
               key={link.href}
               href={link.href}
               className={`v5-nav__link${active === link.href ? ' is-active' : ''}`}
+              aria-current={active === link.href ? 'true' : undefined}
             >
               {link.label}
             </a>
           ))}
         </span>
+        {/* Contact di ujung kanan sebagai CTA, bukan bagian link tengah. */}
+        {V5_NAV.filter((link) => link.href === '#contact').map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            className={`v5-nav__cta${active === link.href ? ' is-active' : ''}`}
+            aria-current={active === link.href ? 'true' : undefined}
+          >
+            {link.label}
+          </a>
+        ))}
         <button
           ref={toggleRef}
           type="button"
@@ -141,6 +170,7 @@ export default function Nav() {
                   href={link.href}
                   onClick={() => setOpen(false)}
                   tabIndex={open ? undefined : -1}
+                  aria-current={active === link.href ? 'true' : undefined}
                 >
                   <span className="v5-drawer__num" aria-hidden="true">
                     {String(i + 1).padStart(2, '0')}

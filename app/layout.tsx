@@ -127,7 +127,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             !important karena urutan <style> ini vs stylesheet Next tidak
             dijamin. */}
         <noscript>
-          <style>{`@media (max-width: 900px){.v3-nav{justify-content:flex-start !important;overflow-x:auto !important}.v3-nav__link{display:inline !important}.v3-nav__toggle{display:none !important}}@media (max-width: 980px){.v5-nav__links{display:flex !important;overflow-x:auto}.v5-nav__toggle{display:none !important}}`}</style>
+          <style>{`@media (max-width: 900px){.v3-nav{justify-content:flex-start !important;overflow-x:auto !important}.v3-nav__link{display:inline !important}.v3-nav__toggle{display:none !important}}@media (max-width: 980px){.v5-nav__links{display:flex !important;overflow-x:auto}.v5-nav__cta{display:inline-flex !important}.v5-nav__toggle{display:none !important}}`}</style>
         </noscript>
         {/* JSON-LD statis, dibangun dari konstanta di repo ini, tidak ada
             input pengguna yang bisa masuk ke sini. Bertipe
