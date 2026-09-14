@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { ArrowDown, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr';
+import { EnvelopeSimple, PuzzlePiece } from '@phosphor-icons/react/dist/ssr';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Magnetic from '@/components/v3/Magnetic';
@@ -111,7 +111,9 @@ export default function Hero() {
             </Magnetic>
             <a className="v5-hero__secondary" href="#work">
               {V5_HERO.secondaryCta}
-              <ArrowDown size={15} weight="bold" aria-hidden="true" />
+              {/* Keping mini menggantikan panah: CTA ini "menyambungkan" pembaca
+                  ke section Work, jadi penghubungnya pun berbentuk keping. */}
+              <PuzzlePiece size={15} weight="bold" aria-hidden="true" />
             </a>
           </div>
         </div>
@@ -125,9 +127,9 @@ export default function Hero() {
               {V5_HERO.ticker.map((item) => (
                 <span className="v5-ticker__item" key={item}>
                   {item}
-                  <span className="v5-ticker__star" aria-hidden="true">
-                    ✳
-                  </span>
+                  {/* Separator ticker: keping mini, bukan asterisk, biar satu
+                      bahasa bentuk dengan tombol-tab-keping di bawahnya. */}
+                  <PuzzlePiece className="v5-ticker__star" size={12} weight="bold" aria-hidden="true" />
                 </span>
               ))}
             </div>

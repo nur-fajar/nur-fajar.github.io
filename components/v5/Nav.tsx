@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { List, X } from '@phosphor-icons/react/dist/ssr';
+import { List, PuzzlePiece, X } from '@phosphor-icons/react/dist/ssr';
 import { V5_NAV } from '@/content/v5';
 
 /**
@@ -188,7 +188,7 @@ export default function Nav() {
                   </span>
                   {link.label}
                   <span className="v5-drawer__go" aria-hidden="true">
-                    →
+                    <PuzzlePiece size={16} weight="bold" />
                   </span>
                 </a>
               </li>

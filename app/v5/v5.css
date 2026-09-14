@@ -745,11 +745,142 @@ html.v5-nav-open {
 }
 .v5-ticker__star {
   color: var(--v5-ink);
+  display: inline-flex;
+  flex: none;
 }
 @keyframes v5-ticker {
   to {
     transform: translateX(-50%);
   }
+}
+
+/* ── Sistem keping (piece system) ─────────────────────────────────────────
+   Satu bahasa bentuk untuk semua elemen interaktif: tombol = keping dengan
+   knob (tentakel) yang menunjuk ke arah tindakan; container = socket
+   (cekungan) yang menunggu dipasang; ikon penghubung = keping mini.
+   Warna knob selalu `inherit` supaya mengikuti surface tombolnya. */
+.v5-btn,
+.v5-dock__ghost {
+  position: relative;
+}
+.v5-btn::after,
+.v5-dock__ghost::after {
+  content: '';
+  position: absolute;
+  right: -7px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: inherit;
+  border: inherit;
+  transform: translateY(-50%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.v5-btn:hover::after,
+.v5-dock__ghost:hover::after {
+  transform: translateY(-50%) translateX(3px);
+}
+/* Knob CTA dock butuh latar sendiri: ghost-nya translucent + blur. */
+.v5-dock__ghost::after {
+  background: color-mix(in srgb, var(--v5-white) 90%, transparent);
+  border: 1px solid var(--v5-line);
+  backdrop-filter: blur(10px);
+}
+
+/* Navbar: keping kecil menonjol di ujung kanan pill - seluruh navbar
+   terbaca sebagai satu keping yang menunggu di atas halaman. */
+.v5-nav::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--v5-white) 92%, transparent);
+  border: 1px solid var(--v5-line);
+  backdrop-filter: blur(14px);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+/* Tab aktif: knob menghadap ke bawah, menancap ke panel case di bawahnya. */
+.v5-tab.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--v5-ink);
+  transform: translateX(-50%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.v5-tab.is-active:hover::after {
+  transform: translateX(-50%) translateY(3px);
+}
+/* Tombol rotator Voices: socket ring di sisi luar masing-masing tombol. */
+.v5-spot__btn {
+  position: relative;
+}
+.v5-spot__btn:first-child::after,
+.v5-spot__btn:last-child::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--v5-paper);
+  border: 1.5px solid var(--v5-ink);
+  transform: translateY(-50%);
+  transition:
+    background 0.3s cubic-bezier(0.32, 0.72, 0, 1),
+    transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.v5-spot__btn:first-child::after {
+  left: -5px;
+}
+.v5-spot__btn:last-child::after {
+  right: -5px;
+}
+.v5-spot__btn:hover::after {
+  background: var(--v5-ink);
+  transform: translateY(-50%) scale(1.12);
+}
+.v5-spot__btn:first-child:hover::after {
+  transform: translateY(-50%) translateX(-3px);
+}
+.v5-spot__btn:last-child:hover::after {
+  transform: translateY(-50%) translateX(3px);
+}
+/* Keping yang naik deret di ujung progress bar atas. */
+.v5-progress__piece {
+  position: fixed;
+  top: -3px;
+  z-index: 120;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--v5-blue);
+  pointer-events: none;
+}
+.v5-progress__piece::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--v5-blue);
+}
+/* Panah drawer sudah jadi keping mini: sejajarkan vertikal. */
+.v5-drawer__go {
+  display: inline-flex;
+  align-items: center;
 }
 
 /* CSS rise-in: first paint without JS */
@@ -973,6 +1104,7 @@ html.v5-nav-open {
   align-items: baseline;
   gap: 0.6rem;
   flex: none;
+  position: relative;
   padding: 0.8rem 1.2rem;
   min-height: 52px;
   border-radius: var(--v5-pill);
@@ -2003,6 +2135,12 @@ html.v5-cursor-on .v5-root button {
     transition: none;
   }
   .v5-tab {
+    transition: none;
+  }
+  .v5-btn::after,
+  .v5-dock__ghost::after,
+  .v5-tab.is-active::after,
+  .v5-spot__btn::after {
     transition: none;
   }
   .v5-hero__secondary {
