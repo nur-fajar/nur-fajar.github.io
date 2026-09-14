@@ -36,8 +36,9 @@ export const V5_HERO = {
   titleLead: 'The missing piece?',
   indexPrompt: "That's me.",
   /* Dua baris, batas maksimal tes v5: motif "keping" dari headline
-     ditarik turun jadi positioning, bukan klaim baru. */
-  sub: ['Every team has a shape with one piece missing.', 'Mine is the piece that ships.'] as const,
+     ditarik turun jadi positioning tanpa nada negatif - tim dihargai
+     yang sudah punya bentuk, Fajar yang menyempurnakannya. */
+  sub: ["Your team already has a shape.", "I'm the piece that makes it click."] as const,
   ticker: [
     'Websites and web apps',
     'AI agents and automations',
