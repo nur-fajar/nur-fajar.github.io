@@ -22,10 +22,12 @@ export default function Voices() {
   const voice = V5_VOICES[index];
   const pad = (n: number) => String(n).padStart(2, '0');
 
+  /* Ditunda satu frame: sinkron di body effect memicu cascading render
+     (dan ditolak lint), padahal nilai awal true sudah cocok dengan SSR. */
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setAuto(false);
-    }
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const raf = requestAnimationFrame(() => setAuto(false));
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   useEffect(() => {

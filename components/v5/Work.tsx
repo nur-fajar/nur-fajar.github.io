@@ -106,8 +106,12 @@ export default function Work() {
     mqNarrow.addEventListener('change', compute);
     const id = window.location.hash.replace('#work-', '');
     const found = V5_CASES.findIndex((item) => item.id === id);
-    if (found >= 0) setActive(found);
+    /* Deep link ditunda satu frame: setState sinkron di body effect
+       ditolak lint (cascading render); nilai awal 0 cocok dengan SSR. */
+    let raf = 0;
+    if (found >= 0) raf = requestAnimationFrame(() => setActive(found));
     return () => {
+      cancelAnimationFrame(raf);
       mqMotion.removeEventListener('change', compute);
       mqNarrow.removeEventListener('change', compute);
     };
