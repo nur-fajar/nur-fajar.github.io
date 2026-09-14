@@ -11,9 +11,13 @@
 // cover both correctly (Next middleware can mint one per request now that
 // there's a real server), but that's a bigger change than this pass — noted
 // here as the upgrade path, not done speculatively.
+// React dev (and Turbopack dev) reconstructs call stacks via eval(), which
+// the production script-src below blocks. Development-only relaxation:
+// production keeps the strict policy, `next dev` appends 'unsafe-eval'.
+const IS_DEV = process.env.NODE_ENV !== 'production';
 const CSP = [
-  "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  'default-src \'self\'',
+  `script-src 'self' 'unsafe-inline'${IS_DEV ? " 'unsafe-eval'" : ''}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self'",

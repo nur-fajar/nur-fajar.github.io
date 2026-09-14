@@ -15,10 +15,11 @@ import SwapWord from './SwapWord';
  *
  * Di layar ≤900px barisan tautan diganti tombol hamburger yang membuka
  * sidebar dari kanan. Tombol dan drawer selalu di DOM, tapi CSS menyembunyikan
- * tombol dan menampilkan barisan tautan geser kecuali atribut data-v3-js
- * terpasang — atribut itu ditulis skrip blocking di layout v3 sebelum paint
- * pertama, jadi tidak ada kedip dan tanpa JS tidak ada tombol mati: yang
- * tampil barisan tautan seperti sebelumnya, navigasinya tidak pernah hilang.
+ * tombol dan menampilkan barisan tautan geser hanya lewat blok <noscript> di
+ * root layout — tanpa JS tidak ada tombol mati: yang tampil barisan tautan
+ * seperti sebelumnya, navigasinya tidak pernah hilang. (Dulu pemilihnya
+ * atribut data-v3-js yang ditulis skrip blocking; skrip itu dibuang karena
+ * React memperingatkan setiap <script> yang dirender komponen.)
  *
  * Drawer menutup lewat Escape, ketuk overlay, atau klik tautan; fokus
  * dikembalikan ke tombol saat ditutup dan scroll halaman dikunci selama

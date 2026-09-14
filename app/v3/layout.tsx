@@ -43,12 +43,8 @@ export const viewport: Viewport = {
 export default function V3Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className={`v3-root ${fraunces.variable} ${inter.variable}`}>
-      {/* Penanda "JS jalan" sebelum paint pertama. CSS memakainya untuk
-          memilih chrome mobile: dengan JS, barisan tautan diganti tombol
-          hamburger; tanpa JS, barisan tautan geser tetap tampil dan tidak
-          ada tombol mati. Satu statement, tanpa dependensi, tanpa baca
-          apa pun — tidak ada yang bisa gagal di sini. */}
-      <script dangerouslySetInnerHTML={{ __html: "document.documentElement.setAttribute('data-v3-js','')" }} />
+      {/* Tanpa JS, blok <noscript> di root layout mengembalikan barisan
+          tautan geser dan menyembunyikan tombol hamburger yang mati. */}
       <a className="skip-link" href="#v3-main">
         Skip to content
       </a>

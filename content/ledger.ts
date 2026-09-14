@@ -1263,8 +1263,8 @@ export interface V3Site {
   stack: string[];
 }
 
-/** Satu entri untuk sekarang, sengaja disusun sebagai list supaya entri
- *  berikutnya cuma menambah baris, bukan mengubah layout. */
+/** Disusun sebagai list supaya entri berikutnya cuma menambah baris,
+ *  bukan mengubah layout. */
 export const V3_WEBSITES: V3Site[] = [
   {
     id: 'nurfajar-com',
@@ -1273,6 +1273,22 @@ export const V3_WEBSITES: V3Site[] = [
     body:
       'This site. It deploys twice from one source: a Next.js app on Vercel, and a static export mirrored to GitHub Pages. Every number and every line of copy lives in a single file, and a test suite holds the copy rules in place so they cannot drift one harmless edit at a time.',
     stack: ['Next.js', 'TypeScript', 'Vercel', 'GitHub Pages'],
+  },
+  {
+    id: 'nadi-wellbeing',
+    name: 'Nadi wellbeing concept',
+    href: 'https://nadi-wellbeing.vercel.app/',
+    body:
+      'Concept site for a fictional workplace wellbeing brand: landing, solutions, and contact flow built around a reading-first narrative. Concept, design, and build by me; the clients and results on the page are invented as part of the concept.',
+    stack: ['Next.js', 'Vercel'],
+  },
+  {
+    id: 'xcel-autodrive',
+    name: 'Xcel Autodrive concept',
+    href: 'https://xcel-autodrive.vercel.app/',
+    body:
+      'Concept site for a fictional autonomous-driving software brand: hero, problem-to-solution narrative, careers, and contact flow. Concept, design, and build by me; the company, people, and roles on the page are invented as part of the concept.',
+    stack: ['Vercel'],
   },
 ];
 
@@ -1391,3 +1407,49 @@ export const V3_SECTIONS: readonly V3Section[] = [
     lede: '',
   },
 ] as const;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION 15 , v4 , editorial
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Petak bento v4.
+ *
+ * Terpisah dari V3_HOME_TILES, dan pemisahannya yang penting. V3_HOME_TILES
+ * dipakai /v3 DAN homepage, jadi mengubah satu span di sana akan menata
+ * ulang halaman yang sedang live. v4 dibangun berdampingan, bukan di atasnya.
+ *
+ * Yang berubah dari v3 cuma satu hal, dan seluruh tata letak ini adalah
+ * akibatnya: ubin pembuka naik dari 6x1 jadi 8x2. Di v3 ubin itu setinggi
+ * satu baris karena isinya memang cuma sapaan dan sebuah nama. Di v4 ia
+ * memikul headline empat potongan, sub-headline dua baris, dan baris meta,
+ * dan ketiganya tidak muat di 240px.
+ *
+ * Penempatan tetap diserahkan ke auto-placement CSS Grid. Urutan DOM di
+ * bawah (hero, cv, linkedin, projects, tools, connect) dengan span
+ * 8/2/2/4/4/4 menghasilkan tepat tata letak yang direkam field `row`:
+ *
+ *   baris 1   hero 8      · cv 2 · linkedin 2
+ *   baris 2   hero 8      · projects 4
+ *   baris 3   tools 4 · connect 4 · projects 4
+ *
+ * Field `row` tidak menggerakkan apa pun; ia merekam tata letak yang
+ * DIMAKSUD, dan tes tiling membacanya. CSS yang mereproduksinya.
+ */
+export const V4_HOME_TILES: V3Tile[] = [
+  { id: 'hero', label: 'Nur Fajar', span: 8, row: 1, rows: 2, surface: 'paper' },
+  { id: 'cv', label: 'Download my CV', span: 2, row: 1, rows: 1, surface: 'paper', href: CONTACT.cv },
+  {
+    id: 'linkedin',
+    label: 'LinkedIn',
+    span: 2,
+    row: 1,
+    rows: 1,
+    surface: 'blue',
+    href: CONTACT.linkedin,
+    external: true,
+  },
+  { id: 'projects', label: 'Jump to Work', span: 4, row: 2, rows: 2, surface: 'ink', href: '#work', cta: 'See all projects' },
+  { id: 'tools', label: 'Jump to Technologies', span: 4, row: 3, rows: 1, surface: 'yellow', href: '#technologies', cta: 'See all tools & skills' },
+  { id: 'connect', label: 'Jump to Contact', span: 4, row: 3, rows: 1, surface: 'paper', href: '#contact', innerLink: true },
+];

@@ -21,6 +21,16 @@ const CONTENT: Record<string, React.ComponentType> = {
   connect: ConnectTile,
 };
 
+/* Kedua prop di bawah opsional dan bawaannya persis perilaku /v3, jadi
+   halaman yang sedang live tidak berubah satu piksel pun. Gunanya supaya
+   /v4 bisa memakai mesin yang sama — auto-placement, seret-tukar, penahan
+   klik, LazyMotion domMax — dengan petak dan isi ubin sendiri, alih-alih
+   menyalin seratus tiga puluh baris ini. */
+export interface BentoProps {
+  tiles?: V3TileData[];
+  content?: Record<string, React.ComponentType>;
+}
+
 /** Seret cuma nyala di layar cukup lebar DAN berkursor. Di layar sentuh,
  *  menyeret ubin bertabrakan dengan menggulir halaman, dan yang kalah
  *  selalu scroll — tablet 768px pun tidak luput, jadi lebar saja tidak
@@ -51,8 +61,8 @@ const SWAP_THRESHOLD = 60;
  * dan menyimpannya berarti pengunjung yang iseng menyeret satu kali akan
  * melihat grid berantakan itu selamanya.
  */
-export default function Bento() {
-  const [tiles, setTiles] = useState<V3TileData[]>(V3_HOME_TILES);
+export default function Bento({ tiles: initialTiles = V3_HOME_TILES, content = CONTENT }: BentoProps = {}) {
+  const [tiles, setTiles] = useState<V3TileData[]>(initialTiles);
   const [dragEnabled, setDragEnabled] = useState(false);
   const draggedRef = useRef(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -105,7 +115,7 @@ export default function Bento() {
       <div className="v3-shell">
         <div className="v3-grid">
           {tiles.map((tile, index) => {
-            const Content = CONTENT[tile.id];
+            const Content = content[tile.id];
             return (
               <Tile
                 key={tile.id}

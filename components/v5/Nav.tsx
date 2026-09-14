@@ -1,0 +1,168 @@
+'use client';
+
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
+import { List, X } from '@phosphor-icons/react';
+import { V5_NAV } from '@/content/v5';
+
+/**
+ * v5 nav: floating top pill on desktop, hamburger drawer on mobile.
+ * Logic reused from v3 Nav (active observer, focus trap, scroll lock).
+ */
+export default function Nav() {
+  const [active, setActive] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const wasOpen = useRef(false);
+
+  useEffect(() => {
+    const sections = V5_NAV.map((link) => document.getElementById(link.href.slice(1))).filter(
+      (s): s is HTMLElement => s !== null,
+    );
+    /* Satu keputusan per pemicu: section terakhir yang sudah melewati garis
+       40% viewport. Versi lama menulis active per entry yang intersect,
+       jadi dua section yang masuk zona bersamaan berebut dan highlight
+       macet di satu tempat. */
+    const pick = () => {
+      const line = window.innerHeight * 0.4;
+      let current: string | null = null;
+      for (const s of sections) {
+        if (s.getBoundingClientRect().top <= line) current = `#${s.id}`;
+      }
+      setActive(current);
+    };
+    pick();
+    const observer = new IntersectionObserver(() => pick(), {
+      rootMargin: '-40% 0px -55% 0px',
+    });
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    /* Fokus masuk ke tombol tutup di panel, bukan tertinggal di navbar
+       yang sedang disembunyikan. */
+    closeRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+        return;
+      }
+      if (event.key !== 'Tab' || !panelRef.current) return;
+      const links = [...panelRef.current.querySelectorAll('a[href],button:not([disabled])')].filter(
+        (n): n is HTMLAnchorElement | HTMLButtonElement =>
+          (n instanceof HTMLAnchorElement || n instanceof HTMLButtonElement) && n.tabIndex >= 0,
+      );
+      if (!links.length) return;
+      const first = links[0];
+      const last = links[links.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    document.documentElement.classList.add('v5-nav-open');
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.documentElement.classList.remove('v5-nav-open');
+    };
+  }, [open ]);
+
+  useEffect(() => {
+    /* Navbar baru terlihat lagi setelah fade 0.25s, jadi fokusnya
+       menyusul, bukan mendarat di tombol yang masih hidden. */
+    if (wasOpen.current && !open) {
+      const id = window.setTimeout(() => toggleRef.current?.focus(), 300);
+      return () => window.clearTimeout(id);
+    }
+    wasOpen.current = open;
+  }, [open ]);
+
+  return (
+    <>
+      <nav className={`v5-nav${open ? ' is-open' : ''}`} aria-label="Main">
+        <a className="v5-nav__brand" href="#top" aria-label="Nur Fajar, back to top">
+          <Image src="/foto-profile-nf-avatar.jpg" alt="Nur Fajar" width={32} height={32} sizes="32px" />
+        </a>
+        <span className="v5-nav__links">
+          {V5_NAV.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className={`v5-nav__link${active === link.href ? ' is-active' : ''}`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </span>
+        <button
+          ref={toggleRef}
+          type="button"
+          className="v5-nav__toggle"
+          aria-expanded={open}
+          aria-controls="v5-drawer"
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? <X size={20} weight="bold" aria-hidden="true" /> : <List size={20} weight="bold" aria-hidden="true" />}
+        </button>
+      </nav>
+
+      <div className={`v5-drawer${open ? ' is-open' : ''}`} id="v5-drawer" aria-hidden={!open}>
+        <div className="v5-drawer__overlay" onClick={() => setOpen(false)} />
+        <div className="v5-drawer__panel" ref={panelRef} role="dialog" aria-modal="true" aria-label="Menu">
+          <div className="v5-drawer__head">
+            <span className="v5-drawer__brand" aria-hidden="true">
+              <Image src="/foto-profile-nf-avatar.jpg" alt="" width={32} height={32} sizes="32px" />
+            </span>
+            <button
+              ref={closeRef}
+              type="button"
+              className="v5-drawer__close"
+              aria-label="Close menu"
+              onClick={() => setOpen(false)}
+              tabIndex={open ? undefined : -1}
+            >
+              <X size={20} weight="bold" aria-hidden="true" />
+            </button>
+          </div>
+          <ul>
+            {V5_NAV.map((link, i) => (
+              <li key={link.href} className="v5-drawer__item" style={{ transitionDelay: open ? `${i * 55}ms` : '0ms' }}>
+                <a
+                  className={`v5-drawer__link${active === link.href ? ' is-active' : ''}`}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  tabIndex={open ? undefined : -1}
+                >
+                  <span className="v5-drawer__num" aria-hidden="true">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  {link.label}
+                  <span className="v5-drawer__go" aria-hidden="true">
+                    →
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a
+            className="v5-drawer__cta"
+            href="#contact"
+            onClick={() => setOpen(false)}
+            tabIndex={open ? undefined : -1}
+          >
+            Book 15-min intro →
+          </a>
+        </div>
+      </div>
+    </>
+  );
+}

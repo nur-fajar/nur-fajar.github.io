@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Bento from '@/components/v3/Bento';
+import Hero from '@/components/v4/Hero';
 import About from '@/components/v3/sections/About';
 import Achievements from '@/components/v3/sections/Achievements';
 import Contact from '@/components/v3/sections/Contact';
@@ -12,24 +12,28 @@ import Work from '@/components/v3/sections/Work';
    itu keluar sebagai "Nur Fajar, Nur Fajar". */
 export const metadata: Metadata = {
   title: { absolute: 'Nur Fajar, Learning & Development Specialist' },
-  /* /v3 kini arsip setelah / menjadi v5. Sama seperti /v4: menolak diindeks
-     supaya tidak menduplikasi homepage di mata mesin telusur. */
+  /* /v4 masih draf dan berbagi isi dengan /. Dua URL yang melayani konten
+     sama adalah duplikat di mata mesin telusur, jadi halaman ini menolak
+     diindeks sampai ia menggantikan homepage. */
   robots: { index: false, follow: false },
 };
 
 /**
- * Satu halaman, delapan section.
+ * Langkah 1: rangka.
  *
- * Urutannya mengikuti argumen yang sudah ditulis di app/page.tsx, bukan
- * urutan referensinya: Work sebelum Experience, dan About di posisi keenam.
- * Alasannya soal isi, bukan soal kulit, jadi ia tidak ikut berubah saat
- * kulitnya diganti. Sebuah tes mengunci urutan itu di V3_SECTIONS, jadi
- * menyusun ulang jadi keputusan sadar alih-alih pergeseran diam-diam.
+ * Halaman ini sengaja masih merender ketujuh section v3 apa adanya, lewat
+ * token v4. Gunanya satu: memberi dasar pembanding yang jujur. Setiap
+ * langkah berikutnya mengganti satu section, dan bedanya bisa dilihat
+ * berdampingan dengan / yang tidak disentuh.
+ *
+ * Urutannya akan berubah di langkah-langkah berikutnya: section `proof`
+ * masuk di antara Bento dan Work, dan section `method` (ADDIE) masuk di
+ * antara Work dan Experience. Keduanya belum ada komponennya.
  */
-export default function V3Page() {
+export default function V4Page() {
   return (
     <>
-      <Bento />
+      <Hero />
       <Work />
       <Experience />
       <Technologies />

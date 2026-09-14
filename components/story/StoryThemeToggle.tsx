@@ -1,10 +1,16 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useLayoutEffect, useSyncExternalStore } from 'react';
 import { SunIcon, MoonIcon } from './icons';
 
 export type StoryTheme = 'dark' | 'light';
 const STORAGE_KEY = 'story-theme';
+
+/* useLayoutEffect di server tidak jalan (dan React memperingatkan kalau
+   dipanggil di sana), jadi alias ini: layout effect di klien, effect biasa
+   di server. Tidak ada <script> blocking yang dirender komponen — React 19
+   memperingatkan setiap <script> semacam itu. */
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : () => {};
 
 function readTheme(): StoryTheme {
   return document.documentElement.getAttribute('data-story-theme') === 'light' ? 'light' : 'dark';
@@ -22,8 +28,8 @@ function applyTheme(theme: StoryTheme) {
 }
 
 /* `data-story-theme` di `<html>` adalah satu-satunya sumber kebenaran tema —
-   diset duluan oleh skrip anti-FOUC di app/layout.tsx (baca localStorage,
-   default 'dark'), lalu ditulis ulang di sini tiap toggle diklik.
+   diinisialisasi di bawah dari localStorage lewat layout effect (sebelum
+   paint, jadi tanpa kedip), lalu ditulis ulang di sini tiap toggle diklik.
    `StoryStarfield` mendengarkan atribut yang sama lewat MutationObserver-nya
    sendiri, jadi kanvas dan tombol ini selalu sinkron tanpa saling tahu. */
 function subscribe(onChange: () => void) {
@@ -50,6 +56,19 @@ function subscribe(onChange: () => void) {
  */
 export default function StoryThemeToggle() {
   const theme = useSyncExternalStore(subscribe, readTheme, () => null);
+
+  /* Pilihan tersimpan diterapkan sebelum paint pertama: pengunjung yang
+     sebelumnya memilih light tidak sempat melihat kedipan tema dark. */
+  useIsomorphicLayoutEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored === 'light' || stored === 'dark') {
+        document.documentElement.setAttribute('data-story-theme', stored);
+      }
+    } catch {
+      // Private browsing / storage disabled — default dark untuk sesi ini.
+    }
+  }, []);
 
   if (!theme) {
     return <span className="story-theme-toggle--placeholder" aria-hidden="true" />;
