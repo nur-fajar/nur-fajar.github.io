@@ -287,7 +287,7 @@ export const V5_SECTIONS: V5Section[] = [
   {
     id: 'capabilities',
     eyebrow: 'What I bring to the table',
-    heading: ['The pieces', 'your team is missing.'],
+    heading: ['Versatile skillset', 'that grows with you.'],
     lede: 'Websites, AI agents, programs, and content: four shapes I fill, one hire that grows with your company.',
   },
   {
