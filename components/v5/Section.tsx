@@ -15,12 +15,15 @@ export default function Section({
   children,
   stickyHead,
   backdrop,
+  headExtra,
 }: {
   section: V5Section;
   children: React.ReactNode;
   stickyHead?: boolean;
   /** Latar full-bleed di belakang section (mis. PuzzleField di Contact). */
   backdrop?: React.ReactNode;
+  /** Tambahan di kolom kepala, setelah lede (mis. barisan tool di Capabilities). */
+  headExtra?: React.ReactNode;
 }) {
   const titleId = `${section.id}-title`;
   const head = (
@@ -32,6 +35,7 @@ export default function Section({
       <Reveal delay={0.14}>
         <p className="v5-lede">{section.lede}</p>
       </Reveal>
+      {headExtra}
     </>
   );
 
