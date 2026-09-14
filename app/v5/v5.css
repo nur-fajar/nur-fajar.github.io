@@ -350,17 +350,6 @@ html.v5-nav-open .v5-nav {
   margin-left: auto;
   color: var(--v5-blue);
 }
-.v5-drawer__cta {
-  margin-top: auto;
-  text-align: center;
-  background: var(--v5-ink);
-  color: var(--v5-white);
-  text-decoration: none;
-  font-weight: 600;
-  padding: 1rem;
-  border-radius: var(--v5-r-md);
-  min-height: 52px;
-}
 html.v5-nav-open {
   overflow: hidden;
 }
@@ -1410,14 +1399,6 @@ html.v5-nav-open {
 .v5-mailmega:hover .v5-mailmega__addr {
   color: var(--v5-blue);
   background-size: 100% 3px;
-}
-.v5-contact__actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem 1.4rem;
-  margin-top: 1.8rem;
 }
 .v5-link-caps {
   display: inline-flex;

@@ -153,14 +153,6 @@ export default function Nav() {
               </li>
             ))}
           </ul>
-          <a
-            className="v5-drawer__cta"
-            href="#contact"
-            onClick={() => setOpen(false)}
-            tabIndex={open ? undefined : -1}
-          >
-            Book 15-min intro →
-          </a>
         </div>
       </div>
     </>
