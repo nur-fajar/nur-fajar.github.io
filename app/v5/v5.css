@@ -874,6 +874,20 @@ html.v5-nav-open {
 .v5-stack__card--amplify .v5-stack__points li::before {
   color: var(--v5-yellow);
 }
+/* Socket puzzle di tepi kanan tiap kartu: separuh lingkaran warna kertas
+   yang menimpa garis tepi, jadi bacaannya "keping ini menunggu dipasang".
+   Card overflow:hidden memotong separuh luarnya - di sinilah gunanya. */
+.v5-stack__card::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 38%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--v5-paper);
+  transform: translateX(50%);
+}
 
 /* cases: scroll pin, one case per screen, then release downward */
 .v5-workpin {
@@ -1220,6 +1234,51 @@ html.v5-nav-open {
   font-size: 0.85rem;
   color: var(--v5-muted);
 }
+/* Monogram tile: foto referrer tidak ada, jadi inisial berkode warna.
+   Satu lingkaran, satu huruf, rotasi biru-merah-kuning. */
+.v5-spot__who {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 1.6rem 0 0;
+}
+.v5-spot__who .v5-spot__name {
+  margin: 0;
+}
+.v5-spot__who .v5-spot__role {
+  margin: 0.15rem 0 0;
+}
+.v5-spot__avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--v5-ink);
+  font-family: var(--font-v5-display, var(--font-v5-display-fb));
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--v5-ink);
+  background: var(--v5-white);
+}
+.v5-spot__avatar--blue {
+  background: var(--v5-blue);
+  border-color: var(--v5-blue);
+  color: var(--v5-white);
+}
+.v5-spot__avatar--red {
+  background: var(--v5-red);
+  border-color: var(--v5-red);
+  color: var(--v5-white);
+}
+.v5-spot__avatar--yellow {
+  background: var(--v5-yellow);
+  border-color: var(--v5-yellow);
+  color: var(--v5-ink);
+}
 .v5-spot__controls {
   display: flex;
   align-items: center;
@@ -1387,6 +1446,54 @@ html.v5-nav-open {
   line-height: 1.65;
   color: var(--v5-muted);
 }
+/* Logo lembaga per babak: grayscale, berwarna saat hover, seperti toolrow. */
+.v5-chapter__logos {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0.9rem 0 0;
+  border-top: 1px dashed var(--v5-line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem 1.1rem;
+}
+.v5-chapter__logos img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.65;
+  transition: filter 0.25s ease, opacity 0.25s ease;
+}
+.v5-chapter__logos li:hover img {
+  filter: none;
+  opacity: 1;
+}
+/* Timeline strip: desktop jadi baris horizontal yang bisa di-drag; mobile
+   tetap vertikal (grid biasa). Pointerdown JS-nya di About.tsx. */
+@media (min-width: 980px) {
+  .v5-timeline {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(24rem, 28rem);
+    gap: 1.4rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 1.2rem;
+    scroll-snap-type: x proximity;
+    cursor: grab;
+    user-select: none;
+  }
+  .v5-timeline::-webkit-scrollbar {
+    display: none;
+  }
+  .v5-timeline.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+  }
+  .v5-timeline .v5-chapter {
+    scroll-snap-align: start;
+  }
+}
 
 /* credentials: name + issuer, verification link where it exists */
 .v5-creds {
@@ -1525,6 +1632,45 @@ html.v5-nav-open {
   margin: 1.6rem 0 0;
   text-decoration: none;
   color: var(--v5-ink);
+}
+/* Keping puzzle di Contact: kartu putih ber-socket di kiri, knob menghadap
+   ke latar puzzle, sedikit miring biar terbaca "baru saja terpasang". */
+.v5-piece {
+  position: relative;
+  margin: 2rem 0 0;
+  padding: clamp(1.6rem, 4vw, 2.6rem) clamp(1.8rem, 5vw, 3.2rem);
+  background: var(--v5-card);
+  border: 1px solid var(--v5-line);
+  border-radius: var(--v5-r-md);
+  box-shadow: 0 24px 48px -28px color-mix(in srgb, var(--v5-ink) 45%, transparent);
+  transform: rotate(-1.2deg);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.4s ease;
+}
+.v5-piece:hover {
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow: 0 30px 56px -28px color-mix(in srgb, var(--v5-ink) 55%, transparent);
+}
+/* Socket di sisi kiri (dudukan keping) dan knob di sisi kanan (tentakel). */
+.v5-piece::before,
+.v5-piece::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: var(--v5-warm);
+}
+.v5-piece::before {
+  left: 0;
+  transform: translate(-55%, -50%);
+}
+.v5-piece::after {
+  right: 0;
+  transform: translate(55%, -50%);
+  background: var(--v5-card);
+  border: 1px solid var(--v5-line);
 }
 .v5-mailmega__addr {
   font-family: var(--font-v5-display, var(--font-v5-display-fb));
@@ -1809,6 +1955,13 @@ html.v5-cursor-on .v5-root button {
   }
   .v5-cursor {
     display: none;
+  }
+  .v5-piece {
+    transform: none;
+    transition: none;
+  }
+  .v5-chapter__logos img {
+    transition: none;
   }
   .v5-tab {
     transition: none;
