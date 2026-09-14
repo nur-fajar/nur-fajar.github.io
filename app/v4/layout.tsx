@@ -55,13 +55,9 @@ export const viewport: Viewport = {
 export default function V4Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className={`v4-root ${fraunces.variable} ${inter.variable}`}>
-      {/* Penanda "JS jalan" sebelum paint pertama. CSS memakainya untuk
-          memilih chrome mobile: dengan JS, barisan tautan diganti tombol
-          hamburger; tanpa JS, barisan tautan geser tetap tampil dan tidak
-          ada tombol mati. Atributnya tetap data-v3-js karena Nav yang
-          membacanya masih komponen v3; ia ikut berganti nama saat nav v4
-          menggantikannya di langkah 4. */}
-      <script dangerouslySetInnerHTML={{ __html: "document.documentElement.setAttribute('data-v3-js','')" }} />
+      {/* Tanpa JS, blok <noscript> di root layout mengembalikan bilah tautan
+          geser v3 (Nav di sini masih komponen v3) dan menyembunyikan tombol
+          mati. Tidak ada <script> yang dirender komponen. */}
       <a className="skip-link" href="#v4-main">
         Skip to content
       </a>

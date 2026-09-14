@@ -12,6 +12,9 @@ import Work from '@/components/v3/sections/Work';
    itu keluar sebagai "Nur Fajar, Nur Fajar". */
 export const metadata: Metadata = {
   title: { absolute: 'Nur Fajar, Learning & Development Specialist' },
+  /* /v3 kini arsip setelah / menjadi v5. Sama seperti /v4: menolak diindeks
+     supaya tidak menduplikasi homepage di mata mesin telusur. */
+  robots: { index: false, follow: false },
 };
 
 /**

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Bento from '@/components/v3/Bento';
+import Hero from '@/components/v4/Hero';
 import About from '@/components/v3/sections/About';
 import Achievements from '@/components/v3/sections/Achievements';
 import Contact from '@/components/v3/sections/Contact';
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 export default function V4Page() {
   return (
     <>
-      <Bento />
+      <Hero />
       <Work />
       <Experience />
       <Technologies />

@@ -1,6 +1,7 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { V4_HOME_TILES } from '@/content/ledger';
 
 /**
  * Tes struktural untuk lapisan /v4.
@@ -14,6 +15,15 @@ import { describe, expect, it } from 'vitest';
 const ROOT = process.cwd();
 const CSS = readFileSync(path.join(ROOT, 'app', 'v4', 'v4.css'), 'utf8');
 const LAYOUT = readFileSync(path.join(ROOT, 'app', 'v4', 'layout.tsx'), 'utf8');
+
+/** Semua berkas .tsx di bawah sebuah folder, termasuk subfolder. */
+function files(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) return files(full);
+    return entry.name.endsWith('.tsx') ? [full] : [];
+  });
+}
 
 describe('v4 , token tema', () => {
   it('token hidup di .v4-root, tidak pernah di :root', () => {
@@ -93,5 +103,92 @@ describe('v4 , kerangka halaman', () => {
        Baris ini dihapus saat v4 menggantikan homepage, bukan sebelumnya. */
     const page = readFileSync(path.join(ROOT, 'app', 'v4', 'page.tsx'), 'utf8');
     expect(page, 'metadata /v4 tidak menolak indeks').toMatch(/robots:\s*\{\s*index:\s*false/);
+  });
+});
+
+describe('v4 , petak bento', () => {
+  it('setiap baris tertutup penuh 12 kolom dan berhenti di baris tiga', () => {
+    /* Kegagalannya murni visual: satu span yang bergeser melipat grid jadi
+       baris keempat, hero tidak lagi setinggi dua baris, dan tidak ada satu
+       pun baris kode yang terlihat salah.
+
+       Aturan yang sama sudah menjaga V3_HOME_TILES di content/ledger.test.ts.
+       v4 punya petaknya sendiri justru supaya /v3 dan homepage tidak ikut
+       tertata ulang saat ubin pembuka v4 naik dari 6x1 jadi 8x2. */
+    for (const row of [1, 2, 3]) {
+      const occupying = V4_HOME_TILES.filter(
+        (tile) => tile.row <= row && row < tile.row + tile.rows,
+      );
+      const total = occupying.reduce((sum, tile) => sum + tile.span, 0);
+      expect(total, `baris ${row} berisi ${total} kolom`).toBe(12);
+    }
+    const last = Math.max(...V4_HOME_TILES.map((tile) => tile.row + tile.rows - 1));
+    expect(last, 'bento v4 tidak berhenti di tiga baris').toBe(3);
+  });
+
+  it('setiap ubin punya komponen isinya, dan sebaliknya', () => {
+    /* Bento mencari komponen lewat content[tile.id]. Id yang tidak ada di
+       peta menghasilkan `undefined`, dan React melempar saat render , tapi
+       cuma di route itu, jadi build tetap lolos dan yang ketahuan cuma
+       halaman kosong. Tes ini menangkapnya di CI. */
+    const wrapper = readFileSync(path.join(ROOT, 'components', 'v4', 'Hero.tsx'), 'utf8');
+    const mapped = [...wrapper.matchAll(/^\s{2}(\w+):\s*\w+,$/gm)].map((m) => m[1]);
+    const ids = V4_HOME_TILES.map((tile) => tile.id);
+
+    expect([...ids].sort(), 'id ubin dan kunci peta isi tidak cocok').toEqual([...mapped].sort());
+  });
+
+  it('ubin pembuka tidak pernah mengaku bisa diklik', () => {
+    /* Panah cuma dipasang di ubin ber-href. Ubin hero tidak ke mana-mana,
+       jadi ia juga tidak boleh terlihat seperti pintu. */
+    const hero = V4_HOME_TILES.find((tile) => tile.id === 'hero');
+    expect(hero, 'ubin hero tidak ada di petak v4').toBeTruthy();
+    expect(hero?.href).toBeUndefined();
+  });
+});
+
+describe('v4 , akar dokumen', () => {
+  it('headline hero dirender sebagai satu-satunya <h1>', () => {
+    /* /v3 sama sekali tidak punya <h1>: ubin bento cuma <section aria-label>
+       dengan <p aria-label> di dalamnya, dan ketujuh judul section semuanya
+       <h2>, jadi dokumennya menggantung tanpa akar. Tidak ada yang error,
+       dan yang rugi cuma pembaca layar dan mesin telusur.
+
+       Dua sisi dijaga sekaligus: hero HARUS punya h1, dan tidak boleh ada
+       komponen v4 kedua yang menambah h1 lain. */
+    const hero = readFileSync(
+      path.join(ROOT, 'components', 'v4', 'tiles', 'HeroTile.tsx'),
+      'utf8',
+    );
+    expect(hero, 'HeroTile tidak merender <h1>').toMatch(/<h1[\s>]/);
+
+    /* Komentar dibuang sebelum menghitung. Berkas-berkas ini menjelaskan
+       DI DALAM komentarnya kenapa <h1> perlu ada, dan penjelasan itu ikut
+       terhitung sebagai tag kalau teksnya dipindai mentah. */
+    const dir = path.join(ROOT, 'components', 'v4');
+    const count = files(dir).reduce((sum, file) => {
+      const code = readFileSync(file, 'utf8')
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/\/\/.*$/gm, '');
+      return sum + (code.match(/<h1[\s>]/g)?.length ?? 0);
+    }, 0);
+    expect(count, `ada ${count} <h1> di components/v4, harusnya tepat satu`).toBe(1);
+  });
+
+  it('headline datang dari ledger, bukan diketik ulang di JSX', () => {
+    /* Scan em dash, ejaan British, kata sifat tak terbukti, dan jembatan
+       kausal L&D ke AI semuanya membaca hasil ekspor content/ledger.ts.
+       Copy yang diketik langsung di JSX lolos dari keempatnya tanpa jejak,
+       dan disiplin copy situs ini justru berasal dari sana. */
+    const hero = readFileSync(
+      path.join(ROOT, 'components', 'v4', 'tiles', 'HeroTile.tsx'),
+      'utf8',
+    );
+    expect(hero, 'HeroTile tidak membaca HERO dari ledger').toMatch(
+      /import\s*\{[^}]*\bHERO\b[^}]*\}\s*from\s*'@\/content\/ledger'/,
+    );
+    for (const field of ['titleLead', 'titleAccent', 'titleRestLead', 'titleRestTail', 'sub', 'meta']) {
+      expect(hero, `HERO.${field} tidak dirender`).toContain(`HERO.${field}`);
+    }
   });
 });

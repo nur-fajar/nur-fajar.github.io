@@ -42,13 +42,12 @@ const jakarta = Plus_Jakarta_Sans({
  * yang benar-benar ditampilkan hasil pencarian.
  */
 const SUMMARY =
-  'Nur Fajar — Learning & Development Specialist. Programs owned end to end: ideation, design, delivery, ' +
-  'evaluation. 5 programs, 3 curriculum modules, 300+ learners.';
+  'Nur Fajar — versatile generalist for ambitious teams. Base in AI and learning: web and software support, AI agents and automations, programs and training, social and content.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://nurfajar.com'),
   title: {
-    default: 'Nur Fajar — Learning & Development Specialist | Instructional Design, Curriculum Development',
+    default: 'Nur Fajar — Generalist: AI, Web, Programs & Content | Full-Time, Remote GMT+7',
     template: '%s, Nur Fajar',
   },
   description: SUMMARY,
@@ -57,12 +56,12 @@ export const metadata: Metadata = {
     type: 'profile',
     locale: 'en_US',
     url: 'https://nurfajar.com',
-    title: 'Nur Fajar — Learning & Development Specialist',
+    title: 'Nur Fajar — Your Team’s Utility Player',
     description: SUMMARY,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Nur Fajar — Learning & Development Specialist',
+    title: 'Nur Fajar — Your Team’s Utility Player',
     description: SUMMARY,
   },
 };
@@ -84,18 +83,20 @@ const PERSON_SCHEMA = {
   },
   alumniOf: { '@type': 'CollegeOrUniversity', name: 'Siliwangi University' },
   knowsAbout: [
+    'Web Development',
+    'Next.js',
+    'AI Agents',
+    'Workflow Automation',
+    'Python',
     'Instructional Design',
     'Curriculum Development',
-    'ADDIE',
     'Training Needs Analysis',
     'Facilitation',
-    'Training Evaluation',
-    'Train the Trainers',
+    'Social Media Content',
     'Generative AI',
     'Prompt Engineering',
-    'Python',
   ],
-  seeks: { '@type': 'Demand', name: 'Learning & Development Specialist role' },
+  seeks: { '@type': 'Demand', name: 'Full-time AI generalist role' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -103,9 +104,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       className={`${spaceGrotesk.variable} ${jakarta.variable}`}
-      /* Skrip anti-FOUC di bawah menulis `data-story-theme` ke elemen ini
-         sebelum React hydrate: mismatch yang disengaja dan aman, karena
-         atribut itu bukan sesuatu yang pernah dirender RootLayout sendiri. */
+      /* `data-story-theme` ditulis `StoryThemeToggle` lewat layout effect
+         sebelum paint (baca localStorage, default 'dark'): mismatch yang
+         disengaja dan aman, karena atribut itu bukan sesuatu yang pernah
+         dirender RootLayout sendiri. */
       suppressHydrationWarning
     >
       <head>
@@ -116,26 +118,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <noscript>
           <style>{'.motion-safe{opacity:1 !important;transform:none !important;filter:none !important;}'}</style>
         </noscript>
-        {/* Anti-FOUC untuk toggle tema dark/light di /hire-me, yang memakai
-            palet `.story-root` dari app/story.css. Harus jalan lewat blocking
-            inline <script> di <head>, sebelum paint pertama: kalau ditunda ke
-            useEffect, pengunjung yang sebelumnya memilih light akan sempat
-            melihat kedipan tema dark.
-
-            Daftar path-nya menyempit dari versi sebelumnya. Dulu `/` ikut
-            terdaftar karena homepage-nya adalah scroll-story yang berbagi
-            palet itu; homepage sekarang light-only dan tidak punya toggle,
-            jadi menulis atribut tema di sana hanya akan menaruh state yang
-            tidak pernah dibaca siapa pun. Varian ber-slash tetap didaftar
-            karena static export (GitHub Pages) menyajikan halaman yang sama
-            di `/hire-me/`. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var p=location.pathname;if(p.length>1&&p.charAt(p.length-1)==='/')p=p.slice(0,-1);if(p==='/hire-me'){document.documentElement.setAttribute('data-story-theme',localStorage.getItem('story-theme')==='light'?'light':'dark');}}catch(e){}})();`,
-          }}
-        />
+        {/* Fallback no-JS untuk chrome mobile v3/v5: keduanya default mode
+            hamburger (JS diasumsikan jalan). Tanpa JS tombolnya mati dan
+            tautannya tersembunyi, jadi blok ini mengembalikan bilah tautan
+            geser. Tidak ada <script> yang dilibatkan sama sekali — React 19
+            memperingatkan setiap <script> yang dirender komponen (termasuk
+            next/script) karena tidak dieksekusi saat navigasi klien.
+            !important karena urutan <style> ini vs stylesheet Next tidak
+            dijamin. */}
+        <noscript>
+          <style>{`@media (max-width: 900px){.v3-nav{justify-content:flex-start !important;overflow-x:auto !important}.v3-nav__link{display:inline !important}.v3-nav__toggle{display:none !important}}@media (max-width: 980px){.v5-nav__links{display:flex !important;overflow-x:auto}.v5-nav__toggle{display:none !important}}`}</style>
+        </noscript>
         {/* JSON-LD statis, dibangun dari konstanta di repo ini, tidak ada
-            input pengguna yang bisa masuk ke sini. */}
+            input pengguna yang bisa masuk ke sini. Bertipe
+            application/ld+json (tidak dieksekusi), jadi tidak memicu
+            peringatan skrip React. */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_SCHEMA) }}

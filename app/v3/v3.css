@@ -1016,36 +1016,31 @@ a.v3-mail:focus-visible {
    dan mulai terpotong jauh sebelum ponsel. Di bawah sini pil jadi bilah
    selebar layar. */
 @media (max-width: 900px) {
-  /* Dengan JS: barisan tautan diganti tombol hamburger kanan. Tanpa JS
-     (tanpa data-v3-js): barisan geser tetap tampil dan
-     tidak ada tombol mati, dengan scrollbar disembunyikan: bilah abu
-     setebal 15px di bawah nav terbaca sebagai kerusakan, bukan petunjuk.
-     Safe-area supaya bar tidak tertutup notch di kiri-kanan-atas. */
+  /* Mode hamburger adalah default di bawah 900px (JS diasumsikan jalan).
+     Tanpa JS, blok <noscript> di root layout mengembalikan bilah geser:
+     bilah abu setebal 15px di bawah nav terbaca sebagai kerusakan, bukan
+     petunjuk, jadi scrollbar disembunyikan. Safe-area supaya bar tidak
+     tertutup notch di kiri-kanan-atas. */
   .v3-nav {
     left: 0;
     right: 0;
     transform: none;
-    justify-content: flex-start;
+    justify-content: flex-end;
+    align-items: center;
     gap: 1.1rem;
     padding: calc(0.8rem + env(safe-area-inset-top)) max(var(--v3-gutter), env(safe-area-inset-right)) 0.8rem max(var(--v3-gutter), env(safe-area-inset-left));
     border-radius: 0;
     border-left: 0;
     border-right: 0;
-    overflow-x: auto;
+    overflow-x: visible;
     scrollbar-width: none;
   }
 
-  html[data-v3-js] .v3-nav {
-    justify-content: flex-end;
-    align-items: center;
-    overflow-x: visible;
-  }
-
-  html[data-v3-js] .v3-nav__link {
+  .v3-nav__link {
     display: none;
   }
 
-  html[data-v3-js] .v3-nav__toggle {
+  .v3-nav__toggle {
     display: grid;
   }
 
