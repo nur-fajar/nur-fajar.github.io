@@ -1209,6 +1209,303 @@ html.v5-nav-open {
   height: 2px;
   background: var(--v5-blue);
 }
+/* Rel tools: baris penutup di akhir case (semua mode). Teks tidak
+   digeser sejengkal pun. */
+.v5-case__tools {
+  margin-top: 1.6rem;
+  padding-top: 1.1rem;
+  border-top: 1px dashed var(--v5-line);
+}
+.v5-case__tools-label {
+  margin: 0;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--v5-red);
+}
+.v5-case__tools ul {
+  list-style: none;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.1rem;
+}
+.v5-case__tools li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.v5-case__tools img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.75;
+  transition: filter 0.22s ease, opacity 0.22s ease;
+}
+.v5-case__tools li:hover img {
+  filter: none;
+  opacity: 1;
+}
+/* Badge teks untuk tool tanpa logo file. */
+.v5-toolbadge {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 6px;
+  border: 1px solid var(--v5-line);
+  background: var(--v5-paper);
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--v5-muted);
+}
+/* Slot gambar case (dorman sampai ada gambar): tumpuk rapi in-flow. */
+.v5-case__media {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+.v5-case__shot {
+  margin: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+.v5-case__frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--v5-line);
+  background: var(--v5-card);
+}
+.v5-case__frame img {
+  object-fit: cover;
+}
+.v5-case__cap {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.72rem;
+  color: var(--v5-muted);
+}
+/* Tile gelap untuk logo terang (mis. Smojo putih): berlaku di rel
+   inline maupun pin. */
+.v5-tooltile {
+  display: inline-flex;
+}
+.v5-tooltile--dark {
+  background: var(--v5-ink);
+  border-radius: 6px;
+  padding: 3px;
+}
+.v5-case__tools--pin {
+  display: none;
+}
+@media (min-width: 1300px) {
+  .v5-workpin__case .v5-case__tools {
+    display: none;
+  }
+  .v5-workpin[data-inview='true'] .v5-case__tools--pin {
+    display: block;
+    position: fixed;
+    /* Tengah gutter kiri (bukan nempel tepi): pusatkan tile 58px di
+       dalam gutter selebar (100vw - shell 1180px) / 2. */
+    left: max(0.75rem, calc((100vw - 1180px) / 4 - 26px));
+    top: 50%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    z-index: 70;
+    transform: translateY(-50%);
+    /* Opasitas dikemudikan progres pin (--rail dari efek ukur): fade-in
+       saat pin mengunci, fade-out menjelang pin lepas. */
+    opacity: var(--rail, 1);
+    animation: v5-pinrail-in 0.4s ease backwards;
+  }
+  .v5-case__tools--pin .v5-case__tools-label {
+    display: none;
+  }
+  .v5-case__tools--pin ul {
+    position: relative;
+    display: grid;
+    gap: clamp(1rem, 3vh, 1.8rem);
+    margin: 0;
+    justify-items: center;
+  }
+  /* Benang charm: garis putus-putus vertikal di belakang tile. */
+  .v5-case__tools--pin ul::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 12px;
+    bottom: 12px;
+    border-left: 2px dashed var(--v5-line);
+    transform: translateX(-50%);
+  }
+  /* Nama sebagai label melayang artsy: serif italic dalam pill,
+     muncul meluncur saat tile di-hover. */
+  .v5-case__tools--pin li {
+    position: relative;
+  }
+  .v5-case__tools--pin li > span:last-child {
+    position: absolute;
+    left: calc(100% + 0.7rem);
+    top: 50%;
+    white-space: nowrap;
+    font-family: var(--font-v5-display, Georgia, serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.95rem;
+    color: var(--v5-ink);
+    background: var(--v5-card);
+    border: 1px solid var(--v5-ink);
+    border-radius: var(--v5-pill);
+    padding: 0.3rem 0.8rem;
+    box-shadow: 0 10px 22px -12px rgba(16, 20, 24, 0.45);
+    opacity: 0;
+    transform: translateY(-50%) translateX(-8px);
+    transition:
+      opacity 0.3s ease,
+      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .v5-case__tools--pin li:hover > span:last-child {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+  .v5-case__tools--pin li {
+    animation: v5-bubble-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  }
+  .v5-case__tools--pin li:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+  .v5-case__tools--pin li:nth-child(2) {
+    animation-delay: 0.12s;
+  }
+  .v5-case__tools--pin li:nth-child(3) {
+    animation-delay: 0.19s;
+  }
+  .v5-case__tools--pin li:nth-child(4) {
+    animation-delay: 0.26s;
+  }
+  .v5-case__tools--pin li:nth-child(5) {
+    animation-delay: 0.33s;
+  }
+  .v5-case__tools--pin li:nth-child(6) {
+    animation-delay: 0.4s;
+  }
+  .v5-case__tools--pin li:nth-child(7) {
+    animation-delay: 0.47s;
+  }
+  .v5-case__tools--pin .v5-tooltile {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    background: var(--v5-card);
+    border: 1.5px solid var(--v5-ink);
+    border-radius: 15px;
+    box-shadow: 0 10px 22px -12px rgba(16, 20, 24, 0.45);
+    animation: v5-bubble-float 3.4s ease-in-out infinite alternate;
+  }
+  /* Tile gelap pin: kotaknya sendiri yang hitam (timpa chip inline). */
+  .v5-case__tools--pin .v5-tooltile--dark {
+    background: var(--v5-ink);
+    border-color: var(--v5-ink);
+    padding: 0;
+  }
+  .v5-case__tools--pin li:nth-child(1) .v5-tooltile {
+    animation-delay: -0.4s;
+  }
+  .v5-case__tools--pin li:nth-child(2) .v5-tooltile {
+    animation-delay: -1.2s;
+  }
+  .v5-case__tools--pin li:nth-child(3) .v5-tooltile {
+    animation-delay: -2s;
+  }
+  .v5-case__tools--pin li:nth-child(4) .v5-tooltile {
+    animation-delay: -2.8s;
+  }
+  .v5-case__tools--pin li:nth-child(5) .v5-tooltile {
+    animation-delay: -1.6s;
+  }
+  .v5-case__tools--pin li:nth-child(6) .v5-tooltile {
+    animation-delay: -0.8s;
+  }
+  .v5-case__tools--pin li:nth-child(7) .v5-tooltile {
+    animation-delay: -2.4s;
+  }
+  .v5-case__tools--pin img {
+    width: 26px;
+    height: 26px;
+    filter: none;
+    opacity: 1;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .v5-case__tools--pin li:hover img {
+    transform: scale(1.22) rotate(-6deg);
+  }
+  .v5-case__tools--pin .v5-toolbadge {
+    width: auto;
+    height: auto;
+    border: none;
+    background: none;
+    font-size: 0.72rem;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .v5-case__tools--pin li:hover .v5-toolbadge {
+    transform: scale(1.22) rotate(-6deg);
+  }
+}
+@media (min-width: 1560px) {
+  .v5-case__tools--pin ul {
+    gap: clamp(1.2rem, 3.5vh, 2.2rem);
+  }
+  .v5-case__tools--pin .v5-tooltile {
+    width: 58px;
+    height: 58px;
+    border-radius: 19px;
+  }
+  .v5-case__tools--pin img {
+    width: 32px;
+    height: 32px;
+  }
+  .v5-case__tools--pin .v5-toolbadge {
+    font-size: 0.85rem;
+  }
+}
+@keyframes v5-pinrail-in {
+  from {
+    transform: translateY(-50%) translateX(-10px);
+  }
+  to {
+    transform: translateY(-50%) translateX(0);
+  }
+}
+@keyframes v5-bubble-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes v5-bubble-float {
+  from {
+    transform: translateY(-5px);
+  }
+  to {
+    transform: translateY(5px);
+  }
+}
 .v5-pipe {
   list-style: none;
   margin: 1.3rem 0 0;
@@ -1370,11 +1667,20 @@ html.v5-nav-open {
 }
 .v5-wall__row {
   overflow: hidden;
+  cursor: grab;
+}
+.v5-wall__row.is-grabbed {
+  cursor: grabbing;
 }
 .v5-wall__track {
   display: flex;
   width: max-content;
   will-change: transform;
+}
+/* Mode driven: animasi CSS mati (fallback no-JS), offset dikemudikan
+   inline per frame oleh Voices; pola yang sama dengan ticker hero. */
+.v5-wall__track.is-driven {
+  animation: none;
 }
 .v5-wall__track--fwd {
   animation: v5-wall-fwd 46s linear infinite;
@@ -1664,8 +1970,23 @@ html.v5-nav-open {
 }
 
 /* about: vertical chapter stack, ghost numbers, no sideways scroll */
-.v5-tlwrap {
+.v5-tlpin {
   position: relative;
+}
+/* Mode pin (desktop): wadah setinggi 320vh, panggung menempel selayar
+   dan strip digeser scroll halaman — section tidak bisa kelewat. */
+.v5-tlpin.is-pinned {
+  height: 320vh;
+}
+.v5-tlpin.is-pinned .v5-tlpin__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: clip;
 }
 /* Rel progres timeline: garis terisi + keping berjalan (--p dari About).
    Vertikal di mobile, hairline horizontal di strip desktop. */
@@ -1691,13 +2012,16 @@ html.v5-nav-open {
   transform: translate(-50%, -50%);
 }
 @media (min-width: 980px) {
+  /* Bar statis di atas strip (mengikuti alur flex stage, bukan overlay). */
   .v5-spine {
-    left: 0;
-    right: 0;
-    top: -0.9rem;
+    position: relative;
+    left: auto;
+    top: auto;
     bottom: auto;
-    width: auto;
+    width: 100%;
     height: 2px;
+    flex: none;
+    margin: 0 0 1rem;
     background: linear-gradient(90deg, var(--v5-red) calc(var(--p, 0) * 100%), var(--v5-line) 0);
   }
   .v5-spine::after {

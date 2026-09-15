@@ -1,8 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
-import { V5_CASES, V5_PIPELINE_STAGES, V5_PROOF, V5_PROOF_HIGHLIGHT, V5_SECTIONS, type V5Case } from '@/content/v5';
+import { V5_CASES, V5_PIPELINE_STAGES, V5_PROOF, V5_PROOF_HIGHLIGHT, V5_SECTIONS, type V5Case, type V5CaseTool } from '@/content/v5';
 import MaskedLines from './MaskedLines';
 import BlurIn from './BlurIn';
 import Reveal from '@/components/site/Reveal';
@@ -77,7 +78,45 @@ function WorkNumbers() {
   );
 }
 
-/** Isi satu case, dipakai mode pin dan mode tab biasa. */
+/** Monogram 2 huruf untuk tool tanpa logo (Python→PY, Next.js→NE). */
+function toolMono(name: string) {
+  const mono = name.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase();
+  return mono || '•';
+}
+
+/** Daftar isi rel tools, dipakai rel inline CaseBody dan rel pin.
+ *  Ikon dibungkus .v5-tooltile supaya 3 gerak tidak tabrakan: li = pop
+ *  entrance, tile = float idle, img = hover spring (properti transform
+ *  yang sama tidak boleh dipegang dua animasi sekaligus). */
+function ToolsList({ tools }: { tools: V5CaseTool[] }) {
+  return (
+    <ul>
+      {tools.map((t) => (
+        <li key={t.name} title={t.name}>
+          <span className={t.dark ? 'v5-tooltile v5-tooltile--dark' : 'v5-tooltile'} aria-hidden="true">
+            {t.logo ? (
+              <Image src={t.logo} alt="" width={22} height={22} sizes="22px" loading="lazy" />
+            ) : (
+              <span className="v5-toolbadge">{toolMono(t.name)}</span>
+            )}
+          </span>
+          <span>{t.name}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Rel pin: fixed di gutter kiri, hidup hanya saat workpin terlihat
+ *  (data-inview di wrap), isi mengikuti case aktif. me-remount per case. */
+function PinRail({ c }: { c: V5Case }) {
+  return (
+    <aside className="v5-case__tools v5-case__tools--pin" aria-label={`Tools used in ${c.title}`}>
+      <p className="v5-case__tools-label">Stack</p>
+      <ToolsList tools={c.tools} />
+    </aside>
+  );
+}
 function CaseBody({ c }: { c: V5Case }) {
   return (
     <>
@@ -120,6 +159,42 @@ function CaseBody({ c }: { c: V5Case }) {
             </li>
           ))}
         </ul>
+      ) : null}
+      <aside className="v5-case__tools" aria-label={`Tools used in ${c.title}`}>
+        <p className="v5-case__tools-label">Stack</p>
+        <ToolsList tools={c.tools} />
+      </aside>
+      {c.media.length ? (
+        <div className="v5-case__media" aria-label="Case visuals">
+          {c.media.map((m) => (
+            <figure key={m.src} className="v5-case__shot">
+              {m.href ? (
+                <a href={m.href} target="_blank" rel="noreferrer" aria-label={m.caption ?? c.title}>
+                  <span className="v5-case__frame">
+                    <Image
+                      src={m.src}
+                      alt={m.caption ?? c.title}
+                      fill
+                      sizes="(max-width: 1100px) 100vw, 20rem"
+                      loading="lazy"
+                    />
+                  </span>
+                </a>
+              ) : (
+                <span className="v5-case__frame">
+                  <Image
+                    src={m.src}
+                    alt={m.caption ?? c.title}
+                    fill
+                    sizes="(max-width: 1100px) 100vw, 20rem"
+                    loading="lazy"
+                  />
+                </span>
+              )}
+              {m.caption ? <figcaption className="v5-case__cap">{m.caption}</figcaption> : null}
+            </figure>
+          ))}
+        </div>
       ) : null}
     </>
   );
@@ -172,6 +247,15 @@ export default function Work() {
       const p = Math.min(Math.max(-rect.top / scrollable, 0), 1);
       setProgress(p);
       setActive(Math.min(total - 1, Math.floor(p * total)));
+      /* Visibilitas rel pin mengikuti progres: 0 tepat saat pin mulai
+         mengunci (rel agent 01 fade-in) dan 0 menjelang pin lepas (rel
+         social 04 fade-out). Tepi 5% traverse. */
+      const rail = Math.min(1, p / 0.05, (1 - p) / 0.05);
+      el.style.setProperty('--rail', rail.toFixed(3));
+      /* Gerbang visibilitas rel pin: fixed tidak tahu section, jadi wrap
+         menandai dirinya sendiri setiap frame ukur. */
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      if (el.dataset.inview !== String(inView)) el.dataset.inview = String(inView);
     };
     const onScroll = () => {
       cancelAnimationFrame(raf);
@@ -259,6 +343,7 @@ export default function Work() {
     <section className="v5-section" id="work" aria-labelledby={titleId}>
       <div className="v5-shell">
         <div className="v5-workpin" ref={wrapRef}>
+          <PinRail key={c.id} c={c} />
           <div className="v5-workpin__stage">
             <Reveal>
               <p className="v5-eyebrow">{section.eyebrow}</p>
