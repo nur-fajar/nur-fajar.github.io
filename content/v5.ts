@@ -311,10 +311,12 @@ export const V5_ABOUT = {
 
 export const V5_FOUNDER_MAILTO =
   `mailto:${CONTACT.email}` +
-  '?subject=Intro%20at%20%5Bcompany%5D' +
+  '?subject=Opportunity%20to%20work%20at%20%5Bcompany%5D' +
   '&body=' +
   encodeURIComponent(
-    'Hi Fajar,\n\nWhat eats most time right now:\nTeam size + tools:\nLink to product or site:\nTimeline:\n',
+    'Hi Fajar,\n\n' +
+      "I'm interested in your profile and skillset. I'd love to hear how you could bring value to our company — we'd like to discuss it further.\n\n" +
+      'Best regards,\n[Name]\n[Role], [Company]',
   );
 
 export const V5_CONTACT_ROWS = [

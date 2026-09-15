@@ -42,8 +42,11 @@ function mulberry32(seed: number): () => number {
 const f = (n: number) => Math.round(n * 10) / 10;
 
 /**
- * Satu sisi dari (ax,ay) ke (bx,by) dengan tonjolan (gx,gy) di tengah.
- * Tonjolan yang sama menghasilkan kurva yang sama, di keping maupun rute.
+ * Satu sisi dari (ax,ay) ke (bx,by) dengan knob klasik ala puzzle karton:
+ * leher sempit + kepala bulat besar (tonjolan ~30% sel, bukan gundukan
+ * dangkal). Arah tonjolan HANYA dari tanda (gx,gy) — besarnya konstan —
+ * jadi kurva identik untuk keping maupun rute cahaya selama tandanya sama.
+ * Simetris terhadap titik tengah sisi: dibalik arah pun jalurnya sama.
  */
 function seg2(
   ax: number,
@@ -59,18 +62,24 @@ function seg2(
   const len = Math.hypot(dx, dy);
   const ux = dx / len;
   const uy = dy / len;
-  const p1x = ax + dx * 0.36;
-  const p1y = ay + dy * 0.36;
-  const p2x = ax + dx * 0.64;
-  const p2y = ay + dy * 0.64;
-  const apx = (p1x + p2x) / 2 + gx;
-  const apy = (p1y + p2y) / 2 + gy;
+  const gl = Math.hypot(gx, gy);
+  const nx = gx / gl;
+  const ny = gy / gl;
+  const mx = (ax + bx) / 2;
+  const my = (ay + by) / 2;
+  /* Leher: 12 unit ke tiap sisi dari tengah; puncak: 30 unit keluar. */
+  const axn = mx - ux * 12;
+  const ayn = my - uy * 12;
+  const bxn = mx + ux * 12;
+  const byn = my + uy * 12;
+  const hx = mx + nx * 30;
+  const hy = my + ny * 30;
   return (
-    `L${f(p1x)} ${f(p1y)}` +
-    `C${f(p1x + gx * 0.35)} ${f(p1y + gy * 0.35)} ` +
-    `${f(apx - ux * len * 0.09)} ${f(apy - uy * len * 0.09)} ${f(apx)} ${f(apy)}` +
-    `C${f(apx + ux * len * 0.09)} ${f(apy + uy * len * 0.09)} ` +
-    `${f(p2x + gx * 0.35)} ${f(p2y + gy * 0.35)} ${f(p2x)} ${f(p2y)}` +
+    `L${f(axn)} ${f(ayn)}` +
+    `C${f(axn + nx * 15)} ${f(ayn + ny * 15)} ` +
+    `${f(hx - ux * 15)} ${f(hy - uy * 15)} ${f(hx)} ${f(hy)}` +
+    `C${f(hx + ux * 15)} ${f(hy + uy * 15)} ` +
+    `${f(bxn + nx * 15)} ${f(byn + ny * 15)} ${f(bxn)} ${f(byn)}` +
     `L${f(bx)} ${f(by)}`
   );
 }
@@ -95,7 +104,7 @@ function buildSeams(): Seams {
 }
 
 const SEAMS = buildSeams();
-/** Flat minimal: tonjolan sangat dangkal, tekstur nyaris datar. */
+/** Tanda arah tonjolan; besar knob konstan di seg2 (yang dipakai cuma tanda). */
 const K = CELL * 0.08;
 
 interface Cell {
@@ -184,7 +193,7 @@ function buildRoute(seed: number, startC: number, startR: number, steps: number)
       gx = tab * K;
     }
     d += seg2(c * CELL, r * CELL, nc * CELL, nr * CELL, gx, gy);
-    length += CELL + (tab ? 38 : 0);
+    length += CELL + (tab ? 45 : 0);
     used.add(a !== 0 ? `h${Math.min(c, nc)}-${r}` : `v${c}-${Math.min(r, nr)}`);
     c = nc;
     r = nr;
@@ -198,6 +207,7 @@ const PATHS = ROUTES.map((t) => ({ ...t, ...buildRoute(t.seed, t.start[0], t.sta
 
 export default function PuzzleField() {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const cellRefs = useRef<(SVGPathElement | null)[]>([]);
 
   useEffect(() => {
     if (!window.matchMedia('(pointer: fine)').matches) return;
@@ -205,10 +215,17 @@ export default function PuzzleField() {
     const el = wrapRef.current;
     if (!el) return;
     const lights = el.querySelector('.v5-puzzlefield__lights');
-    let tx = 0;
-    let ty = 0;
-    let cx = 0;
-    let cy = 0;
+    const base = el.querySelector('.v5-puzzlefield__base');
+    /* State tilt per keping: s = intensitas 0..1 (lerp menuju falloff),
+       rest = 1 bila keping sudah diam (lewati tulis DOM). */
+    const N = CELLS.length;
+    const cur = new Float32Array(N);
+    const rest = new Uint8Array(N).fill(1);
+    let fx = 0;
+    let fy = 0;
+    let inField = false;
+    /* Tilt global satu kesatuan DICABUT: ia menutupi tilt per keping.
+       Yang tersisa tilt per keping + glow + laju cahaya. */
     let raf = 0;
     /* Energi zona: kecepatan pointer menaikkan tilt gain, glow, dan laju
        cahaya rute; meluruh sendiri ke 1 saat pointer diam. Semuanya lewat
@@ -233,13 +250,8 @@ export default function PuzzleField() {
       raf = 0;
     };
     const tick = () => {
-      cx += (tx - cx) * 0.08;
-      cy += (ty - cy) * 0.08;
       energy += (target - energy) * 0.07;
       target += (1 - target) * 0.05;
-      const gain = 1 + (energy - 1) * 0.3;
-      el.style.setProperty('--v5-tiltx', `${(-cy * 2.2 * gain).toFixed(3)}deg`);
-      el.style.setProperty('--v5-tilty', `${(cx * 2.6 * gain).toFixed(3)}deg`);
       el.style.setProperty('--v5-glow', Math.min(0.6 + energy * 0.25, 1).toFixed(3));
       if (lights)
         lights.getAnimations().forEach((a) => {
@@ -249,12 +261,61 @@ export default function PuzzleField() {
             /* WAAPI belum siap: abaikan satu frame */
           }
         });
-      if (
-        Math.abs(tx - cx) < 0.001 &&
-        Math.abs(ty - cy) < 0.001 &&
-        Math.abs(target - 1) < 0.01 &&
-        Math.abs(energy - 1) < 0.01
-      )
+      /* Tilt per keping: yang dekat kursor terangkat + miring menjauhi
+         pointer (falloff kuadrat, radius 210 unit viewBox). Mapping
+         client→viewBox menghitung crop slice supaya tepat di semua
+         aspek rasio. Cuma keping aktif yang disentuh DOM-nya. */
+      let anyCell = false;
+      if (base) {
+        const r = base.getBoundingClientRect();
+        const sc = Math.max(r.width / (COLS * CELL), r.height / (ROWS * CELL));
+        const ox = (r.width - COLS * CELL * sc) / 2;
+        const oy = (r.height - ROWS * CELL * sc) / 2;
+        const sx = (fx - r.left - ox) / sc;
+        const sy = (fy - r.top - oy) / sc;
+        const R = 210;
+        for (let i = 0; i < N; i++) {
+          const cell = CELLS[i];
+          const ccx = cell.c * CELL + CELL / 2;
+          const ccy = cell.r * CELL + CELL / 2;
+          let f = 0;
+          let nx = 0;
+          let ny = 0;
+          if (inField) {
+            const dx = ccx - sx;
+            const dy = ccy - sy;
+            const d = Math.hypot(dx, dy);
+            if (d < R && d > 0.01) {
+              const t = 1 - d / R;
+              f = t * t;
+              nx = dx / d;
+              ny = dy / d;
+            }
+          }
+          const c0 = cur[i];
+          const c1 = c0 + (f - c0) * (f > c0 ? 0.18 : 0.1);
+          if (c1 < 0.004) {
+            if (!rest[i]) {
+              rest[i] = 1;
+              cur[i] = 0;
+              cellRefs.current[i]?.style.setProperty('transform', '');
+            }
+            continue;
+          }
+          const node = cellRefs.current[i];
+          if (!node) {
+            cur[i] = 0;
+            continue;
+          }
+          cur[i] = c1;
+          rest[i] = 0;
+          anyCell = true;
+          node.style.transform =
+            `translate3d(${(nx * 7 * c1).toFixed(2)}px, ${(ny * 7 * c1).toFixed(2)}px, ${(14 * c1).toFixed(2)}px) ` +
+            `rotateX(${(-ny * 10 * c1).toFixed(2)}deg) rotateY(${(nx * 12 * c1).toFixed(2)}deg)`;
+        }
+      }
+      if (Math.abs(target - 1) < 0.01 && Math.abs(energy - 1) < 0.01 && !anyCell)
         settle();
       else raf = requestAnimationFrame(tick);
     };
@@ -263,8 +324,13 @@ export default function PuzzleField() {
     };
     const move = (e: PointerEvent) => {
       const rect = el.getBoundingClientRect();
-      tx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-      ty = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      fx = e.clientX;
+      fy = e.clientY;
+      inField =
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom;
       const now = performance.now();
       if (pt > 0) {
         const dt = Math.max((now - pt) / 1000, 0.001);
@@ -280,10 +346,9 @@ export default function PuzzleField() {
       wake();
     };
     const leave = () => {
-      tx = 0;
-      ty = 0;
       target = 1;
       pt = 0;
+      inField = false;
       el.classList.remove('is-live');
       wake();
     };
@@ -300,8 +365,18 @@ export default function PuzzleField() {
   return (
     <div className="v5-puzzlefield" aria-hidden="true" ref={wrapRef}>
       <svg className="v5-puzzlefield__base" viewBox={`0 0 ${COLS * CELL} ${ROWS * CELL}`} preserveAspectRatio="xMidYMid slice" focusable="false">
-        {CELLS.map((cell) => (
-          <path key={`${cell.c}-${cell.r}`} d={cell.d} fill={cell.fill} stroke={SEAM} strokeWidth="2" strokeLinejoin="round" />
+        {CELLS.map((cell, i) => (
+          <path
+            key={`${cell.c}-${cell.r}`}
+            ref={(n) => {
+              cellRefs.current[i] = n;
+            }}
+            d={cell.d}
+            fill={cell.fill}
+            stroke={SEAM}
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+          />
         ))}
       </svg>
       {/* Tiga cahaya, tiap rute satu segmen yang mengembara lintas keping.
