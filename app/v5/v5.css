@@ -67,6 +67,32 @@
   padding-block: clamp(4rem, 9vw, 7.5rem);
   scroll-margin-top: 5.5rem;
 }
+/* Paper shift: Work dan About memakai kertas hangat sebagai "keping"
+   bergantian; divider di atasnya memakai tone section berikutnya. */
+#about {
+  background: var(--v5-warm);
+}
+/* Work: kanvas blueprint (grid biru samar) untuk schematic pipeline. */
+#work {
+  background-color: var(--v5-warm);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--v5-blue) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--v5-blue) 7%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+/* Seam divider: pita 46px berisi garis seam puzzle deterministik. */
+.v5-seam {
+  height: 46px;
+  display: flex;
+}
+.v5-seam svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.v5-seam--warm {
+  background: var(--v5-warm);
+}
 /* Section berlatar: backdrop full-bleed di belakang, isi di atasnya. */
 .v5-section--backdrop {
   position: relative;
@@ -511,7 +537,7 @@ html.v5-nav-open {
   pointer-events: none;
 }
 .v5-puzzlefield.is-live .v5-puzzlefield__glow {
-  opacity: 1;
+  opacity: var(--v5-glow, 1);
 }
 .v5-route {
   fill: none;
@@ -564,6 +590,10 @@ html.v5-nav-open {
 /* Foto profil duduk pas di tempat mark, seukuran x-height teks; "Fajar"
    tampil kecil ala signature, serif italic biru nyambung dengan line-nya.
    Terlihat sejak awal, tanpa morph dan tanpa hold. */
+.v5-mega__sig {
+  display: inline-block;
+  white-space: nowrap;
+}
 .v5-mega__mark {
   position: relative;
   display: inline-flex;
@@ -571,8 +601,8 @@ html.v5-nav-open {
   justify-content: center;
   width: 0.74em;
   height: 0.74em;
-  vertical-align: -0.04em;
-  margin-left: 0.1em;
+  vertical-align: -0.1em;
+  margin-left: 0.14em;
 }
 .v5-mega__face {
   position: absolute;
@@ -584,11 +614,27 @@ html.v5-nav-open {
 }
 .v5-mega__fajar {
   display: inline-block;
-  margin-left: 0.26em;
+  margin-left: 0.14em;
   font-size: 0.52em;
   font-weight: 300;
   color: inherit;
   white-space: nowrap;
+}
+/* Baris serif butuh ruang descender lebih (huruf "j" pada "Fajar" dan
+   lingkaran avatar kepotong overflow mask 0.12em): tambah padding bawah
+   khusus serif, margin negatif menarik ritme kembali. Selektor ganda
+   disengaja: duplikat .v5-mega__line di bawah file ini kalau tidak
+   akan menang karena urutan source. */
+.v5-mega__line.v5-mega__line--serif {
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
+}
+/* Halo paper tipis: headline terangkat dari cahaya puzzle di belakangnya
+   tanpa scrim kotak. */
+.v5-mega {
+  text-shadow:
+    0 0 18px var(--v5-paper),
+    0 0 64px var(--v5-paper);
 }
 /* capability menu: three lanes down to the section */
 .v5-hero__menu {
@@ -733,7 +779,7 @@ html.v5-nav-open {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  background: var(--v5-ink);
+  background-color: var(--v5-ink);
   color: var(--v5-white);
   text-decoration: none;
   font-weight: 600;
@@ -744,9 +790,23 @@ html.v5-nav-open {
   border: none;
   box-shadow: 0 1px 3px rgba(16, 20, 24, 0.08);
 }
+/* Fill-slide: lapisan biru meluncur kiri-kanan di atas dasar tinta lewat
+   background-size (tanpa pseudo, tanpa ubah markup). Ghost dikecualikan. */
+.v5-btn:not(.v5-btn--ghost) {
+  background-image: linear-gradient(var(--v5-blue), var(--v5-blue));
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 50%;
+  transition:
+    background-size 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 0.3s ease,
+    transform 0.15s ease;
+}
 .v5-btn:hover {
-  background: var(--v5-blue);
   box-shadow: 0 12px 28px rgba(16, 20, 24, 0.24);
+}
+.v5-btn:not(.v5-btn--ghost):hover {
+  background-size: 100% 100%;
 }
 .v5-btn:active {
   transform: translateY(1px);
@@ -787,6 +847,23 @@ html.v5-nav-open {
   display: flex;
   width: max-content;
   animation: v5-ticker 30s linear infinite;
+  will-change: transform;
+}
+/* Mode driven: animasi CSS mati (fallback no-JS), offset dikemudikan
+   inline per frame oleh Hero; grabbed = sedang di-drag. */
+.v5-ticker__track.is-driven {
+  animation: none;
+}
+.v5-ticker {
+  cursor: grab;
+}
+.v5-ticker__track.is-grabbed {
+  cursor: grabbing;
+}
+@media (prefers-reduced-motion: reduce) {
+  .v5-ticker__track {
+    animation: none;
+  }
 }
 .v5-ticker:hover .v5-ticker__track {
   animation-play-state: paused;
@@ -874,6 +951,26 @@ html.v5-nav-open {
   background: var(--v5-blue);
   border-color: var(--v5-blue);
   color: var(--v5-white);
+}
+/* Interlock: lidah keping di tepi atas tiap kartu (kecuali pertama),
+   berwarna seperti kartu DI ATASNYA — kartu terlihat saling mengunci.
+   Murni di dalam border (overflow hidden tetap aman). */
+.v5-stack__card:not(:first-child)::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 3rem;
+  width: 34px;
+  height: 15px;
+  border-radius: 0 0 999px 999px;
+  border: 1px solid var(--v5-ink);
+  border-top: none;
+}
+.v5-stack__card--automate::after {
+  background: var(--v5-card);
+}
+.v5-stack__card--amplify::after {
+  background: var(--v5-ink);
 }
 .v5-stack__num {
   position: absolute;
@@ -1141,6 +1238,30 @@ html.v5-nav-open {
   color: var(--v5-white);
   font-size: 0.7rem;
 }
+/* Schematic hidup: tiap stage naik berurutan + dot menyala bergiliran
+   saat case me-remount (ganti tab / pin scroll). Tanpa JS. */
+@media (prefers-reduced-motion: no-preference) {
+  .v5-pipe__stage {
+    animation: v5-rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+  .v5-pipe__dot {
+    animation: v5-pipe-dot 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(0.15s + var(--i, 0) * 90ms);
+  }
+}
+@keyframes v5-pipe-dot {
+  from {
+    background: var(--v5-line);
+    color: transparent;
+    transform: scale(0.6);
+  }
+  to {
+    background: var(--v5-ink);
+    color: var(--v5-white);
+    transform: none;
+  }
+}
 .v5-chips {
   list-style: none;
   margin: 1.2rem 0 0;
@@ -1241,7 +1362,107 @@ html.v5-nav-open {
   color: var(--v5-red);
 }
 
-/* voices: spotlight rotator, one giant quote, strict rhythm */
+/* voices: dinding marquee dua arah, semua suara terlihat sekaligus. */
+.v5-wall {
+  margin: 2.5rem 0 0;
+  display: grid;
+  gap: 1rem;
+}
+.v5-wall__row {
+  overflow: hidden;
+}
+.v5-wall__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.v5-wall__track--fwd {
+  animation: v5-wall-fwd 46s linear infinite;
+}
+.v5-wall__track--rev {
+  animation: v5-wall-fwd 52s linear infinite reverse;
+}
+.v5-wall:hover .v5-wall__track,
+.v5-wall:focus-within .v5-wall__track {
+  animation-play-state: paused;
+}
+@keyframes v5-wall-fwd {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.v5-wall__run {
+  display: flex;
+  flex: none;
+  gap: 1rem;
+  padding-right: 1rem;
+}
+.v5-wall__card {
+  margin: 0;
+  flex: none;
+  width: min(24rem, 82vw);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.2rem;
+  background: var(--v5-card);
+  border: 1px solid var(--v5-line);
+  border-radius: var(--v5-r-md);
+  padding: 1.4rem;
+}
+.v5-wall__quote {
+  margin: 0;
+}
+.v5-wall__quote p {
+  margin: 0;
+  font-family: var(--font-v5-display, var(--font-v5-display-fb));
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.12rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+.v5-wall__hl {
+  background: var(--v5-yellow);
+  color: inherit;
+  padding: 0 0.15em;
+  border-radius: 4px;
+}
+.v5-wall__who {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.v5-wall__id {
+  display: grid;
+  gap: 0.1rem;
+}
+.v5-wall__name {
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+.v5-wall__role {
+  font-size: 0.8rem;
+  color: var(--v5-muted);
+}
+@media (prefers-reduced-motion: reduce) {
+  .v5-wall__track--fwd,
+  .v5-wall__track--rev {
+    animation: none;
+  }
+  .v5-wall__track {
+    width: auto;
+    flex-wrap: wrap;
+  }
+  .v5-wall__run {
+    flex-wrap: wrap;
+  }
+  .v5-wall__card {
+    flex: 1 1 min(24rem, 100%);
+    width: auto;
+  }
+}
 .v5-spot {
   margin: 2.5rem 0 0;
 }
@@ -1443,6 +1664,47 @@ html.v5-nav-open {
 }
 
 /* about: vertical chapter stack, ghost numbers, no sideways scroll */
+.v5-tlwrap {
+  position: relative;
+}
+/* Rel progres timeline: garis terisi + keping berjalan (--p dari About).
+   Vertikal di mobile, hairline horizontal di strip desktop. */
+.v5-spine {
+  position: absolute;
+  left: -1.1rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(var(--v5-red) calc(var(--p, 0) * 100%), var(--v5-line) 0);
+}
+.v5-spine::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(var(--p, 0) * 100%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--v5-paper);
+  border: 3px solid var(--v5-red);
+  transform: translate(-50%, -50%);
+}
+@media (min-width: 980px) {
+  .v5-spine {
+    left: 0;
+    right: 0;
+    top: -0.9rem;
+    bottom: auto;
+    width: auto;
+    height: 2px;
+    background: linear-gradient(90deg, var(--v5-red) calc(var(--p, 0) * 100%), var(--v5-line) 0);
+  }
+  .v5-spine::after {
+    left: calc(var(--p, 0) * 100%);
+    top: 50%;
+  }
+}
 .v5-timeline {
   list-style: none;
   margin: 2.5rem 0 0;
@@ -1463,6 +1725,18 @@ html.v5-nav-open {
 }
 .v5-chapter:hover {
   border-top-color: var(--v5-ink);
+}
+/* Babak aktif (di viewport, ditandai observer di About): rel menyala,
+   dot terisi, logo berwarna. */
+.v5-chapter.is-active {
+  border-top-color: var(--v5-ink);
+}
+.v5-chapter.is-active::before {
+  background: var(--v5-red);
+}
+.v5-chapter.is-active .v5-chapter__logos img {
+  filter: none;
+  opacity: 1;
 }
 /* Nomor hantu tiap babak, gema ghost numeral kartu Capabilities. */
 .v5-chapter__num {
@@ -1697,6 +1971,13 @@ html.v5-nav-open {
   text-decoration: none;
   color: var(--v5-ink);
 }
+/* Pembungkus magnetik: full-width flex biar email raksasa tetap center,
+   bukan shrink-wrap inline-block. */
+#contact .v3-magnetic {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
 .v5-mailmega__addr {
   font-family: var(--font-v5-display, var(--font-v5-display-fb));
   font-style: italic;
@@ -1717,6 +1998,18 @@ html.v5-nav-open {
 .v5-mailmega:hover .v5-mailmega__addr {
   color: var(--v5-blue);
   background-size: 100% 3px;
+}
+/* Fill-text judul contact: dua lapis clip-teks (biru tumbuh di atas
+   tinta penuh). Aktif hanya dengan .is-fill dari JS. */
+#contact .v5-section__title.is-fill .v5-mask__line {
+  background-image:
+    linear-gradient(var(--v5-blue), var(--v5-blue)),
+    linear-gradient(var(--v5-ink), var(--v5-ink));
+  background-repeat: no-repeat;
+  background-size: 0% 100%, 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 .v5-link-caps {
   display: inline-flex;
@@ -1786,6 +2079,76 @@ html.v5-nav-open {
   opacity: 0.6;
 }
 
+/* Command palette: overlay + panel kartu di atas segalanya. */
+.v5-cmd {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+}
+.v5-cmd__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--v5-overlay);
+}
+.v5-cmd__panel {
+  position: relative;
+  width: min(34rem, 100% - 2rem);
+  margin: 15vh auto 0;
+  background: var(--v5-card);
+  border: 1px solid var(--v5-ink);
+  border-radius: var(--v5-r-md);
+  box-shadow: 0 32px 64px -24px rgba(16, 20, 24, 0.45);
+  overflow: hidden;
+}
+.v5-cmd__input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--v5-line);
+  background: transparent;
+  color: var(--v5-ink);
+  font: inherit;
+  font-size: 1rem;
+  padding: 1rem 1.2rem;
+  outline: none;
+}
+.v5-cmd__list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+.v5-cmd__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--v5-ink);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.v5-cmd__item.is-active {
+  background: var(--v5-warm);
+}
+.v5-cmd__hint {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.72rem;
+  color: var(--v5-muted);
+}
+.v5-cmd__empty {
+  padding: 1rem;
+  color: var(--v5-muted);
+  font-size: 0.9rem;
+}
 /* hire dock (mobile-first, hidden on desktop until scroll? shown mobile only) */
 .v5-dock {
   position: fixed;
@@ -1800,6 +2163,11 @@ html.v5-nav-open {
 }
 .v5-dock.is-visible {
   transform: none;
+}
+/* Pembungkus magnetik: flex penuh biar tombol dock tidak shrink-wrap. */
+.v5-dock .v3-magnetic {
+  display: flex;
+  flex: 1;
 }
 .v5-dock__ghost {
   flex: 1;

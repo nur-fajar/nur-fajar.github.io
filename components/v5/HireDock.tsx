@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Magnetic from '@/components/v3/Magnetic';
 
 /**
  * Mobile sticky quick-action dock. Appears after the hero, hides while
@@ -41,9 +42,11 @@ export default function HireDock() {
 
   return (
     <div ref={dockRef} className={`v5-dock${visible ? ' is-visible' : ''}`} aria-hidden={!visible}>
-      <a className="v5-dock__ghost" href="#work" tabIndex={visible ? undefined : -1}>
-        See work
-      </a>
+      <Magnetic strength={0.2}>
+        <a className="v5-dock__ghost" href="#work" tabIndex={visible ? undefined : -1}>
+          See work
+        </a>
+      </Magnetic>
     </div>
   );
 }

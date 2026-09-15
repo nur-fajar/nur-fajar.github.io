@@ -21,6 +21,7 @@ export default function About() {
   const section = findSection(V5_SECTIONS, 'about');
   const reduced = useReducedMotion();
   const stripRef = useRef<HTMLOListElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!window.matchMedia('(min-width: 980px)').matches) return;
@@ -56,8 +57,57 @@ export default function About() {
     };
   }, []);
 
+  /* Babak yang sedang terlihat menandai dirinya is-active: logonya
+     berwarna dan relnya menyala. Murni informatif, jalan juga tanpa
+     motion (kelas CSS, bukan animasi). */
+  useEffect(() => {
+    const root = stripRef.current;
+    if (!root) return;
+    const items = [...root.querySelectorAll('.v5-chapter')];
+    if (!items.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) entry.target.classList.toggle('is-active', entry.isIntersecting);
+      },
+      { threshold: 0.35 },
+    );
+    items.forEach((item) => io.observe(item));
+    return () => io.disconnect();
+  }, []);
+
+  /* Rel progres timeline: --p 0→1 saat babak melewati viewport.
+     Sumbu vertikal di mobile, hairline horizontal di strip desktop (CSS).
+     Scroll-driven, bukan animasi otonom: aman untuk reduced motion. */
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    const list = stripRef.current;
+    if (!wrap || !list) return;
+    let raf = 0;
+    const measure = () => {
+      const r = list.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = Math.max(r.height - vh * 0.5, 1);
+      const p = Math.min(Math.max((vh * 0.75 - r.top) / total, 0), 1);
+      wrap.style.setProperty('--p', p.toFixed(3));
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
+
   return (
     <Section section={section} stickyHead>
+      <div className="v5-tlwrap" ref={wrapRef}>
+        <span className="v5-spine" aria-hidden="true" />
       <ol
         className="v5-timeline"
         ref={stripRef}
@@ -94,6 +144,7 @@ export default function About() {
           </m.li>
         ))}
       </ol>
+      </div>
       <ul className="v5-about__tools" aria-label="Working stack">
         {[...V5_TOOLS, ...V5_TOOLS_MORE].map((tool) => (
           <li key={tool.name}>

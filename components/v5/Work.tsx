@@ -12,6 +12,49 @@ import Section, { findSection } from './Section';
  * Numbers with method, living at the foot of Work instead of its own
  * section: three rows (reach, quality, outcome), each with its denominator.
  */
+function ProofValue({ value }: { value: string }) {
+  const ref = useRef<HTMLElement>(null);
+  const [text, setText] = useState(value);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const m = value.match(/^([\d.]+)(.*)$/);
+    if (!m) return;
+    const end = parseFloat(m[1]);
+    const suffix = m[2] ?? '';
+    const decimals = m[1].includes('.') ? (m[1].split('.')[1]?.length ?? 0) : 0;
+    if (!Number.isFinite(end)) return;
+    let raf = 0;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        const t0 = performance.now();
+        const dur = 1200;
+        const step = (t: number) => {
+          const p = Math.min((t - t0) / dur, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          setText(`${(end * eased).toFixed(decimals)}${suffix}`);
+          if (p < 1) raf = requestAnimationFrame(step);
+        };
+        raf = requestAnimationFrame(step);
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, [value]);
+  return (
+    <dd className="v5-proof__value" ref={ref}>
+      {text}
+    </dd>
+  );
+}
+
 function WorkNumbers() {
   return (
     <div className="v5-worknumbers">
@@ -20,13 +63,13 @@ function WorkNumbers() {
         {V5_PROOF.map((cell) => (
           <div key={cell.label} className="v5-proofrow">
             <dt>{cell.label}</dt>
-            <dd className="v5-proof__value">{cell.value}</dd>
+            <ProofValue value={cell.value} />
             <dd className="v5-proof__method">{cell.method}</dd>
           </div>
         ))}
         <div className="v5-proofrow v5-proofrow--hot">
           <dt>{V5_PROOF_HIGHLIGHT.label}</dt>
-          <dd className="v5-proof__value">{V5_PROOF_HIGHLIGHT.value}</dd>
+          <ProofValue value={V5_PROOF_HIGHLIGHT.value} />
           <dd className="v5-proof__method">{V5_PROOF_HIGHLIGHT.method}</dd>
         </div>
       </dl>
@@ -50,7 +93,7 @@ function CaseBody({ c }: { c: V5Case }) {
       {c.id === 'crm-pipeline' ? (
         <ol className="v5-pipe" aria-label="Simplified pipeline stages">
           {V5_PIPELINE_STAGES.map((stage, s) => (
-            <li key={stage} className="v5-pipe__stage">
+            <li key={stage} className="v5-pipe__stage" style={{ ['--i' as string]: s }}>
               <span className="v5-pipe__dot" aria-hidden="true">
                 {s + 1}
               </span>

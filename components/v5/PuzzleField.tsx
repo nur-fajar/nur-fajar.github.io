@@ -204,18 +204,58 @@ export default function PuzzleField() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const el = wrapRef.current;
     if (!el) return;
+    const lights = el.querySelector('.v5-puzzlefield__lights');
     let tx = 0;
     let ty = 0;
     let cx = 0;
     let cy = 0;
     let raf = 0;
+    /* Energi zona: kecepatan pointer menaikkan tilt gain, glow, dan laju
+       cahaya rute; meluruh sendiri ke 1 saat pointer diam. Semuanya lewat
+       CSS var + playbackRate (kompositor), tanpa menyentuh geometri keping.
+       ponytail: heuristik kasar (speed/2200, cap 3x), bukan fisika. */
+    let energy = 1;
+    let target = 1;
+    let px = 0;
+    let py = 0;
+    let pt = 0;
 
+    const settle = () => {
+      el.style.setProperty('--v5-glow', '1');
+      if (lights)
+        lights.getAnimations().forEach((a) => {
+          try {
+            (a as Animation).playbackRate = 1;
+          } catch {
+            /* WAAPI belum siap: abaikan */
+          }
+        });
+      raf = 0;
+    };
     const tick = () => {
       cx += (tx - cx) * 0.08;
       cy += (ty - cy) * 0.08;
-      el.style.setProperty('--v5-tiltx', `${(-cy * 2.2).toFixed(3)}deg`);
-      el.style.setProperty('--v5-tilty', `${(cx * 2.6).toFixed(3)}deg`);
-      if (Math.abs(tx - cx) < 0.001 && Math.abs(ty - cy) < 0.001) raf = 0;
+      energy += (target - energy) * 0.07;
+      target += (1 - target) * 0.05;
+      const gain = 1 + (energy - 1) * 0.3;
+      el.style.setProperty('--v5-tiltx', `${(-cy * 2.2 * gain).toFixed(3)}deg`);
+      el.style.setProperty('--v5-tilty', `${(cx * 2.6 * gain).toFixed(3)}deg`);
+      el.style.setProperty('--v5-glow', Math.min(0.6 + energy * 0.25, 1).toFixed(3));
+      if (lights)
+        lights.getAnimations().forEach((a) => {
+          try {
+            (a as Animation).playbackRate = energy;
+          } catch {
+            /* WAAPI belum siap: abaikan satu frame */
+          }
+        });
+      if (
+        Math.abs(tx - cx) < 0.001 &&
+        Math.abs(ty - cy) < 0.001 &&
+        Math.abs(target - 1) < 0.01 &&
+        Math.abs(energy - 1) < 0.01
+      )
+        settle();
       else raf = requestAnimationFrame(tick);
     };
     const wake = () => {
@@ -225,6 +265,15 @@ export default function PuzzleField() {
       const rect = el.getBoundingClientRect();
       tx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
       ty = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      const now = performance.now();
+      if (pt > 0) {
+        const dt = Math.max((now - pt) / 1000, 0.001);
+        const speed = Math.hypot(e.clientX - px, e.clientY - py) / dt;
+        target = 1 + Math.min(speed / 2200, 2);
+      }
+      px = e.clientX;
+      py = e.clientY;
+      pt = now;
       el.style.setProperty('--v5-gx', `${(((e.clientX - rect.left) / rect.width) * 100).toFixed(1)}%`);
       el.style.setProperty('--v5-gy', `${(((e.clientY - rect.top) / rect.height) * 100).toFixed(1)}%`);
       el.classList.add('is-live');
@@ -233,6 +282,8 @@ export default function PuzzleField() {
     const leave = () => {
       tx = 0;
       ty = 0;
+      target = 1;
+      pt = 0;
       el.classList.remove('is-live');
       wake();
     };
