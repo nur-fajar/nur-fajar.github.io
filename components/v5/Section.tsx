@@ -1,3 +1,4 @@
+import BlurIn from './BlurIn';
 import Reveal from '@/components/site/Reveal';
 import MaskedLines from './MaskedLines';
 import type { V5Section } from '@/content/v5';
@@ -32,9 +33,9 @@ export default function Section({
         <p className="v5-eyebrow">{section.eyebrow}</p>
       </Reveal>
       <MaskedLines id={titleId} lines={section.heading} />
-      <Reveal delay={0.14}>
-        <p className="v5-lede">{section.lede}</p>
-      </Reveal>
+      <BlurIn delay={0.14} className="v5-lede">
+        {section.lede}
+      </BlurIn>
       {headExtra}
     </>
   );

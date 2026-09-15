@@ -3,6 +3,7 @@ import About from '@/components/v5/About';
 import Capabilities from '@/components/v5/Capabilities';
 import Contact from '@/components/v5/Contact';
 import Hero from '@/components/v5/Hero';
+import SectionDivider from '@/components/v5/SectionDivider';
 import Voices from '@/components/v5/Voices';
 import Work from '@/components/v5/Work';
 import { V5_SEO_SUMMARY } from '@/content/v5';
@@ -21,10 +22,15 @@ export default function V5Page() {
   return (
     <>
       <Hero />
+      <SectionDivider />
       <Capabilities />
+      <SectionDivider tone="warm" />
       <Work />
+      <SectionDivider />
       <Voices />
+      <SectionDivider tone="warm" />
       <About />
+      <SectionDivider />
       <Contact />
     </>
   );
