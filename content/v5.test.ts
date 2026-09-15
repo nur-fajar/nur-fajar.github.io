@@ -5,6 +5,7 @@ import {
   V5_CASES,
   V5_CONTACT_CLOSE,
   V5_CONTACT_ROWS,
+  V5_FOUNDER_MAILTO,
   V5_HERO,
   V5_MAIL_CAPTION,
   V5_NAV,
@@ -39,6 +40,17 @@ describe('v5 copy rules', () => {
     for (const link of V5_NAV) {
       expect(ids.has(link.href.slice(1))).toBe(true);
     }
+  });
+
+  it('founder mailto menawarkan peluang peran dengan signature berstruktur', () => {
+    // Template homepage untuk peluang full-time: subject spesifik peran,
+    // body prosa friksi-nol + signature 3 baris penuntun format.
+    const mailto = decodeURIComponent(V5_FOUNDER_MAILTO);
+    expect(mailto).toContain('subject=Opportunity to work at [company]');
+    expect(mailto).toContain("I'm interested in your profile and skillset.");
+    expect(mailto).toContain('Best regards,');
+    expect(mailto).toContain('[Name]');
+    expect(mailto).toContain('[Role], [Company]');
   });
 
   it('proof is a locked curation of two ledger cells, not a mirror', () => {
