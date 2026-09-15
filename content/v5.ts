@@ -21,11 +21,12 @@ export interface V5NavLink {
 }
 
 export const V5_NAV: V5NavLink[] = [
-  { label: 'Capabilities', href: '#capabilities' },
-  { label: 'Work', href: '#work' },
-  { label: 'Referrals', href: '#voices' },
+  { label: 'Home', href: '#top' },
+  { label: 'What I do', href: '#capabilities' },
+  { label: 'Proof', href: '#work' },
+  { label: 'Kind words', href: '#voices' },
   { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Hire me', href: '#contact' },
 ];
 
 export const V5_HERO = {
@@ -103,6 +104,20 @@ export const V5_TOOLS_MORE: { name: string; logo: string }[] = [
   { name: 'Gemini', logo: '/logos/tools/gemini.png' },
 ];
 
+export interface V5CaseTool {
+  name: string;
+  /** Path logo di public/logos/tools; kosong = badge teks. */
+  logo?: string;
+  /** Logo terang (mis. putih): tile diberi latar gelap. */
+  dark?: boolean;
+}
+
+export interface V5CaseMediaItem {
+  src: string;
+  caption?: string;
+  href?: string;
+}
+
 export interface V5Case {
   id: string;
   index: string;
@@ -113,6 +128,10 @@ export interface V5Case {
   metrics: string[];
   links: { label: string; href: string }[];
   note?: string;
+  /** Rel kiri: tools yang dipakai di case ini. */
+  tools: V5CaseTool[];
+  /** Kolom kanan ujung: gambar menyusul, kosong = tidak render. */
+  media: V5CaseMediaItem[];
 }
 
 export const V5_CASES: V5Case[] = [
@@ -129,6 +148,15 @@ export const V5_CASES: V5Case[] = [
     ],
     metrics: [...CRM_PROJECT.metrics],
     links: [],
+    tools: [
+      { name: 'Python', logo: '/logos/tools/python.svg' },
+      { name: 'OpenAI', logo: '/logos/tools/openai.png' },
+      { name: 'Claude', logo: '/logos/tools/claude.png' },
+      { name: 'Gemini', logo: '/logos/tools/gemini.png' },
+      { name: 'GitHub', logo: '/logos/tools/github.png' },
+      { name: 'n8n', logo: '/logos/tools/n8n.png' },
+    ],
+    media: [],
   },
   {
     id: 'curriculum-engine',
@@ -144,6 +172,15 @@ export const V5_CASES: V5Case[] = [
     ],
     metrics: ['3 modules', '5 programs', '25+ live sessions', '150+ participants'],
     links: WORK.map((course) => ({ label: course.title, href: course.href ?? '#' })),
+    tools: [
+      { name: 'Smojo', logo: '/logos/tools/smojo.png', dark: true },
+      { name: 'Notion', logo: '/logos/tools/notion.png' },
+      { name: 'Miro', logo: '/logos/tools/miro.png' },
+      { name: 'Canva', logo: '/logos/tools/canva.png' },
+      { name: 'CapCut', logo: '/logos/tools/capcut.png' },
+      { name: 'WhatsApp', logo: '/logos/tools/whatsapp.svg' },
+    ],
+    media: [],
   },
   {
     id: 'web-builds',
@@ -162,6 +199,16 @@ export const V5_CASES: V5Case[] = [
       { label: 'Nadi wellbeing concept site', href: 'https://nadi-wellbeing.vercel.app/' },
       { label: 'Xcel Autodrive concept site', href: 'https://xcel-autodrive.vercel.app/' },
     ],
+    tools: [
+      { name: 'Next.js', logo: '/logos/tools/nextjs.svg' },
+      { name: 'TypeScript', logo: '/logos/tools/typescript.svg' },
+      { name: 'Supabase', logo: '/logos/tools/supabase.png' },
+      { name: 'Vercel', logo: '/logos/tools/vercel.png' },
+      { name: 'GitHub', logo: '/logos/tools/github.png' },
+      { name: 'OpenCode', logo: '/logos/tools/opencode.svg' },
+      { name: 'Claude Code', logo: '/logos/tools/claudecode.svg' },
+    ],
+    media: [],
   },
   {
     id: 'content-engine',
@@ -176,6 +223,13 @@ export const V5_CASES: V5Case[] = [
     metrics: ['4 alumni videos', '24 posts published'],
     links: [{ label: 'ai4impact.id on Instagram', href: 'https://www.instagram.com/ai4impact.id/' }],
     note: 'ai4impact is a community under Terra AI.',
+    tools: [
+      { name: 'Instagram', logo: '/logos/tools/instagram.svg' },
+      { name: 'CapCut', logo: '/logos/tools/capcut.png' },
+      { name: 'Canva', logo: '/logos/tools/canva.png' },
+      { name: 'OpenAI', logo: '/logos/tools/openai.png' },
+    ],
+    media: [],
   },
 ];
 

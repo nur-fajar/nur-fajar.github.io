@@ -12,6 +12,9 @@ import { V5_NAV } from '@/content/v5';
 export default function Nav() {
   const [active, setActive] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  /* #top tidak pernah jadi `current` (tidak ada section melewati garis di
+     paling atas): link Home aktif saat belum ada section yang lewat. */
+  const isActive = (href: string) => (href === '#top' ? active === null : active === href);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -124,8 +127,8 @@ export default function Nav() {
             <a
               key={link.href}
               href={link.href}
-              className={`v5-nav__link${active === link.href ? ' is-active' : ''}`}
-              aria-current={active === link.href ? 'true' : undefined}
+              className={`v5-nav__link${isActive(link.href) ? ' is-active' : ''}`}
+              aria-current={isActive(link.href) ? 'true' : undefined}
             >
               {link.label}
             </a>
@@ -177,11 +180,11 @@ export default function Nav() {
             {V5_NAV.map((link, i) => (
               <li key={link.href} className="v5-drawer__item" style={{ transitionDelay: open ? `${i * 55}ms` : '0ms' }}>
                 <a
-                  className={`v5-drawer__link${active === link.href ? ' is-active' : ''}`}
+                  className={`v5-drawer__link${isActive(link.href) ? ' is-active' : ''}`}
                   href={link.href}
                   onClick={() => setOpen(false)}
                   tabIndex={open ? undefined : -1}
-                  aria-current={active === link.href ? 'true' : undefined}
+                  aria-current={isActive(link.href) ? 'true' : undefined}
                 >
                   <span className="v5-drawer__num" aria-hidden="true">
                     {String(i + 1).padStart(2, '0')}

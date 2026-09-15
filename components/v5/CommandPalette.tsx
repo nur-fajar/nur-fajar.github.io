@@ -29,11 +29,11 @@ async function copyEmail() {
 
 const ACTIONS: CmdAction[] = [
   { id: 'top', label: 'Back to top', hint: '⤒', href: '#top' },
-  { id: 'capabilities', label: 'Go to Capabilities', hint: '01', href: '#capabilities' },
-  { id: 'work', label: 'Go to Work', hint: '02', href: '#work' },
-  { id: 'voices', label: 'Go to Referrals', hint: '03', href: '#voices' },
+  { id: 'capabilities', label: 'Go to What I do', hint: '01', href: '#capabilities' },
+  { id: 'work', label: 'Go to Proof', hint: '02', href: '#work' },
+  { id: 'voices', label: 'Go to Kind words', hint: '03', href: '#voices' },
   { id: 'about', label: 'Go to About', hint: '04', href: '#about' },
-  { id: 'contact', label: 'Go to Contact', hint: '05', href: '#contact' },
+  { id: 'contact', label: 'Go to Hire me', hint: '05', href: '#contact' },
   { id: 'copy', label: 'Copy email address', hint: '⧉', run: () => void copyEmail() },
   { id: 'mailto', label: `Email ${CONTACT.email}`, hint: '✉', href: V5_FOUNDER_MAILTO },
   { id: 'linkedin', label: 'Open LinkedIn', hint: '↗', href: CONTACT.linkedin, external: true },

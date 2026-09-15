@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { m, useReducedMotion } from 'framer-motion';
 import { V5_ABOUT, V5_SECTIONS, V5_TOOLS, V5_TOOLS_MORE } from '@/content/v5';
 import Section, { findSection } from './Section';
@@ -16,12 +16,33 @@ const CHAPTER_LOGOS = [
 
 /** About: sticky head, timeline strip with ghost numbers, then the stack.
  *  Tiap babak muncul per scroll (fade + rise, stagger), bukan sekaligus.
- *  Desktop: strip horizontal yang bisa di-drag; mobile: tetap vertikal. */
+ *  Desktop: section nge-pin (320vh) dan scroll halaman menggeser strip
+ *  horizontal Katie babak per babak — tidak bisa kelewat. Mobile /
+ *  reduced motion: alur vertikal biasa + drag. */
 export default function About() {
   const section = findSection(V5_SECTIONS, 'about');
   const reduced = useReducedMotion();
   const stripRef = useRef<HTMLOListElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const [pinned, setPinned] = useState(false);
+
+  /* Mode pin = pola yang sama dengan Work: desktop + pointer halus tanpa
+     reduced motion. Selain itu fallback alur biasa. */
+  useEffect(() => {
+    const mqW = window.matchMedia('(min-width: 980px)');
+    const mqP = window.matchMedia('(pointer: fine)');
+    const mqM = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const compute = () => setPinned(mqW.matches && mqP.matches && !mqM.matches);
+    compute();
+    mqW.addEventListener('change', compute);
+    mqP.addEventListener('change', compute);
+    mqM.addEventListener('change', compute);
+    return () => {
+      mqW.removeEventListener('change', compute);
+      mqP.removeEventListener('change', compute);
+      mqM.removeEventListener('change', compute);
+    };
+  }, []);
 
   useEffect(() => {
     if (!window.matchMedia('(min-width: 980px)').matches) return;
@@ -75,10 +96,60 @@ export default function About() {
     return () => io.disconnect();
   }, []);
 
+  /* Roda mouse = geser satu babak: wheel vertikal di atas strip
+     menggeser horizontal satu kartu (smooth + snap). Di ujung strip,
+     scroll dibiarkan lewat ke halaman. Hanya mouse presisi tanpa
+     reduced motion; akumulasi delta supaya satu flick = satu langkah. */
+  useEffect(() => {
+    if (pinned) return; // mode pin: scroll halaman yang mengemudikan strip
+    if (!window.matchMedia('(min-width: 980px)').matches) return;
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const strip = stripRef.current;
+    if (!strip || strip.children.length < 2) return;
+    let acc = 0;
+    let accTimer = 0;
+    let lockUntil = 0;
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey) return; // pinch-zoom: jangan ganggu
+      const now = performance.now();
+      if (now < lockUntil) {
+        e.preventDefault();
+        return;
+      }
+      acc += e.deltaY;
+      window.clearTimeout(accTimer);
+      accTimer = window.setTimeout(() => {
+        acc = 0;
+      }, 180);
+      if (Math.abs(acc) < 40) return;
+      const dir = Math.sign(acc);
+      acc = 0;
+      const step =
+        (strip.children[1] as HTMLElement).offsetLeft - (strip.children[0] as HTMLElement).offsetLeft;
+      if (step <= 0) return;
+      const max = strip.scrollWidth - strip.clientWidth;
+      if (max <= 0) return;
+      if ((dir < 0 && strip.scrollLeft <= 1) || (dir > 0 && strip.scrollLeft >= max - 1)) return;
+      const next = Math.min(
+        Math.max(Math.round(strip.scrollLeft / step) + dir, 0),
+        Math.round(max / step),
+      );
+      e.preventDefault();
+      lockUntil = now + 650;
+      strip.scrollTo({ left: Math.min(next * step, max), behavior: 'smooth' });
+    };
+    strip.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      window.clearTimeout(accTimer);
+      strip.removeEventListener('wheel', onWheel);
+    };
+  }, [pinned]);
   /* Rel progres timeline: --p 0→1 saat babak melewati viewport.
      Sumbu vertikal di mobile, hairline horizontal di strip desktop (CSS).
      Scroll-driven, bukan animasi otonom: aman untuk reduced motion. */
   useEffect(() => {
+    if (pinned) return; // mode pin: --p ditulis efek pin-drive di bawah
     const wrap = wrapRef.current;
     const list = stripRef.current;
     if (!wrap || !list) return;
@@ -102,17 +173,49 @@ export default function About() {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
     };
-  }, []);
+  }, [pinned]);
+
+  /* Pin-drive: panggung menempel selayar sementara scroll halaman
+     menggeser strip horizontal + mengisi rel --p. Pola rAF yang sama
+     dengan Work pin (tanpa ScrollTrigger, tanpa layout thrash). */
+  useEffect(() => {
+    if (!pinned) return;
+    const wrap = wrapRef.current;
+    const list = stripRef.current;
+    if (!wrap || !list) return;
+    let raf = 0;
+    const measure = () => {
+      const rect = wrap.getBoundingClientRect();
+      const travel = Math.max(wrap.offsetHeight - window.innerHeight, 1);
+      const p = Math.min(Math.max(-rect.top / travel, 0), 1);
+      const max = list.scrollWidth - list.clientWidth;
+      if (max > 0) list.scrollLeft = p * max;
+      wrap.style.setProperty('--p', p.toFixed(3));
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [pinned]);
 
   return (
     <Section section={section} stickyHead>
-      <div className="v5-tlwrap" ref={wrapRef}>
-        <span className="v5-spine" aria-hidden="true" />
+      <div className={`v5-tlpin${pinned ? ' is-pinned' : ''}`} ref={wrapRef}>
+        <div className="v5-tlpin__stage">
+          <span className="v5-spine" aria-hidden="true" />
       <ol
         className="v5-timeline"
         ref={stripRef}
         tabIndex={0}
-        aria-label="Career timeline, drag to scroll"
+        aria-label="Career timeline: drag, or scroll to move one chapter at a time"
         data-cursor="Drag"
       >
         {V5_ABOUT.timeline.map((chapter, i) => (
@@ -144,6 +247,7 @@ export default function About() {
           </m.li>
         ))}
       </ol>
+        </div>
       </div>
       <ul className="v5-about__tools" aria-label="Working stack">
         {[...V5_TOOLS, ...V5_TOOLS_MORE].map((tool) => (
