@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { List, PuzzlePiece, X } from '@phosphor-icons/react/dist/ssr';
+import { List, X } from '@phosphor-icons/react/dist/ssr';
 import { V5_NAV } from '@/content/v5';
 
 /**
@@ -162,8 +162,7 @@ export default function Nav() {
             <span className="v5-drawer__brand" aria-hidden="true">
               <Image src="/foto-profile-nf-avatar.jpg" alt="" width={32} height={32} sizes="32px" />
             </span>
-            <span className="v5-nav__tab" aria-hidden="true" />
-          <button
+            <button
               ref={closeRef}
               type="button"
               className="v5-drawer__close"
@@ -189,7 +188,7 @@ export default function Nav() {
                   </span>
                   {link.label}
                   <span className="v5-drawer__go" aria-hidden="true">
-                    <PuzzlePiece size={16} weight="bold" />
+                    →
                   </span>
                 </a>
               </li>

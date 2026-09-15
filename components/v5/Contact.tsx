@@ -50,15 +50,11 @@ export default function Contact() {
         </span>
         Jakarta <LocalTime className="v5-avail__time" /> GMT+7
       </p>
-      {/* Email duduk di dalam satu keping puzzle: slot kosong di latar
-          yang baru saja terisi. Knob + socket di sisinya dari CSS murni;
-          kepingnya masuk lewat Reveal biar "terpasang", bukan muncul. */}
+      {/* Email monumental: langsung di atas latar puzzle, tanpa kartu. */}
       <Reveal delay={0.2}>
-        <div className="v5-piece">
-          <a className="v5-mailmega" href={V5_FOUNDER_MAILTO} data-cursor="Say hi">
-            <span className="v5-mailmega__addr">{CONTACT.email}</span>
-          </a>
-        </div>
+        <a className="v5-mailmega" href={V5_FOUNDER_MAILTO} data-cursor="Say hi">
+          <span className="v5-mailmega__addr">{CONTACT.email}</span>
+        </a>
       </Reveal>
       <p className="v5-contact__more">
         <a href={CONTACT.linkedin} target="_blank" rel="noreferrer">

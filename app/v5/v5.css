@@ -224,10 +224,7 @@
   to { opacity: 0; visibility: hidden; }
 }
 
-/* nav — navbar adalah SATU keping solid: siluetnya digambar utuh (bar putih
-   dengan kolom knob atas+bawah di titik yang sama, knob kanan dari span,
-   socket kiri bolong lewat mask). Tanpa border: bentuk lahir dari kontras
-   fill + shadow, persis keping di referensi. */
+/* nav */
 .v5-nav {
   position: fixed;
   top: max(0.9rem, env(safe-area-inset-top));
@@ -238,48 +235,15 @@
   align-items: center;
   gap: 0.4rem;
   width: min(var(--v5-maxw), calc(100% - 2rem));
-  padding: 0.55rem 0.6rem 0.55rem 1rem;
-  background: var(--v5-white);
-  border-radius: 14px;
-  box-shadow:
-    0 1px 2px rgba(16, 20, 24, 0.05),
-    0 18px 40px -20px color-mix(in srgb, var(--v5-ink) 32%, transparent);
+  padding: 0.45rem 0.5rem 0.45rem 1rem;
+  background: color-mix(in srgb, var(--v5-white) 86%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--v5-line);
+  border-radius: var(--v5-pill);
   transition:
     opacity 0.25s ease,
     transform 0.25s ease,
     visibility 0s linear 0.25s;
-}
-/* Dua knob dari satu kolom konektor (atas + bawah, satu titik x) - membaca
-   sebagai pasangan interlocking, bukan hiasan. */
-.v5-nav::before,
-.v5-nav::after {
-  content: '';
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--v5-white);
-  pointer-events: none;
-}
-.v5-nav::before {
-  top: -8px;
-  left: 25%;
-}
-.v5-nav::after {
-  bottom: -8px;
-  left: 25%;
-}
-/* Knob ujung kanan: duduk di garis tepi navbar, meneruskan siluetnya. */
-.v5-nav__tab {
-  position: absolute;
-  right: -6px;
-  top: 50%;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: var(--v5-white);
-  transform: translateY(-50%);
-  pointer-events: none;
 }
 /* Drawer terbuka = navbar menghilang, tidak menumpuk di atas panel. */
 html.v5-nav-open .v5-nav {
@@ -853,107 +817,6 @@ html.v5-nav-open {
   }
 }
 
-/* ── Sistem keping (piece system) ─────────────────────────────────────────
-   Satu bahasa bentuk: SEMUA permukaan keping SOLID dan tanpa border, knob
-   menyatu via `background: inherit` (warna ikut hover), socket = lubang
-   sungguhan lewat mask. Bentuk lahir dari kontras fill + shadow. */
-.v5-btn,
-.v5-dock__ghost {
-  position: relative;
-}
-.v5-btn::after,
-.v5-dock__ghost::after {
-  content: '';
-  position: absolute;
-  right: -7px;
-  top: 50%;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: inherit;
-  transform: translateY(-50%);
-  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.v5-btn:hover::after,
-.v5-dock__ghost:hover::after {
-  transform: translateY(-50%) translateX(3px);
-}
-
-/* Tab aktif: knob menghadap ke bawah, menancap ke panel case di bawahnya. */
-.v5-tab.is-active::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 50%;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--v5-ink);
-  transform: translateX(-50%);
-  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.v5-tab.is-active:hover::after {
-  transform: translateX(-50%) translateY(3px);
-}
-/* Tombol rotator Voices: socket ring di sisi luar masing-masing tombol. */
-.v5-spot__btn {
-  position: relative;
-}
-.v5-spot__btn:first-child::after,
-.v5-spot__btn:last-child::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--v5-paper);
-  border: 1.5px solid var(--v5-ink);
-  transform: translateY(-50%);
-  transition:
-    background 0.3s cubic-bezier(0.32, 0.72, 0, 1),
-    transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.v5-spot__btn:first-child::after {
-  left: -5px;
-}
-.v5-spot__btn:last-child::after {
-  right: -5px;
-}
-.v5-spot__btn:first-child:hover::after {
-  transform: translateY(-50%) translateX(-3px);
-}
-.v5-spot__btn:last-child:hover::after {
-  transform: translateY(-50%) translateX(3px);
-}
-/* Keping yang naik deret di ujung progress bar atas. */
-.v5-progress__piece {
-  position: fixed;
-  top: -3px;
-  z-index: 120;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--v5-blue);
-  pointer-events: none;
-}
-.v5-progress__piece::after {
-  content: '';
-  position: absolute;
-  right: -4px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--v5-blue);
-}
-/* Panah drawer sudah jadi keping mini: sejajarkan vertikal. */
-.v5-drawer__go {
-  display: inline-flex;
-  align-items: center;
-}
-
 /* CSS rise-in: first paint without JS */
 .v5-rise {
   opacity: 0;
@@ -1089,13 +952,6 @@ html.v5-nav-open {
 .v5-stack__card--amplify .v5-stack__points li::before {
   color: var(--v5-yellow);
 }
-/* Socket puzzle = lubang sungguhan di tepi kanan kartu (mask), bukan
-   lingkaran yang ditempel: latar halaman terlihat lewat bolongannya, dan
-   border kartu ikut terpotong di sana. */
-.v5-stack__card {
-  -webkit-mask-image: radial-gradient(circle 13px at 100% 38%, transparent 12.5px, #000 13px);
-  mask-image: radial-gradient(circle 13px at 100% 38%, transparent 12.5px, #000 13px);
-}
 
 /* cases: scroll pin, one case per screen, then release downward */
 .v5-workpin {
@@ -1160,7 +1016,6 @@ html.v5-nav-open {
   align-items: baseline;
   gap: 0.6rem;
   flex: none;
-  position: relative;
   padding: 0.8rem 1.2rem;
   min-height: 52px;
   border-radius: var(--v5-pill);
@@ -1520,33 +1375,6 @@ html.v5-nav-open {
 .v5-spot__btn:active {
   transform: scale(0.94);
 }
-/* Knob solid di sisi luar masing-masing tombol: mengarah ke arah geser. */
-.v5-spot__btn:first-child::after,
-.v5-spot__btn:last-child::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: inherit;
-  transform: translateY(-50%);
-  transition:
-    background 0.3s cubic-bezier(0.32, 0.72, 0, 1),
-    transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.v5-spot__btn:first-child::after {
-  left: -5px;
-}
-.v5-spot__btn:last-child::after {
-  right: -5px;
-}
-.v5-spot__btn:first-child:hover::after {
-  transform: translateY(-50%) translateX(-3px);
-}
-.v5-spot__btn:last-child:hover::after {
-  transform: translateY(-50%) translateX(3px);
-}
 /* Bar progres 6 detik; jeda bareng timer saat .is-paused. */
 .v5-spot__progress {
   flex: 1;
@@ -1864,52 +1692,10 @@ html.v5-nav-open {
   font-variant-numeric: tabular-nums;
 }
 .v5-mailmega {
-  position: relative;
   display: block;
   margin: 1.6rem 0 0;
   text-decoration: none;
   color: var(--v5-ink);
-}
-/* Keping puzzle di Contact: SATU shape solid - permukaan digambar ::before
-   dengan mask (socket kiri = lubang sungguhan, latar puzzle terlihat lewat
-   bolongannya), knob kanan solid menyatu via ::after. Tanpa border; bentuk
-   dari kontras fill + shadow. */
-.v5-piece {
-  position: relative;
-  margin: 2rem 0 0;
-  padding: clamp(1.6rem, 4vw, 2.6rem) clamp(1.8rem, 5vw, 3.2rem);
-  transform: rotate(-1.2deg);
-  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.v5-piece:hover {
-  transform: rotate(0deg) translateY(-4px);
-}
-.v5-piece::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--v5-r-lg);
-  background: var(--v5-card);
-  box-shadow:
-    0 1px 2px rgba(16, 20, 24, 0.05),
-    0 24px 48px -24px color-mix(in srgb, var(--v5-ink) 35%, transparent);
-  -webkit-mask-image: radial-gradient(circle 14px at 0 50%, transparent 13.5px, #000 14px);
-  mask-image: radial-gradient(circle 14px at 0 50%, transparent 13.5px, #000 14px);
-}
-.v5-piece::after {
-  content: '';
-  position: absolute;
-  right: -9px;
-  top: 50%;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--v5-card);
-  transform: translateY(-50%);
-  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.v5-piece:hover::after {
-  transform: translateY(-50%) scale(1.15) translateX(2px);
 }
 .v5-mailmega__addr {
   font-family: var(--font-v5-display, var(--font-v5-display-fb));
@@ -2204,20 +1990,10 @@ html.v5-cursor-on .v5-root button {
   .v5-cursor {
     display: none;
   }
-  .v5-piece {
-    transform: none;
-    transition: none;
-  }
   .v5-chapter__logos img {
     transition: none;
   }
   .v5-tab {
-    transition: none;
-  }
-  .v5-btn::after,
-  .v5-dock__ghost::after,
-  .v5-tab.is-active::after,
-  .v5-spot__btn::after {
     transition: none;
   }
   .v5-hero__secondary {
