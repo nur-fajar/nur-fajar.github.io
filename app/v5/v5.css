@@ -2237,8 +2237,31 @@ html.v5-nav-open {
   text-wrap: balance;
 }
 #contact .v5-lede {
-  margin-inline: auto;
+  margin: 2rem auto 0;
   text-align: center;
+}
+/* Contact: garis cahaya tidak kepotong di dua tempat.
+   (1) Bleed 4px: stroke yang berjalan tepat di border lattice (rute merah
+   menyentuh y=0, tepi atas section) tidak lagi terbelah bounds svg.
+   (2) Clearing halus di zona judul: garis melebur sebelum menyentuh glyph,
+   bukan terpotong glyph. Sengaja mask di layer lights, bukan text-shadow
+   di judul: judul contact memakai fill-text (background-clip:text + warna
+   transparan), jadi shadow kertas ikut menimpa isi huruf dan tulisannya
+   pudar. Reduced-motion menyembunyikan lights sepenuhnya, jadi mask di
+   sini tidak aktif di sana. */
+#contact .v5-puzzlefield__base,
+#contact .v5-puzzlefield__lights {
+  inset: -4px;
+  width: auto;
+  height: auto;
+}
+#contact .v5-puzzlefield__lights {
+  /* Clearing dibuat lega (eyebrow sampai lede): sisa garis di belakang
+     glyph opaque memang tak terlihat normal, tapi menembus keluar saat
+     teks di-highlight (browser me-render glyph seleksi dengan fill
+     transparan). Jadi yang di belakang huruf harus benar-benar kosong. */
+  -webkit-mask-image: radial-gradient(ellipse 52% 34% at 50% 40%, transparent 55%, black 100%);
+  mask-image: radial-gradient(ellipse 52% 34% at 50% 40%, transparent 55%, black 100%);
 }
 .v5-avail {
   display: inline-flex;

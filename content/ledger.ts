@@ -491,14 +491,21 @@ export interface Testimonial {
 }
 
 /**
- * Tiga saja, dan sekarang tiga sudut pandang yang benar-benar berbeda.
+ * Empat, dari empat sudut pandang yang benar-benar berbeda.
  *
  * Versi sebelumnya berjudul "What the people who managed me said" padahal
  * hanya satu dari tiga yang manajernya, dan dua sisanya sama-sama mentee.
  * Judulnya yang tidak akurat DAN komposisinya yang mengulang. Keduanya
- * diperbaiki sekaligus: satu manajer, satu mentee, satu rekan setim. Tiga
+ * diperbaiki sekaligus: satu manajer, satu mentee, satu rekan setim. Ketiga
  * sudut pandang berbeda lebih meyakinkan daripada tiga suara yang mengaku
  * sama, karena pembaca bisa memeriksa klaim yang sama dari tiga arah.
+ *
+ * September 2026: Arnold Doray (former manager at Terra AI, now CTO
+ * Wingfin) ditambahkan sebagai suara keempat. Rekomendasi aslinya panjang, jadi diringkas ke dua
+ * kalimat seperti suara lain: kepemilikan dan kecepatan belajar plus
+ * rentang kerja (programs, curriculum, AI data pipeline) plus penutupnya
+ * yang verbatim ("extremely happy"). Pola yang sama seperti Christian:
+ * bagian yang tidak bertabrakan tetap dipakai, sisanya dibuang.
  *
  * Kutipan Christian Jonathan dipotong sebelum kata "chatbot". Rekomendasi
  * aslinya menyebut "a chatbot to help students track progress", sementara
@@ -514,24 +521,31 @@ export interface Testimonial {
  */
 export const TESTIMONIALS: Testimonial[] = [
   {
+    quote:
+      'He takes ownership, learns fast, and delivers. Across programs, curriculum, and our AI data pipeline, I was extremely happy with his work.',
+    name: 'Arnold Doray',
+    relation: 'Former manager, Terra AI',
+    role: 'Managed him directly. Now CTO, Wingfin',
+  },
+  {
     quote: 'His organizational skills and proactive approach stood out.',
     name: 'Christian Jonathan',
-    relation: 'Former manager, Terra AI',
-    role: 'Managed him directly, 2024 to 2025',
+    relation: 'Former facilitator manager, Terra AI',
+    role: 'Managed him directly, 2024 to 2025. Now AI Program Manager, GovTech Singapore',
   },
   {
     quote:
       "He never let a mentee's progress go unnoticed; he recognized every milestone along the way.",
     name: 'Kevin Naufal Eryogia',
     relation: 'Former mentee, Bangkit Academy 2023',
-    role: 'Now People Team Coordinator, Mondelez International',
+    role: 'Now People Coordinator, Mondelez International',
   },
   {
     quote:
       'He ran the team with real skill. Communication stayed clear, tasks were managed effectively, and the group worked through to a successful finish.',
     name: 'Diki Hamdani',
-    relation: 'Peer, Bangkit Academy',
-    role: 'Capstone teammate, 2023',
+    relation: 'Peer, Bangkit Academy 2022',
+    role: 'Capstone teammate. Now Software Programmer, HashMicro',
   },
 ];
 
