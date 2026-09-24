@@ -342,19 +342,19 @@ describe('artefak & kontak', () => {
   });
 });
 
-describe('referensi , tiga sudut pandang, bukan tiga pujian', () => {
-  it('hanya tiga testimoni , yang generik sudah dipangkas', () => {
-    expect(TESTIMONIALS).toHaveLength(3);
+describe('referensi , empat sudut pandang, bukan empat pujian', () => {
+  it('hanya empat testimoni , yang generik sudah dipangkas', () => {
+    expect(TESTIMONIALS).toHaveLength(4);
   });
 
-  it('ketiganya melihat dari arah yang berbeda', () => {
-    // Judul section berjanji "a manager, a mentee, and a peer". Versi lama
-    // berjanji hal serupa padahal dua dari tiga sama-sama mentee.
+  it('keempatnya melihat dari arah yang berbeda', () => {
+    // Judul section berjanji "two managers, a mentee, and a peer". Dua
+    // manajer Terra AI (manager + facilitator manager) dengan peran berbeda.
     const relations = TESTIMONIALS.map((t) => t.relation.toLowerCase());
-    expect(relations.some((r) => r.includes('manager'))).toBe(true);
+    expect(relations.filter((r) => r.includes('manager'))).toHaveLength(2);
     expect(relations.some((r) => r.includes('mentee'))).toBe(true);
     expect(relations.some((r) => r.includes('peer'))).toBe(true);
-    expect(new Set(relations).size).toBe(3);
+    expect(new Set(relations).size).toBe(4);
   });
 
   it('tidak ada testimoni yang mengutip angka rating, supaya tidak bentrok dengan 9.0', () => {
@@ -369,9 +369,12 @@ describe('referensi , tiga sudut pandang, bukan tiga pujian', () => {
     // Rekomendasi aslinya menyebut "a chatbot to help students track
     // progress"; situs ini menyebut artefak yang sama sebagai dashboard
     // Sheets/Notion. Keduanya jujur, tapi berdampingan keduanya saling
-    // melemahkan.
-    const manager = TESTIMONIALS.find((t) => t.relation.toLowerCase().includes('manager'));
-    expect(manager?.quote).not.toMatch(/chatbot/i);
+    // melemahkan. Berlaku untuk SEMUA suara manajer, bukan cuma yang pertama.
+    const managers = TESTIMONIALS.filter((t) => t.relation.toLowerCase().includes('manager'));
+    expect(managers.length).toBeGreaterThan(0);
+    for (const manager of managers) {
+      expect(manager?.quote).not.toMatch(/chatbot/i);
+    }
   });
 });
 

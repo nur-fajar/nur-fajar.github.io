@@ -13,6 +13,7 @@ const SPOT_COLORS = ['blue', 'red', 'yellow'] as const;
 
 /** Frasa kunci per suara yang di-highlight, verbatim dari ledger. */
 const HIGHLIGHTS: Record<string, string[]> = {
+  'Arnold Doray': ['takes ownership', 'extremely happy'],
   'Christian Jonathan': ['organizational skills', 'proactive approach'],
   'Kevin Naufal Eryogia': ["mentee's progress", 'every milestone'],
   'Diki Hamdani': ['Communication stayed clear', 'successful finish'],
