@@ -81,6 +81,15 @@ describe('v5 copy rules', () => {
     expect(crm!.metrics).toEqual([...CRM_PROJECT.metrics]);
   });
 
+  it('web-builds case links the live CRM workspace, https only', () => {
+    // Kartu web builds harus tetap menunjuk crm.nurfajar.com: tanpa tautan
+    // ini, klaim "operations desk behind the AI build" jadi tanpa artefak.
+    const links = V5_CASES.find((c) => c.id === 'web-builds')?.links ?? [];
+    const crm = links.find((l) => l.href.includes('crm.nurfajar.com'));
+    expect(crm).toBeDefined();
+    expect(crm!.href).toMatch(/^https:\/\/crm\.nurfajar\.com\/$/);
+  });
+
   it('no em-dash or banned causal bridge in v5 copy', () => {
     const haystack = [
       V5_HERO.sub.join(' '),

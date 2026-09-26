@@ -187,7 +187,7 @@ export const V5_CASES: V5Case[] = [
     index: '03',
     kind: 'Web build · Sites shipped',
     title: 'Web builds that prove shipping',
-    context: 'Three sites, all live: this portfolio and two brand concept sites.',
+    context: 'Three sites, all live: this portfolio and two brand concept sites, plus the CRM workspace behind the AI build.',
     build: [
       'This site: Next.js + TypeScript, one copy source, tested so numbers cannot drift',
       'Nadi wellbeing concept site: fictional brand, landing plus solutions plus contact flow, live on Vercel',
@@ -198,6 +198,7 @@ export const V5_CASES: V5Case[] = [
       { label: 'nurfajar.com (this site)', href: 'https://nurfajar.com' },
       { label: 'Nadi wellbeing concept site', href: 'https://nadi-wellbeing.vercel.app/' },
       { label: 'Xcel Autodrive concept site', href: 'https://xcel-autodrive.vercel.app/' },
+      { label: 'NurFajar CRM: the operations desk behind the AI build', href: 'https://crm.nurfajar.com/' },
     ],
     tools: [
       { name: 'Next.js', logo: '/logos/tools/nextjs.svg' },
