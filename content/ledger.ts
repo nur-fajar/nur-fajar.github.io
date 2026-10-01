@@ -141,9 +141,11 @@ export const HERO = {
   support:
     'Learning & Development Specialist. 5 programs and 3 curriculum modules built from scratch this past year: ' +
     `${END_TO_END_PHASES}.`,
-  /** Baris bukti. Ini yang mengubah hero dari klaim jadi undangan verifikasi:
-   *  ia menunjuk ke #work, tempat ketiga kursusnya benar-benar bisa dibuka. */
-  proof: "3 of my courses are live and public. Take a look and see what's inside",
+  /** Baris bukti. Ini yang mengubah hero dari klaim jadi undangan verifikasi.
+   *  Dulu ia menunjuk ke tiga kursus publik; host kursusnya (ai4impact.org)
+   *  sudah tidak bisa diakses, jadi undangannya pindah ke angka di #work:
+   *  tiap angka membawa denominator dan metodenya, bukan cuma totalnya. */
+  proof: '5 programs and 3 modules below, each with its numbers and method',
 } as const;
 
 /*
@@ -219,37 +221,43 @@ export interface WorkCard {
   href?: string;
   /** Label mono yang menggantikan thumbnail sampai screenshot asli tersedia. */
   kind: string;
-  /** Ditandai kalau artefaknya belum punya tautan publik. */
-  note?: string;
 }
 
 /**
  * Aturan spec §7 SECTION 3: kartu tanpa tautan asli lebih baik dihapus
- * daripada dipajang. Ketiga course di bawah ini live dan publik, hiring
- * manager bisa membukanya sendiri, bukan cuma percaya ringkasan.
+ * daripada dipajang. Kalau tetap dipajang, kartu wajib berhenti berlagak
+ * seperti tautan, bukan menempelkan permintaan maaf.
+ *
+ * Ketiga course di bawah ini dulu punya halaman publik di ai4impact.org yang
+ * sekarang tidak bisa diakses. Tautannya dilepas dan labelnya tidak lagi
+ * memakai kata "live" atau "public", jadi tidak ada satu pun petunjuk di
+ * kartu bahwa ia seharusnya bisa diklik. Ketidakhadiran tautan dibiarkan
+ * apa adanya: menyebut platform yang mati di kartu ini hanya memindahkan
+ * perhatian dari hasil kerjanya ke barang yang sudah hilang.
+ *
+ * Isi kartu tetap benar, dan bukti yang masih bisa dibuka pembaca tinggal
+ * yang memang hidup atau milik sendiri: artefak di WorkGallery (post
+ * Instagram ai4impact) dan repositori situs ini.
  */
 export const WORK: WorkCard[] = [
   {
     id: 'chatbot-business',
     title: 'Chatbot for Business',
     body: 'One of the three chatbot-development modules I owned end to end: outline, assets, and delivery.',
-    href: 'https://ai4impact.org/learn/detail?v=chatbots-for-business-id',
-    kind: 'Live course · ai4impact',
+    kind: 'Delivered 2025-2026 · ai4impact',
   },
   {
     id: 'chatbot-education',
     title: 'Chatbot for Education',
     body: 'The same course engine, adapted for an education-sector audience.',
-    href: 'https://ai4impact.org/learn/detail?v=chatbots-for-education-id',
-    kind: 'Live course · ai4impact',
+    kind: 'Delivered 2025-2026 · ai4impact',
   },
   {
     id: 'gen-ai-pm',
     title: 'Gen AI Product Manager',
     body:
       'The Train the Trainers course. The material I used to hand the curriculum to university lecturers, so they can teach it themselves.',
-    href: 'https://ai4impact.org/learn/detail?v=gen-ai-product-manager-id',
-    kind: 'Live course · ai4impact',
+    kind: 'Delivered 2025-2026 · ai4impact',
   },
 ];
 
@@ -904,10 +912,10 @@ export interface ProjectCard {
 }
 
 /**
- * Grid karya, gabungan dari BUILT (yang dibangun sendiri), WORK (course yang
- * bisa dibuka publik), dan CRM_PROJECT (yang berdiri di luar mandat L&D).
- * Ketiganya diturunkan, bukan disalin, supaya koreksi fakta di sumbernya
- * otomatis ikut ke sini.
+ * Grid karya, gabungan dari BUILT (yang dibangun sendiri), WORK (program yang
+ * dideliver), dan CRM_PROJECT (yang berdiri di luar mandat L&D). Ketiganya
+ * diturunkan, bukan disalin, supaya koreksi fakta di sumbernya otomatis ikut
+ * ke sini.
  */
 export const PROJECTS: ProjectCard[] = [
   ...BUILT.map((card) => ({
@@ -920,10 +928,9 @@ export const PROJECTS: ProjectCard[] = [
   ...WORK.map((card) => ({
     id: card.id,
     title: card.title,
-    kind: 'Live course',
+    kind: card.kind,
     body: card.body,
-    chips: ['ai4impact', 'Public'],
-    href: card.href,
+    chips: ['ai4impact', 'Delivered 2025-2026'],
   })),
   {
     id: CRM_PROJECT.id,

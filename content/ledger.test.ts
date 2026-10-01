@@ -220,14 +220,20 @@ describe('framing , situs berbicara satu identitas: L&D / ID / CD', () => {
     // Kalimat "I don't just use AI. I have taught 100+ professionals..." sempat
     // ada dan sudah dihapus. Faktanya tidak hilang: 100+ ada di bullet AI
     // Training Specialist, 6 lecturer ada di kartu Train the Trainers, dan
-    // ketiga kursusnya berdiri sebagai kartu yang bisa diklik di Work.
+    // ketiga kursusnya tetap berdiri sebagai kartu di Work.
     for (const [key, value] of Object.entries(ledger)) {
       expect(JSON.stringify(value), `${key} menyebut L&D dan AI sebaris`).not.toMatch(
         /don'?t just use AI/i,
       );
     }
-    // Ketiga kursus yang berdiri sebagai bukti memang punya tautan publik.
-    expect(WORK.filter((card) => card.href)).toHaveLength(3);
+    // Ketiga kursus dulu punya tautan publik ke ai4impact.org. Host itu sudah
+    // tidak bisa diakses, jadi tautannya dilepas. Kartu tidak boleh menempelkan
+    // permintaan maaf soal itu; yang wajib adalah berhenti berlagak seperti
+    // tautan, lewat label yang tidak lagi menyebut "live" atau "public".
+    expect(WORK.filter((card) => card.href)).toHaveLength(0);
+    for (const card of WORK) {
+      expect(card.kind, `${card.title} masih mengaku live/public`).not.toMatch(/\blive\b|\bpublic\b/i);
+    }
   });
 
   it('Skills tidak memuat nama vendor LLM sebagai kompetensi terpisah', () => {
@@ -276,20 +282,26 @@ describe('hero , tiga pertanyaan screening dijawab di layar pertama', () => {
   });
 
   it('baris bukti mengundang verifikasi, bukan mengulang klaim', () => {
-    expect(HERO.proof).toMatch(/live and public/);
-    expect(HERO.proof).toMatch(/see what's inside/);
+    // Tautan kursus publik sudah mati bersama ai4impact.org, jadi undangan
+    // verifikasinya pindah ke angka: tiap sel PROOF membawa metodenya.
+    expect(HERO.proof).toMatch(/numbers/i);
+    expect(HERO.proof).toMatch(/method/i);
   });
 });
 
 describe('artefak & kontak', () => {
-  it('setiap kartu Selected Work punya tautan asli, atau menjelaskan kenapa tidak', () => {
+  it('kartu Selected Work tidak berlagak punya tautan kalau tautannya sudah mati', () => {
     // Kartu tanpa tautan asli lebih baik dihapus daripada dipajang. Kalau ia
-    // tetap ada, ia wajib mengatakan terus terang kenapa tidak bisa dibuka.
+    // tetap ada, ia wajib berhenti berlagak seperti tautan: tanpa href, tanpa
+    // label yang mengaku live/public. Permintaan maaf tidak perlu; pembaca
+    // tidak pernah melihat tautan yang hilang, jadi tidak ada yang dijelaskan.
     for (const card of WORK) {
-      if (!card.href) {
-        expect(card.note, `${card.title} tanpa href dan tanpa penjelasan`).toBeTruthy();
-      } else {
+      if (card.href) {
         expect(card.href).toMatch(/^https:\/\//);
+      } else {
+        expect(card.kind, `${card.title} tanpa href tapi mengaku live/public`).not.toMatch(
+          /\blive\b|\bpublic\b/i,
+        );
       }
     }
   });

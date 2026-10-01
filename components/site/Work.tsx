@@ -25,10 +25,10 @@ export default function Work() {
         <Reveal>
           <p className="eyebrow">Work</p>
           <h2 className="section-title" id="work-title">
-            Curriculum I own, and courses you can open.
+            Curriculum I own, and the work behind it.
           </h2>
           <p className="section-lede">
-            Three of these are live and public. Take a look and see what&apos;s inside.
+            Three programs I owned end to end, plus the marketing content still live on Instagram below.
           </p>
         </Reveal>
 

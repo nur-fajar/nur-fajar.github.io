@@ -81,18 +81,31 @@ export default function Work() {
       <CategoryHead id="course" />
 
       <ul className="v3-cards v3-cards--three">
-        {WORK.map((course) => (
-          <li key={course.id}>
-            <a className="v3-card v3-course" href={course.href} target="_blank" rel="noreferrer">
+        {WORK.map((course) => {
+          const body = (
+            <>
               <p className="v3-kind">{course.kind}</p>
               <h4 className="v3-card__title">{course.title}</h4>
               <p className="v3-card__body">{course.body}</p>
-              <span className="v3-card__go" aria-hidden="true">
-                <ArrowUpRight size={16} weight="bold" />
-              </span>
-            </a>
-          </li>
-        ))}
+              {course.href ? (
+                <span className="v3-card__go" aria-hidden="true">
+                  <ArrowUpRight size={16} weight="bold" />
+                </span>
+              ) : null}
+            </>
+          );
+          return (
+            <li key={course.id}>
+              {course.href ? (
+                <a className="v3-card v3-course" href={course.href} target="_blank" rel="noreferrer">
+                  {body}
+                </a>
+              ) : (
+                <div className="v3-card v3-course">{body}</div>
+              )}
+            </li>
+          );
+        })}
       </ul>
 
       <ul className="v3-cards v3-cards--two">
