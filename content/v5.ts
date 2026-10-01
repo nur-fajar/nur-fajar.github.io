@@ -10,10 +10,10 @@
  *   figure from signals.ts is kept as supporting detail inside the case card.
  */
 
-import { CONTACT, CRM_PROJECT, PROOF, TESTIMONIALS, WORK } from './ledger';
+import { CONTACT, CRM_PROJECT, PROOF, TESTIMONIALS } from './ledger';
 
 export const V5_SEO_SUMMARY =
-  'Nur Fajar — versatile generalist for ambitious teams. Base in AI and learning: web and software support, AI agents and automations, programs and training, social and content. 9-agent CRM workflow, 3 public courses, 300+ learners.';
+  'Nur Fajar — versatile generalist for ambitious teams. Base in AI and learning: web and software support, AI agents and automations, programs and training, social and content. 9-agent CRM workflow, 5 programs, 150+ participants, 300+ learners.';
 
 export interface V5NavLink {
   label: string;
@@ -171,7 +171,7 @@ export const V5_CASES: V5Case[] = [
       'Daily WhatsApp support between sessions so lecturers never stayed blocked',
     ],
     metrics: ['3 modules', '5 programs', '25+ live sessions', '150+ participants'],
-    links: WORK.map((course) => ({ label: course.title, href: course.href ?? '#' })),
+    links: [],
     tools: [
       { name: 'Smojo', logo: '/logos/tools/smojo.png', dark: true },
       { name: 'Notion', logo: '/logos/tools/notion.png' },
