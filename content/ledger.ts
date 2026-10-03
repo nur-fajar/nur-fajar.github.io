@@ -1290,7 +1290,7 @@ export const V3_WEBSITES: V3Site[] = [
   {
     id: 'nurfajar-com',
     name: 'nurfajar.com',
-    href: 'https://www.nurfajar.com',
+    href: 'https://nurfajar.com',
     body:
       'This site. It deploys twice from one source: a Next.js app on Vercel, and a static export mirrored to GitHub Pages. Every number and every line of copy lives in a single file, and a test suite holds the copy rules in place so they cannot drift one harmless edit at a time.',
     stack: ['Next.js', 'TypeScript', 'Vercel', 'GitHub Pages'],

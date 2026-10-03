@@ -45,17 +45,17 @@ const SUMMARY =
   'Nur Fajar — versatile generalist for ambitious teams. Base in AI and learning: web and software support, AI agents and automations, programs and training, social and content.';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.nurfajar.com'),
+  metadataBase: new URL('https://nurfajar.com'),
   title: {
     default: 'Nur Fajar — Generalist: AI, Web, Programs & Content | Full-Time, Remote GMT+7',
     template: '%s, Nur Fajar',
   },
   description: SUMMARY,
-  alternates: { canonical: 'https://www.nurfajar.com' },
+  alternates: { canonical: 'https://nurfajar.com' },
   openGraph: {
     type: 'profile',
     locale: 'en_US',
-    url: 'https://www.nurfajar.com',
+    url: 'https://nurfajar.com',
     title: 'Nur Fajar — Your Team’s Utility Player',
     description: SUMMARY,
   },
@@ -74,7 +74,7 @@ const PERSON_SCHEMA = {
   name: 'Nur Fajar',
   jobTitle: 'Learning & Development Specialist',
   email: CONTACT.email,
-  url: 'https://www.nurfajar.com',
+  url: 'https://nurfajar.com',
   sameAs: [CONTACT.linkedin],
   address: {
     '@type': 'PostalAddress',
