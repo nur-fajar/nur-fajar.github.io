@@ -18,6 +18,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/v3', '/v4', '/v5'],
       },
     ],
-    sitemap: 'https://nurfajar.com/sitemap.xml',
+    sitemap: 'https://www.nurfajar.com/sitemap.xml',
   };
 }

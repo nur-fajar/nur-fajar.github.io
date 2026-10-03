@@ -195,7 +195,7 @@ export const V5_CASES: V5Case[] = [
     ],
     metrics: ['Next.js + TS + Vercel', '3 sites live'],
     links: [
-      { label: 'nurfajar.com (this site)', href: 'https://nurfajar.com' },
+      { label: 'nurfajar.com (this site)', href: 'https://www.nurfajar.com' },
       { label: 'Nadi wellbeing concept site', href: 'https://nadi-wellbeing.vercel.app/' },
       { label: 'Xcel Autodrive concept site', href: 'https://xcel-autodrive.vercel.app/' },
       { label: 'NurFajar CRM: the operations desk behind the AI build', href: 'https://crm.nurfajar.com/' },
