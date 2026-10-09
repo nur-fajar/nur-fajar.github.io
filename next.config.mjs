@@ -70,11 +70,19 @@ export default function nextConfigForPhase(phase) {
     // riwayat browser serta email orang. File-nya sendiri diganti versi
     // terbaru dengan nama yang deskriptif, jadi tautan lamanya diarahkan ke
     // sana alih-alih dibiarkan jadi 404.
+    // /hire-me sudah dihapus. Situs lama (QR di CV, tautan LinkedIn, riwayat
+    // browser) masih menautkannya, jadi diarahkan ke homepage alih-alih 404.
+    // Hanya berlaku di target Vercel — Pages (static export) tidak punya server.
     async redirects() {
       return [
         {
           source: '/nf.pdf',
           destination: '/Nur-Fajar-Resume.pdf',
+          permanent: true,
+        },
+        {
+          source: '/hire-me',
+          destination: '/',
           permanent: true,
         },
       ];
