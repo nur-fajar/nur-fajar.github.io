@@ -1253,21 +1253,6 @@ html.v5-nav-open {
   filter: none;
   opacity: 1;
 }
-/* Badge teks untuk tool tanpa logo file. */
-.v5-toolbadge {
-  width: 22px;
-  height: 22px;
-  flex: none;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 6px;
-  border: 1px solid var(--v5-line);
-  background: var(--v5-paper);
-  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-  font-size: 0.6rem;
-  font-weight: 700;
-  color: var(--v5-muted);
-}
 /* Slot gambar case (dorman sampai ada gambar): tumpuk rapi in-flow. */
 .v5-case__media {
   display: grid;
@@ -1453,17 +1438,6 @@ html.v5-nav-open {
   .v5-case__tools--pin li:hover img {
     transform: scale(1.22) rotate(-6deg);
   }
-  .v5-case__tools--pin .v5-toolbadge {
-    width: auto;
-    height: auto;
-    border: none;
-    background: none;
-    font-size: 0.72rem;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .v5-case__tools--pin li:hover .v5-toolbadge {
-    transform: scale(1.22) rotate(-6deg);
-  }
 }
 @media (min-width: 1560px) {
   .v5-case__tools--pin ul {
@@ -1477,9 +1451,6 @@ html.v5-nav-open {
   .v5-case__tools--pin img {
     width: 32px;
     height: 32px;
-  }
-  .v5-case__tools--pin .v5-toolbadge {
-    font-size: 0.85rem;
   }
 }
 @keyframes v5-pinrail-in {

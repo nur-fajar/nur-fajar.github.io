@@ -78,31 +78,27 @@ function WorkNumbers() {
   );
 }
 
-/** Monogram 2 huruf untuk tool tanpa logo (Python→PY, Next.js→NE). */
-function toolMono(name: string) {
-  const mono = name.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase();
-  return mono || '•';
-}
-
 /** Daftar isi rel tools, dipakai rel inline CaseBody dan rel pin.
  *  Ikon dibungkus .v5-tooltile supaya 3 gerak tidak tabrakan: li = pop
  *  entrance, tile = float idle, img = hover spring (properti transform
- *  yang sama tidak boleh dipegang dua animasi sekaligus). */
+ *  yang sama tidak boleh dipegang dua animasi sekaligus).
+ *
+ *  Tool tanpa logo tidak dirender sama sekali — tanpa ikon dan tanpa
+ *  tulisan di sebelahnya. Dulu ada badge monogram fallback (PY, EL...);
+ *  dihapus atas permintaan founder (2026-10-13). */
 function ToolsList({ tools }: { tools: V5CaseTool[] }) {
   return (
     <ul>
-      {tools.map((t) => (
-        <li key={t.name} title={t.name}>
-          <span className={t.dark ? 'v5-tooltile v5-tooltile--dark' : 'v5-tooltile'} aria-hidden="true">
-            {t.logo ? (
-              <Image src={t.logo} alt="" width={22} height={22} sizes="22px" loading="lazy" />
-            ) : (
-              <span className="v5-toolbadge">{toolMono(t.name)}</span>
-            )}
-          </span>
-          <span>{t.name}</span>
-        </li>
-      ))}
+      {tools
+        .filter((t) => t.logo)
+        .map((t) => (
+          <li key={t.name} title={t.name}>
+            <span className={t.dark ? 'v5-tooltile v5-tooltile--dark' : 'v5-tooltile'} aria-hidden="true">
+              <Image src={t.logo!} alt="" width={22} height={22} sizes="22px" loading="lazy" />
+            </span>
+            <span>{t.name}</span>
+          </li>
+        ))}
     </ul>
   );
 }
