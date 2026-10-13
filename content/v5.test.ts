@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { CRM_PROJECT, PROOF } from './ledger';
 import {
   V5_ABOUT,
@@ -88,6 +90,30 @@ describe('v5 copy rules', () => {
     const crm = links.find((l) => l.href.includes('crm.nurfajar.com'));
     expect(crm).toBeDefined();
     expect(crm!.href).toMatch(/^https:\/\/crm\.nurfajar\.com\/$/);
+  });
+
+  it('two independent builds sit as cases 05 and 06, in demand-chronological order', () => {
+    // Remember (Okt 2026) dan Nyunda (Sep 2026): proyek berjalan, ditaruh di
+    // belakang case yang sudah selesai. Urutan index wajib berurutan supaya
+    // pin scroll (yang membagi 400..660vh rata per case) tidak adda gap.
+    expect(V5_CASES).toHaveLength(6);
+    expect(V5_CASES.map((c) => c.index)).toEqual(['01', '02', '03', '04', '05', '06']);
+    expect(V5_CASES[4].id).toBe('remember');
+    expect(V5_CASES[5].id).toBe('nyunda');
+    for (const c of V5_CASES.slice(4)) {
+      expect(c.metrics.join(' ')).toMatch(/In development/i);
+      expect(c.note).toMatch(/demo available on request/i);
+      expect(c.links).toHaveLength(0);
+    }
+  });
+
+  it('pinned work stage height matches the case count (110vh per case)', () => {
+    // Guard untuk angka 660vh di v5.css: kalau case ditambah/dikurangi dan
+    // CSS tidak ikut, bar progres dan ganti case nabrak.
+    const css = readFileSync(path.join(process.cwd(), 'app/v5/v5.css'), 'utf8');
+    const m = css.match(/\.v5-workpin \{[\s\S]*?height: (\d+)vh/);
+    expect(m, 'v5.css harus punya height di blok .v5-workpin').toBeDefined();
+    expect(Number(m![1])).toBe(V5_CASES.length * 110);
   });
 
   it('no em-dash or banned causal bridge in v5 copy', () => {

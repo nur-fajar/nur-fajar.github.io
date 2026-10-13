@@ -1050,10 +1050,12 @@ html.v5-nav-open {
   color: var(--v5-yellow);
 }
 
-/* cases: scroll pin, one case per screen, then release downward */
+/* cases: scroll pin, one case per screen, then release downward.
+   Tingginya V5_CASES.length × 110vh: makin banyak case, makin panjang.
+   6 case (crm, curriculum, web, social, remember, nyunda) → 660vh. */
 .v5-workpin {
   position: relative;
-  height: 400vh;
+  height: 660vh;
   margin: 1rem 0 0;
 }
 .v5-workpin__stage {
