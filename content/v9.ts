@@ -85,6 +85,16 @@ export const V9_HERO = {
     { label: CONTACT.email, href: `mailto:${CONTACT.email}` },
     { label: 'connect on LinkedIn', href: CONTACT.linkedin },
   ] as readonly { label: string; href: string }[],
+  /** Menu cepat tombol plus di foto (2026-11-08): jangkar section
+   *  homepage (Exp/Project/Tools/Personal). Section-nya menyusul —
+   *  jangkar ini belum menaut ke mana pun sampai section-nya ada di
+   *  halaman yang sama. */
+  menu: [
+    { label: 'Exp', href: '#exp' },
+    { label: 'Project', href: '#project' },
+    { label: 'Tools', href: '#tools' },
+    { label: 'Personal', href: '#personal' },
+  ] as readonly { label: string; href: string }[],
 } as const;
 
 /** Meta halaman: judul mutlak (template root menambah ", Nur Fajar") dan

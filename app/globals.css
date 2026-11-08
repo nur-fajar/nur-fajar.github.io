@@ -52,6 +52,174 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   Foto kartun hero (CTA-01): gelombang A+C — sonar ring + halo memantul
+   (dipilih founder lewat preview kartun-gelombang-*, 2026-11-08; dikurangi
+   intensitasnya atas permintaan founder 2026-11-08).
+
+   Ring memancar dua biji berjenjang dari foto 64px (dulu tiga, kini dua —
+   lebih lega, tidak berdesakan), halo ungu berdenyut di belakangnya, foto
+   memantul halus — tujuannya satu: mata nyangkut dan paham foto ini bisa
+   di-klik. Wrapper-nya <a> ke aksi email pertama dari kanon V9_HERO.ctas.
+
+   Reduced-motion tidak perlu aturan khusus: blok prefers-reduced-motion
+   di bawah (sekitar baris 534) sudah meratakan semua animasi ke 0.01ms.
+   Keyframes di sini ditulis sepasang dengan token --animate-roll-in: bukan
+   lewat @theme, karena animasinya dipakai lewat kelas biasa .avatar-*
+   bersama Tailwind utilities di komponennya. */
+.avatar-halo {
+  position: absolute;
+  inset: -8px;
+  border-radius: 24px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--g2) 32%, transparent), transparent 68%);
+  filter: blur(8px);
+  pointer-events: none;
+  animation: avatar-halo 2.4s ease-in-out infinite;
+}
+
+.avatar-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  border: 1.5px solid var(--g2);
+  pointer-events: none;
+  animation: avatar-sonar 3.2s ease-out infinite;
+}
+
+.avatar-ring--2 {
+  animation-delay: 1.6s;
+}
+
+/* Pantulan foto: 4px (dulu 6px, kini dipersubtil). */
+.avatar-bob {
+  animation: avatar-bob 2.4s ease-in-out infinite;
+}
+
+/* Tombol plus menu cepat: di tengah sisi kanan foto (pilihan founder
+   2026-11-08). Ikonnya berputar 45 derajat jadi tanda silang saat bar
+   terbuka (di CSS, bukan lewat state). */
+.avatar-plus {
+  position: absolute;
+  z-index: 5;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 2px solid var(--card);
+  background: var(--g2);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--g2) 55%, transparent);
+}
+
+.avatar-plus svg {
+  transition: transform 220ms ease;
+}
+
+.avatar-plus[aria-expanded='true'] {
+  background: color-mix(in srgb, var(--g2) 80%, #000);
+}
+
+.avatar-plus[aria-expanded='true'] svg {
+  transform: rotate(45deg);
+}
+
+/* Bar menu cepat: di layar sempit muncul di bawah foto (ke kanan akan
+   kepotong), di sm+ muncul ke kanan foto. Tertutup bukan display:none
+   supaya transisinya jalan, tapi visibility-nya hidden supaya itemnya
+   keluar dari urutan tab saat tertutup. */
+.avatar-bar {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: calc(100% + 10px);
+  display: flex;
+  gap: 2px;
+  padding: 6px;
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: 0 10px 34px rgb(15 18 34 / 0.22);
+  white-space: nowrap;
+  transform: translate(-50%, 6px) scale(0.96);
+  transform-origin: top center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 220ms ease, transform 220ms ease, visibility 220ms;
+}
+
+.avatar-bar.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.avatar-bar a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 150ms ease;
+}
+
+.avatar-bar a:hover,
+.avatar-bar a:focus-visible {
+  background: color-mix(in srgb, var(--g2) 12%, transparent);
+}
+
+@media (min-width: 640px) {
+  .avatar-bar {
+    left: calc(100% + 14px);
+    top: 50%;
+    transform: translate(0, -50%) scale(0.96);
+    transform-origin: left center;
+  }
+  .avatar-bar.is-open {
+    transform: translate(0, -50%) scale(1);
+  }
+}
+
+@keyframes avatar-sonar {
+  from {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+@keyframes avatar-halo {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+@keyframes avatar-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    AURORA, design system nurfajar.com v3
 
    Bahasa visualnya: kertas nyaris putih, blob warna besar yang di-blur berat

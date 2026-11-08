@@ -61,18 +61,34 @@ export function Cta1() {
         </div>
 
         <div className="relative z-20 flex flex-col items-center px-4 pb-32 pt-24 text-center">
-          {/* Foto kartun menggantikan deretan badge bintang di referensi. */}
-          <img
-            className="mb-10 size-16 rounded-2xl object-cover shadow-sm ring-1 ring-border"
-            src={V9_HERO.avatar.src}
-            width={V9_HERO.avatar.width}
-            height={V9_HERO.avatar.height}
-            alt={V9_HERO.avatar.alt}
-            fetchPriority="high"
-          />
+          {/* Foto kartun menggantikan deretan badge bintang di referensi.
+            Gelombang A+C (sonar ring + halo memantul), dibuat clickable
+            ke aksi email pertama dari kanon.
+            Tombol plus + bar menu cepat (Exp/Project/Tools/Personal)
+            dilepas sementara atas permintaan founder 2026-11-08 untuk
+            melihat hero tanpa plus; CSS-nya (.avatar-plus/.avatar-bar)
+            tetap ada di globals.css dan menu kanonnya di V9_HERO.menu,
+            jadi mengembalikannya tinggal merender ulang bloknya. */}
+          <a
+            className="avatar-wave relative mb-10 inline-block rounded-2xl"
+            href={V9_HERO.ctas[0].href}
+            aria-label={V9_HERO.ctas[0].label}
+          >
+            <span aria-hidden="true" className="avatar-halo" />
+            <span aria-hidden="true" className="avatar-ring" />
+            <span aria-hidden="true" className="avatar-ring avatar-ring--2" />
+            <img
+              className="avatar-bob relative z-[1] size-16 rounded-2xl object-cover shadow-sm ring-1 ring-border"
+              src={V9_HERO.avatar.src}
+              width={V9_HERO.avatar.width}
+              height={V9_HERO.avatar.height}
+              alt={V9_HERO.avatar.alt}
+              fetchPriority="high"
+            />
+          </a>
 
           {/* Headline: lead statis + frasa yang berotasi di slot tirai. */}
-          <h2 className="max-w-lg font-sans text-balance text-4xl font-medium tracking-tight sm:text-5xl">
+          <h2 className="max-w-lg font-sans text-balance text-4xl font-bold tracking-tight sm:text-5xl">
             <span className="block">{V9_HERO.lead}</span>{' '}
             <span className="block overflow-hidden leading-tight">
               <span
