@@ -91,7 +91,7 @@ export function Cta1() {
               tidak meluber; di desktop masing-masing jadi block. */}
           <div className="mt-6 max-w-[62rem] text-lg font-medium text-muted-foreground sm:text-xl">
             {V9_BIO_LINES.map((lines, group) => (
-              <p key={lines[0].slice(0, 24)} className="mt-4 first:mt-0">
+              <p key={lines[0].slice(0, 24)} className="mt-8 first:mt-0">
                 {lines.map((line, li) => (
                   <Fragment key={line}>
                     {li > 0 ? ' ' : null}

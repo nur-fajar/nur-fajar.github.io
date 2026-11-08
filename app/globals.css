@@ -1,6 +1,50 @@
 @import 'tailwindcss';
 @import './sections.css';
 
+/* Sumber kelas edisi v9 "panggung" (CTA-01 + Aceternity boxes): komponennya
+   hidup di components/ui/ di luar app/, dan deteksi otomatis Tailwind pada
+   build ini tidak berbaris Scan berniat mereka tanpa @source eksplisit -
+   efeknya tombol kunta/misi-diskontak live tanpa style (bg-primary,
+   animate-roll-in, vignette mask, dsb. hilang dari CSS hasil build). */
+@source '../components/ui';
+
+/* Token skema shadcn untuk edisi v9: nilainya hidup di .v9-root
+   (app/v9/v9.css), jadi warna-warnanya hanya berlaku di pohon v9 dan edisi
+   lain tidak tersentuh. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Frasa yang berotasi di headline menggelinding masuk dari bawah lewat
+     slot overflow-hidden, seperti tirai - dimatikan reduced-motion lewat
+     motion-reduce:animate-none di komponennya. */
+  --animate-roll-in: roll-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+
+  @keyframes roll-in {
+    from {
+      transform: translateY(110%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    AURORA, design system nurfajar.com v3
 

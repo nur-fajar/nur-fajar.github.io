@@ -42,44 +42,10 @@
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-
-  /* Semuanya Plus Jakarta Sans (permintaan founder 2026-11-08): slot
-     mono ikut keluarga yang sama. */
-  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-
-  /* Frasa yang berotasi di headline menggelinding masuk dari bawah lewat
-     slot overflow-hidden, seperti tirai. Reduced motion menahannya lewat
-     motion-reduce:animate-none di komponennya. */
-  --animate-roll-in: roll-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-
-  @keyframes roll-in {
-    from {
-      transform: translateY(110%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-}
+/* Mapping warna shadcn ke skema Tailwind (@theme inline) berdiri di
+   app/globals.css, entry Tailwind repo ini - blok @theme di FILE ini
+   dibuang karena pada file tanpa @import 'tailwindcss', Lightning CSS
+   membuangnya diam-diam (itulah sebab tombol hidup tanpa style di live). */
 
 /* Slack-link v9 (dipakai bersama layout lain, jadi tanpa prefiks). */
 .v9-root .skip-link {

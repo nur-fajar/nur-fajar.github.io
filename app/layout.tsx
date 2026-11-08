@@ -16,10 +16,11 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 });
 
-// Body: paragraf, chip, label, tombol.
+// Body: paragraf, chip, label, tombol - diganti variable font penuh
+// (200-800) atas permintaan founder agar hero v9 bisa pakai font weight
+// apa pun termasuk medium (500) yang dulu tidak termuat.
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
   variable: '--font-body',
   display: 'swap',
 });
