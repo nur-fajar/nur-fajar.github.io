@@ -191,30 +191,41 @@ body {
   overflow-x: hidden;
 }
 
-h1,
-h2,
-h3,
-h4 {
-  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 700;
-  letter-spacing: var(--tracking-display);
-  margin: 0;
-  line-height: 1.1;
-  text-wrap: balance;
-}
+/* Basis tipografi elemen, kini diletakkan di cascade layer "base".
+   Tanpa layer, aturan elemen ini berdiri DI ATAS semua utilities milik
+   Tailwind (Tailwind v4 meletakannya di layer) saat halaman /v9 - edisi
+   panggung - dinamis memakainya: headline memakai Space Grotesk, teks
+   tombol email putihnya hilang (a{color:inherit} manang atas
+   text-primary-foreground), dan jarak mt-8 antar paragraf bio tak
+   terpasang. Layer base membuat urutan yang benar: utilities menang atas
+   elemen, dan kelas komponen edisi lain (tetap tidak berlayer) tetap
+   menang atas aturan elemen ini seperti sebelumnya. */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: var(--tracking-display);
+    margin: 0;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
 
-p {
-  margin: 0;
-}
+  p {
+    margin: 0;
+  }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
 
-a {
-  color: inherit;
+  a {
+    color: inherit;
+  }
 }
 
 ul,
