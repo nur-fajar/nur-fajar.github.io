@@ -30,6 +30,12 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
+  /* Font utility font-sans dipetakan ke Plus Jakarta Sans --font-body
+     (root layout). Satu-satunya pemakai utility ini saat ini adalah
+     headline /v9, supaya font-family aturan aurora di layer base tidak
+     merebut headline dari pewarisan. */
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+
   /* Frasa yang berotasi di headline menggelinding masuk dari bawah lewat
      slot overflow-hidden, seperti tirai - dimatikan reduced-motion lewat
      motion-reduce:animate-none di komponennya. */

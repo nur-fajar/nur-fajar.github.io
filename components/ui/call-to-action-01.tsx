@@ -72,7 +72,7 @@ export function Cta1() {
           />
 
           {/* Headline: lead statis + frasa yang berotasi di slot tirai. */}
-          <h2 className="max-w-lg text-balance text-4xl font-medium tracking-tight sm:text-5xl">
+          <h2 className="max-w-lg font-sans text-balance text-4xl font-medium tracking-tight sm:text-5xl">
             <span className="block">{V9_HERO.lead}</span>{' '}
             <span className="block overflow-hidden leading-tight">
               <span
