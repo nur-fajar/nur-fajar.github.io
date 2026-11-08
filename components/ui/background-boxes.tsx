@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 /**
@@ -70,9 +70,9 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
       {...rest}
     >
       {rows.map((_, i) => (
-        <motion.div key={`row` + i} className="w-20 h-10 border-l border-slate-200 relative">
+        <m.div key={`row` + i} className="w-20 h-10 border-l border-slate-200 relative">
           {cols.map((_, j) => (
-            <motion.div
+            <m.div
               whileHover={{
                 backgroundColor: cellColor(i, j),
                 transition: { duration: 0 },
@@ -95,9 +95,9 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
                 </svg>
               ) : null}
-            </motion.div>
+            </m.div>
           ))}
-        </motion.div>
+        </m.div>
       ))}
     </div>
   );

@@ -100,8 +100,11 @@ describe('v5 canon drift guard', () => {
   it('no motion.* component under strict LazyMotion (use m.* instead)', () => {
     /* MotionProvider runs LazyMotion strict: rendering motion.* throws an
        uncaught error on every render, killing hydration and stranding the
-       loader. This test failed on HeroArt before the fix. */
-    for (const file of componentFiles(COMPONENTS)) {
+       loader. This test failed on HeroArt before the fix. The ui tree is
+       scanned too: background-boxes.tsx slipped through while the scan was
+       v5-only and crashed the v9 homepage at runtime (2026-11-08). */
+    const ui = path.join(process.cwd(), 'components', 'ui');
+    for (const file of [...componentFiles(COMPONENTS), ...componentFiles(ui)]) {
       const text = readFileSync(file, 'utf8');
       for (const match of text.matchAll(/<(\/?)motion\./g)) {
         expect(
