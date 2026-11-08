@@ -186,7 +186,7 @@ export default function V8Page() {
           <div className="v8-quotes">
             {V7_PRAISE_VOICES.map((t) => (
               <figure key={t.name} className="v8-quote" data-reveal>
-                <blockquote>"{t.quote}"</blockquote>
+                <blockquote>“{t.quote}”</blockquote>
                 <figcaption>
                   {t.name} · {t.relation}
                   {t.role ? ` · ${t.role}` : ''}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Entry, Fam } from './catalog';
 
 const FAM_LABEL: Record<Fam | 'All', string> = {
@@ -33,7 +33,6 @@ export default function MockupBrowser({ items }: { items: Entry[] }) {
   const [open, setOpen] = useState<number | null>(null);
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [loaded, setLoaded] = useState(false);
-  const lenRef = useRef(0);
 
   const filtered = useMemo(
     () =>
@@ -45,25 +44,29 @@ export default function MockupBrowser({ items }: { items: Entry[] }) {
       ),
     [items, q, fam]
   );
-  lenRef.current = filtered.length;
 
   const item = open !== null ? filtered[open] : undefined;
 
   const go = (d: 1 | -1) =>
-    setOpen((o) => (o === null ? o : (o + d + lenRef.current) % lenRef.current));
+    setOpen((o) => (o === null ? o : (o + d + filtered.length) % filtered.length));
 
-  /* Ganti mockup → reset status loading iframe. */
-  useEffect(() => {
+  /* Ganti mockup → reset status loading iframe. React menyarankan pola
+     "adjust state during render" (prev !== now) daripada setState di
+     dalam efek, supaya tidak memicu render berantai (eslint
+     react-hooks/set-state-in-effect). */
+  const [prevFile, setPrevFile] = useState(item?.file);
+  if (item?.file !== prevFile) {
+    setPrevFile(item?.file);
     setLoaded(false);
-  }, [item?.file]);
+  }
 
   /* Keyboard: ← → navigasi, Esc tutup. */
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (open === null) return;
       if (e.key === 'Escape') setOpen(null);
-      if (e.key === 'ArrowRight') setOpen((o) => (o === null ? o : (o + 1 + lenRef.current) % lenRef.current));
-      if (e.key === 'ArrowLeft') setOpen((o) => (o === null ? o : (o - 1 + lenRef.current) % lenRef.current));
+      if (e.key === 'ArrowRight') setOpen((o) => (o === null ? o : (o + 1 + filtered.length) % filtered.length));
+      if (e.key === 'ArrowLeft') setOpen((o) => (o === null ? o : (o - 1 + filtered.length) % filtered.length));
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
