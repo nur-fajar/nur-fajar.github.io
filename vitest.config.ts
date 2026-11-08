@@ -11,6 +11,7 @@ export default defineConfig({
     environment: 'node',
     // Alasan yang sama dengan `ignores` di eslint.config.mjs: worktree agent
     // adalah checkout penuh yang membawa test-nya sendiri.
-    exclude: ['**/node_modules/**', '.claude/**', '.worktrees/**', 'v2/**', 'out/**'],
+    exclude: ['**/node_modules/**', '.claude/**', '.worktrees/**', 'v2/**', 'out/**', 'archive/**'],
   },
 });
+

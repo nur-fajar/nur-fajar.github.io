@@ -28,3 +28,6 @@ testimonials.md
 
 # Keluaran tool review desain lokal (detector/critique), bukan bagian situs.
 /.impeccable/
+
+# Sumber sprite hasil image-gen (lokal saja; hasilnya sudah diingest & dipublikasikan)
+/public/v6/sprites/_inbox/

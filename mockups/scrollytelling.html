@@ -1,0 +1,163 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NUR FAJAR — the CRM pipeline, told properly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0e1512; color: #e8efe8; font-family: Inter, sans-serif; }
+  a { color: #7fd49a; text-decoration: none; }
+  .bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9; display: flex; justify-content: space-between; padding: 14px clamp(16px, 3vw, 36px); font-size: 12px; color: #7a8f7f; background: rgba(14,21,18,.85); backdrop-filter: blur(8px); }
+  .bar b { color: #e8efe8; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: #7fd49a; width: 0%; z-index: 10; }
+  .stage { height: 100svh; position: sticky; top: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 clamp(20px, 6vw, 90px); overflow: hidden; }
+  .stage .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: #7fd49a; }
+  .stage h1 { font-size: clamp(34px, 6.5vw, 76px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; margin-top: 16px; max-width: 14em; }
+  .stage .sub { margin-top: 18px; color: #9aa8a0; font-size: clamp(14px, 1.6vw, 17px); max-width: 34em; line-height: 1.7; }
+  .meter { margin-top: clamp(26px, 6vh, 54px); max-width: 560px; }
+  .meter .nums { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: clamp(18px, 2.6vw, 28px); }
+  .meter .nums .after { color: #7fd49a; }
+  .meter .bar { position: static; margin-top: 10px; height: 10px; border: 1px solid #2a3a30; border-radius: 999px; overflow: hidden; display: block; }
+  .meter .fill { height: 100%; width: 100%; background: #7fd49a; display: block; }
+  .meter .lbl { display: flex; justify-content: space-between; font-size: 11px; color: #7a8f7f; margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+  .chapter { position: absolute; bottom: clamp(20px, 5vh, 44px); left: clamp(20px, 6vw, 90px); font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7fd49a; }
+  .steps { position: relative; z-index: 2; }
+  .step { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 30px clamp(20px, 6vw, 90px); }
+  .step p { max-width: 420px; font-size: clamp(20px, 2.8vw, 30px); font-weight: 600; letter-spacing: -0.015em; line-height: 1.35; opacity: .3; }
+  .step p b { color: #7fd49a; }
+  .outro { min-height: 70svh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 40px; }
+  .outro .mail { font-size: clamp(24px, 4.6vw, 52px); font-weight: 700; letter-spacing: -0.02em; color: #e8efe8; }
+  .outro .mail:hover { color: #7fd49a; }
+  .outro .sub { margin-top: 14px; color: #9aa8a0; font-size: 14px; }
+.pre{position:fixed;inset:0;background:var(--bg, #0c0c0c);z-index:50;visibility:hidden;opacity:0}
+.pre__name{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--sub,#888)}
+.pre__num{position:absolute;left:clamp(16px,3vw,36px);bottom:1.4rem;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--sub,#888);font-variant-numeric:tabular-nums}
+.pre__bar{position:absolute;left:0;bottom:0;width:100%;height:2px;background:var(--accent, #4ade80);transform:scaleX(0);transform-origin:left center}
+.cursor{position:fixed;top:0;left:0;width:28px;height:28px;border:1px solid color-mix(in srgb,var(--accent,#4ade80) 60%,transparent);border-radius:50%;pointer-events:none;z-index:40;opacity:0;visibility:hidden;transform:translate(-50%,-50%)}
+.grain{position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:30;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E")}
+</style>
+</head>
+<body><div class="pre"><p class="pre__name">Nur Fajar</p><p class="pre__num">000</p><span class="pre__bar"></span></div><div class="pbar"></div><div class="cursor"></div><div class="grain"></div>
+<div class="progress" id="prog"></div>
+<div class="bar"><span><b>Nur Fajar</b> — case 01</span><span>CRM pipeline · Terra AI</span></div>
+
+<div class="stage" id="stage">
+  <p class="eyebrow">Case study 01 — Revenue ops</p>
+  <h1 id="title">Thousands of raw contacts. No qualification engine.</h1>
+  <p class="sub" id="sub">Terra Weather pivoted B2B. The sales team had no time for manual research — and the data kept piling up.</p>
+  <div class="meter">
+    <div class="nums"><span id="numBefore">300+h</span><span class="after" id="numAfter">300+h</span></div>
+    <div class="bar"><span class="fill" id="fill"></span></div>
+    <div class="lbl"><span>manual outreach time</span><span>with the pipeline</span></div>
+  </div>
+  <p class="chapter">CHAPTER <span id="chapno">01</span> / 05</p>
+</div>
+
+<div class="steps">
+  <div class="step" data-t="Thousands of raw contacts. No qualification engine." data-s="Terra Weather pivoted B2B. The sales team had no time for manual research — and the data kept piling up.">
+    <p>Thousands of raw contacts. <b>No qualification engine.</b> A sales team with no time for manual research.</p>
+  </div>
+  <div class="step" data-t="So Fajar led the AI side of the build." data-s="Three people: the CEO, a software engineer, and Fajar owning the AI — 9 specialized Python + LLM agents, end to end.">
+    <p>So Fajar led the <b>AI side</b> of the build — 9 specialized Python + LLM agents.</p>
+  </div>
+  <div class="step" data-t="A human checks before anything sends." data-s="Every draft stops at a human desk. The agents qualify, enrich, and draft — the person decides.">
+    <p>Every draft stops at a <b>human desk</b> before anything sends. The agents qualify, enrich, draft — the person decides.</p>
+  </div>
+  <div class="step" data-t="~11h runtime vs 300+h manual." data-s="The pipeline recomputes the same qualification work in 11 hours that took over 300 by hand — 96% less.">
+    <p><b>~11h runtime vs 300+h manual.</b> The same qualification work — 96% less.</p>
+  </div>
+  <div class="step" data-t="That is what an AI specialist does." data-s="Shipped live, Jun to Jul 2026. Now imagine this on your pipeline.">
+    <p>Shipped live, Jun–Jul 2026. <b>Now imagine it on your pipeline.</b></p>
+  </div>
+</div>
+
+<div class="outro">
+  <a class="mail" href="mailto:hi@nurfajar.com">hi@nurfajar.com</a>
+  <p class="sub">Nur Fajar — AI specialist · available immediately · replies within 24 hours</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduced) {
+    var lenis = new Lenis({ lerp: 0.11 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* Progres global di atas. */
+  gsap.to('#prog', { width: '100%', ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: true } });
+
+  /* Bab: judul, sub, dan meter berganti saat tiap step melewati tengah. */
+  var steps = document.querySelectorAll('.step');
+  steps.forEach(function (step, i) {
+    ScrollTrigger.create({
+      trigger: step, start: 'top 55%', end: 'bottom 55%',
+      onToggle: function (self) {
+        if (!self.isActive) return;
+        steps.forEach(function (s) { s.classList.toggle('on', s === step); });
+        document.getElementById('title').textContent = step.getAttribute('data-t');
+        document.getElementById('sub').textContent = step.getAttribute('data-s');
+        document.getElementById('chapno').textContent = String(i + 1).padStart(2, '0');
+        var after = document.getElementById('numAfter');
+        after.textContent = i >= 3 ? '~11h' : '300+h';
+        gsap.fromTo('#title', { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' });
+      }
+    });
+  });
+
+  /* Meter angka: 300+ mengalir turun ke ~11 saat bab 4 aktif. */
+  var counter = { v: 300 };
+  var numBefore = document.getElementById('numBefore');
+  function renderNums() {
+    numBefore.textContent = Math.round(counter.v) + '+h';
+    document.getElementById('fill').style.width = Math.max(3.7, counter.v / 300 * 100) + '%';
+  }
+  ScrollTrigger.create({
+    trigger: steps[3], start: 'top 60%',
+    onEnter: function () { gsap.to(counter, { v: 11, duration: 1.6, ease: 'power2.inOut', onUpdate: renderNums }); },
+    onLeaveBack: function () { gsap.to(counter, { v: 300, duration: 1.2, ease: 'power2.out', onUpdate: renderNums }); }
+  });
+  renderNums();
+</script>
+<script>
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (typeof gsap === 'undefined') return;
+  var pre = document.querySelector('.pre');
+  var pnum = pre && pre.querySelector('.pre__num');
+  if (pre) {
+    gsap.set(pre, { autoAlpha: 1 });
+    var counter = { v: 0 };
+    gsap.timeline()
+      .to(counter, { v: 100, duration: 0.7, ease: 'power2.inOut', onUpdate: function () { if (pnum) pnum.textContent = String(Math.round(counter.v)).padStart(3, '0'); } })
+      .to('.pre__bar', { scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, 0)
+      .to(pre, { autoAlpha: 0, duration: 0.3, ease: 'power2.out' }, '+=0.04');
+  }
+  if (window.matchMedia('(pointer: fine)').matches) {
+    var ring = document.querySelector('.cursor');
+    if (ring && typeof gsap.quickTo === 'function') {
+      gsap.set(ring, { autoAlpha: 1, xPercent: -50, yPercent: -50 });
+      var rX = gsap.quickTo(ring, 'x', { duration: 0.35, ease: 'power3' });
+      var rY = gsap.quickTo(ring, 'y', { duration: 0.35, ease: 'power3' });
+      window.addEventListener('pointermove', function (e) { rX(e.clientX); rY(e.clientY); });
+      document.addEventListener('pointerover', function (e) {
+        var t = e.target instanceof Element ? e.target : null;
+        var hot = t && t.closest('a, button, [data-cursor]');
+        gsap.to(ring, { scale: hot ? 2 : 1, duration: 0.3, ease: 'power3.out' });
+      });
+    }
+  }
+})();
+</script>
+</body>
+</html>

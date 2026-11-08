@@ -1,0 +1,1006 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   v9 "Signal" — dunia terang, idiom komponen 21st.dev.
+
+   Idiom yang diambil dari komponen 21st.dev yang paling banyak diunduh
+   (bento grid, kolom testimoni offset, pill label, mask reveal, spotlight,
+   pita cahaya) ditulis ulang di sini. Kode di repo ini, bukan kode yang
+   disalin dari katalog: retrieval dari 21st.dev dibatasi dua kali sehari,
+   dan halaman ini butuh belasan komponen.
+
+   Aturan file: semua kelas berprefiks `v9-` (kecuali `skip-link` yang
+   dipakai bersama dengan layout lain). Guard: app/v9/v9.test.ts.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.v9-root {
+  /* Kertas & tinta. Kontras diuji di atas kertas: ink di paper 16.9:1,
+     ink-2 di paper 5.1:1, accent di paper 4.6:1. */
+  --v9-paper: #ffffff;
+  --v9-tint: #f5f5f7;
+  --v9-tint-2: #fafafa;
+  --v9-ink: #1d1d1f;
+  --v9-ink-2: #6e6e73;
+  --v9-ink-3: #86868b;
+  --v9-rule: #d2d2d7;
+  --v9-rule-soft: #e8e8ed;
+  --v9-accent: #0071e3;
+  --v9-accent-deep: #0058b0;
+
+  /* Pita cahaya di hero: satu warna saja (biru), dari terang ke pekat.
+     Audit 2026-10-20: biru ke ungu adalah gradient paling generic yang
+     ada, dan warna kedua berarti palette repo jadi punya dua keluarga
+     kromatik (repo ini: satu aksen, biru, untuk aksi saja). */
+  --v9-glow-a: #3b82f6;
+  --v9-glow-b: #1d4ed8;
+
+  --v9-radius: 1.25rem;
+  --v9-radius-sm: 0.75rem;
+  --v9-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  --v9-shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.1);
+  --v9-maxw: 74rem;
+  --v9-gutter: clamp(1.25rem, 5vw, 3.5rem);
+
+  background: var(--v9-paper);
+  color: var(--v9-ink);
+  font-family: var(--font-v9-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.v9-root ::selection {
+  background: rgba(0, 113, 227, 0.18);
+}
+
+.v9-root :focus-visible {
+  outline: 2px solid var(--v9-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.v9-root .skip-link {
+  position: fixed;
+  top: -100%;
+  left: 0.75rem;
+  z-index: 300;
+  padding: 0.5rem 0.75rem;
+  background: var(--v9-ink);
+  color: #fff;
+  font-size: 0.875rem;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  transition: top 0.2s ease;
+}
+
+.v9-root .skip-link:focus {
+  top: 0.75rem;
+}
+
+/* ── Kerangka ─────────────────────────────────────────────────────────── */
+
+.v9-shell {
+  width: 100%;
+  max-width: var(--v9-maxw);
+  margin: 0 auto;
+  padding-inline: var(--v9-gutter);
+}
+
+.v9-section {
+  padding-block: clamp(3.5rem, 8vw, 6.5rem);
+}
+
+.v9-section--tint {
+  background: var(--v9-tint);
+}
+
+.v9-section__head {
+  max-width: 42rem;
+  margin-bottom: clamp(1.75rem, 4vw, 3rem);
+}
+
+.v9-section__sub {
+  margin: 0.9rem 0 0;
+  color: var(--v9-ink-2);
+  font-size: 1.05rem;
+}
+
+/* Varian tengah: dipakai section Praise, mengikuti rujukan gridnya. */
+.v9-section__head--center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.v9-section__head--center .v9-section__sub {
+  margin-inline: auto;
+}
+
+.v9-h2 {
+  margin: 1rem 0 0;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+/* Pill label: idiomatik 21st, di sini hanya sebagai penanda section. */
+.v9-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.7rem;
+  border: 1px solid var(--v9-rule);
+  border-radius: 999px;
+  background: var(--v9-paper);
+  color: var(--v9-ink-2);
+  font-family: var(--font-v9-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.v9-mono {
+  font-family: var(--font-v9-mono), ui-monospace, monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.01em;
+  color: var(--v9-ink-3);
+}
+
+/* ── Tombol ───────────────────────────────────────────────────────────── */
+
+.v9-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.v9-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.62rem 1.1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.v9-btn--primary {
+  background: var(--v9-accent);
+  color: #fff;
+}
+
+.v9-btn--primary:hover {
+  background: var(--v9-accent-deep);
+}
+
+.v9-btn--ghost {
+  border-color: var(--v9-rule);
+  background: var(--v9-paper);
+  color: var(--v9-ink);
+}
+
+.v9-btn--ghost:hover {
+  border-color: var(--v9-ink-3);
+}
+
+.v9-btn--quiet {
+  padding-inline: 0.2rem;
+  color: var(--v9-accent);
+}
+
+.v9-btn--quiet:hover {
+  color: var(--v9-accent-deep);
+}
+
+.v9-link {
+  color: var(--v9-accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 113, 227, 0.28);
+}
+
+.v9-link:hover {
+  color: var(--v9-accent-deep);
+  border-bottom-color: currentColor;
+}
+
+/* ── Nav ──────────────────────────────────────────────────────────────── */
+
+.v9-nav {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.v9-nav--stuck {
+  border-bottom-color: var(--v9-rule-soft);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.v9-nav__bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 60px;
+}
+
+.v9-nav__brand {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--v9-ink);
+  text-decoration: none;
+  margin-right: auto;
+}
+
+.v9-nav__list {
+  display: flex;
+  gap: 1.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.v9-nav__link {
+  color: var(--v9-ink-2);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.v9-nav__link:hover {
+  color: var(--v9-ink);
+}
+
+.v9-nav__link--on {
+  color: var(--v9-ink);
+}
+
+.v9-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.v9-nav__toggle {
+  display: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--v9-rule);
+  border-radius: 999px;
+  background: var(--v9-paper);
+  color: var(--v9-ink);
+  cursor: pointer;
+  list-style: none;
+}
+
+.v9-nav__toggle::-webkit-details-marker {
+  display: none;
+}
+
+/* Menu mobile pakai <details>, bukan state React: tanpa JavaScript pun
+   menu masih bisa dibuka, dan tetap bisa dijangkau keyboard. */
+.v9-nav__menu {
+  display: none;
+  position: relative;
+}
+
+.v9-nav__sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 1.1rem var(--v9-gutter) 1.5rem;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--v9-rule-soft);
+  box-shadow: var(--v9-shadow);
+}
+
+.v9-nav__menu[open] .v9-nav__sheet {
+  display: flex;
+}
+
+.v9-nav__sheet .v9-nav__link {
+  font-size: 1rem;
+  color: var(--v9-ink);
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────────── */
+
+.v9-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: min(92vh, 54rem);
+  display: flex;
+  align-items: center;
+  padding-block: clamp(4rem, 10vw, 7rem);
+}
+
+.v9-hero__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Cadangan tanpa WebGL: pita cahaya dievaluasi ulang sebagai radial
+   gradient, jadi halaman tidak pernah kehilangan ground-nya. */
+.v9-hero__fallback {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background:
+    radial-gradient(60rem 30rem at 22% 78%, rgba(59, 130, 246, 0.16), transparent 60%),
+    radial-gradient(50rem 26rem at 78% 68%, rgba(29, 78, 216, 0.13), transparent 62%),
+    linear-gradient(180deg, #f7f8fb 0%, #ffffff 58%);
+}
+
+/* Scrim lembut di area headline supaya tinta tetap terbaca di atas pita. */
+.v9-hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    54rem 28rem at 26% 44%,
+    rgba(255, 255, 255, 0.94) 0%,
+    rgba(255, 255, 255, 0.66) 46%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  pointer-events: none;
+}
+
+.v9-hero__inner {
+  width: 100%;
+}
+
+.v9-hero__copy {
+  position: relative;
+  max-width: 52rem;
+}
+
+.v9-hero__name {
+  margin: 0 0 1.1rem;
+  font-family: var(--font-v9-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--v9-ink-2);
+}
+
+.v9-h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 7.2vw, 5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.v9-hero__sub {
+  max-width: 34rem;
+  margin: 1.5rem 0 0;
+  color: var(--v9-ink-2);
+  font-size: clamp(1.05rem, 1.7vw, 1.25rem);
+  line-height: 1.5;
+}
+
+.v9-hero__cta {
+  margin-top: 2.2rem;
+}
+
+/* ── Bio ──────────────────────────────────────────────────────────────── */
+
+.v9-bio {
+  display: grid;
+  gap: 1.1rem 3.5rem;
+  max-width: 58rem;
+}
+
+.v9-bio p {
+  margin: 0;
+  color: var(--v9-ink-2);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.v9-bio p:first-child {
+  color: var(--v9-ink);
+  font-size: 1.18rem;
+  line-height: 1.6;
+}
+
+.v9-bio__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.05em 0.4em;
+  border-radius: 0.45em;
+  background: var(--v9-tint);
+  color: var(--v9-ink);
+  font-size: 0.95em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.v9-bio__chip:hover {
+  background: var(--v9-rule-soft);
+}
+
+.v9-bio__chip img {
+  display: block;
+}
+
+/* ── Bento (work) ─────────────────────────────────────────────────────── */
+
+.v9-bento {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
+
+.v9-dots {
+  background-image: radial-gradient(circle, var(--v9-rule) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: -1px -1px;
+}
+
+.v9-tile {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.5rem 1.6rem 1.7rem;
+  border: 1px solid var(--v9-rule-soft);
+  border-radius: var(--v9-radius);
+  background: var(--v9-paper);
+  box-shadow: var(--v9-shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.v9-tile:hover {
+  transform: translateY(-3px);
+  border-color: var(--v9-rule);
+  box-shadow: var(--v9-shadow-lg);
+}
+
+/* Spotlight: cahaya yang mengikuti pointer, digerakkan lewat dua variabel
+   CSS yang diisi Motion.tsx (tanpa JS, kartu tetap terbaca). */
+.v9-tile__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  background: radial-gradient(
+    18rem 18rem at var(--v9-mx, 50%) var(--v9-my, 50%),
+    rgba(0, 113, 227, 0.11),
+    rgba(29, 78, 216, 0.06) 42%,
+    transparent 68%
+  );
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.v9-tile:hover .v9-tile__glow {
+  opacity: 1;
+}
+
+.v9-tile > *:not(.v9-tile__glow) {
+  position: relative;
+  z-index: 1;
+}
+
+.v9-tile__index {
+  font-family: var(--font-v9-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--v9-ink-3);
+}
+
+.v9-tile__kind {
+  font-family: var(--font-v9-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--v9-ink-3);
+}
+
+.v9-tile__title {
+  margin: 0.1rem 0 0;
+  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.v9-tile__headline {
+  margin: 0;
+  color: var(--v9-ink);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.v9-tile__context {
+  margin: 0;
+  color: var(--v9-ink-2);
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+.v9-tile__build {
+  margin: 0.2rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.v9-tile__build li {
+  position: relative;
+  padding-left: 0.95rem;
+  color: var(--v9-ink-2);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.v9-tile__build li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 999px;
+  background: var(--v9-rule);
+}
+
+.v9-tile__foot {
+  margin-top: auto;
+  padding-top: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.v9-tile__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  font-size: 0.88rem;
+}
+
+.v9-tile__note {
+  margin: 0;
+  color: var(--v9-ink-3);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.v9-tile:nth-child(1) {
+  grid-column: span 7;
+  grid-row: span 2;
+}
+
+.v9-tile:nth-child(2) {
+  grid-column: span 5;
+}
+
+.v9-tile:nth-child(3) {
+  grid-column: span 5;
+}
+
+.v9-tile:nth-child(4) {
+  grid-column: span 4;
+}
+
+.v9-tile:nth-child(5) {
+  grid-column: span 4;
+}
+
+.v9-tile:nth-child(6) {
+  grid-column: span 4;
+}
+
+/* ── Timeline (history) ───────────────────────────────────────────────── */
+
+.v9-timeline {
+  position: relative;
+  padding-left: 2.2rem;
+}
+
+.v9-timeline__rail {
+  position: absolute;
+  left: 0.3rem;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--v9-rule-soft);
+  overflow: hidden;
+}
+
+.v9-timeline__fill {
+  width: 100%;
+  height: 100%;
+  transform: scaleY(0);
+  transform-origin: top center;
+  background: linear-gradient(180deg, var(--v9-glow-a), var(--v9-glow-b));
+}
+
+.v9-chapter {
+  position: relative;
+  padding-bottom: 2.4rem;
+}
+
+.v9-chapter:last-child {
+  padding-bottom: 0;
+}
+
+.v9-chapter::before {
+  content: '';
+  position: absolute;
+  left: -2.2rem;
+  top: 0.45rem;
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 999px;
+  background: var(--v9-paper);
+  border: 2px solid var(--v9-accent);
+}
+
+.v9-chapter__span {
+  font-family: var(--font-v9-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--v9-ink-3);
+}
+
+.v9-chapter__title {
+  margin: 0.35rem 0 0.4rem;
+  font-size: 1.12rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.v9-chapter__body {
+  margin: 0;
+  max-width: 44rem;
+  color: var(--v9-ink-2);
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+.v9-stack {
+  margin: 2.2rem 0 0;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--v9-rule-soft);
+  border-radius: var(--v9-radius-sm);
+  background: var(--v9-tint-2);
+  font-family: var(--font-v9-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--v9-ink-2);
+}
+
+/* ── Testimoni ────────────────────────────────────────────────────────── */
+
+/* Grid 3x2: empat kartu testimoni, dua sel kosong berpola grid. Judul
+   section di tengah, seperti rujukannya. */
+.v9-praise-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
+}
+
+.v9-quote {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  min-height: 12.5rem;
+  padding: 1.4rem 1.5rem;
+  border: 1px solid var(--v9-rule-soft);
+  border-radius: var(--v9-radius);
+  background: var(--v9-paper);
+  box-shadow: var(--v9-shadow);
+  transition: background 0.45s ease, border-color 0.45s ease, color 0.45s ease,
+    box-shadow 0.45s ease;
+}
+
+/* Kartu yang sedang dibaca: satu aksen biru, dan itu saja. Tidak ada
+   timer yang memindahkannya (audit 2026-10-20: UI yang bergerak sendiri
+   adalah tanda "dari template"), jadi biru hanya muncul saat kursor masuk
+   atau fokus naik ke kartu itu. */
+.v9-quote:hover,
+.v9-quote:focus-within {
+  background: var(--v9-accent);
+  border-color: var(--v9-accent);
+  color: #fff;
+  box-shadow: var(--v9-shadow-lg);
+}
+
+.v9-quote blockquote {
+  margin: 0;
+  color: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+}
+
+.v9-quote figcaption {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-top: auto;
+}
+
+.v9-quote__who {
+  display: block;
+  min-width: 0;
+}
+
+.v9-quote__name {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: inherit;
+}
+
+.v9-quote__role {
+  display: block;
+  font-size: 0.84rem;
+  color: var(--v9-ink-2);
+  transition: color 0.45s ease;
+}
+
+.v9-quote__where {
+  display: block;
+  margin-top: 0.15rem;
+  transition: color 0.45s ease;
+}
+
+.v9-quote:hover .v9-quote__role, .v9-quote:focus-within .v9-quote__role {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.v9-quote:hover .v9-quote__where, .v9-quote:focus-within .v9-quote__where {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.v9-avatar {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--v9-rule);
+  background: var(--v9-tint);
+  color: var(--v9-ink-2);
+  font-family: var(--font-v9-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  transition: background 0.45s ease, border-color 0.45s ease, color 0.45s ease;
+}
+
+.v9-quote:hover .v9-avatar, .v9-quote:focus-within .v9-avatar {
+  background: #fff;
+  border-color: rgba(255, 255, 255, 0.6);
+  color: var(--v9-accent);
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────── */
+
+/* Lantai perspektif: pola "retro grid" (21st.dev, dillionverma, 695
+   unduhan). Garis mendatar makin rapat ke cakrawala, garis vertikal
+   menyatu di titik hilang. Animasi digeser dengan transform, jadi
+   compositor-only, bukan repaint tiap frame. */
+.v9-footer {
+  position: relative;
+  overflow: hidden;
+  margin-top: clamp(3rem, 7vw, 5rem);
+  padding: clamp(3rem, 8vw, 6rem) 0 clamp(2rem, 5vw, 3rem);
+  border-top: 1px solid var(--v9-rule-soft);
+  isolation: isolate;
+}
+
+.v9-footer__grid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 62%;
+  z-index: -1;
+  overflow: hidden;
+  perspective: 220px;
+  perspective-origin: 50% 0%;
+  pointer-events: none;
+  /* Grid memudar ke arah cakrawala, jadi garis yang jauh tidak pernah
+    meet teks dan tidak pernah jadi garis yang keras. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 34%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 34%);
+}
+
+.v9-footer__gridlines {
+  position: absolute;
+  left: -70%;
+  right: -70%;
+  top: -30%;
+  bottom: -30%;
+  transform: rotateX(64deg);
+  transform-origin: 50% 50%;
+  background-image:
+    repeating-linear-gradient(to right, rgba(0, 113, 227, 0.22) 0 1px, transparent 1px 76px),
+    repeating-linear-gradient(to bottom, rgba(0, 113, 227, 0.22) 0 1px, transparent 1px 76px);
+  animation: v9-grid-roll 2.6s linear infinite;
+}
+
+@keyframes v9-grid-roll {
+  from {
+    transform: rotateX(64deg) translateY(0);
+  }
+  to {
+    transform: rotateX(64deg) translateY(76px);
+  }
+}
+
+.v9-footer__inner {
+  position: relative;
+}
+
+/* Wordmark besar: alamat email, berdiri di lantai. Tautan, jadi hover-nya
+   mengikuti aturan warna yang sama dengan email di band CTA (ink, biru
+   saat hover). */
+.v9-footer__wordmark {
+  display: inline-block;
+  margin: 0 0 clamp(1.5rem, 4vw, 2.5rem);
+  color: var(--v9-ink);
+  font-size: clamp(1.9rem, 6.4vw, 4.4rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  word-break: break-word;
+}
+
+.v9-footer__wordmark:hover {
+  color: var(--v9-accent);
+}
+
+.v9-footer__rows {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem 2.5rem;
+  flex-wrap: wrap;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--v9-rule-soft);
+}
+
+.v9-footer__social {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.v9-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border: 1px solid var(--v9-rule-soft);
+  border-radius: 999px;
+  background: var(--v9-paper);
+  color: var(--v9-ink-2);
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.v9-icon-btn:hover {
+  color: var(--v9-ink);
+  border-color: var(--v9-rule);
+  transform: translateY(-2px);
+}
+
+.v9-footer__links {
+  display: flex;
+  gap: 1.1rem;
+  font-size: 0.88rem;
+}
+
+/* ── Responsif ────────────────────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .v9-tile:nth-child(n) {
+    grid-column: span 6;
+    grid-row: auto;
+  }
+
+  .v9-praise-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 820px) {
+  .v9-nav__list,
+  .v9-nav__actions {
+    display: none;
+  }
+
+  .v9-nav__menu {
+    display: block;
+  }
+
+  .v9-nav__toggle {
+    display: inline-flex;
+  }
+
+  .v9-nav__bar {
+    min-height: 56px;
+  }
+
+  .v9-hero {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .v9-tile:nth-child(n) {
+    grid-column: span 12;
+  }
+
+  .v9-praise-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .v9-quote {
+    min-height: 0;
+  }
+
+  .v9-bio {
+    gap: 0.9rem;
+  }
+}
+
+/* Gerak dimatikan sesuai permintaan sistem. Shader dan reveal ditangani di JS
+   (components/v9/Motion.tsx, components/v9/Shader.tsx); di sini sisanya. */
+@media (prefers-reduced-motion: reduce) {
+  /* Kartu testimoni: GSAP menyetel opacity:0 saat runtime, jadi kalau
+     reduced motion dinyalakan di tengah sesi, atau section terlewati saat
+     lompat scroll, isinya harus tetap bisa dibaca. `!important` di
+     stylesheet mengalahkan style attribute. */
+  .v9-quote {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .v9-root *,
+  .v9-root *::before,
+  .v9-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

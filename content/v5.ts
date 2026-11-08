@@ -403,7 +403,7 @@ export const V5_SECTIONS: V5Section[] = [
     id: 'voices',
     eyebrow: 'Referrals',
     heading: ['What working', 'with me is like.'],
-    lede: 'Two managers, a mentee, and a teammate on the same pattern: organized, proactive, and clear under pressure.',
+    lede: 'Two managers, two mentees, a teammate, and a program collaborator on the same pattern: organized, proactive, and clear under pressure.',
   },
   {
     id: 'about',

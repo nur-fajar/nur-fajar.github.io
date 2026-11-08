@@ -1,0 +1,149 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nur Fajar — Folio 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #08090a; color: #f7f8f8; font-family: Inter, sans-serif; overflow-x: hidden; }
+  a { text-decoration: none; }
+  .glow { position: fixed; top: -260px; left: 50%; transform: translateX(-50%); width: 980px; height: 480px; pointer-events: none; background: radial-gradient(closest-side, rgba(94,106,210,.32), transparent); filter: blur(8px); }
+  .bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9; display: flex; justify-content: space-between; align-items: center; padding: 14px clamp(16px, 3vw, 36px); font-size: 13px; color: #8a8f98; background: rgba(8,9,10,.75); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,.06); }
+  .bar b { color: #f7f8f8; font-weight: 600; }
+  .bar nav { display: flex; gap: 22px; }
+  .bar nav a { color: #8a8f98; transition: color .2s; }
+  .bar nav a:hover { color: #f7f8f8; }
+  .shell { max-width: 1020px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px); }
+  .hero { min-height: 92svh; display: flex; flex-direction: column; justify-content: center; position: relative; }
+  .eyebrow { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #8a8f98; }
+  h1 { font-size: clamp(38px, 7.5vw, 84px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.02; margin-top: 14px; }
+  h1 .grad { background: linear-gradient(100deg, #f7f8f8 40%, #8a8f98); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { margin-top: 20px; color: #8a8f98; font-size: clamp(15px, 1.8vw, 18px); max-width: 36em; line-height: 1.7; }
+  .cta { margin-top: 28px; display: flex; gap: 10px; }
+  .cta a { border-radius: 8px; padding: 11px 18px; font-size: 13px; font-weight: 500; border: 1px solid #2c2c31; color: #f7f8f8; background: #1c1d21; transition: border-color .2s; }
+  .cta a:hover { border-color: #5e6ad2; }
+  .sec { padding: clamp(60px, 12vh, 130px) 0 20px; }
+  .sec .eyebrow { margin-bottom: 12px; }
+  h2 { font-size: clamp(26px, 4.2vw, 44px); font-weight: 600; letter-spacing: -0.025em; }
+  .cards { margin-top: 34px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card { border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 22px; background: #0d0e10; transition: border-color .25s, transform .25s; }
+  .card:hover { border-color: #5e6ad2; transform: translateY(-2px); }
+  .card .k { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #8a8f98; }
+  .card .t { font-size: 17px; font-weight: 600; margin-top: 8px; }
+  .card .h { font-size: 13px; color: #8a8f98; margin-top: 6px; line-height: 1.6; }
+  .card .h b { color: #c3c8f5; font-weight: 500; }
+  blockquote { margin-top: 34px; font-size: clamp(18px, 2.4vw, 24px); font-weight: 500; letter-spacing: -0.015em; line-height: 1.45; color: #d6d9dd; }
+  blockquote .who { display: block; margin-top: 14px; font-size: 13px; color: #8a8f98; }
+  .contact { padding: clamp(70px, 14vh, 150px) 0 30px; text-align: center; }
+  .contact .mail { font-size: clamp(28px, 5.5vw, 64px); font-weight: 600; letter-spacing: -0.03em; color: #f7f8f8; }
+  .contact .mail:hover { color: #a3aae8; }
+  .contact .sub { margin-top: 16px; color: #8a8f98; font-size: 14px; }
+  .colo { margin-top: 60px; padding: 18px 0 24px; border-top: 1px solid rgba(255,255,255,.06); display: flex; justify-content: space-between; font-size: 11px; color: #62666d; }
+  @media (max-width: 720px) { .cards { grid-template-columns: 1fr; } }
+.pre{position:fixed;inset:0;background:var(--bg, #0c0c0c);z-index:50;visibility:hidden;opacity:0}
+.pre__name{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--sub,#888)}
+.pre__num{position:absolute;left:clamp(16px,3vw,36px);bottom:1.4rem;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--sub,#888);font-variant-numeric:tabular-nums}
+.pre__bar{position:absolute;left:0;bottom:0;width:100%;height:2px;background:var(--accent, #4ade80);transform:scaleX(0);transform-origin:left center}
+.cursor{position:fixed;top:0;left:0;width:28px;height:28px;border:1px solid color-mix(in srgb,var(--accent,#4ade80) 60%,transparent);border-radius:50%;pointer-events:none;z-index:40;opacity:0;visibility:hidden;transform:translate(-50%,-50%)}
+.grain{position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:30;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E")}
+</style>
+</head>
+<body><div class="pre"><p class="pre__name">Nur Fajar</p><p class="pre__num">000</p><span class="pre__bar"></span></div><div class="pbar"></div><div class="cursor"></div><div class="grain"></div>
+<div class="glow" id="glow"></div>
+<div class="bar"><b>Nur Fajar</b><nav><a href="#work">Work</a><a href="#praise">Praise</a><a href="#contact">Contact</a></nav></div>
+
+<div class="shell">
+  <div class="hero">
+    <p class="eyebrow">Folio 2026 · Available immediately</p>
+    <h1>AI specialist who builds <span class="grad">apps and communities.</span></h1>
+    <p class="sub">Hi there! I'm Fajar, and I enjoy turning ideas into things that help people learn, work, and solve problems better. From 9-agent pipelines to 5 learning programs — built end to end, with a human checking before anything sends.</p>
+    <div class="cta"><a href="#work">See selected work</a><a href="#contact">hi@nurfajar.com</a></div>
+  </div>
+
+  <div class="sec" id="work">
+    <p class="eyebrow">Selected work</p>
+    <h2>Proof, shipped and measured.</h2>
+    <div class="cards">
+      <div class="card" data-reveal><p class="k">01 · AI build · Revenue ops</p><p class="t">CRM pipeline</p><p class="h">9 specialized Python + LLM agents with human-in-the-loop approval. <b>~11h runtime vs 300+h manual (96% less)</b> — live Jun to Jul 2026.</p></div>
+      <div class="card" data-reveal><p class="k">02 · Enablement · Curriculum</p><p class="t">Chatbot curriculum engine</p><p class="h">One chatbot engine on Smojo, adapted for business, education, and product managers. <b>5 programs · 150+ participants</b>.</p></div>
+      <div class="card" data-reveal><p class="k">03 · Web build</p><p class="t">Web builds that prove shipping</p><p class="h">Two brand concept sites and this folio — <b>3 sites live</b> on Next.js + TypeScript + Vercel.</p></div>
+      <div class="card" data-reveal><p class="k">04 · Social · In development</p><p class="t">Remember &amp; Nyunda</p><p class="h">A desktop assistant for tab overload, and a Sundanese learning app. <b>100% local · offline-first</b>.</p></div>
+    </div>
+  </div>
+
+  <div class="sec" id="praise">
+    <p class="eyebrow">Praise</p>
+    <h2>In their words.</h2>
+    <blockquote data-reveal>"He takes ownership, learns fast, and delivers. Across programs, curriculum, and our AI data pipeline, I was extremely happy with his work."
+      <span class="who">Arnold Doray — Former manager, Terra AI · Now CTO, Wingfin</span>
+    </blockquote>
+  </div>
+
+  <div class="contact" id="contact">
+    <a class="mail" href="mailto:hi@nurfajar.com">hi@nurfajar.com</a>
+    <p class="sub">Looking for full-time · remote or hybrid, onsite Indonesia, open to relocate · replies within 24 hours.</p>
+    <div class="colo"><span>Built with care · Last updated October 2026</span><span>Replies to every email.</span></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduced) {
+    var lenis = new Lenis({ lerp: 0.11 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+
+    /* Glow mengikuti kursor (lerp halus). */
+    var glow = document.getElementById('glow');
+    var gx = gsap.quickTo(glow, 'x', { duration: 0.8, ease: 'power3' });
+    window.addEventListener('pointermove', function (e) { gx(e.clientX - 490); });
+
+    /* Reveal: fade-up beruntun per kelompok. */
+    gsap.utils.toArray('[data-reveal]').forEach(function (el) {
+      gsap.from(el, { y: 26, autoAlpha: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+    });
+    gsap.from('.hero h1, .hero .sub, .hero .cta', { y: 24, autoAlpha: 0, duration: 1, ease: 'power3.out', stagger: 0.09, delay: 0.15 });
+  }
+</script>
+<script>
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (typeof gsap === 'undefined') return;
+  var pre = document.querySelector('.pre');
+  var pnum = pre && pre.querySelector('.pre__num');
+  if (pre) {
+    gsap.set(pre, { autoAlpha: 1 });
+    var counter = { v: 0 };
+    gsap.timeline()
+      .to(counter, { v: 100, duration: 0.7, ease: 'power2.inOut', onUpdate: function () { if (pnum) pnum.textContent = String(Math.round(counter.v)).padStart(3, '0'); } })
+      .to('.pre__bar', { scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, 0)
+      .to(pre, { autoAlpha: 0, duration: 0.3, ease: 'power2.out' }, '+=0.04');
+  }
+  if (window.matchMedia('(pointer: fine)').matches) {
+    var ring = document.querySelector('.cursor');
+    if (ring && typeof gsap.quickTo === 'function') {
+      gsap.set(ring, { autoAlpha: 1, xPercent: -50, yPercent: -50 });
+      var rX = gsap.quickTo(ring, 'x', { duration: 0.35, ease: 'power3' });
+      var rY = gsap.quickTo(ring, 'y', { duration: 0.35, ease: 'power3' });
+      window.addEventListener('pointermove', function (e) { rX(e.clientX); rY(e.clientY); });
+      document.addEventListener('pointerover', function (e) {
+        var t = e.target instanceof Element ? e.target : null;
+        var hot = t && t.closest('a, button, [data-cursor]');
+        gsap.to(ring, { scale: hot ? 2 : 1, duration: 0.3, ease: 'power3.out' });
+      });
+    }
+  }
+})();
+</script>
+</body>
+</html>

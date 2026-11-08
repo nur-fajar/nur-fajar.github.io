@@ -33,7 +33,10 @@
  */
 
 export const CONTACT = {
-  email: 'hi.nurfajar@gmail.com',
+  // 2026-10-16: Gmail vokasi/"nick" hi.nurfajar@gmail.com diganti domain
+  // sendiri per pemilikan nurfajar.com — satu tempat, semua halaman ikut
+  // lewat kanon ini.
+  email: 'hi@nurfajar.com',
   linkedin: 'https://www.linkedin.com/in/nurfajar/',
   cal: 'https://cal.com/nurfajar/15min',
   location: 'Tangerang, Indonesia',
@@ -499,7 +502,7 @@ export interface Testimonial {
 }
 
 /**
- * Empat, dari empat sudut pandang yang benar-benar berbeda.
+ * Enam suara, dari empat sudut pandang yang benar-benar berbeda.
  *
  * Versi sebelumnya berjudul "What the people who managed me said" padahal
  * hanya satu dari tiga yang manajernya, dan dua sisanya sama-sama mentee.
@@ -521,6 +524,21 @@ export interface Testimonial {
  * Sheets/Notion. Keduanya rekaman yang jujur dari orang berbeda, tapi
  * berdampingan di satu halaman keduanya saling melemahkan. Bagian kutipan
  * yang tidak bertabrakan tetap dipakai; bagian yang bertabrakan dibuang.
+ *
+ * Oktober 2026: dua suara LinkedIn baru masuk, Andrew Benedictus Jamesie
+ * (mentee, Bangkit Academy 2024) dan Dicky Arya Pratama (program partner,
+ * GDSC Indonesia). Dua bahasa mereka dipangkas ke satu kalimat seperti
+ * suara lain: bagian yang paling kuat dan yang tidak bertabrakan dengan
+ * klaim situs lain.
+ *   - Andrew: bagian yang dibuang adalah paragraf penutup ("highly
+ *     adaptable, possessing transferable skills ... a strong fit for roles
+ *     like Project Manager, Program Manager, HR"). Kata "adaptable" dan
+ *     "transferable" terlarang di kanon ini (guard kata sifat tanpa
+ *     bukti), dan memuji orang lain untuk peran yang tidak pernah Fajar
+ *     kerjakan bukan bukti apa pun atas kemampuannya.
+ *   - Dicky: tanggal di sisi LinkedIn-nya (6 Oktober 2024) adalah tanggal
+ *     rekomendasi itu ditulis, bukan tanggal mereka bekerja, jadi
+ *     relationship-nya ditulis tanpa tahun.
  *
  * Tidak satu pun mengutip angka rating. Percobaan sebelumnya memakai kutipan
  * "9.8 out of 10" lalu perlu caption penjelas supaya tidak terbaca bentrok
@@ -550,10 +568,24 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     quote:
+      'His deep technical expertise and mentoring made complex concepts accessible at every level, and his time management meant projects were always delivered on schedule.',
+    name: 'Andrew Benedictus Jamesie',
+    relation: 'Former mentee, Bangkit Academy 2024',
+    role: 'Senior Software Engineer, Accenture',
+  },
+  {
+    quote:
       'He ran the team with real skill. Communication stayed clear, tasks were managed effectively, and the group worked through to a successful finish.',
     name: 'Diki Hamdani',
     relation: 'Peer, Bangkit Academy 2022',
     role: 'Capstone teammate. Now Software Programmer, HashMicro',
+  },
+  {
+    quote:
+      'We ran several events together under GDSC Indonesia, and his support and clear communication kept every project running smoothly and on time.',
+    name: 'Dicky Arya Pratama',
+    relation: 'Program collaborator, GDSC Indonesia',
+    role: 'Senior Android Developer',
   },
 ];
 

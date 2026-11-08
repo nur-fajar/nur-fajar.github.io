@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mockups â€” v8 full-motion directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&family=Press+Start+2P&family=Orbitron:wght@500;700;900&family=Nunito:wght@700;800;900&family=Allerta+Stencil&family=Space+Grotesk:wght@400;500;700&family=Roboto:wght@400;500;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#101014;color:#f2f2f2;font-family:Inter,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:clamp(40px,9vh,100px) 24px 80px}
+.k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#ff4d00}
+h1{font-size:clamp(30px,5vw,52px);font-weight:700;letter-spacing:-.03em;margin-top:14px}
+p.desc{margin-top:16px;color:#999;line-height:1.7;font-size:14px;max-width:46em}
+p.desc b{color:#ddd;font-weight:600}
+h2{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#666;margin:44px 0 16px}
+.list{display:grid;gap:10px}
+.item{display:grid;grid-template-columns:3.4rem 1fr auto;gap:6px 18px;align-items:baseline;border:1px solid #26262c;border-radius:12px;padding:18px 20px;text-decoration:none;color:#f2f2f2;transition:border-color .2s,transform .2s}
+.item:hover{border-color:#ff4d00;transform:translateX(4px)}
+.item .no{font-family:'JetBrains Mono',monospace;font-size:12px;color:#ff4d00}
+.item .t{font-weight:600;font-size:16px}
+.item .d{grid-column:2;font-size:12px;color:#888;line-height:1.6}
+.item .go{font-family:'JetBrains Mono',monospace;font-size:12px;color:#666}
+.others{margin-top:44px;border-top:1px solid #26262c;padding-top:24px;font-size:13px;color:#999;line-height:2}
+.others a{color:#ff4d00;text-decoration:none}
+@media(max-width:720px){.item{grid-template-columns:2.4rem 1fr}.item .go{display:none}.item .d{grid-column:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="k">Mockups â€” full motion</p>
+  <h1>48 arah, versi maksimal.</h1>
+  <p class="desc">Empat puluh dua arah digenerate dari satu mesin motion bersama (Lenis + GSAP + SplitText: preloader, reveal, heading ber-mask, count-up, tilt, garis digambar) â€” ditambah <b>enam flagship</b> yang dibuat manual lebih dalam. Konten tetap kanon v7. Arah <b>Atlas (08)</b> versi penuhnya ada di <b>/v8</b> (Next.js).</p>
+  <h2>Flagship â€” dibuat manual</h2>
+  <div class="list">
+    <a class="item" href="terminal.html"><span class="no">05</span><span class="t">Terminal / Developer-core</span><span class="go">open â†’</span><span class="d">Boot sequence diketik saat load, output di-type saat masuk viewport, block cursor berkedip.</span></a>
+    <a class="item" href="velocity.html"><span class="no">21</span><span class="t">Velocity Grotesque</span><span class="go">open â†’</span><span class="d">Tipe raksasa condong reaktif kecepatan scroll, baris parallax dua arah, marquee. Bahasa Studio Freight.</span></a>
+    <a class="item" href="scrollytelling.html"><span class="no">25</span><span class="t">Scrollytelling Pinned</span><span class="go">open â†’</span><span class="d">Kisah CRM pipeline 5 bab terpaku: meter 300+h → ~11h mengalir, judul berganti per bab.</span></a>
+    <a class="item" href="linear.html"><span class="no">32</span><span class="t">Linear</span><span class="go">open â†’</span><span class="d">Glow ungu mengikuti kursor, kartu gradient-border, reveal beruntun. Standar SaaS premium.</span></a>
+    <a class="item" href="anthropic.html"><span class="no">38</span><span class="t">Anthropic / Claude</span><span class="go">open â†’</span><span class="d">Gading hangat, serif italic, coral #d97757. Bahasa visual brand AI yang sedang naik.</span></a>
+    <a class="item" href="varfont.html"><span class="no">24</span><span class="t">Variable Font Playground</span><span class="go">open â†’</span><span class="d">Bobot & lebar huruf mengikuti kursor (lerp) dan di-scrub scroll, dengan HUD readout.</span></a>
+  </div>
+  <h2>Generated â€” satu mesin motion bersama</h2>
+  <div class="list">
+    <a class="item" href="01-swiss.html"><span class="no">01</span><span class="t">Swiss / Editorial Clean</span><span class="go">open â†’</span><span class="d">Putih, hairline, satu aksen merah, grotesk tebal. Presisi tanpa hiasan.</span></a>
+    <a class="item" href="02-neobrutal.html"><span class="no">02</span><span class="t">Neo-Brutalism</span><span class="go">open â†’</span><span class="d">Border hitam tebal, hard shadow, kuning-pink primer. Hover lompat patah-patah.</span></a>
+    <a class="item" href="03-brutalism.html"><span class="no">03</span><span class="t">Brutalism asli</span><span class="go">open â†’</span><span class="d">Style browser default, sengaja. Times New Roman, link biru, tabel, hit counter.</span></a>
+    <a class="item" href="04-pixel.html"><span class="no">04</span><span class="t">Pixel / 8-bit</span><span class="go">open â†’</span><span class="d">Font piksel, palette terbatas, scanline CRT, hard drop shadow.</span></a>
+    <a class="item" href="06-glass.html"><span class="no">06</span><span class="t">Glassmorphism / Aurora</span><span class="go">open â†’</span><span class="d">Gradien aurora, kaca buram, pill button. Slop indicator #1 — untuk perbandingan.</span></a>
+    <a class="item" href="07-y2k.html"><span class="no">07</span><span class="t">Y2K Cyber Chrome</span><span class="go">open â†’</span><span class="d">Teks krom metalik, grid perspektif, lens flare. Nostalgia 2000-an.</span></a>
+    <a class="item" href="08-atlas.html"><span class="no">08</span><span class="t">Celestial Atlas (arah v8)</span><span class="go">open â†’</span><span class="d">Versi standalone ringan: rasi digambar GSAP, kertas hangat, tick marks. Versi penuh ada di /v8.</span></a>
+    <a class="item" href="09-maximal.html"><span class="no">09</span><span class="t">Maximalism / Anti-design</span><span class="go">open â†’</span><span class="d">Rotasi, tumpang tindih, stiker, font bentrok. Energi muda yang kacau-terukur.</span></a>
+    <a class="item" href="10-bento.html"><span class="no">10</span><span class="t">Bento Grid</span><span class="go">open â†’</span><span class="d">Kotak modular ukuran beda, tiap sel satu fakta, hover micro-scale.</span></a>
+    <a class="item" href="11-blueprint.html"><span class="no">11</span><span class="t">Blueprint / Technical Drawing</span><span class="go">open â†’</span><span class="d">Kertas biru arsitek: grid koordinat, garis ukur, title block resmi.</span></a>
+    <a class="item" href="12-riso.html"><span class="no">12</span><span class="t">Risograph / Zine</span><span class="go">open â†’</span><span class="d">Dua tinta overprint, misregistration sengaja, halftone, tape.</span></a>
+    <a class="item" href="13-academia.html"><span class="no">13</span><span class="t">Dark Academia</span><span class="go">open â†’</span><span class="d">Coklat tua, krem, emas redup, serif klasik dengan italic.</span></a>
+    <a class="item" href="14-retroos.html"><span class="no">14</span><span class="t">Retro OS — Windows 95</span><span class="go">open â†’</span><span class="d">Jendela bevel, title bar navy, taskbar. Parodi sistem operasi.</span></a>
+    <a class="item" href="15-zen.html"><span class="no">15</span><span class="t">Zen Minimal / Jepang</span><span class="go">open â†’</span><span class="d">Ruang kosong sangat besar, satu enso, teks vertikal. Konfidensi lewat keheningan.</span></a>
+    <a class="item" href="16-kinetic.html"><span class="no">16</span><span class="t">Kinetic Typography</span><span class="go">open â†’</span><span class="d">Teks raksasa solid/outline, satu kata merah bergeser. Tipe sebagai seluruh desain.</span></a>
+    <a class="item" href="17-industrial.html"><span class="no">17</span><span class="t">Industrial / Military Terminal</span><span class="go">open â†’</span><span class="d">Panel logam, sekrup, garis hazard, stencil, barcode.</span></a>
+    <a class="item" href="18-clay.html"><span class="no">18</span><span class="t">Claymorphism</span><span class="go">open â†’</span><span class="d">Bentuk tanah liat mengembang: radius besar, double shadow manis, pastel.</span></a>
+    <a class="item" href="19-vaporwave.html"><span class="no">19</span><span class="t">Vaporwave / Synthwave</span><span class="go">open â†’</span><span class="d">Matahari terbenam bergaris, grid neon perspektif, katakana, glow pink-cyan.</span></a>
+    <a class="item" href="20-luxury.html"><span class="no">20</span><span class="t">Dark Luxury</span><span class="go">open â†’</span><span class="d">Hitam pekat, emas tipis, serif italic, corner ornaments. Sunyi dan mahal.</span></a>
+    <a class="item" href="22-brokengrid.html"><span class="no">22</span><span class="t">Broken Grid / Swiss-Punk</span><span class="go">open â†’</span><span class="d">Grid dipecah, tipe miring tumpang tindih, serif × grotesk × mono, grain.</span></a>
+    <a class="item" href="23-horizontal.html"><span class="no">23</span><span class="t">Horizontal Scroll Gallery</span><span class="go">open â†’</span><span class="d">Galeri menyamping dengan snap — pola Locomotive. Scroll ke samping.</span></a>
+    <a class="item" href="26-contour.html"><span class="no">26</span><span class="t">Topographic Contour</span><span class="go">open â†’</span><span class="d">Garis kontur peta topografi — saudara daratan dari atlas-mu. Garis digambar saat masuk.</span></a>
+    <a class="item" href="27-ascii.html"><span class="no">27</span><span class="t">ASCII / Generative Canvas</span><span class="go">open â†’</span><span class="d">Medan karakter ASCII berdenyut 60fps — kode sebagai tekstur hidup.</span></a>
+    <a class="item" href="28-brutlux.html"><span class="no">28</span><span class="t">Brutal Luxury (Balenciaga)</span><span class="go">open â†’</span><span class="d">Helvetica polos, tanpa warna, tanpa shadow — keberanian lewat pengurangan total.</span></a>
+    <a class="item" href="29-apple.html"><span class="no">29</span><span class="t">Apple</span><span class="go">open â†’</span><span class="d">Putih, tipe produk raksasa, abu, biru link. Dunia v7 sebagai perbandingan.</span></a>
+    <a class="item" href="30-google.html"><span class="no">30</span><span class="t">Google</span><span class="go">open â†’</span><span class="d">Putih, Roboto, empat warna brand, pill pencarian, kartu bersih.</span></a>
+    <a class="item" href="31-stripe.html"><span class="no">31</span><span class="t">Stripe</span><span class="go">open â†’</span><span class="d">Gradien anguler khas di kanan atas, navy, tombol pill. SaaS paling ditiru.</span></a>
+    <a class="item" href="33-vercel.html"><span class="no">33</span><span class="t">Vercel</span><span class="go">open â†’</span><span class="d">Hitam-putih absolut, segitiga, mono detail. Nol dekorasi.</span></a>
+    <a class="item" href="34-notion.html"><span class="no">34</span><span class="t">Notion</span><span class="go">open â†’</span><span class="d">Halaman dokumen dengan ikon emoji, callout abu, link bergaris bawah.</span></a>
+    <a class="item" href="35-figma.html"><span class="no">35</span><span class="t">Figma</span><span class="go">open â†’</span><span class="d">Putih dengan chip lima warna brand, heading tebal, kartu lembut.</span></a>
+    <a class="item" href="36-github.html"><span class="no">36</span><span class="t">GitHub</span><span class="go">open â†’</span><span class="d">Dark code UI: repo card, commit message, syntax warna.</span></a>
+    <a class="item" href="37-openai.html"><span class="no">37</span><span class="t">OpenAI</span><span class="go">open â†’</span><span class="d">Putih minimal, geometri bersih, satu prompt bar di tengah.</span></a>
+    <a class="item" href="39-spotify.html"><span class="no">39</span><span class="t">Spotify</span><span class="go">open â†’</span><span class="d">Hitam + hijau #1db954, heading extra-bold, pill tebal.</span></a>
+    <a class="item" href="40-airbnb.html"><span class="no">40</span><span class="t">Airbnb</span><span class="go">open â†’</span><span class="d">Rausch merah muda, kartu membulat dengan foto-gradien, search pill.</span></a>
+    <a class="item" href="41-slack.html"><span class="no">41</span><span class="t">Slack</span><span class="go">open â†’</span><span class="d">Channel list, aubergine + empat warna, kartu putih membulat.</span></a>
+    <a class="item" href="42-discord.html"><span class="no">42</span><span class="t">Discord</span><span class="go">open â†’</span><span class="d">Blurple penuh, heading chunky, pill putih.</span></a>
+    <a class="item" href="43-framer.html"><span class="no">43</span><span class="t">Framer</span><span class="go">open â†’</span><span class="d">Hitam, gradient-border card (biru→pink), heading center.</span></a>
+    <a class="item" href="44-raycast.html"><span class="no">44</span><span class="t">Raycast</span><span class="go">open â†’</span><span class="d">Hitam + glow merah-oranye, command bar ⌘K sebagai bintang.</span></a>
+    <a class="item" href="45-supabase.html"><span class="no">45</span><span class="t">Supabase</span><span class="go">open â†’</span><span class="d">Hitam + hijau #3ecf8e + amber, blok kode, mono. Dev-first lugas.</span></a>
+    <a class="item" href="46-tailwind.html"><span class="no">46</span><span class="t">Tailwind CSS</span><span class="go">open â†’</span><span class="d">Slate gelap, teks gradient sky-cyan, blok kode rounded.</span></a>
+    <a class="item" href="47-arc.html"><span class="no">47</span><span class="t">Arc — The Browser Company</span><span class="go">open â†’</span><span class="d">Gradien pastel hangat, sidebar tab membulat, heading extra-bold.</span></a>
+    <a class="item" href="48-spacex.html"><span class="no">48</span><span class="t">SpaceX / Tesla</span><span class="go">open â†’</span><span class="d">Hitam penuh, uppercase tracking lebar, dua tombol ghost. Sinematik dan dingin.</span></a>
+    <a class="item" href="52-carbon.html"><span class="no">52</span><span class="t">IBM Carbon</span><span class="go">open â†’</span><span class="d">Bahasa ibm.com: masthead gelap permanen, lead space Plex Light, heading Regular 400, rule 1px, tombol tajam berpanah, structured list, kontak g100.</span></a>
+  </div>
+  <div class="others">
+    Pembanding cepat versi statis: <a href="../style-board.html">style-board.html</a> (48 arah).<br />
+    Semua mockup berdiri sendiri dan tidak mengganggu build Next.js maupun deploy.
+  </div>
+</div>
+</body>
+</html>

@@ -57,6 +57,11 @@ export default function nextConfigForPhase(phase) {
     "form-action 'self'",
     "frame-ancestors 'none'",
   ].join('; ');
+  // CSP untuk /mockups/*: iframe mockup memuat GSAP/Lenis/font dari CDN dan
+  // boleh di-frame oleh situsnya sendiri. Sisanya identik dengan CSP global
+  // — termasuk 'unsafe-eval' saat dev, yang dibutuhkan hydration React di
+  // halaman /mockups (catatan: /mockups/:path* juga mencocokkan /mockups).
+  const CSP_MOCKUPS = CSP.replace("frame-ancestors 'none'", "frame-ancestors 'self'");
 
   if (STATIC_EXPORT) {
     return {
@@ -90,12 +95,23 @@ export default function nextConfigForPhase(phase) {
     async headers() {
       return [
         {
-          source: '/:path*',
+          source: '/((?!mockups(?:$|/)).*)',
           headers: [
             { key: 'Content-Security-Policy', value: CSP },
             { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
             { key: 'X-Frame-Options', value: 'DENY' },
             { key: 'X-Content-Type-Options', value: 'nosniff' },
+          ],
+        },
+        {
+          // Mockup di /mockups/*.html memuat GSAP/Lenis/font dari CDN dan
+          // boleh di-frame situsnya sendiri. CSP-nya = CSP global dengan
+          // frame-ancestors 'self' (lihat CSP_MOCKUPS di atas).
+          source: '/mockups/:path*',
+          headers: [
+            { key: 'Content-Security-Policy', value: CSP_MOCKUPS },
+            { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+            { key: 'Cache-Control', value: 'no-store' },
           ],
         },
       ];

@@ -1,0 +1,361 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Nur Fajar — Swiss Editorial Folio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+:root {
+  --paper: #f4f1ea; --paper-2: #ece7dc; --ink: #1a1a1a; --sub: #6a655c;
+  --rule: #d6d0c2; --rule-2: #b9b19f; --acc: #b3451a; --acc-hot: #d0522a;
+  --disp: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --sans: 'Inter', system-ui, sans-serif; --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1); --shell: 1240px; --gutter: clamp(1.25rem, 4vw, 3rem);
+}
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+::selection { background: var(--acc); color: #fff; }
+:focus-visible { outline: 2px solid var(--acc-hot); outline-offset: 3px; border-radius: 2px; }
+a { color: inherit; text-decoration: none; }
+.pre { position: fixed; inset: 0; z-index: 200; background: var(--paper); visibility: hidden; opacity: 0; display: flex; align-items: center; justify-content: center; }
+.pre__row { display: flex; align-items: baseline; gap: 1.6rem; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--sub); }
+.pre__num { font-variant-numeric: tabular-nums; }
+.pre__bar { position: absolute; left: 0; bottom: 0; width: 100%; height: 1px; background: var(--acc); transform: scaleX(0); transform-origin: left center; }
+.baseline { position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: repeating-linear-gradient(0deg, transparent 0 23px, rgba(26,26,26,.04) 23px 24px); }
+.bar { position: fixed; top: 0; left: 0; right: 0; z-index: 40; display: flex; justify-content: space-between; align-items: baseline; padding: 16px var(--gutter); font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--sub); background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule); }
+.bar .brand { color: var(--ink); font-weight: 600; }
+.bar nav { display: flex; gap: clamp(1.2rem, 2.5vw, 2.2rem); }
+.bar nav a { color: var(--sub); transition: color .2s; }
+.bar nav a:hover { color: var(--ink); }
+.hero { min-height: 100svh; max-width: var(--shell); margin: 0 auto; padding: clamp(7rem, 14vh, 10rem) var(--gutter) clamp(3rem, 6vh, 5rem); display: grid; grid-template-columns: 7fr 5fr; gap: clamp(1.5rem, 4vw, 4rem); align-items: end; position: relative; }
+.hero__name { font-family: var(--disp); font-stretch: 125%; font-weight: 800; font-size: clamp(4.5rem, 13.5vw, 12.5rem); line-height: 0.88; letter-spacing: -0.025em; text-transform: uppercase; color: var(--ink); }
+.hero__name .dot { display: inline-block; width: 0.09em; height: 0.09em; background: var(--acc); border-radius: 50%; margin-left: 0.04em; vertical-align: baseline; }
+.hero__col { display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 0.6rem; }
+.hero__tag { font-family: var(--disp); font-stretch: 105%; font-weight: 600; font-size: clamp(1.05rem, 1.5vw, 1.25rem); line-height: 1.35; color: var(--ink); max-width: 24em; text-wrap: pretty; }
+.hero__bio { display: grid; gap: 0.7rem; }
+.hero__bio p { font-size: 0.9rem; line-height: 1.7; color: var(--sub); text-wrap: pretty; max-width: 30em; }
+.hero__bio a { color: var(--ink); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--sub) 50%, transparent); text-underline-offset: 0.18em; transition: color .2s, text-decoration-color .2s; }
+.hero__bio a:hover { color: var(--acc); text-decoration-color: var(--acc); }
+.hero__foot { margin-top: clamp(2.5rem, 5vh, 4rem); padding-top: 1.2rem; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); }
+.hero__foot a { color: var(--ink); }
+.hero__foot a:hover { color: var(--acc); }
+.sec { max-width: var(--shell); margin: 0 auto; padding: clamp(4rem, 9vw, 7.5rem) var(--gutter) clamp(2.5rem, 5vw, 4.5rem); scroll-margin-top: 4rem; }
+.sec__head { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 1rem 2rem; border-top: 1px solid var(--ink); padding-top: 1.1rem; margin-bottom: clamp(2.5rem, 6vw, 4.5rem); }
+.sec__h { font-family: var(--disp); font-stretch: 118%; font-weight: 800; font-size: clamp(2.4rem, 5.5vw, 4.2rem); line-height: 0.98; letter-spacing: -0.02em; text-transform: uppercase; text-align: right; }
+.sec__meta { font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--sub); white-space: nowrap; }
+.show { border-top: 1px solid var(--rule); padding-block: clamp(2rem, 5vw, 3.4rem); scroll-margin-top: 4.5rem; }
+.show:first-of-type { border-top: 1px solid var(--ink); }
+.show__head { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 17rem); gap: 1rem clamp(1.5rem, 3vw, 2.5rem); align-items: baseline; }
+.show__no { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--sub); font-variant-numeric: tabular-nums; transition: color .25s; }
+.show__id { min-width: 0; }
+.show__kind { font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--sub); margin-bottom: 0.6rem; }
+.show__title { font-family: var(--disp); font-stretch: 118%; font-weight: 750; font-size: clamp(1.7rem, 3.4vw, 2.9rem); line-height: 1; letter-spacing: -0.015em; transition: transform 0.35s var(--ease); }
+.show__headline { font-size: 0.9rem; line-height: 1.5; color: var(--sub); text-align: right; text-wrap: pretty; padding-bottom: 0.2rem; }
+@media (hover: hover) { .show:hover .show__title { transform: translateX(0.4ch); } .show:hover .show__no { color: var(--acc); } }
+.show__body { margin-top: clamp(1.6rem, 3.5vw, 2.6rem); display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 7fr); gap: 1.5rem clamp(2rem, 5vw, 4.5rem); align-items: start; }
+.show__facts { display: grid; gap: 0.9rem; position: sticky; top: 5.5rem; }
+.show__context { font-size: 0.9rem; line-height: 1.55; color: var(--sub); text-wrap: pretty; }
+.show__buildlist { list-style: none; display: grid; gap: 0.45rem; }
+.show__buildlist li { font-size: 0.86rem; line-height: 1.5; color: var(--sub); padding-left: 1.1em; position: relative; }
+.show__buildlist li::before { content: ''; position: absolute; left: 0; top: 0.62em; width: 0.55em; height: 1px; background: var(--rule-2); }
+.show__metrics { font-family: var(--mono); font-size: 0.72rem; letter-spacing: .04em; color: var(--ink); border-top: 1px dotted var(--rule-2); padding-top: 0.7rem; }
+.show__note { font-style: italic; font-size: 0.82rem; color: var(--sub); }
+.show__links { list-style: none; display: grid; gap: 0.3rem; }
+.show__links a { font-size: 0.85rem; font-weight: 500; color: var(--acc); }
+.show__links a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+.show__gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; align-content: start; }
+.tile { overflow: hidden; border-radius: 4px; border: 1px solid color-mix(in srgb, var(--rule-2) 60%, transparent); background: var(--paper-2); box-shadow: 0 2px 8px rgba(27, 26, 20, 0.06); }
+.tile img { display: block; width: 100%; height: auto; transform: scale(1.14); }
+@media (hover: hover) { .tile { transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease); } .tile:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(27, 26, 20, 0.1); } }
+.tile--ph { aspect-ratio: 4 / 3; display: grid; place-items: center; border: 1px dashed var(--rule-2); box-shadow: none; }
+.tile--ph figcaption { padding: 1rem; font-family: var(--mono); font-size: 0.66rem; color: var(--sub); }
+.praise { border-top: 1px solid var(--rule); padding: clamp(2.5rem, 5vw, 4rem) 0; display: grid; grid-template-columns: 1fr 1.6fr; gap: 1.5rem clamp(2rem, 5vw, 4rem); align-items: start; }
+.praise__k { font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--sub); padding-top: .3rem; }
+.praise__quote { font-family: var(--disp); font-stretch: 104%; font-weight: 500; font-size: clamp(1.35rem, 2.2vw, 1.85rem); line-height: 1.32; letter-spacing: -0.01em; text-wrap: pretty; position: relative; padding-left: 1.6em; }
+.praise__quote::before { content: '\201C'; position: absolute; left: 0; top: -0.15em; font-family: var(--disp); font-size: 1.6em; line-height: 1; color: var(--acc); opacity: .7; }
+.praise__who { margin-top: 1.3rem; font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); }
+.praise__who b { color: var(--ink); font-weight: 500; }
+.history { border-top: 1px solid var(--rule); padding: clamp(2.5rem, 5vw, 4rem) 0; }
+.hrow { display: grid; grid-template-columns: 9rem 1fr; gap: 1rem clamp(1.5rem, 4vw, 3rem); padding-block: 1.3rem; border-top: 1px solid var(--rule); align-items: baseline; }
+.hrow:first-child { border-top: none; padding-top: 0; }
+.hrow__span { font-family: var(--mono); font-size: 0.72rem; letter-spacing: .05em; color: var(--sub); white-space: nowrap; }
+.hrow__title { font-family: var(--disp); font-stretch: 108%; font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; margin-bottom: 0.4rem; }
+.hrow__body { font-size: 0.9rem; line-height: 1.6; color: var(--sub); text-wrap: pretty; }
+.stackline { margin-top: 2rem; padding-top: 1.2rem; border-top: 1px dotted var(--rule-2); font-family: var(--mono); font-size: 0.72rem; line-height: 1.7; color: var(--sub); }
+.contact { max-width: var(--shell); margin: 0 auto; padding: clamp(4rem, 9vw, 7.5rem) var(--gutter) 2.5rem; scroll-margin-top: 4rem; }
+.contact__head { border-top: 1px solid var(--ink); padding-top: 1.1rem; margin-bottom: clamp(2.5rem, 6vw, 4.5rem); }
+.contact__mail { font-family: var(--disp); font-stretch: 112%; font-weight: 750; font-size: clamp(2.1rem, 6.8vw, 5.6rem); line-height: 1.02; letter-spacing: -0.015em; text-wrap: balance; }
+.contact__mail a { color: var(--ink); transition: color .25s; }
+.contact__mail a:hover { color: var(--acc); }
+.contact__rows { display: grid; }
+.contact__row { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 0.5rem clamp(1.5rem, 4vw, 2.5rem); padding-block: 1rem; border-top: 1px solid var(--rule); align-items: baseline; }
+.contact__row dt { font-family: var(--mono); font-size: 0.68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--sub); }
+.contact__row dd { font-size: 0.94rem; line-height: 1.55; color: var(--ink); }
+.contact__more { margin-top: 2rem; display: flex; gap: 0.9rem; align-items: center; font-size: 0.9rem; flex-wrap: wrap; }
+.contact__more a { color: var(--acc); font-weight: 500; }
+.contact__more a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+.contact__more span { color: var(--sub); }
+.colo { margin-top: clamp(3.5rem, 8vw, 6rem); padding-top: 1.2rem; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; gap: .5rem 2rem; flex-wrap: wrap; font-family: var(--mono); font-size: 0.76rem; color: var(--sub); }
+@media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 2rem; } .hero__col { padding-bottom: 0; } .show__head { grid-template-columns: 3rem minmax(0, 1fr); } .show__headline { grid-column: 2; text-align: left; max-width: 34em; padding-bottom: 0; } .show__body { grid-template-columns: 1fr; } .show__facts { position: static; } .praise { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .hero { padding-top: 6rem; padding-bottom: 4rem; } .sec__head { grid-template-columns: 1fr; } .sec__h { text-align: left; } .contact__row { grid-template-columns: 1fr; gap: .2rem; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="baseline" aria-hidden="true"></div>
+<div class="pre" aria-hidden="true">
+  <div class="pre__row"><span>Plate 01</span><span class="pre__num">000</span></div>
+  <span class="pre__bar"></span>
+</div>
+<div class="bar">
+  <span class="brand">Nur Fajar</span>
+  <nav aria-label="Sections"><a href="#work">Work</a><a href="#praise">Praise</a><a href="#history">History</a><a href="#contact">Contact</a></nav>
+</div>
+<header class="hero">
+  <div><h1 class="hero__name" data-split>Nur Fajar<span class="dot" aria-hidden="true"></span></h1></div>
+  <div class="hero__col">
+    <p class="hero__tag">AI specialist who builds apps and communities.</p>
+    <div class="hero__bio">
+      <p>Hi there! I'm Fajar, and I enjoy turning ideas into things that help people learn, work, and solve problems better.</p>
+      <p>I've worked in AI and learning development at Terra AI, where I designed curricula, developed learning programs, and explored ways to make work more efficient with AI.</p>
+      <p>Today I continue exploring these interests through personal projects like Remember and Nyunda — turning everyday problems into things I can build and learn from.</p>
+    </div>
+    <div class="hero__foot"><span>Available immediately</span><a href="mailto:hi@nurfajar.com">hi@nurfajar.com</a></div>
+  </div>
+</header>
+<section class="sec" id="work" aria-labelledby="work-h">
+  <div class="sec__head">
+    <h2 class="sec__h" id="work-h" data-split>Selected work</h2>
+    <span class="sec__meta">06 plates · 2018 – now</span>
+  </div>
+  <article class="show" id="w-01">
+    <div class="show__head">
+      <span class="show__no">01</span>
+      <div class="show__id"><p class="show__kind">AI build · Revenue ops</p><h3 class="show__title" data-split>CRM pipeline</h3></div>
+      <p class="show__headline">~11h runtime vs 300+h manual (96% less)</p>
+    </div>
+    <div class="show__body">
+      <div class="show__facts" data-reveal>
+        <p class="show__context">Terra Weather B2B pivot: thousands of raw contacts, no qualification engine, and a sales team with no time for manual research.</p>
+        <ul class="show__buildlist"><li>Led the AI side in a 3-person build with the CEO and a software engineer</li><li>9 specialized Python + LLM agents with human-in-the-loop approval before sending</li></ul>
+        <p class="show__metrics">~3,000 contacts · ~600 companies → ~500 qualified</p>
+        <ul class="show__links"><li><a href="https://crm.nurfajar.com/" target="_blank" rel="noreferrer">NurFajar CRM: the operations desk behind the AI build</a></li></ul>
+      </div>
+      <div class="show__gallery" data-reveal>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/crm-pipeline/</figcaption></figure>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/crm-pipeline/</figcaption></figure>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/crm-pipeline/</figcaption></figure>
+      </div>
+    </div>
+  </article>
+  <article class="show">
+    <div class="show__head">
+      <span class="show__no">02</span>
+      <div class="show__id"><p class="show__kind">Enablement build · Curriculum</p><h3 class="show__title" data-split>Chatbot curriculum engine</h3></div>
+      <p class="show__headline">5 programs · 150+ participants</p>
+    </div>
+    <div class="show__body">
+      <div class="show__facts" data-reveal>
+        <p class="show__context">One chatbot-development engine on Smojo, adapted for three audiences: business, education, and product managers.</p>
+        <ul class="show__buildlist"><li>Owned end to end: needs breakdown, outline, assets, marketing, live delivery</li><li>Train the Trainers handoff: 4 workshops plus 4 consultations in 2 weeks</li></ul>
+        <p class="show__metrics">3 modules · 5 programs · 25+ live sessions · 150+ participants</p>
+      </div>
+      <div class="show__gallery" data-reveal>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/curriculum-engine/</figcaption></figure>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/curriculum-engine/</figcaption></figure>
+      </div>
+    </div>
+  </article>
+  <article class="show">
+    <div class="show__head">
+      <span class="show__no">03</span>
+      <div class="show__id"><p class="show__kind">Web build · Sites shipped</p><h3 class="show__title" data-split>Web builds that prove shipping</h3></div>
+      <p class="show__headline">Next.js + TS + Vercel</p>
+    </div>
+    <div class="show__body">
+      <div class="show__facts" data-reveal>
+        <p class="show__context">Three sites, all live: this portfolio and two brand concept sites, plus the CRM workspace behind the AI build.</p>
+        <ul class="show__buildlist"><li>This site: Next.js + TypeScript, one copy source, tested so numbers cannot drift</li><li>Nadi wellbeing concept site: fictional brand, landing plus solutions plus contact flow, live on Vercel</li></ul>
+        <p class="show__metrics">3 sites live</p>
+        <ul class="show__links">
+          <li><a href="https://nurfajar.com" target="_blank" rel="noreferrer">nurfajar.com (this site)</a></li>
+          <li><a href="https://nadi-wellbeing.vercel.app/" target="_blank" rel="noreferrer">Nadi wellbeing concept site</a></li>
+          <li><a href="https://xcel-autodrive.vercel.app/" target="_blank" rel="noreferrer">Xcel Autodrive concept site</a></li>
+        </ul>
+      </div>
+      <div class="show__gallery" data-reveal>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/web-builds/</figcaption></figure>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/web-builds/</figcaption></figure>
+      </div>
+    </div>
+  </article>
+  <article class="show">
+    <div class="show__head">
+      <span class="show__no">04</span>
+      <div class="show__id"><p class="show__kind">Social media content · Video &amp; design</p><h3 class="show__title" data-split>Social media content</h3></div>
+      <p class="show__headline">4 alumni videos · 24 posts published</p>
+    </div>
+    <div class="show__body">
+      <div class="show__facts" data-reveal>
+        <p class="show__context">Course marketing, alumni stories, and holiday greetings, produced and published as social content.</p>
+        <ul class="show__buildlist"><li>Marketing posters and launch videos for each course and event on the calendar</li><li>Alumni stories: tracked down graduates of earlier programs, interviewed and edited 4 videos for IG</li></ul>
+        <p class="show__metrics">4 alumni videos · 24 posts published</p>
+        <ul class="show__links"><li><a href="https://www.instagram.com/ai4impact.id/" target="_blank" rel="noreferrer">ai4impact.id on Instagram</a></li></ul>
+        <p class="show__note">ai4impact is a community under Terra AI.</p>
+      </div>
+      <div class="show__gallery" data-reveal>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/content-engine/</figcaption></figure>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/content-engine/</figcaption></figure>
+      </div>
+    </div>
+  </article>
+  <article class="show">
+    <div class="show__head">
+      <span class="show__no">05</span>
+      <div class="show__id"><p class="show__kind">Desktop app · In development</p><h3 class="show__title" data-split>Remember</h3></div>
+      <p class="show__headline">In development · 100% local storage</p>
+    </div>
+    <div class="show__body">
+      <div class="show__facts" data-reveal>
+        <p class="show__context">A desktop assistant for working with many browser tabs: what each tab is about, why it was opened, and whether it still matters.</p>
+        <ul class="show__buildlist"><li>Electron + TypeScript + React app that watches open tabs and surfaces what deserves attention</li><li>Pairing-coded Chrome/Edge extension talks to the app over a local WebSocket, security-tested</li><li>100% local storage, URL redaction before anything touches disk</li></ul>
+        <p class="show__note">Demo available on request.</p>
+      </div>
+      <div class="show__gallery" data-reveal>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/remember/</figcaption></figure>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/remember/</figcaption></figure>
+      </div>
+    </div>
+  </article>
+  <article class="show">
+    <div class="show__head">
+      <span class="show__no">06</span>
+      <div class="show__id"><p class="show__kind">Android app · In development</p><h3 class="show__title" data-split>Nyunda</h3></div>
+      <p class="show__headline">In development · free, no account, offline-first</p>
+    </div>
+    <div class="show__body">
+      <div class="show__facts" data-reveal>
+        <p class="show__context">A native Android app for English speakers learning Sundanese through small, easy-to-follow lessons.</p>
+        <ul class="show__buildlist"><li>Kotlin + Jetpack Compose app with bite-sized lessons that build vocabulary step by step</li><li>Includes a Sundanese script (Aksara Sunda) converter and a small dictionary</li><li>Free, no account, offline-first, no trackers</li></ul>
+        <p class="show__note">Demo available on request.</p>
+      </div>
+      <div class="show__gallery" data-reveal>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/nyunda/</figcaption></figure>
+        <figure class="tile tile--ph"><figcaption>public/v8/work/nyunda/</figcaption></figure>
+      </div>
+    </div>
+  </article>
+</section>
+<section class="sec" id="praise" aria-labelledby="praise-h">
+  <div class="sec__head">
+    <h2 class="sec__h" id="praise-h" data-split>Praise</h2>
+    <span class="sec__meta">In their words.</span>
+  </div>
+  <div class="praise" data-reveal>
+    <p class="praise__k">Arnold Doray</p>
+    <div>
+      <blockquote class="praise__quote">He takes ownership, learns fast, and delivers. Across programs, curriculum, and our AI data pipeline, I was extremely happy with his work.</blockquote>
+      <p class="praise__who"><b>Former manager, Terra AI</b> · Now CTO, Wingfin</p>
+    </div>
+  </div>
+  <div class="praise" data-reveal>
+    <p class="praise__k">Christian Jonathan</p>
+    <div>
+      <blockquote class="praise__quote">His organizational skills and proactive approach stood out.</blockquote>
+      <p class="praise__who"><b>Former facilitator manager, Terra AI</b> · 2024 to 2025 · Now AI Program Manager, GovTech Singapore</p>
+    </div>
+  </div>
+  <div class="praise" data-reveal>
+    <p class="praise__k">Kevin Naufal Eryogia</p>
+    <div>
+      <blockquote class="praise__quote">He never let a mentee's progress go unnoticed; he recognized every milestone along the way.</blockquote>
+      <p class="praise__who"><b>Former mentee, Bangkit Academy 2023</b> · Now People Coordinator, Mondelez International</p>
+    </div>
+  </div>
+  <div class="praise" data-reveal>
+    <p class="praise__k">Diki Hamdani</p>
+    <div>
+      <blockquote class="praise__quote">He ran the team with real skill. Communication stayed clear, tasks were managed effectively, and the group worked through to a successful finish.</blockquote>
+      <p class="praise__who"><b>Peer, Bangkit Academy 2022</b> · Capstone teammate · Now Software Programmer, HashMicro</p>
+    </div>
+  </div>
+</section>
+<section class="sec" id="history" aria-labelledby="history-h">
+  <div class="sec__head">
+    <h2 class="sec__h" id="history-h" data-split>History</h2>
+    <span class="sec__meta">2018 to now.</span>
+  </div>
+  <div class="history">
+    <div class="hrow"><span class="hrow__span">2018 to 2022</span><div><h3 class="hrow__title">Informatics degree, best of the faculty</h3><p class="hrow__body">Siliwangi University, 3.94 GPA. Bangkit Academy, with distinction.</p></div></div>
+    <div class="hrow"><span class="hrow__span">2021 to 2022</span><div><h3 class="hrow__title">Built a student organization from zero</h3><p class="hrow__body">Siliwangi's first GDSC chapter, 0 to 100+ members, four national events.</p></div></div>
+    <div class="hrow"><span class="hrow__span">2023 to 2024</span><div><h3 class="hrow__title">Returned as a mentor</h3><p class="hrow__body">Machine Learning mentor at Bangkit: 50+ mentees, 90%+ graduating, 40+ sessions.</p></div></div>
+    <div class="hrow"><span class="hrow__span">2024 to 2026</span><div><h3 class="hrow__title">Terra AI, trainer to program owner</h3><p class="hrow__body">AI Training Specialist for 100+ learners at 9.0/10, then 5 programs for 150+ participants, plus the CRM pipeline.</p></div></div>
+  </div>
+  <p class="stackline">Working stack: GitHub, Canva, Notion, Miro, n8n, Claude, CapCut, OpenAI, Gemini, Vercel, Supabase.</p>
+</section>
+<section class="contact" id="contact" aria-labelledby="contact-h">
+  <div class="contact__head"><h2 class="contact__mail" id="contact-h" data-split><a href="mailto:hi@nurfajar.com">hi@nurfajar.com</a></h2></div>
+  <dl class="contact__rows">
+    <div class="contact__row"><dt>Looking for</dt><dd>Full-time</dd></div>
+    <div class="contact__row"><dt>Setup</dt><dd>Remote or hybrid, onsite in Indonesia, open to relocate</dd></div>
+    <div class="contact__row"><dt>Available</dt><dd>Immediately</dd></div>
+  </dl>
+  <p class="contact__more"><a href="https://www.linkedin.com/in/nurfajar/" target="_blank" rel="noreferrer">LinkedIn</a><span aria-hidden="true">·</span><a href="/Nur-Fajar-Resume.pdf" download="Nur-Fajar-Resume.pdf">CV (PDF)</a></p>
+  <footer class="colo"><p>Built with Astro and TypeScript. Last updated October 2026.</p><p>Replies to every email.</p></footer>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.querySelectorAll('[data-reveal]').forEach(function (el) { el.style.opacity = '1'; el.style.transform = 'none'; });
+} else {
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+  document.documentElement.style.scrollBehavior = 'auto';
+  var lenis = new Lenis({ lerp: 0.11 });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+  gsap.ticker.lagSmoothing(0);
+  document.addEventListener('click', function (e) {
+    var a = (e.target instanceof Element) && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (!el) return;
+    e.preventDefault();
+    lenis.scrollTo(el, { offset: -72, duration: 1.3 });
+  });
+  var pre = document.querySelector('.pre');
+  var pnum = pre && pre.querySelector('.pre__num');
+  if (pre) {
+    gsap.set(pre, { autoAlpha: 1 });
+    var counter = { v: 0 };
+    gsap.timeline()
+      .to(counter, { v: 100, duration: 0.7, ease: 'power2.inOut', onUpdate: function () { if (pnum) pnum.textContent = String(Math.round(counter.v)).padStart(3, '0'); } })
+      .to('.pre__bar', { scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, 0)
+      .to(pre, { autoAlpha: 0, duration: 0.3, ease: 'power2.out' }, '+=0.04');
+  }
+  gsap.utils.toArray('[data-reveal]').forEach(function (el) {
+    gsap.from(el, { y: 24, autoAlpha: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 90%' } });
+  });
+  document.fonts.ready.then(function () {
+    gsap.utils.toArray('[data-split]').forEach(function (el) {
+      try {
+        var sp = SplitText.create(el, { type: 'lines', mask: 'lines' });
+        gsap.from(sp.lines, { yPercent: 115, duration: 1.05, ease: 'power4.out', stagger: 0.08, scrollTrigger: { trigger: el, start: 'top 88%' } });
+      } catch (e) {}
+    });
+    ScrollTrigger.refresh();
+  });
+  gsap.utils.toArray('.tile img').forEach(function (img) {
+    gsap.fromTo(img, { yPercent: -6 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
+  window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+}
+</script>
+</body>
+</html>

@@ -165,7 +165,7 @@ export const REFERENCE_CARDS: ShowcaseQuote[] = [
 
 export const SOCIAL = {
   linkedin: 'https://www.linkedin.com/in/nurfajar/',
-  email: 'hi.nurfajar@gmail.com',
+  email: 'hi@nurfajar.com',
   resume: '/Nur-Fajar-Resume.pdf',
   // Slot booking yang sama yang dulu ditanam sebagai embed Cal.com di
   // section Contact versi lama situs ini — di sini cuma ditaut biasa,

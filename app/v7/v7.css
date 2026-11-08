@@ -1,0 +1,1122 @@
+/* v7 — dunia Apple: putih product-clean sebagai ground, modul abu #f5f5f7
+   bergantian, tinta #1d1d1f dan deskripsi #6e6e73, satu aksen CTA biru
+   #0071e3. Heading semibold Inter dengan tracking rapat, row hairline tipis
+   #d2d2d7, WorkNav sebagai bar blur khas apple.com, dan reveal fade-up yang
+   digerakkan scroll (CSS murni). Tanpa glow, tanpa pin. Reverse-engineering
+   apple.com (2026-10-16, permintaan founder). */
+
+.v7-root {
+  --paper: #ffffff;
+  /* Permukaan modul bergantian: putih → abu Apple → putih. */
+  --tint: #f5f5f7;
+  --ink: #1d1d1f;
+  --ink-2: #6e6e73;
+  --rule: #d2d2d7;
+  --rule-strong: #b9b9c0;
+  /* Aksen CTA satu-satunya: biru tombol Apple (bukan link-text biru gelap
+     #06c — hanya dipakai tombol/aksi, dipilih untuk kontras di putih). */
+  --blue: #0071e3;
+  --chip: #f5f5f7;
+  --shell: 1140px;
+
+  /* Transparansi langit mode malam (2026-10-16, permintaan founder):
+     rasi bintang muncul 50% supaya tidak terlalu mengganggu saat membaca
+     teks. Satu variabel dipakai sebagai opacity lapisan .v7-night saat
+     tercentang — jadi garis, titik, dan bintang selemdung ikut setengah. */
+  --v7-sky: 0.5;
+
+  /* Satu keluarga (Inter) memikul dua peran. Alias ini ada supaya layout cuma
+     memuatnya sekali; lihat catatan di app/v7/layout.tsx. --font-v7-mono
+     tidak dialias karena namanya sudah sama dengan variabel DM Mono. */
+  --font-v7-display: var(--font-v7-sans);
+  --font-v7-body: var(--font-v7-sans);
+
+  /* Bikin block-size:auto bisa dianimasikan dari 0. Versi <details> Work
+     sudah pensiun sejak showcase menggantikan accordion; rule ini dulu
+     jangkar animasi lipatnya. Sekarang tidak ada panel berlipat di v7 —
+     variabelnya ikut dipensiunkan bersama dunia Apple. */
+
+  /* Ground bersih tanpa tekstur: putih product-clean, bukan kertas. */
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-v7-body), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  /* Kertas dan tinta dua-duanya bisa berbalik ke navy malam (via :has) —
+     transisi di sini bikin peralihannya lembut, bukan snap. */
+  transition: background-color 0.45s ease, color 0.45s ease;
+  /* Penggulir horizontal tidak boleh melahirkan scrollbar: root
+     memangkas lewatannya (pagar generik, bukan milik satu efek). */
+  overflow-x: clip;
+  /* Stack isolasi: tanpa ini, overlay bintang (z-index -1 di .v7-night)
+     bergambar DI BAWAH background `.v7-root` sendiri — bintang dirender
+     tapi tak pernah terlihat. Dengan isolate, lapisan lapis itu
+     duduk di ATAS latar root, di BAWAH seluruh konten. */
+  isolation: isolate;
+}
+
+/* Mode malam: seluruh palet satu halaman berbalik via variabel — konten
+   tidak perlu rule baru, semua warna turunan var() ikut. Dipicu checkbox
+   #v7-stars (murni CSS, nol JavaScript). */
+.v7-root:has(#v7-stars:checked) {
+  --paper: #091128; /* navy malam */
+  --tint: #0e1940; /* versi modul abu yang ikut tenggelam */
+  --ink: #e7ecfb;
+  --ink-2: #97a1c4;
+  --rule: #1a2142;
+  --rule-strong: #2b3563;
+  --chip: #121a38;
+}
+.v7-root:has(#v7-stars:checked) .v7-night {
+  /* 50% (var --v7-sky): langit tetap hidup tapi tidak bersaing dengan teks. */
+  opacity: var(--v7-sky);
+}
+
+.v7-root :focus-visible {
+  /* Satu aturan ring untuk seluruh halaman: biru aksen, bukan ink —
+     fokus adalah aksi. */
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Teks terseleksi memakai bahasa aksen halaman: dudukan biru Apple, tinta
+   putih — persis cara apple.com membiarkan seleksi terbaca tanpa highlighter. */
+.v7-root ::selection {
+  background: var(--blue);
+  color: #fff;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 10;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.84rem;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* ── Hero: satu kolom di tengah layar ─────────────────────────────────── */
+
+.v7-hero {
+  position: relative;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 3.2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+/* Hero mengisi satu layar penuh dan kontennya duduk di tengah vertikal.
+   `safe center` penting di sini: kalau konten lebih tinggi daripada layar
+   (jendela pendek), blok jatuh ke atas alih-alih meluber keluar layar dan
+   memotong baris pertamanya. Baris `center` di atasnya adalah fallback untuk
+   browser yang belum mengenal kata kunci `safe`. */
+@media (min-width: 901px) {
+  .v7-hero {
+    /* Dipotong 7.5rem dari 100svh (2026-10-16, permintaan founder): bio
+       naik sedikit dan heading besar "Selected work" modul Work menyembul
+       di ujung bawah layar — pengunjung sudah menunggu kerja di bawah. */
+    min-height: calc(100vh - 7.5rem);
+    min-height: calc(100svh - 7.5rem);
+    /* STICKY COVER (2026-10-16, permintaan founder): saat digulir, hero
+       dipaku di atas dan modul Work naik MENUTUPinya dengan mulus — efek
+       "tertutup halaman berikutnya", murni CSS. Pemakaiannya menuntut dua
+       kawan: section-section sesudahnya membawa z-index lebih tinggi
+       (lihat .v7-sec) dan latar mereka pekat (root putih/navy sudah
+       pekat). overflow-x: clip di root TIDAK memutus sticky-nya karena
+       clip tidak menciptakan scroll container. */
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    justify-content: center;
+    justify-content: safe center;
+    /* 3.5rem, bukan 5.5rem: itu ruang untuk chevron (24px dari dasar + 11px
+       tinggi) plus napas. Sisa 5.5rem dulu membuat konten 735px, sehingga
+       laptop 720p meleset 15px dan jatuh ke atas. */
+    padding-bottom: 3.5rem;
+  }
+}
+
+.v7-mast,
+.v7-bio {
+  width: 100%;
+  max-width: 45em;
+  margin: 0 auto;
+}
+
+.v7-mast__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 2rem;
+  /* Rule solid dihapus 2026-10-15: digantikan tagline di sisi nama (lihat
+     .v7-mast__tag). align-items: center — bukan baseline: tagline harus
+     duduk di TENGAH batang nama, bukan menyentuh garis bawahnya. */
+}
+
+.v7-mast__name {
+  font-family: var(--font-v7-display), sans-serif;
+  /* Apple: semibold, bukan black — nama memikul layar pertama dengan berat
+     600 dan tracking rapat, bukan 700 gemuk. */
+  font-weight: 600;
+  font-size: clamp(2rem, 4.6vw, 3.1rem);
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+}
+
+/* Tagline di sebelah nama (pengganti morse rule dan rule solid, 2026-10-15):
+   font jelas lebih kecil dari nama, vertikal sejajar baseline nama, dan
+   text-align center di slot sisanya. Warna ink-2 supaya terbaca sebagai
+   subjudul, bukan saingan nama. */
+.v7-mast__tag {
+  flex: 1;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--ink-2);
+  /* Tengah diganti RATA KANAN (2026-10-16, permintaan founder): ujung kanan
+     tagline bertemu ujung kanan kolom bio — baris nama terbaca sebagai satu
+     garis penuh select x column width, bukan motong tengah kosong. */
+  text-align: right;
+  /* Diturunkan 2px dari pusat geometris atas permintaan founder: optik
+     interaksi lowercase Inter di sebelah nama raksasa terasa mengambang
+     kalau simetris mati. Mobile mereset (lihat media query 640px). */
+  translate: 0 2px;
+}
+
+/* ── Bio pembuka ──────────────────────────────────────────────────────── */
+
+/* Paragraf orang pertama, body type, satu-satunya blok yang boleh bernada
+   personal. Ia yang menggantikan kalimat positioning. Baris link kontak yang
+   dulu duduk di bawahnya dihapus 2026-10-15; kontak hidup di section Contact.
+   Antar baris dipatok 10px (1em + 10px via calc): berbasis em supaya angka
+   10px itu aman apabila kelak font bio diganti — itu tetap "font + 10px".
+   hyphens: auto dipensiunkan 2026-10-15 atas permintaan founder: tanda pisah
+   ala "prob-lems" dianggap merusak rapi kata; raggingnya kini ditangani
+   text-wrap: pretty saja. */
+.v7-bio p {
+  /* Apple: body 17px dengan antarbaris lega, bukan 15px tergencet. */
+  font-size: 1.06rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+  hyphens: none;
+}
+
+.v7-bio p + p {
+  margin-top: 12px;
+}
+
+/* Link inline di bio: teksnya kata kalimat itu sendiri, garis bawahnya
+   hairline yang digelapkan saat hover. Warna tetap ink, bukan biru link
+   browser, supaya blok bio tetap terbaca satu dokumen. */
+.v7-bio a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 0.2em;
+}
+.v7-bio a:hover {
+  text-decoration-color: var(--ink);
+}
+
+/* Chip logo ala antfu: logo + nama dalam satu pil — latar abu tipis,
+   sudut membulat, tanpa underline. Pinggirannya hairline yang sama dengan
+   rule halaman; hover-nya latar pil memutih dan pinggiran menggelap.
+   inline-flex bikin logo dan nama tidak pernah patah saat wrap.
+   (Roboto khusus chip dipensiunkan 2026-10-16 bersama redesign dunia Apple:
+   satu keluarga huruf untuk seluruh suara halaman, seperti apple.com yang
+   tidak pernah menyelipkan keluarga kedua ke teks berjalan.) */
+.v7-bio .v7-bio__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.05em 0.42em 0.05em 0.36em;
+  border: 1px solid var(--rule);
+  border-radius: 0.45em;
+  background: var(--chip);
+  color: inherit;
+  text-decoration: none;
+  vertical-align: -0.12em;
+  /* Jangan warisi line-height: 2 dari p. Kotak-baris teks di dalam
+     flexbox itulah yang bikin pil sebesar dua baris: 2em tinggi. */
+  line-height: 1.05;
+}
+.v7-bio .v7-bio__brand:hover {
+  border-color: var(--rule-strong);
+  background: white;
+}
+/* Mode malam: hover chip yang sama harus MEMBALIK teks ke ink gelap —
+   dulu latar putihnya diaplikasikan begitu saja tanpa mengubah warna teks,
+   sehingga ink malam (#e7ecfb, putih) duduk di atas latar putih: tulisan
+   hilang justru saat chip mau diklik (laporan founder 2026-10-16).
+   Fokus keyboard ikut, supaya perjalanan Tab sama terangnya. */
+.v7-root:has(#v7-stars:checked) .v7-bio .v7-bio__brand:hover,
+.v7-root:has(#v7-stars:checked) .v7-bio .v7-bio__brand:focus-visible {
+  background: white;
+  color: #16181d; /* ink terang-mode, agar tetap terbaca di latar putih */
+}
+/* Logo monokrom gelap (LinkedIn: linkedin-brand.svg kotak biru; BRI:
+   bri.png kotak biru) dilabuhkan putih di atas latar pil malam yang gelap:
+   brightness(0) gelapkan dulu jadi siluet, lalu invert jadi putih. Hanya
+   kedua logo itu — emblem warna (Terra AI, BI, GDSC, GENBI, Gmail) asli. */
+.v7-root:has(#v7-stars:checked) .v7-bio .v7-bio__brand img[src*='linkedin'],
+.v7-root:has(#v7-stars:checked) .v7-bio .v7-bio__brand img[src$='bri.png'] {
+  filter: brightness(0) invert(1);
+}
+.v7-bio .v7-bio__brand img {
+  width: auto;
+  object-fit: contain;
+}
+
+/* ── Kata pemicu mode malam: checkbox sulit terlihat + kata pemicu ────── */
+
+/* Checkbox tersembunyi, tetap bisa difokus keyboard (bukan display:none). */
+.v7-stars-toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Kata pemicu: titik-titik hairline di bawah, kursor magnetik pointer. */
+.v7-bio .v7-stars-word {
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 0.25em;
+}
+.v7-bio .v7-stars-word:hover {
+  text-decoration-style: solid;
+  text-decoration-color: var(--ink);
+}
+/* Tab keyboard tetap terlihat: ring biru Apple saat checkbox difokus. */
+.v7-root:has(#v7-stars:focus-visible) .v7-stars-word {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+/* ── Kata "chess" sebagai efek — DIHAPUS 2026-10-16 atas permintaan
+   founder ("wkwk hapus aja") sebelum sempat diputus: animasinya murni
+   compositor dan sudah lulus pengujian, tapi founder memilih keamanan.
+   Busurnya: blok kata+checkbox #v7-chess, ChessField, enam SVG bidak,
+   keyframes v7-march/v7-hop, dan overflow-x: clip yang jadi pagar lahirnya.
+   Riwayat geraknya hidup di jurnal sesi 2026-10-16 Sesi 2. */
+
+/* Lapisan langit: FIXED se-viewport (revisi 2026-10-16) — langit tidak ikut
+   naik bareng dokumen, jadi bintang TETAP TERLIHAT di seluruh halaman,
+   termasuk saat sudah discroll sampai section Contact dan colophon.
+   (Dulu absolute se-tinggi dokumen: bintang habis sebelum footer.)
+   Parallaxnya: strip 4 band di bawah ini digulir lewat scroll-driven
+   animation (CSS murni, nol JavaScript) — menggulir halaman menurunkan
+   langit lebih lambat dari kontennya. */
+.v7-night {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  overflow: hidden;
+}
+/* Strip 4 band deklinasi. animation-timeline: scroll(root) mengikat
+   penuhnya ke posisi scroll dokumen — bukan animasi jalan sendiri, jadi
+   tidak perlu digate prefers-reduced-motion. Angka -300svh = strip 4 band
+   (4×100svh) bergeser 3 layar sepanjang satu scroll penuh dokumen: karena
+   dokumen lebih tinggi dari 4 layar, langit selalu mengejar lebih pelan —
+   itulah parallaxnya. */
+.v7-night__strip {
+  animation: v7-sky linear both;
+  animation-timeline: scroll(root block);
+}
+@keyframes v7-sky {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-300svh);
+  }
+}
+/* Fallback browser tanpa scroll-driven animation (mis. versi lama Firefox/
+   Safari): strip tidak digerakkan, dan lapisan kembali ke perilaku lama
+   (absolute se-tinggi dokumen) supaya band tetap menumpuk mengikuti
+   dokumen — bintangnya masih ada, cuma tanpa parallax sampai footer. */
+@supports not (animation-timeline: scroll(root block)) {
+  .v7-night {
+    position: absolute;
+  }
+  .v7-night__strip {
+    animation: none;
+  }
+}
+.v7-night svg {
+  display: block;
+  width: 100%;
+  /* tinggi band = satu layar penuh (svh aman di ponsel ber-notch);
+     preserveAspectRatio="none" melar diagonal band ke viewport, tapi
+     distorsi itu kecil dan sama dengan cara StoryStarfield menerima
+     penyusuran deklinasi peta deklinasinya. */
+  height: 100vh;
+  height: 100svh;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Drift pelan yang masih TERBACA (revisi 2026-10-16): dulu ±18px/46s
+     (~0,4px/detik) — di mata pengunjung itu deg-degan kelas terlemah,
+     konstelasi tampak mati. Kini ±26px dalam 30–48s (~1,3–1,7px/detik):
+     bergerak jelas saat dipandang diam, tapi sengaja jauh pelan supaya
+     dokumen tetap tenang. Band berselang arah & durasi supaya tidak
+     berrelung sekaligus. */
+  .v7-night svg {
+    animation: v7-drift 30s ease-in-out infinite alternate;
+  }
+  .v7-night svg[data-band='1'] {
+    animation-direction: alternate-reverse;
+    animation-duration: 36s;
+  }
+  .v7-night svg[data-band='2'] {
+    animation-duration: 42s;
+  }
+  .v7-night svg[data-band='3'] {
+    animation-direction: alternate-reverse;
+    animation-duration: 48s;
+  }
+  @keyframes v7-drift {
+    from {
+      transform: translateX(-26px);
+    }
+    to {
+      transform: translateX(26px);
+    }
+  }
+}
+.v7-star {
+  fill: #cfd9ff;
+}
+.v7-skyline polyline {
+  fill: none;
+  stroke: #8fa0d8;
+  stroke-opacity: 0.4;
+  stroke-width: 1;
+}
+/* Titik figur rasi: statis (twinkle hanya untuk selemdung kecil yang
+   sedikit jumlahnya — 600+ titik animasi CSS akan makan baterai HP). */
+.v7-skypt {
+  fill: #e7ecfb;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .v7-star {
+    animation: v7-twinkle 3.2s ease-in-out infinite;
+  }
+  .v7-star--2 {
+    animation-duration: 4.1s;
+    animation-delay: 0.8s;
+  }
+  .v7-star--3 {
+    animation-duration: 5s;
+    animation-delay: 1.6s;
+  }
+}
+@keyframes v7-twinkle {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ── Chevron penanda gulir: dua hairline, hanya di hero setinggi layar. */
+.v7-scroll {
+  display: none;
+}
+
+@media (min-width: 901px) {
+  .v7-scroll {
+    display: block;
+    position: absolute;
+    left: 50%;
+    bottom: 1.5rem;
+    translate: -50% 0;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-right: 1px solid var(--ink-2);
+    border-bottom: 1px solid var(--ink-2);
+    rotate: 45deg;
+  }
+}
+
+/* ── Section modul Apple ─────────────────────────────────────────────────── */
+
+/* Setiap section = modul produk apple.com: banyak napas, tanpa garis top —
+   pemisah antar section dikerjakan latar putih/abu bergantian, bukan hairline.
+   position + z-index: pendamping WAJIB sticky hero — tanpa ini, modul-modul
+   in-flow akan dilukis DI BAWAH hero yang sudah positioned, dan efek
+   "tertutup" tidak terjadi. */
+.v7-sec {
+  position: relative;
+  z-index: 1;
+  /* Latar PEKAT wajib: modul inilah yang menutup hero sticky — tanpa
+     background, teks bio tembus dari belakang dan efek cover bocor. */
+  background: var(--paper);
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 4.5rem 1.5rem 5rem;
+}
+
+/* Bayangan lembut di tepi atas modul Work: sinyal kedalaman saat ia
+   menutup hero — lapisan di atas, bukan blok datar menyatu. */
+.v7-work {
+  box-shadow: 0 -16px 38px rgba(0, 0, 0, 0.07);
+}
+
+/* Variasi latar: modul abu #f5f5f7 full-bleed. box-shadow menyebar 100vmax ke
+   dua sisi supaya seluruh lebar papan dilapisi abu; clip-path memangkas
+   penyebarannya supaya tidak melahirkan scrollbar horizontal. */
+.v7-sec--tint {
+  background: var(--tint);
+  box-shadow: 0 0 0 100vmax var(--tint);
+  clip-path: inset(0 -100vmax);
+}
+
+/* Kicker label ("Praise", "History") dihentikan: heading section bicara
+   sendiri — craft floor melarang eyebrow di atas heading. */
+.v7-sec__label {
+  display: none;
+}
+
+/* Heading section sekarang skala Apple: semibold besar, tracking rapat. */
+.v7-sec__label--head {
+  display: block;
+  font-family: var(--font-v7-display), sans-serif;
+  font-size: clamp(1.55rem, 2.8vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  line-height: 1.12;
+  color: var(--ink);
+  text-transform: none;
+}
+
+.v7-sec__h {
+  font-family: var(--font-v7-display), sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.9rem, 3.6vw, 2.7rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-top: 0;
+  text-wrap: balance;
+}
+
+.v7-sec__lede {
+  color: var(--ink-2);
+  margin-top: 0.4rem;
+  max-width: 44em;
+}
+
+/* Work: enam showcase (2026-10-16, ala austinvalleskey.com — struktur AV,
+   kertas v7). Satu proyek = satu artikel: mark/kind/judul/headline
+   terpusat, galeri grid berkas dari public/v7/work/<id>/, lalu fakta
+   detil (konteks, bullet, metrik) jadi small print dua kolom di bawah
+   galeri. Id blok `w-<id>` hidup untuk anchor pil nav + deep link. */
+
+.v7-show {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 3.6rem 0 3.6rem;
+  scroll-margin-top: 4.5rem;
+  text-align: center;
+}
+
+/* Mark blok: icon.png kalau founder menyediakannya. Tanpa icon, mark
+   tidak dirender — numeral 01–06 pensiun (starsi-urut tidak membawa
+   informasi; finder menilai itu kostum, bukan mark produk). */
+.v7-show__mark {
+  width: 4.8rem;
+  aspect-ratio: 1;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: 1.1rem;
+  background: var(--chip);
+}
+.v7-show__mark:not(:has(img)) {
+  display: none;
+}
+.v7-show__numeral {
+  font-family: var(--font-v7-mono), monospace;
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}
+.v7-show__mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Eyebrow kategori proyek pensiun dari tampilan (2026-10-16): kicker di
+   atas heading itu larangan craft floor, dan subline kedua di bawah judul
+   menggandakan suara metadata. Status "In development" (case 05–06) pindah
+   ke headline di kurasi, supaya informasinya tidak hilang bersama baris ini.
+   Teksnya tetap di DOM (terbaca mesin, guard v7.test tetap memindainya). */
+.v7-show__kind {
+  display: none;
+}
+
+.v7-show__title {
+  margin: 0;
+  font-family: var(--font-v7-display), sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+  line-height: 1.1;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+/* Satu fakta terkuat: satu-satunya subline abu di bawah judul — pasangan
+   tagline ala halaman produk Apple, isi tetap dari canon. */
+.v7-show__headline {
+  order: 2;
+  margin: 0;
+  font-size: 0.98rem;
+  color: var(--ink-2);
+  max-width: 36em;
+}
+
+.v7-show__links {
+  order: 3;
+  list-style: none;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem 1.1rem;
+}
+.v7-show__links a {
+  font-family: var(--font-v7-body), sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: -0.005em;
+  color: var(--blue);
+  text-decoration: none;
+}
+.v7-show__links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 0.08em;
+}
+
+/* Galeri: grid TAMPIL MENGALIR — tile memikul aspek asli berkasnya
+   (mockup ponsel tetap selang-seling, tidak dipaksa 16:10). Berkas
+   founder dilaruh ke public/v7/work/<id>/, build ulang = terisi. */
+.v7-show__grid {
+  order: 4;
+  width: 100%;
+  margin-top: 1.4rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
+}
+.v7-show__grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Grammar Apple: tile tanpa garis-shift radius 12px + bayangan lembut;
+     satu dedikan tipis supaya screenshot putih tidak lengket di ground.
+     Hover-nya tile terangkat — kedalaman itu interaktif, bukan hiasan. */
+  border: 1px solid color-mix(in srgb, var(--rule) 55%, transparent);
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  background: var(--chip);
+  transition: transform 0.35s cubic-bezier(0.28, 0.11, 0.32, 1), box-shadow 0.35s ease;
+}
+@media (hover: hover) {
+  .v7-show__grid img:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.09);
+  }
+}
+
+/* Placeholder abu bergaris-banteng: hanya muncul kalau folder media
+   masih kosong — ingatan lokasi berkas, bukan konten. */
+.v7-show__ph {
+  margin: 0;
+  aspect-ratio: 16 / 10;
+  border: 1px dashed var(--rule-strong);
+  border-radius: 0.55rem;
+  display: grid;
+  place-items: center;
+}
+.v7-show__ph figcaption {
+  font-family: var(--font-v7-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+
+/* Small print fakta: konteks di kiri, bullet + metrik + note di kanan.
+   Dua kolom di atas 780px, menumpuk di bawahnya. */
+.v7-show__facts {
+  order: 5;
+  width: 100%;
+  margin-top: 1.6rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.9rem 2.6rem;
+  align-items: start;
+  text-align: left;
+  font-size: 0.92rem;
+}
+
+.v7-show__context {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.v7-show__buildlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.v7-show__buildlist li {
+  position: relative;
+  padding-left: 1.05rem;
+}
+.v7-show__buildlist li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  font-size: 0.75rem;
+  color: var(--ink-2);
+}
+
+.v7-show__metrics {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-v7-mono), monospace;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.v7-show__note {
+  margin: 0.5rem 0 0;
+  font-size: 0.84rem;
+  color: var(--ink-2);
+  font-style: italic;
+}
+
+@media (max-width: 780px) {
+  .v7-show__facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── Bar nav ala apple.com (WorkNav, satu-satunya client component) ───── */
+
+/* Bar fixed atas memenuhi seluruh lebar papan: latar putih 80% + blur
+   saturasi khas apple.com, tinggi 44px, link 0.78rem kecil.
+   Tersembunyi selama hero masih di layar (IntersectionObserver di WorkNav),
+   meluncur turun dari atas ketika hero keluar. Scrollspy tetap: link
+   proyek yang sedang dibaca diberi tinta penuh, sisanya abu. */
+.v7-navpill {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  translate: 0 -100%;
+  opacity: 0;
+  z-index: 40;
+  display: none;
+  height: 2.75rem;
+  /* 80% putih Apple + blur: kaca produk, bukan pil kertas. Berbalik di
+     mode malam otomatis lewat var(--paper). */
+  background: color-mix(in srgb, var(--paper) 78%, transparent);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 40%, transparent);
+  transition: translate 0.4s cubic-bezier(0.28, 0.11, 0.32, 1), opacity 0.25s ease;
+}
+
+@media (min-width: 901px) {
+  .v7-navpill {
+    display: block;
+  }
+}
+
+.v7-navpill--on {
+  translate: 0 0;
+  opacity: 1;
+}
+
+.v7-navpill ul {
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Baris internal: batasi ke shell, nama di kiri, project links di kanan —
+   komposisi bar apple.com yang lengkap, bukan setengah jadi. */
+.v7-navpill__row {
+  max-width: var(--shell);
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* Pelabuhan kiri: nama semibold kecil; kliknya kembali ke hero atas. */
+.v7-navpill__brand {
+  font-family: var(--font-v7-body), sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.v7-navpill a {
+  display: block;
+  font-family: var(--font-v7-body), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.v7-navpill a:hover {
+  color: var(--ink);
+}
+/* Scrollspy: proyek yang sedang dibaca memakai tinta penuh — Apple
+   memang tak menyorot item aktif dengan warna, tapi pil ini
+   menuntut sinyal dalam baca: ink vs abu, tanpa latar. */
+.v7-navpill a.v7-navpill__is-on {
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v7-navpill {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Anchor pil → section: pengguliran lembut, dimatikan saat ingin berkurang
+     gerak. Hanya berlaku sepanjang v7 yang memuat css ini. */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ── Praise ───────────────────────────────────────────────────────────── */
+
+.v7-voices {
+  list-style: none;
+  margin: 2.4rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 3.2rem;
+}
+
+.v7-voice {
+  border-top: 1px solid var(--rule);
+  padding: 1.4rem 0 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.v7-voice__quote {
+  margin: 0;
+  font-size: 1.12rem;
+  font-weight: 500;
+  line-height: 1.45;
+  max-width: 38em;
+  text-wrap: pretty;
+}
+
+.v7-voice__who {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+}
+
+.v7-voice__name {
+  font-weight: 600;
+  font-size: 0.94rem;
+}
+
+/* Relasi: kini Inter semibold kecil abu, sentence case — sinyal metadata,
+   bukan stempel telegraf. */
+.v7-voice__rel {
+  font-family: var(--font-v7-body), sans-serif;
+  font-weight: 600;
+  font-size: 0.76rem;
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
+}
+
+.v7-voice__role {
+  font-size: 0.84rem;
+  color: var(--ink-2);
+}
+
+/* ── History ──────────────────────────────────────────────────────────── */
+
+.v7-chapters {
+  list-style: none;
+  margin: 2.4rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.v7-chapter {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  gap: 0 2.5rem;
+  border-top: 1px solid var(--rule);
+  padding: 1.4rem 0 1.7rem;
+}
+
+.v7-chapter__span {
+  font-family: var(--font-v7-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-2);
+  padding-top: 0.3rem;
+}
+
+.v7-chapter__title {
+  font-family: var(--font-v7-display), sans-serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  letter-spacing: -0.012em;
+}
+
+.v7-chapter__text {
+  color: var(--ink-2);
+  font-size: 0.94rem;
+  margin-top: 0.3rem;
+  max-width: 40em;
+}
+
+.v7-stackline {
+  margin-top: 1.6rem;
+  font-family: var(--font-v7-mono), monospace;
+  font-size: 0.72rem;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+/* ── Contact ──────────────────────────────────────────────────────────── */
+
+.v7-sec--contact {
+  padding-bottom: 4rem;
+}
+
+.v7-contact__mail {
+  margin: 1.6rem 0 0;
+  font-family: var(--font-v7-display), sans-serif;
+  /* Satu suara lettering: 600 seperti seluruh display halaman. */
+  font-weight: 600;
+  font-size: clamp(1.7rem, 4.6vw, 3rem);
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.v7-contact__mail a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.v7-contact__mail a:hover {
+  text-decoration: underline;
+  /* Dari kuning highlung jadi biru Apple: hover email = aksi, warna CTA. */
+  text-decoration-color: var(--blue);
+  text-decoration-thickness: 0.12em;
+  text-underline-offset: 0.15em;
+}
+
+.v7-rows {
+  margin: 2.2rem 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.v7-row {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: 0 2.5rem;
+  border-top: 1px solid var(--rule);
+  padding: 0.95rem 0;
+}
+
+/* Katar kontak: Inter semibold kecil abu ala tabel specs Apple — bukan
+   mono uppercase. */
+.v7-row dt {
+  font-family: var(--font-v7-body), sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
+  padding-top: 0.15rem;
+}
+
+.v7-row dd {
+  margin: 0;
+  font-size: 0.94rem;
+}
+
+.v7-contact__more {
+  margin-top: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  font-size: 0.95rem;
+  letter-spacing: -0.005em;
+}
+
+/* Tautan sekunder kontak: biru Apple, garis bawahnya muncul saat hover —
+   konvensi link apple.com. */
+.v7-contact__more a {
+  color: var(--blue);
+  text-decoration: none;
+}
+.v7-contact__more a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 0.08em;
+}
+
+/* ── Colophon ─────────────────────────────────────────────────────────── */
+
+.v7-colo {
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 1.9rem 1.5rem 3.2rem;
+  border-top: 1px solid var(--rule);
+  /* Pekat: blok terakhir harus ikut menutup hero sticky di dasar halaman. */
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .v7-voices {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .v7-voice {
+    padding-right: 0;
+  }
+
+  .v7-chapter {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  .v7-row {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .v7-hero {
+    padding: 2.4rem 1.5rem 3rem;
+  }
+
+  .v7-mast__row {
+    align-items: flex-start;
+  }
+
+  /* Mobile: tagline turun ke baris sendiri, di bawah nama. Rata kiri —
+     sejajar awal paragraf (desktop-nya rata kanan: bertumpu di tepi
+     kolom yang sama). translate: none — offset 2px khusus desktop. */
+  .v7-mast__tag {
+    flex-basis: 100%;
+    margin-top: 0.2rem;
+    translate: none;
+    text-align: left;
+  }
+}
+
+/* ── Reduced motion: perubahan state instan, tanpa transisi ───────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .v7-root *,
+  .v7-root *::before,
+  .v7-root *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.v7-root {
+  scroll-behavior: smooth;
+}
+
+/* ── Reveal ala apple.com: fade-up yang digerakkan scroll ─────────────── */
+
+/* Setiap modul besar naik sekali — satu rise per modul, bukan entrance
+   identik di setiap baris. Digikat ke timeline scroll (animation-timeline:
+   view()), bukan animasi waktu — progressnya mengikuti posisi gulir, jadi
+   tak ada konten yang bisa "tertinggal" tersembunyi: kalau gulir berhenti,
+   animasinya ikut berhenti. Browser tanpa scroll-driven animation
+   (Firefox lama, Safari <26) tidak menganimasikan apa pun: konten langsung
+   terlihat. Nol JavaScript. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .v7-show,
+    .v7-voices,
+    .v7-chapters,
+    .v7-rows {
+      animation: v7-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+@keyframes v7-rise {
+  from {
+    opacity: 0;
+    translate: 0 26px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}

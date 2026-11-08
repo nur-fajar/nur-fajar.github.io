@@ -1,0 +1,146 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NUR FAJAR — variable folio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #101014; color: #f2f2f2; font-family: Inter, sans-serif; overflow-x: hidden; }
+  a { color: #ff4d00; text-decoration: none; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #666; letter-spacing: .12em; text-transform: uppercase; }
+  .bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9; display: flex; justify-content: space-between; padding: 14px clamp(16px, 3vw, 36px); background: rgba(16,16,20,.8); backdrop-filter: blur(8px); border-bottom: 1px solid #222; }
+  .hud { position: fixed; right: clamp(16px, 3vw, 36px); bottom: 16px; z-index: 9; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #ff4d00; border: 1px solid #333; border-radius: 6px; padding: 6px 10px; background: #16161a; }
+  section { min-height: 100svh; padding: clamp(60px, 12vh, 120px) clamp(16px, 3vw, 36px); display: flex; flex-direction: column; justify-content: center; position: relative; }
+  section .mono { margin-bottom: 14px; }
+  .giant { font-family: Archivo, sans-serif; text-transform: uppercase; line-height: .92; letter-spacing: -0.015em; font-variation-settings: 'wght' 800, 'wdth' 100; }
+  .hero .giant { font-size: clamp(48px, 12vw, 170px); }
+  .hero .tag { margin-top: 24px; max-width: 28em; font-size: clamp(14px, 1.7vw, 17px); color: #999; line-height: 1.8; }
+  .hero .hint { margin-top: 16px; }
+  .words .w { font-family: Archivo, sans-serif; text-transform: uppercase; font-size: clamp(40px, 9vw, 110px); line-height: 1.02; letter-spacing: -0.01em; }
+  .words .w:nth-child(odd) { color: transparent; -webkit-text-stroke: 2px #f2f2f2; }
+  .info { align-items: flex-end; text-align: right; }
+  .info .giant { font-size: clamp(30px, 5.5vw, 64px); max-width: 16em; }
+  .info .tag { margin-top: 16px; font-size: 14px; color: #999; max-width: 26em; margin-left: auto; line-height: 1.8; }
+  .contact { text-align: center; align-items: center; }
+  .contact .giant { font-size: clamp(26px, 5.4vw, 62px); }
+  .contact .giant a { color: #f2f2f2; }
+  .contact .giant a:hover { color: #ff4d00; }
+  .contact .sub { margin-top: 18px; color: #999; font-size: 13px; }
+.pre{position:fixed;inset:0;background:var(--bg, #0c0c0c);z-index:50;visibility:hidden;opacity:0}
+.pre__name{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--sub,#888)}
+.pre__num{position:absolute;left:clamp(16px,3vw,36px);bottom:1.4rem;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--sub,#888);font-variant-numeric:tabular-nums}
+.pre__bar{position:absolute;left:0;bottom:0;width:100%;height:2px;background:var(--accent, #4ade80);transform:scaleX(0);transform-origin:left center}
+.cursor{position:fixed;top:0;left:0;width:28px;height:28px;border:1px solid color-mix(in srgb,var(--accent,#4ade80) 60%,transparent);border-radius:50%;pointer-events:none;z-index:40;opacity:0;visibility:hidden;transform:translate(-50%,-50%)}
+.grain{position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:30;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E")}
+</style>
+</head>
+<body><div class="pre"><p class="pre__name">Nur Fajar</p><p class="pre__num">000</p><span class="pre__bar"></span></div><div class="pbar"></div><div class="cursor"></div><div class="grain"></div>
+<div class="bar"><span class="mono">Nur Fajar — Variable Folio</span><span class="mono">Archivo · wdth 62–125 · wght 100–900</span></div>
+<p class="hud" id="hud">wght 800 · wdth 100</p>
+
+<section class="hero" data-hud>
+  <p class="mono">Folio 2026 — move your cursor</p>
+  <h1 class="giant" id="vf">Nur Fajar</h1>
+  <p class="tag">AI specialist who builds apps and communities. This page is set in a variable font — its weight and width follow your cursor. A portfolio that literally responds.</p>
+  <p class="hint mono">↓ scroll — weight is also scrubbed per section</p>
+</section>
+
+<section class="words">
+  <p class="mono">What I do</p>
+  <div class="w" data-scrub>Builds apps</div>
+  <div class="w" data-scrub>Builds programs</div>
+  <div class="w" data-scrub>Builds communities</div>
+  <p class="tag mono" style="margin-top:20px">work 01 — CRM pipeline · 9 python + llm agents · 96% less manual</p>
+</section>
+
+<section class="info">
+  <p class="mono">Praise</p>
+  <h1 class="giant" data-scrub>"He takes ownership, learns fast, and delivers."</h1>
+  <p class="tag">Arnold Doray — Former manager, Terra AI · Now CTO, Wingfin. Across programs, curriculum, and the AI data pipeline.</p>
+</section>
+
+<section class="contact">
+  <p class="mono">Say hi</p>
+  <h1 class="giant"><a href="mailto:hi@nurfajar.com">hi@nurfajar.com</a></h1>
+  <p class="sub">Available immediately · replies within 24 hours · onsite Indonesia, open to relocate.</p>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Hero: wght/wdth mengikuti kursor dengan lerp — lewat satu proxy. */
+  var vf = document.getElementById('vf');
+  var hud = document.getElementById('hud');
+  var cur = { wght: 800, wdth: 100 };
+  var tgt = { wght: 800, wdth: 100 };
+  function apply() {
+    vf.style.fontVariationSettings = "'wght' " + Math.round(cur.wght) + ", 'wdth' " + Math.round(cur.wdth);
+    hud.textContent = 'wght ' + Math.round(cur.wght) + ' · wdth ' + Math.round(cur.wdth);
+  }
+  gsap.ticker.add(function () {
+    cur.wght += (tgt.wght - cur.wght) * 0.08;
+    cur.wdth += (tgt.wdth - cur.wdth) * 0.08;
+    apply();
+  });
+  document.querySelector('.hero').addEventListener('pointermove', function (e) {
+    var r = this.getBoundingClientRect();
+    tgt.wght = 100 + ((e.clientX - r.left) / r.width) * 800;
+    tgt.wdth = 62 + ((e.clientY - r.top) / r.height) * 63;
+  });
+  document.querySelector('.hero').addEventListener('pointerleave', function () { tgt.wght = 800; tgt.wdth = 100; });
+
+  if (!reduced) {
+    var lenis = new Lenis({ lerp: 0.1 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+
+    /* Tiap kata: weight 100 → 900 di-scrub oleh scroll. */
+    gsap.utils.toArray('[data-scrub]').forEach(function (el) {
+      gsap.fromTo(el,
+        { fontVariationSettings: "'wght' 100, 'wdth' 78" },
+        { fontVariationSettings: "'wght' 900, 'wdth' 125", ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top 92%', end: 'top 40%', scrub: true } });
+    });
+  }
+</script>
+<script>
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (typeof gsap === 'undefined') return;
+  var pre = document.querySelector('.pre');
+  var pnum = pre && pre.querySelector('.pre__num');
+  if (pre) {
+    gsap.set(pre, { autoAlpha: 1 });
+    var counter = { v: 0 };
+    gsap.timeline()
+      .to(counter, { v: 100, duration: 0.7, ease: 'power2.inOut', onUpdate: function () { if (pnum) pnum.textContent = String(Math.round(counter.v)).padStart(3, '0'); } })
+      .to('.pre__bar', { scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, 0)
+      .to(pre, { autoAlpha: 0, duration: 0.3, ease: 'power2.out' }, '+=0.04');
+  }
+  if (window.matchMedia('(pointer: fine)').matches) {
+    var ring = document.querySelector('.cursor');
+    if (ring && typeof gsap.quickTo === 'function') {
+      gsap.set(ring, { autoAlpha: 1, xPercent: -50, yPercent: -50 });
+      var rX = gsap.quickTo(ring, 'x', { duration: 0.35, ease: 'power3' });
+      var rY = gsap.quickTo(ring, 'y', { duration: 0.35, ease: 'power3' });
+      window.addEventListener('pointermove', function (e) { rX(e.clientX); rY(e.clientY); });
+      document.addEventListener('pointerover', function (e) {
+        var t = e.target instanceof Element ? e.target : null;
+        var hot = t && t.closest('a, button, [data-cursor]');
+        gsap.to(ring, { scale: hot ? 2 : 1, duration: 0.3, ease: 'power3.out' });
+      });
+    }
+  }
+})();
+</script>
+</body>
+</html>

@@ -51,6 +51,14 @@ npm run build    # production build (Vercel mode)
 NEXT_STATIC_EXPORT=true npm run build   # static export (GitHub Pages mode) → out/
 ```
 
+## Routes
+
+| Route | Isi |
+|---|---|
+| `/` | Homepage: halaman `/v9` (edisi panggung 21st.dev: foto kartun, headline rotasi CTA-01 + latar Aceternity boxes) |
+| `/v3` – `/v8` | Arsip versi lama, semua `noindex`. Skin edisi-dokumen v9 yang sempat eksperimen diarsipkan di `archive/v9-doc/`. |
+| `/v9` | Homepage itu sendiri (2026-11-08). Kode komponennya (`components/ui/*`) di-port dari proyek mandiri `nur-fajar-v9`; semuanya tetap terikat kanon ledger dan `content/v9.ts`, tanpa versi npm baru di luar `@radix-ui/react-slot`, `class-variance-authority`, `clsx`, `tailwind-merge`. |
+
 ## Deploy
 
 Two independent pipelines, both triggered by a push to `main`:

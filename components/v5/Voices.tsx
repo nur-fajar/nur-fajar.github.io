@@ -16,7 +16,9 @@ const HIGHLIGHTS: Record<string, string[]> = {
   'Arnold Doray': ['takes ownership', 'extremely happy'],
   'Christian Jonathan': ['organizational skills', 'proactive approach'],
   'Kevin Naufal Eryogia': ["mentee's progress", 'every milestone'],
+  'Andrew Benedictus Jamesie': ['complex concepts', 'delivered on schedule'],
   'Diki Hamdani': ['Communication stayed clear', 'successful finish'],
+  'Dicky Arya Pratama': ['clear communication', 'running smoothly'],
 };
 
 /** Quote dengan frasa kunci di-<mark>. Tanpa ubah ledger. */

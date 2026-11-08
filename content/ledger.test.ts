@@ -354,19 +354,21 @@ describe('artefak & kontak', () => {
   });
 });
 
-describe('referensi , empat sudut pandang, bukan empat pujian', () => {
-  it('hanya empat testimoni , yang generik sudah dipangkas', () => {
-    expect(TESTIMONIALS).toHaveLength(4);
+describe('referensi , enam suara dari empat sudut pandang', () => {
+  it('enam testimoni , yang generik sudah dipangkas', () => {
+    expect(TESTIMONIALS).toHaveLength(6);
   });
 
-  it('keempatnya melihat dari arah yang berbeda', () => {
-    // Judul section berjanji "two managers, a mentee, and a peer". Dua
-    // manajer Terra AI (manager + facilitator manager) dengan peran berbeda.
+  it('mereka melihat dari arah yang berbeda', () => {
+    // Janji section: dua manajer Terra AI (manager + facilitator manager)
+    // dengan peran berbeda, dua mentee Bangkit, satu rekan setim, dan satu
+    // mitra program GDSC.
     const relations = TESTIMONIALS.map((t) => t.relation.toLowerCase());
     expect(relations.filter((r) => r.includes('manager'))).toHaveLength(2);
-    expect(relations.some((r) => r.includes('mentee'))).toBe(true);
-    expect(relations.some((r) => r.includes('peer'))).toBe(true);
-    expect(new Set(relations).size).toBe(4);
+    expect(relations.filter((r) => r.includes('mentee'))).toHaveLength(2);
+    expect(relations.filter((r) => r.includes('peer'))).toHaveLength(1);
+    expect(relations.filter((r) => r.includes('collaborator'))).toHaveLength(1);
+    expect(new Set(relations).size).toBe(6);
   });
 
   it('tidak ada testimoni yang mengutip angka rating, supaya tidak bentrok dengan 9.0', () => {

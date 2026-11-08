@@ -1,0 +1,1707 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Style Board — 10 Arah Visual untuk v8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@400;500;600;700&family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;900&family=Instrument+Serif:ital@0;1&family=Nunito:wght@700;800;900&family=Allerta+Stencil&family=Space+Grotesk:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  /* ══════════════════ PAPAN & CHROME ══════════════════ */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #121212;
+    color: #e8e8e8;
+    font-family: Inter, system-ui, sans-serif;
+  }
+  .board-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 99;
+    display: flex; gap: 2px; overflow-x: auto;
+    background: rgba(18,18,18,.92); backdrop-filter: blur(8px);
+    padding: 8px 12px; border-bottom: 1px solid #2a2a2a;
+  }
+  .board-nav a {
+    flex: none; padding: 6px 10px; border-radius: 999px;
+    color: #bbb; text-decoration: none; font-size: 11px;
+    font-family: 'JetBrains Mono', monospace; white-space: nowrap;
+  }
+  .board-nav a:hover { background: #2a2a2a; color: #fff; }
+  .board-intro {
+    max-width: 880px; margin: 0 auto; padding: 110px 24px 30px;
+  }
+  .board-intro h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .board-intro p { color: #999; margin-top: 10px; line-height: 1.6; font-size: 14px; }
+  .board-intro b { color: #ddd; font-weight: 600; }
+  .style { padding: 30px 24px 60px; }
+  .style__meta {
+    max-width: 1100px; margin: 0 auto 14px;
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+  }
+  .style__meta .no { font-family: 'JetBrains Mono', monospace; color: #666; font-size: 12px; }
+  .style__meta h2 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  .style__meta p { color: #888; font-size: 13px; width: 100%; line-height: 1.5; }
+  .mock { max-width: 1100px; margin: 0 auto; border: 1px solid #2a2a2a; border-radius: 8px; overflow: hidden; }
+  .fit { min-height: 560px; display: flex; flex-direction: column; }
+  .board-note {
+    max-width: 1100px; margin: 20px auto 80px; padding: 0 24px;
+    color: #777; font-size: 12px; font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ══════════════════ 1 · SWISS / EDITORIAL CLEAN ══════════════════ */
+  .s1 { background: #ffffff; color: #111; font-family: Inter, sans-serif; padding: clamp(20px,4vw,48px); }
+  .s1 * { box-sizing: border-box; margin: 0; }
+  .s1 .bar { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; padding-bottom: 12px; border-bottom: 2px solid #111; }
+  .s1 .bar b { font-weight: 700; letter-spacing: -0.01em; }
+  .s1 .bar nav { display: flex; gap: 18px; color: #777; }
+  .s1 h3.name { font-family: Archivo, Inter, sans-serif; font-stretch: 118%; font-weight: 800; text-transform: uppercase; font-size: clamp(44px, 11vw, 130px); line-height: .92; letter-spacing: -0.02em; margin-top: clamp(30px,8vh,70px); }
+  .s1 h3.name em { font-style: normal; color: #d43a18; }
+  .s1 .row { display: grid; grid-template-columns: 1fr 1.4fr; gap: 30px; margin-top: clamp(24px,6vh,60px); }
+  .s1 .tag { font-size: 14px; font-weight: 600; color: #111; max-width: 22em; }
+  .s1 .work { border-top: 1px solid #d9d9d9; padding-top: 14px; font-size: 13px; color: #666; display: grid; gap: 6px; }
+  .s1 .work .k { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+  .s1 .work .t { font-weight: 700; color: #111; font-size: 16px; }
+  .s1 .work .h { color: #d43a18; font-weight: 500; }
+  .s1 .foot { margin-top: auto; padding-top: 16px; border-top: 1px solid #d9d9d9; display: flex; justify-content: space-between; font-size: 12px; color: #777; }
+  .s1 .foot a { color: #d43a18; text-decoration: none; }
+
+  /* ══════════════════ 2 · NEO-BRUTALISM ══════════════════ */
+  .s2 { background: #ffde00; color: #111; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s2 * { box-sizing: border-box; margin: 0; }
+  .s2 .bar { display: flex; justify-content: space-between; align-items: center; }
+  .s2 .chip { background: #fff; border: 3px solid #000; box-shadow: 4px 4px 0 #000; padding: 8px 14px; font-weight: 800; font-size: 13px; text-transform: uppercase; }
+  .s2 .chip.pink { background: #ff90e8; transform: rotate(2deg); }
+  .s2 h3.name { font-family: Archivo, Inter, sans-serif; font-weight: 900; text-transform: uppercase; font-size: clamp(44px, 10.5vw, 120px); line-height: .9; letter-spacing: -0.02em; margin-top: clamp(28px,7vh,60px); }
+  .s2 h3.name span { background: #fff; border: 3px solid #000; box-shadow: 6px 6px 0 #000; display: inline-block; padding: 0 .12em; }
+  .s2 .tag { display: inline-block; margin-top: 18px; background: #ff90e8; border: 3px solid #000; box-shadow: 4px 4px 0 #000; padding: 10px 14px; font-weight: 700; font-size: 14px; transform: rotate(-1deg); }
+  .s2 .work { margin-top: 26px; background: #fff; border: 3px solid #000; box-shadow: 6px 6px 0 #000; padding: 16px; display: grid; gap: 6px; }
+  .s2 .work .k { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+  .s2 .work .t { font-size: 20px; font-weight: 900; }
+  .s2 .work .h { font-size: 13px; font-weight: 600; background: #ffde00; border: 2px solid #000; display: inline-block; padding: 4px 8px; justify-self: start; }
+  .s2 .foot { margin-top: auto; padding-top: 18px; display: flex; gap: 12px; }
+  .s2 .foot a { background: #111; color: #ffde00; border: 3px solid #000; box-shadow: 4px 4px 0 #000; padding: 9px 16px; font-weight: 800; font-size: 13px; text-decoration: none; text-transform: uppercase; }
+
+  /* ══════════════════ 3 · BRUTALISM ASLI ══════════════════ */
+  .s3 { background: #ffffff; color: #000; font-family: 'Times New Roman', Times, serif; padding: 16px; }
+  .s3 * { box-sizing: border-box; margin: 0; }
+  .s3 a { color: #0000ee; text-decoration: underline; }
+  .s3 h3.name { font-size: 32px; font-weight: 700; margin: 14px 0 4px; font-family: inherit; }
+  .s3 .tag { font-size: 16px; margin-bottom: 14px; }
+  .s3 table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  .s3 th, .s3 td { border: 1px solid #888; padding: 6px 10px; text-align: left; }
+  .s3 th { background: #efefef; }
+  .s3 .counter { margin-top: 14px; font-family: 'Courier New', monospace; font-size: 12px; color: #444; }
+  .s3 .counter span { background: #000; color: #0f0; padding: 2px 6px; letter-spacing: 4px; }
+  .s3 .hr { border: none; border-top: 1px solid #888; margin: 14px 0; }
+  .s3 .foot { font-size: 13px; color: #444; }
+
+  /* ══════════════════ 4 · PIXEL / 8-BIT ══════════════════ */
+  .s4 {
+    background: #1a1c2c; color: #94b0c2; font-family: 'Press Start 2P', monospace;
+    padding: clamp(20px,4vw,44px); position: relative; overflow: hidden;
+  }
+  .s4 * { box-sizing: border-box; margin: 0; image-rendering: pixelated; }
+  .s4::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 1px, transparent 1px 3px);
+  }
+  .s4 .bar { display: flex; justify-content: space-between; font-size: 9px; color: #ffcd75; }
+  .s4 h3.name { font-size: clamp(26px, 6.5vw, 64px); line-height: 1.25; color: #fff; text-shadow: 5px 5px 0 #000; margin-top: clamp(28px,7vh,60px); }
+  .s4 h3.name em { font-style: normal; color: #ffcd75; }
+  .s4 .tag { font-size: 10px; line-height: 1.9; margin-top: 20px; color: #94b0c2; }
+  .s4 .win { margin-top: 24px; border: 4px solid #333c57; background: #29366f; padding: 14px; box-shadow: 0 6px 0 #000; }
+  .s4 .win .k { font-size: 8px; color: #73eff7; margin-bottom: 10px; }
+  .s4 .win .t { font-size: 12px; color: #fff; line-height: 1.7; }
+  .s4 .win .h { display: inline-block; font-size: 9px; background: #b13e53; color: #fff; padding: 6px 8px; margin-top: 12px; box-shadow: 3px 3px 0 #000; }
+  .s4 .foot { margin-top: auto; padding-top: 20px; font-size: 8px; color: #566c86; display: flex; justify-content: space-between; }
+  .s4 .foot a { color: #73eff7; text-decoration: none; }
+
+  /* ══════════════════ 5 · TERMINAL / DEVELOPER-CORE ══════════════════ */
+  .s5 { background: #0c0c0c; color: #c9d1d9; font-family: 'JetBrains Mono', monospace; padding: clamp(20px,4vw,44px); font-size: 13px; }
+  .s5 * { box-sizing: border-box; margin: 0; }
+  .s5 .win { border: 1px solid #2d2d2d; border-radius: 6px; overflow: hidden; height: 100%; display: flex; flex-direction: column; }
+  .s5 .titlebar { background: #1a1a1a; padding: 8px 12px; font-size: 11px; color: #777; display: flex; gap: 8px; align-items: center; }
+  .s5 .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .s5 .body { padding: clamp(16px,3vw,36px); display: flex; flex-direction: column; flex: 1; }
+  .s5 .ln { line-height: 2; white-space: pre-wrap; }
+  .s5 .p { color: #ff7b54; }
+  .s5 .c { color: #565f89; }
+  .s5 .g { color: #4ade80; }
+  .s5 .y { color: #fbd38d; }
+  .s5 h3.name { font-size: clamp(22px, 4.6vw, 44px); font-weight: 700; color: #e6edf3; letter-spacing: .04em; margin: 8px 0 4px; }
+  .s5 .cursor { display: inline-block; width: .55em; height: 1.1em; background: #4ade80; vertical-align: text-bottom; animation: s5blink 1.1s steps(1) infinite; }
+  @keyframes s5blink { 50% { opacity: 0; } }
+  .s5 .work { border: 1px solid #2d2d2d; border-left: 3px solid #4ade80; padding: 12px 16px; margin-top: 18px; display: grid; gap: 4px; }
+  .s5 .work .t { color: #e6edf3; font-weight: 700; }
+  .s5 .work .h { color: #fbd38d; }
+  .s5 .foot { margin-top: auto; padding-top: 18px; color: #565f89; display: flex; justify-content: space-between; }
+  .s5 .foot a { color: #4ade80; text-decoration: none; }
+
+  /* ══════════════════ 6 · GLASSMORPHISM / AURORA ══════════════════ */
+  .s6 {
+    background: #0a0a18; color: #fff; font-family: Inter, sans-serif;
+    padding: clamp(24px,4vw,48px); position: relative; overflow: hidden;
+  }
+  .s6 * { box-sizing: border-box; margin: 0; }
+  .s6 .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .55; }
+  .s6 .b1 { width: 420px; height: 420px; background: #6d5cff; top: -120px; left: -80px; }
+  .s6 .b2 { width: 380px; height: 380px; background: #ff5ca8; bottom: -140px; right: -60px; }
+  .s6 .b3 { width: 300px; height: 300px; background: #38bdf8; top: 40%; left: 55%; }
+  .s6 .glass { position: relative; border-radius: 22px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); padding: clamp(18px,3vw,36px); height: 100%; display: flex; flex-direction: column; }
+  .s6 .bar { display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,.65); }
+  .s6 h3.name { font-size: clamp(38px, 8.5vw, 92px); font-weight: 700; letter-spacing: -0.03em; line-height: 1; margin-top: clamp(26px,6vh,54px); }
+  .s6 .tag { margin-top: 14px; color: rgba(255,255,255,.75); font-size: 15px; }
+  .s6 .work { margin-top: 24px; border-radius: 16px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); padding: 16px; display: grid; gap: 6px; }
+  .s6 .work .k { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.5); }
+  .s6 .work .t { font-size: 18px; font-weight: 600; }
+  .s6 .work .h { font-size: 13px; color: #9be7ff; }
+  .s6 .foot { margin-top: auto; padding-top: 20px; display: flex; gap: 10px; font-size: 13px; }
+  .s6 .foot a { color: #fff; text-decoration: none; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 8px 16px; }
+
+  /* ══════════════════ 7 · Y2K CYBER CHROME ══════════════════ */
+  .s7 {
+    background: radial-gradient(120% 100% at 50% 0%, #1b2a6b 0%, #060a20 55%, #000 100%);
+    color: #dfe6ff; font-family: Orbitron, 'Space Grotesk', sans-serif;
+    padding: clamp(20px,4vw,44px); position: relative; overflow: hidden;
+  }
+  .s7 * { box-sizing: border-box; margin: 0; }
+  .s7 .lens { position: absolute; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.5), rgba(120,160,255,.12) 45%, transparent 70%); top: -60px; right: -40px; }
+  .s7 .grid { position: absolute; inset: auto 0 0 0; height: 34%; background: repeating-linear-gradient(90deg, rgba(90,130,255,.25) 0 1px, transparent 1px 44px), repeating-linear-gradient(0deg, rgba(90,130,255,.25) 0 1px, transparent 1px 26px); transform: perspective(320px) rotateX(48deg); transform-origin: bottom; opacity: .5; }
+  .s7 .bar { position: relative; display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .18em; color: #8fa5ff; }
+  .s7 h3.name {
+    position: relative; margin-top: clamp(30px,8vh,70px);
+    font-size: clamp(34px, 8.5vw, 92px); font-weight: 900; letter-spacing: .02em; line-height: 1;
+    background: linear-gradient(180deg, #ffffff 8%, #cfd8ff 30%, #5a78e8 52%, #0a1440 60%, #a8b8ff 82%, #fff 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 2px 0 rgba(0,0,0,.6));
+  }
+  .s7 .tag { position: relative; margin-top: 14px; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #8fa5ff; }
+  .s7 .work { position: relative; margin-top: 24px; border: 1px solid #4053b8; border-radius: 14px; background: linear-gradient(180deg, rgba(20,30,90,.85), rgba(8,12,40,.85)); padding: 16px; display: grid; gap: 6px; box-shadow: 0 0 24px rgba(90,120,255,.35), inset 0 0 18px rgba(90,120,255,.18); }
+  .s7 .work .k { font-size: 10px; letter-spacing: .2em; color: #8fa5ff; }
+  .s7 .work .t { font-size: 18px; font-weight: 700; color: #fff; }
+  .s7 .work .h { font-size: 12px; color: #9be7ff; }
+  .s7 .foot { position: relative; margin-top: auto; padding-top: 18px; display: flex; justify-content: space-between; font-size: 10px; letter-spacing: .18em; color: #8fa5ff; }
+  .s7 .foot a { color: #fff; text-decoration: none; }
+
+  /* ══════════════════ 8 · EDITORIAL POSTER / ATLAS (arah v8 kini) ══════════════════ */
+  .s8 { background: #f2efe7; color: #1b1a14; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s8 * { box-sizing: border-box; margin: 0; }
+  .s8 .frame { border: 1px solid #d7d1c3; min-height: 100%; padding: clamp(18px,3.5vw,40px); display: flex; flex-direction: column; position: relative; }
+  .s8 .bar { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #6f6b60; border-bottom: 1px solid #d7d1c3; padding-bottom: 10px; }
+  .s8 h3.name { font-family: Archivo, Inter, sans-serif; font-stretch: 118%; font-weight: 800; text-transform: uppercase; font-size: clamp(44px, 11vw, 128px); line-height: .87; letter-spacing: -0.015em; margin-top: clamp(26px,6vh,54px); }
+  .s8 h3.name .b { color: transparent; -webkit-text-stroke: 2px #1b1a14; }
+  .s8 h3.name .dot { display: inline-block; width: .1em; height: .1em; background: #e24e1b; border-radius: 50%; }
+  .s8 .tag { margin-top: 18px; font-size: 14px; font-weight: 600; max-width: 24em; }
+  .s8 .work { margin-top: 22px; padding-top: 14px; border-top: 1px solid #d7d1c3; display: grid; grid-template-columns: 5rem 1fr auto; gap: 12px; align-items: baseline; font-size: 12px; color: #6f6b60; }
+  .s8 .work .t { font-family: Archivo, Inter, sans-serif; font-stretch: 112%; font-weight: 750; font-size: 18px; color: #1b1a14; }
+  .s8 .work .h { color: #b23a12; }
+  .s8 .foot { margin-top: auto; padding-top: 14px; border-top: 1px dotted #bfb7a4; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6f6b60; }
+  .s8 .foot a { color: #b23a12; text-decoration: none; }
+
+  /* ══════════════════ 9 · MAXIMALISM / ANTI-DESIGN ══════════════════ */
+  .s9 { background: #ff5c00; color: #111; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); overflow: hidden; position: relative; }
+  .s9 * { box-sizing: border-box; margin: 0; }
+  .s9 .bar { display: flex; gap: 10px; flex-wrap: wrap; }
+  .s9 .sticker { font-weight: 900; font-size: 12px; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; border: 3px solid #111; }
+  .s9 .st1 { background: #b8f52a; transform: rotate(-3deg); }
+  .s9 .st2 { background: #ff90e8; transform: rotate(2deg); }
+  .s9 .st3 { background: #7ec8ff; transform: rotate(-1deg); }
+  .s9 .name-wrap { position: relative; margin-top: clamp(30px,7vh,64px); }
+  .s9 h3.name {
+    font-family: Archivo, Inter, sans-serif; font-weight: 900; text-transform: uppercase;
+    font-size: clamp(52px, 12vw, 138px); line-height: .88; letter-spacing: -0.03em;
+    transform: rotate(-2.5deg); color: #fff; text-shadow: 6px 6px 0 #111;
+  }
+  .s9 h3.name em { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; text-transform: none; letter-spacing: 0; color: #b8f52a; text-shadow: 4px 4px 0 #111; }
+  .s9 .circle { position: absolute; width: 150px; height: 150px; border-radius: 50%; background: #7ec8ff; border: 3px solid #111; top: -40px; right: 6%; z-index: -0; display: grid; place-items: center; font-size: 11px; font-weight: 800; text-align: center; transform: rotate(8deg); }
+  .s9 .tag { margin-top: 22px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: clamp(18px,2.6vw,26px); transform: rotate(-1deg); max-width: 24em; }
+  .s9 .work { margin-top: 24px; background: #ff90e8; border: 3px solid #111; box-shadow: 8px 8px 0 #111; padding: 16px; transform: rotate(1.4deg); display: grid; gap: 6px; max-width: 480px; }
+  .s9 .work .k { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; }
+  .s9 .work .t { font-size: 20px; font-weight: 900; }
+  .s9 .work .h { font-size: 13px; font-weight: 700; }
+  .s9 .foot { margin-top: auto; padding-top: 18px; display: flex; justify-content: space-between; font-weight: 800; font-size: 13px; }
+  .s9 .foot a { color: #111; }
+
+  /* ══════════════════ 10 · BENTO GRID ══════════════════ */
+  .s10 { background: #f5f5f7; color: #1d1d1f; font-family: Inter, sans-serif; padding: clamp(18px,3.5vw,40px); }
+  .s10 * { box-sizing: border-box; margin: 0; }
+  .s10 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; min-height: 100%; }
+  .s10 .cell { background: #fff; border-radius: 18px; padding: 20px; box-shadow: 0 4px 14px rgba(0,0,0,.05); display: flex; flex-direction: column; justify-content: space-between; min-height: 110px; }
+  .s10 .cell.wide { grid-column: span 2; }
+  .s10 .k { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #86868b; }
+  .s10 h3.name { font-size: clamp(30px, 5.5vw, 56px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.02; }
+  .s10 .tag { font-size: 14px; color: #6e6e73; margin-top: 8px; }
+  .s10 .big { font-size: clamp(24px, 3.4vw, 34px); font-weight: 700; letter-spacing: -0.02em; color: #0071e3; }
+  .s10 .work .t { font-size: 16px; font-weight: 600; margin-top: 4px; }
+  .s10 .quote { font-size: 14px; line-height: 1.45; color: #1d1d1f; }
+  .s10 .who { font-size: 12px; color: #86868b; margin-top: 8px; }
+  .s10 .foot a { color: #0071e3; text-decoration: none; font-size: 14px; font-weight: 500; }
+  .s10 .cell:hover { transform: scale(1.015); transition: transform .25s ease; }
+
+  /* ══════════════════ 11 · BLUEPRINT / TECHNICAL DRAWING ══════════════════ */
+  .s11 { background: #103a7d; color: #cfe0ff; font-family: 'JetBrains Mono', monospace; padding: clamp(20px,4vw,44px); position: relative; }
+  .s11 * { margin: 0; box-sizing: border-box; position: relative; }
+  .s11::before { content: ''; position: absolute; inset: 0; background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 1px, transparent 1px 28px); }
+  .s11 .frame { border: 1.5px solid rgba(255,255,255,.65); min-height: 100%; padding: clamp(16px,3vw,36px); display: flex; flex-direction: column; }
+  .s11 .bar { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: .18em; color: #9db8ee; text-transform: uppercase; }
+  .s11 h3.name { color: #fff; font-size: clamp(30px, 7.5vw, 80px); letter-spacing: .06em; font-weight: 500; margin-top: clamp(24px,6vh,54px); border: 1.5px dashed rgba(255,255,255,.5); padding: 16px 18px; line-height: 1.1; }
+  .s11 .dim { display: flex; align-items: center; gap: 10px; font-size: 9px; color: #9db8ee; margin-top: 10px; letter-spacing: .14em; }
+  .s11 .dim::before, .s11 .dim::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,.5); }
+  .s11 .work { margin-top: 20px; border: 1.5px solid rgba(255,255,255,.65); display: grid; grid-template-columns: 1.4fr 1fr; }
+  .s11 .work > div { padding: 12px 14px; display: grid; gap: 4px; align-content: center; }
+  .s11 .work > div + div { border-left: 1.5px solid rgba(255,255,255,.65); }
+  .s11 .k { font-size: 9px; letter-spacing: .18em; color: #9db8ee; text-transform: uppercase; }
+  .s11 .t { font-size: 16px; color: #fff; }
+  .s11 .h { font-size: 11px; color: #cfe0ff; }
+  .s11 .titleblock { margin-top: auto; border: 1.5px solid rgba(255,255,255,.65); display: grid; grid-template-columns: 2fr 1.2fr 1fr; font-size: 9px; letter-spacing: .12em; color: #9db8ee; text-transform: uppercase; }
+  .s11 .titleblock span { padding: 8px 10px; border-left: 1.5px solid rgba(255,255,255,.65); }
+  .s11 .titleblock span:first-child { border-left: none; color: #fff; }
+  .s11 .titleblock a { color: #fff; text-decoration: none; }
+
+  /* ══════════════════ 12 · RISOGRAPH / ZINE ══════════════════ */
+  .s12 { background: #f7f2e8; color: #1e1b4f; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); position: relative; overflow: hidden; }
+  .s12 * { margin: 0; box-sizing: border-box; }
+  .s12::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(#2b4bf2 1px, transparent 1.4px); background-size: 9px 9px; opacity: .07; }
+  .s12 .tape { position: absolute; width: 120px; height: 26px; background: rgba(43,75,242,.25); transform: rotate(-4deg); top: 12px; left: 40%; }
+  .s12 .bar { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #2b4bf2; }
+  .s12 h3.name { font-family: Archivo, Inter, sans-serif; font-weight: 900; font-size: clamp(44px, 10.5vw, 118px); line-height: .9; text-transform: uppercase; margin-top: clamp(26px,6vh,56px); color: #2b4bf2; text-shadow: 4px 4px 0 rgba(255,75,75,.75); letter-spacing: -0.01em; }
+  .s12 .tag { margin-top: 16px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: clamp(16px,2.4vw,22px); transform: rotate(-1deg); max-width: 26em; }
+  .s12 .work { margin-top: 22px; border: 2px solid #1e1b4f; padding: 14px; display: grid; gap: 5px; background: #fff; box-shadow: 5px 5px 0 rgba(255,75,75,.7); max-width: 540px; transform: rotate(.8deg); }
+  .s12 .k { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #ff4b4b; }
+  .s12 .t { font-weight: 900; font-size: 19px; }
+  .s12 .h { font-size: 12px; font-weight: 600; color: #2b4bf2; }
+  .s12 .foot { margin-top: auto; padding-top: 16px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+  .s12 .foot a { color: #ff4b4b; text-decoration: none; }
+
+  /* ══════════════════ 13 · DARK ACADEMIA ══════════════════ */
+  .s13 { background: #191410; color: #e8dcc3; font-family: Georgia, 'Times New Roman', serif; padding: clamp(20px,4vw,44px); }
+  .s13 * { margin: 0; box-sizing: border-box; }
+  .s13 .frame { border: 1px solid #3a2f22; min-height: 100%; padding: clamp(18px,3.5vw,40px); display: flex; flex-direction: column; }
+  .s13 .bar { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: #c9a227; }
+  .s13 h3.name { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; font-size: clamp(44px, 9.5vw, 104px); color: #efe3c8; margin-top: clamp(26px,6vh,54px); line-height: 1; }
+  .s13 .tag { margin-top: 12px; font-size: 14px; color: #a8977a; font-style: italic; }
+  .s13 .rule { display: flex; align-items: center; gap: 12px; color: #c9a227; margin-top: 22px; font-size: 12px; }
+  .s13 .rule::before, .s13 .rule::after { content: ''; flex: 1; border-top: 1px solid #3a2f22; }
+  .s13 .work { margin-top: 18px; display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; font-size: 14px; }
+  .s13 .work .no { color: #c9a227; }
+  .s13 .work .t { font-size: 18px; color: #efe3c8; }
+  .s13 .work .h { color: #a8977a; grid-column: 2; font-style: italic; }
+  .s13 .quote { margin-top: auto; padding-top: 18px; font-style: italic; font-size: 15px; color: #d8c9a5; }
+  .s13 .who { margin-top: 8px; font-style: normal; font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: #c9a227; }
+  .s13 .foot { margin-top: 16px; display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #a8977a; }
+  .s13 .foot a { color: #c9a227; text-decoration: none; }
+
+  /* ══════════════════ 14 · RETRO OS (WIN95) ══════════════════ */
+  .s14 { background: #008080; font-family: 'Segoe UI', Tahoma, Verdana, sans-serif; padding: clamp(14px,3vw,32px); }
+  .s14 * { margin: 0; box-sizing: border-box; }
+  .s14 .window { border: 2px solid; border-color: #dfdfdf #404040 #404040 #dfdfdf; background: #c0c0c0; box-shadow: 3px 3px 0 rgba(0,0,0,.55); min-height: 100%; display: flex; flex-direction: column; }
+  .s14 .titlebar { background: linear-gradient(90deg, #000080, #1084d0); color: #fff; font-size: 13px; font-weight: 700; padding: 4px 6px; display: flex; justify-content: space-between; align-items: center; }
+  .s14 .tbtns { display: flex; gap: 3px; }
+  .s14 .titlebtn { background: #c0c0c0; border: 2px solid; border-color: #dfdfdf #404040 #404040 #dfdfdf; width: 18px; height: 16px; font-size: 9px; display: grid; place-items: center; color: #000; }
+  .s14 .menubar { font-size: 12px; padding: 3px 8px; border-bottom: 1px solid #808080; color: #000; display: flex; gap: 14px; }
+  .s14 .body { padding: clamp(14px,3vw,30px); display: flex; flex-direction: column; flex: 1; color: #000; }
+  .s14 h3.name { font-size: clamp(30px, 6.5vw, 64px); font-weight: 700; letter-spacing: -1px; }
+  .s14 .tag { margin-top: 8px; font-size: 14px; color: #222; }
+  .s14 .group { margin-top: 18px; border: 2px groove #dfdfdf; padding: 12px 14px; display: grid; gap: 8px; font-size: 12px; }
+  .s14 .group .k { font-weight: 700; }
+  .s14 .group .h { color: #000080; font-weight: 600; }
+  .s14 .btnrow { margin-top: auto; padding-top: 16px; display: flex; gap: 8px; justify-content: flex-end; }
+  .s14 .btn { border: 2px solid; border-color: #dfdfdf #404040 #404040 #dfdfdf; background: #c0c0c0; padding: 6px 24px; font-size: 12px; color: #000; box-shadow: 1px 1px 0 #000; }
+  .s14 .taskbar { margin-top: 12px; border: 2px solid; border-color: #dfdfdf #404040 #404040 #dfdfdf; background: #c0c0c0; padding: 4px; display: flex; gap: 8px; align-items: center; font-size: 12px; color: #000; }
+  .s14 .taskbtn { border: 2px solid; border-color: #404040 #dfdfdf #dfdfdf #404040; background: #c0c0c0; padding: 3px 12px; font-weight: 700; }
+
+  /* ══════════════════ 15 · ZEN MINIMAL ══════════════════ */
+  .s15 { background: #faf9f4; color: #22211d; font-family: Georgia, 'Times New Roman', serif; padding: clamp(24px,6vw,72px); }
+  .s15 * { margin: 0; box-sizing: border-box; }
+  .s15 .wrap { min-height: 100%; display: flex; flex-direction: column; position: relative; }
+  .s15 .bar { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: .4em; text-transform: uppercase; color: #8f8b7e; }
+  .s15 .vtext { position: absolute; top: 0; right: 0; writing-mode: vertical-rl; font-size: 11px; letter-spacing: .5em; color: #8f8b7e; height: 68%; }
+  .s15 .enso { position: absolute; bottom: 32%; right: 10%; width: 72px; height: 72px; border: 2.5px solid #22211d; border-radius: 50%; border-left-color: transparent; transform: rotate(-30deg); opacity: .8; }
+  .s15 h3.name { margin-top: auto; font-weight: 400; font-size: clamp(34px, 7vw, 76px); letter-spacing: .02em; max-width: 10em; }
+  .s15 .tag { margin-top: 16px; font-size: 13px; color: #6f6b60; max-width: 24em; line-height: 2; }
+  .s15 .work { margin-top: 26px; display: flex; align-items: baseline; gap: 16px; font-size: 12px; color: #6f6b60; }
+  .s15 .work .t { font-size: 15px; color: #22211d; }
+  .s15 .foot { margin-top: auto; padding-top: 22px; display: flex; justify-content: space-between; font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: #8f8b7e; }
+  .s15 .foot a { color: #b23a12; text-decoration: none; }
+
+  /* ══════════════════ 16 · KINETIC TYPOGRAPHY ══════════════════ */
+  .s16 { background: #ffffff; color: #111; font-family: Archivo, Inter, sans-serif; padding: clamp(16px,3vw,36px); overflow: hidden; }
+  .s16 * { margin: 0; box-sizing: border-box; }
+  .s16 .bar { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+  .s16 .stack { margin-top: clamp(14px,3.5vh,36px); display: flex; flex-direction: column; line-height: .88; }
+  .s16 .w { font-weight: 900; text-transform: uppercase; font-size: clamp(42px, 10vw, 116px); letter-spacing: -0.03em; white-space: nowrap; }
+  .s16 .w.o { color: transparent; -webkit-text-stroke: 2px #111; }
+  .s16 .w.r { color: #e63200; }
+  .s16 .w.small { font-size: clamp(19px, 4.2vw, 46px); font-weight: 600; letter-spacing: 0; text-transform: none; color: #777; font-family: Inter, sans-serif; }
+  .s16 .w.move { animation: s16slide 4s ease-in-out infinite alternate; }
+  @keyframes s16slide { from { transform: translateX(0); } to { transform: translateX(5%); } }
+  .s16 .foot { margin-top: auto; padding-top: 16px; display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; border-top: 3px solid #111; }
+  .s16 .foot a { color: #e63200; text-decoration: none; }
+
+  /* ══════════════════ 17 · INDUSTRIAL / MILITARY TERMINAL ══════════════════ */
+  .s17 { background: #26251f; color: #d8d5c8; font-family: 'JetBrains Mono', monospace; padding: clamp(18px,3.5vw,40px); position: relative; }
+  .s17 * { margin: 0; box-sizing: border-box; }
+  .s17::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 8px; background: repeating-linear-gradient(45deg, #e8c81e 0 14px, #111 14px 28px); }
+  .s17 .panel { border: 1px solid #4a4940; min-height: 100%; padding: clamp(16px,3vw,34px); display: flex; flex-direction: column; position: relative; }
+  .s17 .screw { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #4a4940; box-shadow: inset 0 0 0 2px #26251f; }
+  .s17 .sc1 { top: 8px; left: 8px; } .s17 .sc2 { top: 8px; right: 8px; }
+  .s17 .sc3 { bottom: 8px; left: 8px; } .s17 .sc4 { bottom: 8px; right: 8px; }
+  .s17 .bar { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: #8f8d7c; }
+  .s17 h3.name { font-family: 'Allerta Stencil', Archivo, sans-serif; font-size: clamp(34px, 8vw, 88px); letter-spacing: .04em; color: #e8c81e; margin-top: clamp(24px,6vh,52px); line-height: 1; }
+  .s17 .tag { margin-top: 10px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  .s17 .work { margin-top: 20px; border: 1px solid #4a4940; padding: 12px 14px; display: grid; gap: 5px; font-size: 12px; }
+  .s17 .work .k { font-size: 9px; letter-spacing: .2em; color: #8f8d7c; text-transform: uppercase; }
+  .s17 .work .t { font-size: 17px; color: #fff; letter-spacing: .06em; }
+  .s17 .work .h { color: #e8c81e; }
+  .s17 .barcode { margin-top: auto; height: 34px; background: repeating-linear-gradient(90deg, #d8d5c8 0 2px, transparent 2px 5px, #d8d5c8 5px 6px, transparent 6px 11px); opacity: .75; }
+  .s17 .foot { margin-top: 10px; display: flex; justify-content: space-between; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: #8f8d7c; }
+  .s17 .foot a { color: #e8c81e; text-decoration: none; }
+
+  /* ══════════════════ 18 · CLAYMORPHISM ══════════════════ */
+  .s18 { background: #e8ebff; color: #3d3a6b; font-family: 'Nunito', Inter, sans-serif; padding: clamp(20px,4vw,44px); position: relative; overflow: hidden; }
+  .s18 * { margin: 0; box-sizing: border-box; }
+  .s18 .shape { position: absolute; border-radius: 50%; }
+  .s18 .c1 { width: 120px; height: 120px; background: #ffd6ec; top: 8%; right: 10%; box-shadow: inset 8px 8px 16px rgba(255,255,255,.6), inset -8px -8px 16px rgba(0,0,0,.07); }
+  .s18 .c2 { width: 70px; height: 70px; background: #c9f2ff; bottom: 12%; left: 5%; box-shadow: inset 6px 6px 12px rgba(255,255,255,.6), inset -6px -6px 12px rgba(0,0,0,.07); }
+  .s18 .card { position: relative; background: #f4f5ff; border-radius: 34px; padding: clamp(20px,4vw,44px); min-height: 100%; display: flex; flex-direction: column; box-shadow: inset 10px 10px 24px rgba(255,255,255,.85), inset -10px -10px 24px rgba(184,189,240,.35), 16px 24px 48px rgba(109,92,255,.22); }
+  .s18 .bar { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 13px; }
+  .s18 .bar .chip { background: #ffd6ec; border-radius: 999px; padding: 7px 14px; font-size: 11px; }
+  .s18 h3.name { margin-top: clamp(24px,6vh,52px); font-weight: 900; font-size: clamp(38px, 8.5vw, 88px); line-height: 1; letter-spacing: -0.02em; }
+  .s18 h3.name span { color: #8f7bff; }
+  .s18 .tag { margin-top: 14px; font-size: 15px; font-weight: 700; color: #7a76a8; }
+  .s18 .work { margin-top: 22px; background: #fff; border-radius: 24px; padding: 16px 18px; box-shadow: 8px 12px 24px rgba(109,92,255,.14), inset 4px 4px 10px #fff; display: grid; gap: 6px; }
+  .s18 .k { font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #a29ede; }
+  .s18 .t { font-size: 19px; font-weight: 900; }
+  .s18 .h { font-size: 13px; font-weight: 800; color: #8f7bff; }
+  .s18 .foot { margin-top: auto; padding-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .s18 .foot a { background: #8f7bff; color: #fff; border-radius: 999px; padding: 11px 20px; font-weight: 800; font-size: 13px; text-decoration: none; box-shadow: 6px 10px 20px rgba(143,123,255,.35); }
+  .s18 .foot span { background: #ffd6ec; color: #3d3a6b; border-radius: 999px; padding: 11px 20px; font-weight: 800; font-size: 13px; }
+
+  /* ══════════════════ 19 · VAPORWAVE ══════════════════ */
+  .s19 {
+    background: linear-gradient(180deg, #1a0b3d 0%, #4b1a7a 42%, #b967ff 60%, #ff71ce 64%, #2b1055 65%, #1a0b3d 100%);
+    color: #fff; font-family: Orbitron, 'JetBrains Mono', sans-serif;
+    padding: clamp(20px,4vw,44px); position: relative; overflow: hidden;
+  }
+  .s19 * { margin: 0; box-sizing: border-box; }
+  .s19 .sun { position: absolute; left: 50%; top: 10%; transform: translateX(-50%); width: min(280px, 48vw); aspect-ratio: 1; border-radius: 50%; background: linear-gradient(180deg, #ffd319, #ff2975 75%); }
+  .s19 .sun::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: repeating-linear-gradient(180deg, transparent 0 16px, rgba(26,11,61,.85) 16px 24px); clip-path: inset(48% 0 0 0); }
+  .s19 .gridfloor { position: absolute; left: -20%; right: -20%; bottom: -6%; height: 42%; background:
+    repeating-linear-gradient(90deg, rgba(1,205,254,.45) 0 2px, transparent 2px 64px),
+    repeating-linear-gradient(0deg, rgba(1,205,254,.45) 0 2px, transparent 2px 42px);
+    transform: perspective(300px) rotateX(56deg); transform-origin: top; }
+  .s19 .jp { position: absolute; top: 9%; left: 6%; writing-mode: vertical-rl; font-size: 13px; letter-spacing: .4em; color: #01cdfe; opacity: .85; }
+  .s19 .content { position: relative; min-height: 100%; display: flex; flex-direction: column; }
+  .s19 .bar { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: .3em; color: #01cdfe; }
+  .s19 h3.name { margin-top: clamp(30px,9vh,84px); text-align: center; font-weight: 900; font-size: clamp(32px, 7.5vw, 80px); letter-spacing: .06em; text-shadow: 0 0 18px rgba(255,113,206,.8), 4px 4px 0 #2b1055; }
+  .s19 .tag { text-align: center; margin-top: 12px; font-size: 10px; letter-spacing: .3em; color: #01cdfe; text-transform: uppercase; }
+  .s19 .work { margin-top: auto; border: 1px solid #01cdfe; background: rgba(26,11,61,.78); padding: 13px 15px; display: grid; gap: 5px; box-shadow: 0 0 22px rgba(255,113,206,.4); }
+  .s19 .work .k { font-size: 8px; letter-spacing: .3em; color: #01cdfe; text-transform: uppercase; }
+  .s19 .work .t { font-size: 16px; font-weight: 700; }
+  .s19 .work .h { font-size: 11px; color: #ffd319; }
+  .s19 .foot { margin-top: 10px; display: flex; justify-content: space-between; font-size: 9px; letter-spacing: .28em; color: #01cdfe; text-transform: uppercase; }
+  .s19 .foot a { color: #fff; text-decoration: none; }
+
+  /* ══════════════════ 20 · DARK LUXURY ══════════════════ */
+  .s20 { background: #0a0a0a; color: #f0ece2; font-family: Georgia, 'Times New Roman', serif; padding: clamp(24px,5vw,60px); }
+  .s20 * { margin: 0; box-sizing: border-box; }
+  .s20 .frame { border: 1px solid #2e2a20; min-height: 100%; padding: clamp(20px,4vw,48px); display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+  .s20 .corner { position: absolute; width: 26px; height: 26px; border-color: #c8a45d; border-style: solid; }
+  .s20 .tl { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+  .s20 .tr { top: 8px; right: 8px; border-width: 1px 1px 0 0; }
+  .s20 .bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
+  .s20 .br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+  .s20 .bar { font-size: 10px; letter-spacing: .5em; text-transform: uppercase; color: #c8a45d; margin-top: clamp(20px,6vh,60px); }
+  .s20 h3.name { margin-top: auto; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(40px, 8vw, 92px); letter-spacing: .06em; line-height: 1.05; }
+  .s20 h3.name em { font-style: italic; color: #c8a45d; }
+  .s20 .tag { margin-top: 16px; font-size: 11px; letter-spacing: .4em; text-transform: uppercase; color: #8f8b7e; }
+  .s20 .work { margin-top: auto; display: flex; align-items: baseline; gap: 16px; font-size: 12px; color: #8f8b7e; }
+  .s20 .work .t { font-family: 'Instrument Serif', Georgia, serif; font-size: 17px; color: #f0ece2; }
+  .s20 .work .h { color: #c8a45d; font-size: 11px; letter-spacing: .14em; }
+  .s20 .foot { margin-top: 24px; width: 100%; border-top: 1px solid #2e2a20; padding-top: 14px; display: flex; justify-content: space-between; font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: #8f8b7e; }
+  .s20 .foot a { color: #c8a45d; text-decoration: none; }
+
+  /* ══════════════════ 21 · VELOCITY GROTESQUE (agency) ══════════════════ */
+  .s21 { background: #ff4d00; color: #111; font-family: 'Space Grotesk', Inter, sans-serif; overflow: hidden; }
+  .s21 * { margin: 0; box-sizing: border-box; }
+  .s21 .bar { display: flex; justify-content: space-between; padding: clamp(16px,3vw,30px) clamp(18px,3.5vw,40px) 0; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+  .s21 .big { margin-top: clamp(18px,4vh,40px); }
+  .s21 .line { display: block; font-weight: 700; text-transform: uppercase; font-size: clamp(40px, 9.5vw, 110px); line-height: .95; letter-spacing: -0.02em; white-space: nowrap; }
+  .s21 .line.alt { color: transparent; -webkit-text-stroke: 2px #111; }
+  .s21 .track { display: flex; width: max-content; animation: s21run 9s linear infinite; }
+  .s21 .track span { font-weight: 700; text-transform: uppercase; font-size: clamp(40px, 9.5vw, 110px); line-height: .95; letter-spacing: -0.02em; padding-right: .35em; white-space: nowrap; }
+  @keyframes s21run { to { transform: translateX(-50%); } }
+  .s21 .row { margin-top: auto; padding: 18px clamp(18px,3.5vw,40px) clamp(20px,4vh,36px); display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .s21 .cardw { background: #111; color: #ff4d00; padding: 14px 16px; }
+  .s21 .cardw .k { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+  .s21 .cardw .t { font-size: 18px; font-weight: 700; margin-top: 4px; }
+  .s21 .cardw .h { font-size: 12px; margin-top: 4px; color: #fff; }
+  .s21 .foot { font-size: 11px; font-weight: 700; text-transform: uppercase; display: flex; flex-direction: column; gap: 4px; justify-content: center; }
+  .s21 .foot a { color: #111; }
+
+  /* ══════════════════ 22 · BROKEN GRID / SWISS-PUNK (Obys) ══════════════════ */
+  .s22 { background: #e8e4dc; color: #141414; font-family: Inter, sans-serif; padding: clamp(18px,3.5vw,40px); overflow: hidden; position: relative; }
+  .s22 * { margin: 0; box-sizing: border-box; }
+  .s22::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .07; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .s22 .field { position: relative; min-height: 480px; }
+  .s22 .piece { position: absolute; line-height: .95; }
+  .s22 .p1 { font-family: Archivo, Inter, sans-serif; font-weight: 900; font-size: clamp(56px, 12vw, 150px); text-transform: uppercase; letter-spacing: -0.03em; top: 6%; left: 4%; transform: rotate(-4deg); }
+  .s22 .p2 { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: clamp(30px, 6vw, 74px); top: 34%; right: 6%; transform: rotate(3deg); color: #d43a18; }
+  .s22 .p3 { font-family: 'JetBrains Mono', monospace; font-size: clamp(11px, 1.6vw, 15px); top: 56%; left: 14%; max-width: 30em; transform: rotate(-1deg); border-top: 2px solid #141414; padding-top: 10px; }
+  .s22 .p4 { font-family: Archivo, Inter, sans-serif; font-weight: 900; font-size: clamp(40px, 9vw, 110px); text-transform: uppercase; bottom: 4%; right: 8%; transform: rotate(2deg); color: transparent; -webkit-text-stroke: 2px #141414; }
+  .s22 .p5 { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; bottom: 12%; left: 4%; transform: rotate(-6deg); color: #d43a18; }
+  .s22 .p6 { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: clamp(15px, 2vw, 21px); bottom: 2%; left: 30%; transform: rotate(1deg); }
+
+  /* ══════════════════ 23 · HORIZONTAL SCROLL GALLERY ══════════════════ */
+  .s23 { background: #111; color: #f0f0f0; font-family: Inter, sans-serif; padding: clamp(18px,3.5vw,40px) 0; }
+  .s23 * { margin: 0; box-sizing: border-box; }
+  .s23 .bar { display: flex; justify-content: space-between; padding: 0 clamp(18px,3.5vw,40px) 14px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #888; }
+  .s23 .rail { display: flex; gap: 14px; overflow-x: auto; padding: 6px clamp(18px,3.5vw,40px) 18px; scroll-snap-type: x mandatory; }
+  .s23 .card { flex: none; width: min(340px, 78vw); scroll-snap-align: start; border: 1px solid #2c2c2c; border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 10px; min-height: 300px; background: #181818; }
+  .s23 .card .no { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #ff4d00; }
+  .s23 .card .t { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-top: auto; }
+  .s23 .card .h { font-size: 12px; color: #999; }
+  .s23 .card.hi { background: #ff4d00; color: #111; border-color: #ff4d00; }
+  .s23 .card.hi .no, .s23 .card.hi .h { color: rgba(0,0,0,.65); }
+  .s23 .hint { padding: 0 clamp(18px,3.5vw,40px); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: #666; }
+
+  /* ══════════════════ 24 · VARIABLE FONT PLAYGROUND ══════════════════ */
+  .s24 { background: #101014; color: #f2f2f2; font-family: Inter, sans-serif; padding: clamp(18px,3.5vw,40px); }
+  .s24 * { margin: 0; box-sizing: border-box; }
+  .s24 .bar { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #666; }
+  .s24 h3.name {
+    margin-top: clamp(20px,5vh,50px);
+    font-family: Archivo, Inter, sans-serif; text-transform: uppercase;
+    font-size: clamp(44px, 11vw, 140px); line-height: .92; letter-spacing: -0.02em;
+    font-variation-settings: 'wght' 800, 'wdth' 100;
+    transition: none;
+  }
+  .s24 .hint { margin-top: 14px; font-size: 12px; color: #777; font-family: 'JetBrains Mono', monospace; }
+  .s24 .work { margin-top: auto; border-top: 1px solid #2a2a2a; padding-top: 14px; display: flex; justify-content: space-between; font-size: 12px; color: #999; }
+  .s24 .work a { color: #ff4d00; text-decoration: none; }
+
+  /* ══════════════════ 25 · SCROLLYTELLING PINNED ══════════════════ */
+  .s25 { background: #0e1512; color: #e8efe8; font-family: Inter, sans-serif; }
+  .s25 * { margin: 0; box-sizing: border-box; }
+  .s25 .stage { height: 420px; position: sticky; top: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; background: radial-gradient(80% 100% at 50% 100%, #16241c 0%, #0e1512 70%); }
+  .s25 .stage .cap { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7fd49a; text-align: center; line-height: 2; }
+  .s25 .cap b { color: #fff; font-weight: 600; }
+  .s25 .steps { position: relative; background: #0e1512; }
+  .s25 .step { min-height: 300px; display: flex; align-items: center; justify-content: center; padding: 30px; }
+  .s25 .step p { max-width: 380px; font-size: clamp(18px, 2.6vw, 26px); font-weight: 600; letter-spacing: -0.01em; text-align: center; opacity: .35; }
+  .s25 .step.on p { opacity: 1; }
+
+  /* ══════════════════ 26 · TOPOGRAPHIC CONTOUR ══════════════════ */
+  .s26 { background: #f4f2ec; color: #25301f; font-family: Inter, sans-serif; position: relative; overflow: hidden; }
+  .s26 * { margin: 0; box-sizing: border-box; }
+  .s26 .contours { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .s26 .contours path { fill: none; stroke: #7a8a5e; stroke-width: 1; opacity: .5; }
+  .s26 .contours path.mj { stroke: #4c5a35; opacity: .75; }
+  .s26 .inner { position: relative; padding: clamp(20px,4vw,48px); min-height: 100%; display: flex; flex-direction: column; }
+  .s26 .bar { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: #4c5a35; }
+  .s26 h3.name { margin-top: clamp(30px,8vh,70px); font-family: Archivo, Inter, sans-serif; font-weight: 800; text-transform: uppercase; font-size: clamp(40px, 9.5vw, 112px); line-height: .92; letter-spacing: -0.02em; color: #25301f; text-shadow: 0 0 6px #f4f2ec, 0 0 12px #f4f2ec; }
+  .s26 .tag { margin-top: 14px; font-size: 14px; font-weight: 600; max-width: 24em; }
+  .s26 .work { margin-top: auto; padding-top: 14px; border-top: 1px dashed #7a8a5e; display: flex; justify-content: space-between; font-size: 12px; color: #4c5a35; }
+  .s26 .work .t { font-weight: 700; color: #25301f; }
+  .s26 .work a { color: #b23a12; text-decoration: none; }
+
+  /* ══════════════════ 27 · ASCII / GENERATIVE CANVAS ══════════════════ */
+  .s27 { background: #050805; color: #7be07b; font-family: 'JetBrains Mono', monospace; padding: clamp(18px,3.5vw,40px); }
+  .s27 * { margin: 0; box-sizing: border-box; }
+  .s27 canvas { display: block; width: 100%; height: 300px; image-rendering: pixelated; }
+  .s27 .head { display: flex; justify-content: space-between; font-size: 11px; color: #3f7a3f; margin-bottom: 10px; letter-spacing: .14em; text-transform: uppercase; }
+  .s27 h3.name { font-size: clamp(22px, 4.6vw, 44px); font-weight: 500; letter-spacing: .1em; color: #b8ffb8; margin-top: 14px; }
+  .s27 .tag { margin-top: 8px; font-size: 12px; color: #7be07b; }
+  .s27 .foot { margin-top: 14px; display: flex; justify-content: space-between; font-size: 11px; color: #3f7a3f; }
+  .s27 .foot a { color: #b8ffb8; text-decoration: none; }
+
+  /* ══════════════════ 28 · BRUTAL LUXURY (Balenciaga) ══════════════════ */
+  .s28 { background: #ffffff; color: #000; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: clamp(16px,3vw,36px); }
+  .s28 * { margin: 0; box-sizing: border-box; }
+  .s28 .bar { display: flex; justify-content: space-between; font-size: 13px; font-weight: 400; letter-spacing: .01em; }
+  .s28 h3.name { margin-top: clamp(60px,16vh,150px); font-size: clamp(28px, 5.2vw, 62px); font-weight: 400; letter-spacing: -0.01em; line-height: 1.12; max-width: 14em; }
+  .s28 .tag { margin-top: 22px; font-size: 13px; color: #555; max-width: 30em; line-height: 1.7; }
+  .s28 .work { margin-top: clamp(40px,9vh,90px); border-top: 1px solid #000; padding-top: 10px; display: flex; justify-content: space-between; font-size: 12px; }
+  .s28 .foot { margin-top: auto; padding-top: 14px; display: flex; justify-content: space-between; font-size: 12px; }
+  .s28 .foot a { color: #000; }
+
+  /* ══════════════════ 29 · APPLE ══════════════════ */
+  .s29 { background: #fff; color: #1d1d1f; font-family: Inter, sans-serif; text-align: center; padding: clamp(20px,4vw,44px); }
+  .s29 * { margin: 0; box-sizing: border-box; }
+  .s29 .bar { display: flex; justify-content: space-between; font-size: 12px; color: #6e6e73; padding-bottom: 14px; border-bottom: 1px solid #e8e8ed; }
+  .s29 h3.name { margin-top: clamp(30px,8vh,80px); font-size: clamp(40px, 8vw, 88px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; }
+  .s29 .tag { margin-top: 10px; font-size: 17px; color: #6e6e73; }
+  .s29 .links { margin-top: 12px; font-size: 15px; color: #0071e3; }
+  .s29 .links span { margin: 0 10px; }
+  .s29 .tiles { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-top: clamp(24px,5vh,50px); }
+  .s29 .tile { background: #f5f5f7; border-radius: 14px; padding: 22px; }
+  .s29 .tile .t { font-size: 16px; font-weight: 600; }
+  .s29 .tile .h { font-size: 12px; color: #6e6e73; margin-top: 4px; }
+
+  /* ══════════════════ 30 · GOOGLE ══════════════════ */
+  .s30 { background: #fff; color: #202124; font-family: Roboto, Arial, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s30 * { margin: 0; box-sizing: border-box; }
+  .s30 .bar { display: flex; justify-content: flex-end; gap: 16px; font-size: 13px; color: #5f6368; }
+  .s30 .logo { margin-top: clamp(30px,10vh,90px); font-size: clamp(38px, 7.5vw, 80px); font-weight: 500; letter-spacing: -1px; text-align: center; }
+  .s30 .b1 { color: #4285f4; } .s30 .r1 { color: #ea4335; } .s30 .y1 { color: #fbbc05; } .s30 .g1 { color: #34a853; }
+  .s30 .search { margin: 26px auto 0; max-width: 520px; border: 1px solid #dfe1e5; border-radius: 999px; padding: 12px 20px; color: #5f6368; font-size: 14px; display: flex; justify-content: space-between; }
+  .s30 .cards { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding-top: 30px; }
+  .s30 .card { border: 1px solid #dfe1e5; border-radius: 8px; padding: 14px; font-size: 12px; }
+  .s30 .card b { font-size: 13px; }
+  .s30 .foot { margin-top: 18px; text-align: center; font-size: 12px; color: #5f6368; }
+  .s30 .foot a { color: #4285f4; text-decoration: none; }
+
+  /* ══════════════════ 31 · STRIPE ══════════════════ */
+  .s31 { background: #fff; color: #0a2540; font-family: Inter, sans-serif; position: relative; overflow: hidden; }
+  .s31 * { margin: 0; box-sizing: border-box; }
+  .s31::before { content: ''; position: absolute; top: -45%; right: -25%; width: 90%; height: 130%; background: linear-gradient(120deg, #635bff, #00d4ff 55%, #00f5a0); transform: rotate(-12deg); border-radius: 0 0 45% 45%; opacity: .92; }
+  .s31 .content { position: relative; padding: clamp(20px,4vw,48px); min-height: 100%; display: flex; flex-direction: column; }
+  .s31 .bar { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
+  .s31 h3.name { margin-top: clamp(30px,8vh,84px); font-size: clamp(36px, 7vw, 76px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.06; max-width: 12em; }
+  .s31 .tag { margin-top: 16px; font-size: 16px; color: #425466; max-width: 30em; }
+  .s31 .btn { display: inline-block; margin-top: 22px; background: #0a2540; color: #fff; border-radius: 999px; padding: 11px 20px; font-size: 13px; font-weight: 600; text-decoration: none; }
+  .s31 .foot { margin-top: auto; padding-top: 18px; display: flex; justify-content: space-between; font-size: 12px; color: #425466; }
+  .s31 .foot a { color: #635bff; text-decoration: none; }
+
+  /* ══════════════════ 32 · LINEAR ══════════════════ */
+  .s32 { background: #08090a; color: #f7f8f8; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); position: relative; overflow: hidden; }
+  .s32 * { margin: 0; box-sizing: border-box; }
+  .s32::before { content: ''; position: absolute; top: -30%; left: 50%; transform: translateX(-50%); width: 900px; height: 420px; background: radial-gradient(closest-side, rgba(94,106,210,.38), transparent); }
+  .s32 .bar { position: relative; display: flex; justify-content: space-between; font-size: 12px; color: #8a8f98; }
+  .s32 .eyebrow { position: relative; margin-top: clamp(26px,7vh,60px); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #8a8f98; }
+  .s32 h3.name { position: relative; font-size: clamp(36px, 7.5vw, 80px); font-weight: 600; letter-spacing: -0.03em; margin-top: 10px; }
+  .s32 .tag { position: relative; margin-top: 12px; color: #8a8f98; font-size: 15px; max-width: 34em; }
+  .s32 .cta { position: relative; margin-top: 20px; display: flex; gap: 10px; }
+  .s32 .cta a { color: #f7f8f8; background: #1c1d21; border: 1px solid #2c2c31; border-radius: 8px; padding: 9px 16px; font-size: 13px; text-decoration: none; }
+  .s32 .foot { position: relative; margin-top: auto; padding-top: 20px; display: flex; justify-content: space-between; font-size: 11px; color: #62666d; border-top: 1px solid #1c1d21; }
+  .s32 .foot a { color: #f7f8f8; text-decoration: none; }
+
+  /* ══════════════════ 33 · VERCEL ══════════════════ */
+  .s33 { background: #000; color: #fff; font-family: Inter, sans-serif; text-align: center; padding: clamp(20px,4vw,44px); }
+  .s33 * { margin: 0; box-sizing: border-box; }
+  .s33 .bar { display: flex; justify-content: space-between; font-size: 12px; color: #888; border-bottom: 1px solid #222; padding-bottom: 12px; }
+  .s33 .tri { font-size: clamp(38px, 6.5vw, 68px); margin-top: clamp(30px,9vh,84px); }
+  .s33 h3.name { font-size: clamp(32px, 6.5vw, 62px); font-weight: 700; letter-spacing: -0.03em; margin-top: 8px; }
+  .s33 .tag { color: #888; font-size: 15px; margin-top: 10px; }
+  .s33 .mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #666; margin-top: 26px; }
+  .s33 .foot { margin-top: auto; padding-top: 18px; display: flex; justify-content: center; gap: 18px; font-size: 12px; border-top: 1px solid #222; }
+  .s33 .foot a { color: #fff; text-decoration: none; }
+
+  /* ══════════════════ 34 · NOTION ══════════════════ */
+  .s34 { background: #fff; color: #191918; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s34 * { margin: 0; box-sizing: border-box; }
+  .s34 .bar { display: flex; justify-content: space-between; font-size: 13px; color: #5f5e5b; }
+  .s34 .pageicon { width: 46px; height: 46px; border: 1px solid #e3e2e0; border-radius: 8px; display: grid; place-items: center; font-size: 22px; margin-top: clamp(22px,5vh,44px); }
+  .s34 h3.name { font-size: clamp(32px, 6.8vw, 70px); font-weight: 700; letter-spacing: -0.03em; margin-top: 14px; }
+  .s34 .tag { margin-top: 12px; color: #5f5e5b; font-size: 15px; max-width: 32em; }
+  .s34 .callout { margin-top: 22px; background: #f6f5f4; border-radius: 10px; padding: 14px 16px; display: flex; gap: 10px; font-size: 14px; }
+  .s34 .callout .em { font-size: 18px; }
+  .s34 .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 12px; color: #91918e; border-top: 1px solid #ededec; padding-top: 12px; }
+  .s34 .foot a { color: #191918; text-decoration: underline; }
+
+  /* ══════════════════ 35 · FIGMA ══════════════════ */
+  .s35 { background: #fff; color: #1e1e1e; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s35 * { margin: 0; box-sizing: border-box; }
+  .s35 .bar { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .s35 .flogo { display: flex; gap: 3px; }
+  .s35 .flogo i { width: 12px; height: 12px; border-radius: 50%; }
+  .s35 h3.name { font-size: clamp(36px, 7.5vw, 80px); font-weight: 800; letter-spacing: -0.035em; margin-top: clamp(26px,7vh,58px); }
+  .s35 .tag { margin-top: 12px; font-size: 15px; color: #555; max-width: 30em; }
+  .s35 .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+  .s35 .chips span { border-radius: 999px; padding: 8px 15px; font-size: 12px; font-weight: 600; color: #fff; }
+  .s35 .c1 { background: #f24e1e; } .s35 .c2 { background: #a259ff; } .s35 .c3 { background: #1abcfe; } .s35 .c4 { background: #0acf83; } .s35 .c5 { background: #ff7262; }
+  .s35 .workcard { margin-top: 22px; border: 1px solid #e6e6e6; border-radius: 12px; padding: 16px; box-shadow: 0 4px 14px rgba(0,0,0,.06); display: grid; gap: 5px; font-size: 13px; }
+  .s35 .workcard .t { font-weight: 700; font-size: 16px; }
+  .s35 .foot { margin-top: auto; padding-top: 16px; display: flex; justify-content: space-between; font-size: 12px; color: #555; }
+  .s35 .foot a { color: #1e1e1e; font-weight: 600; text-decoration: none; }
+
+  /* ══════════════════ 36 · GITHUB ══════════════════ */
+  .s36 { background: #0d1117; color: #e6edf3; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s36 * { margin: 0; box-sizing: border-box; }
+  .s36 .bar { display: flex; justify-content: space-between; font-size: 13px; color: #7d8590; }
+  .s36 .repo { margin-top: clamp(24px,6vh,52px); border: 1px solid #30363d; border-radius: 10px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7d8590; display: grid; gap: 8px; }
+  .s36 .repo .t { color: #2f81f7; font-size: 16px; font-weight: 600; }
+  .s36 .badge { display: inline-block; background: #238636; color: #fff; border-radius: 6px; padding: 5px 12px; font-size: 11px; font-weight: 600; justify-self: start; }
+  .s36 h3.name { font-size: clamp(30px, 6vw, 58px); font-weight: 700; letter-spacing: -0.025em; margin-top: clamp(22px,5vh,44px); }
+  .s36 .tag { margin-top: 8px; font-size: 14px; color: #7d8590; max-width: 34em; }
+  .s36 .g { color: #3fb950; } .s36 .r { color: #f85149; } .s36 .bl { color: #79c0ff; }
+  .s36 .foot { margin-top: auto; padding-top: 16px; border-top: 1px solid #30363d; display: flex; justify-content: space-between; font-size: 12px; color: #7d8590; }
+  .s36 .foot a { color: #2f81f7; text-decoration: none; }
+
+  /* ══════════════════ 37 · OPENAI ══════════════════ */
+  .s37 { background: #fff; color: #0d0d0d; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s37 * { margin: 0; box-sizing: border-box; }
+  .s37 .bar { display: flex; justify-content: space-between; font-size: 12px; color: #6e6e80; }
+  .s37 h3.name { margin-top: clamp(40px,12vh,110px); font-size: clamp(36px, 7vw, 76px); font-weight: 600; letter-spacing: -0.035em; text-align: center; }
+  .s37 .tag { text-align: center; margin: 14px auto 0; color: #6e6e80; max-width: 30em; font-size: 15px; }
+  .s37 .prompt { margin: 28px auto 0; max-width: 560px; border: 1px solid #e5e5e5; border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; color: #8e8ea0; font-size: 14px; }
+  .s37 .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 12px; color: #6e6e80; border-top: 1px solid #ececf1; padding-top: 14px; }
+  .s37 .foot a { color: #0d0d0d; text-decoration: none; }
+
+  /* ══════════════════ 38 · ANTHROPIC / CLAUDE ══════════════════ */
+  .s38 { background: #faf9f5; color: #191919; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s38 * { margin: 0; box-sizing: border-box; }
+  .s38 .bar { display: flex; justify-content: space-between; font-size: 13px; color: #6e6b64; }
+  .s38 h3.name { margin-top: clamp(28px,8vh,70px); font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(40px, 8.5vw, 92px); letter-spacing: -0.01em; line-height: 1; }
+  .s38 .tag { margin-top: 14px; font-size: 15px; color: #6e6b64; max-width: 32em; }
+  .s38 .quote { margin-top: 22px; border-left: 3px solid #d97757; padding-left: 14px; font-size: 14px; max-width: 34em; }
+  .s38 .quote .who { color: #6e6b64; font-size: 12px; margin-top: 6px; }
+  .s38 .btn { display: inline-block; margin-top: 20px; background: #d97757; color: #fff; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 600; text-decoration: none; }
+  .s38 .foot { margin-top: auto; padding-top: 16px; display: flex; justify-content: space-between; font-size: 12px; color: #6e6b64; border-top: 1px solid #e8e4da; }
+
+  /* ══════════════════ 39 · SPOTIFY ══════════════════ */
+  .s39 { background: #000; color: #fff; font-family: 'Nunito', Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s39 * { margin: 0; box-sizing: border-box; }
+  .s39 .bar { display: flex; justify-content: space-between; align-items: center; }
+  .s39 .logo { width: 34px; height: 34px; border-radius: 50%; background: #1db954; display: grid; place-items: center; color: #000; font-weight: 900; font-size: 15px; }
+  .s39 h3.name { margin-top: clamp(28px,8vh,74px); font-size: clamp(38px, 8.5vw, 92px); font-weight: 900; letter-spacing: -0.03em; line-height: 1; }
+  .s39 .tag { margin-top: 12px; font-size: 16px; color: #b3b3b3; font-weight: 700; }
+  .s39 .btn { display: inline-block; margin-top: 20px; background: #1db954; color: #000; border-radius: 999px; padding: 12px 26px; font-weight: 900; font-size: 14px; text-decoration: none; }
+  .s39 .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 12px; color: #b3b3b3; border-top: 1px solid #282828; padding-top: 14px; }
+  .s39 .foot a { color: #fff; text-decoration: none; }
+
+  /* ══════════════════ 40 · AIRBNB ══════════════════ */
+  .s40 { background: #fff; color: #222222; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s40 * { margin: 0; box-sizing: border-box; }
+  .s40 .bar { display: flex; justify-content: space-between; align-items: center; font-size: 13px; border-bottom: 1px solid #ebebeb; padding-bottom: 12px; }
+  .s40 .alogo { color: #ff385c; font-weight: 800; font-size: 18px; }
+  .s40 .searchpill { border: 1px solid #ddd; border-radius: 999px; box-shadow: 0 2px 8px rgba(0,0,0,.08); padding: 9px 16px; font-size: 12px; font-weight: 600; }
+  .s40 h3.name { margin-top: clamp(26px,7vh,60px); font-size: clamp(34px, 7vw, 74px); font-weight: 800; letter-spacing: -0.03em; }
+  .s40 .tag { margin-top: 10px; color: #717171; font-size: 15px; }
+  .s40 .cards { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding-top: 26px; }
+  .s40 .card { border-radius: 14px; overflow: hidden; border: 1px solid #ebebeb; }
+  .s40 .card .img { background: linear-gradient(135deg, rgba(255,56,92,.18), rgba(255,176,200,.3)); height: 66px; }
+  .s40 .card .b { padding: 10px 12px; font-size: 12px; }
+  .s40 .card .b b { color: #ff385c; }
+
+  /* ══════════════════ 41 · SLACK ══════════════════ */
+  .s41 { background: #fff; color: #1d1c1d; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s41 * { margin: 0; box-sizing: border-box; }
+  .s41 .bar { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
+  .s41 .hash { color: #611f69; font-weight: 900; font-size: 20px; }
+  .s41 h3.name { margin-top: clamp(26px,7vh,58px); font-size: clamp(34px, 7vw, 76px); font-weight: 800; letter-spacing: -0.03em; }
+  .s41 .tag { margin-top: 12px; color: #616061; font-size: 15px; max-width: 30em; }
+  .s41 .chans { margin-top: 22px; display: grid; gap: 8px; max-width: 380px; }
+  .s41 .chan { border: 1px solid #ebebeb; border-radius: 10px; padding: 10px 14px; font-size: 13px; display: flex; gap: 8px; align-items: center; }
+  .s41 .ch1 { color: #e01e5a; font-weight: 800; } .s41 .ch2 { color: #2eb67d; font-weight: 800; } .s41 .ch3 { color: #ecb22e; font-weight: 800; } .s41 .ch4 { color: #4a154b; font-weight: 800; }
+  .s41 .foot { margin-top: auto; padding-top: 16px; border-top: 1px solid #ebebeb; display: flex; justify-content: space-between; font-size: 12px; color: #616061; }
+  .s41 .foot a { color: #1264a3; text-decoration: none; }
+
+  /* ══════════════════ 42 · DISCORD ══════════════════ */
+  .s42 { background: #5865f2; color: #fff; font-family: 'Nunito', Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s42 * { margin: 0; box-sizing: border-box; }
+  .s42 .bar { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; }
+  .s42 h3.name { margin-top: clamp(28px,8vh,72px); font-size: clamp(36px, 7.5vw, 80px); font-weight: 900; letter-spacing: -0.025em; line-height: 1.04; }
+  .s42 .tag { margin-top: 14px; font-size: 15px; max-width: 32em; color: #dcdef2; }
+  .s42 .btn { display: inline-block; margin-top: 22px; background: #fff; color: #5865f2; border-radius: 999px; padding: 12px 24px; font-weight: 900; font-size: 14px; text-decoration: none; }
+  .s42 .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 12px; color: #dcdef2; border-top: 1px solid rgba(255,255,255,.25); padding-top: 14px; }
+  .s42 .foot a { color: #fff; text-decoration: none; }
+
+  /* ══════════════════ 43 · FRAMER ══════════════════ */
+  .s43 { background: #000; color: #fff; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s43 * { margin: 0; box-sizing: border-box; }
+  .s43 .bar { display: flex; justify-content: space-between; font-size: 12px; color: #999; }
+  .s43 h3.name { margin-top: clamp(30px,8vh,74px); font-size: clamp(36px, 7.5vw, 80px); font-weight: 700; letter-spacing: -0.035em; text-align: center; }
+  .s43 .tag { text-align: center; margin: 14px auto 0; color: #999; max-width: 30em; font-size: 15px; }
+  .s43 .card { margin: 26px auto 0; max-width: 560px; border-radius: 14px; border: 1px solid transparent; background: linear-gradient(#0a0a0a,#0a0a0a) padding-box, linear-gradient(120deg, #0099ff, #ff0080) border-box; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .s43 .card .k { color: #888; font-size: 11px; display: block; }
+  .s43 .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 12px; color: #999; border-top: 1px solid #1a1a1a; padding-top: 14px; }
+  .s43 .foot a { color: #fff; text-decoration: none; }
+
+  /* ══════════════════ 44 · RAYCAST ══════════════════ */
+  .s44 { background: #0d0d0d; color: #ededed; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); position: relative; overflow: hidden; }
+  .s44 * { margin: 0; box-sizing: border-box; }
+  .s44::before { content: ''; position: absolute; top: -140px; left: 50%; transform: translateX(-50%); width: 620px; height: 300px; background: radial-gradient(closest-side, rgba(255,99,72,.42), transparent); filter: blur(18px); }
+  .s44 .bar { position: relative; display: flex; justify-content: space-between; font-size: 12px; color: #8c8c8c; }
+  .s44 .cmd { position: relative; margin: clamp(28px,8vh,84px) auto 0; max-width: 540px; background: #1a1a1a; border: 1px solid #333; border-radius: 14px; box-shadow: 0 24px 70px rgba(0,0,0,.65); overflow: hidden; }
+  .s44 .cmd .input { padding: 13px 16px; font-size: 14px; color: #ccc; border-bottom: 1px solid #2a2a2a; display: flex; justify-content: space-between; align-items: center; }
+  .s44 .cmd .k { border: 1px solid #3a3a3a; border-radius: 5px; padding: 1px 7px; font-size: 11px; color: #999; }
+  .s44 .cmd .item { padding: 10px 16px; font-size: 13px; color: #aaa; display: flex; justify-content: space-between; }
+  .s44 .cmd .item.on { background: #2a2a2a; color: #fff; }
+  .s44 h3.name { position: relative; text-align: center; margin-top: 26px; font-size: clamp(24px, 4.5vw, 40px); font-weight: 600; letter-spacing: -0.02em; }
+  .s44 .foot { position: relative; margin-top: auto; text-align: center; font-size: 12px; color: #8c8c8c; padding-top: 18px; }
+  .s44 .foot a { color: #ff6348; text-decoration: none; }
+
+  /* ══════════════════ 45 · SUPABASE ══════════════════ */
+  .s45 { background: #121212; color: #ededed; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s45 * { margin: 0; box-sizing: border-box; }
+  .s45 .bar { display: flex; justify-content: space-between; font-size: 12px; color: #888; }
+  .s45 h3.name { margin-top: clamp(28px,8vh,70px); font-size: clamp(34px, 7vw, 72px); font-weight: 700; letter-spacing: -0.025em; }
+  .s45 .tag { margin-top: 12px; color: #888; font-size: 15px; max-width: 32em; }
+  .s45 .code { margin-top: 22px; border: 1px solid #2e2e2e; border-radius: 10px; background: #171717; padding: 14px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.9; }
+  .s45 .code .c { color: #3ecf8e; } .s45 .code .a { color: #fe8c00; } .s45 .code .cm { color: #555; }
+  .s45 .foot { margin-top: auto; padding-top: 16px; border-top: 1px solid #2e2e2e; display: flex; justify-content: space-between; font-size: 12px; color: #888; }
+  .s45 .foot a { color: #3ecf8e; text-decoration: none; }
+
+  /* ══════════════════ 46 · TAILWIND CSS ══════════════════ */
+  .s46 { background: #0f172a; color: #e2e8f0; font-family: Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s46 * { margin: 0; box-sizing: border-box; }
+  .s46 .bar { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; }
+  .s46 h3.name { margin-top: clamp(28px,8vh,70px); font-size: clamp(34px, 7vw, 74px); font-weight: 800; letter-spacing: -0.03em; }
+  .s46 h3.name span { background: linear-gradient(90deg, #38bdf8, #06b6d4); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .s46 .tag { margin-top: 12px; color: #94a3b8; font-size: 15px; max-width: 32em; }
+  .s46 .work { margin-top: 22px; border: 1px solid #1e293b; border-radius: 12px; padding: 14px 16px; background: #1e293b; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #94a3b8; line-height: 1.9; }
+  .s46 .work .g { color: #2dd4bf; }
+  .s46 .foot { margin-top: auto; padding-top: 16px; border-top: 1px solid #1e293b; display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; }
+  .s46 .foot a { color: #38bdf8; text-decoration: none; }
+
+  /* ══════════════════ 47 · ARC (THE BROWSER COMPANY) ══════════════════ */
+  .s47 { background: linear-gradient(135deg, #f7f3ee 0%, #ffe8e0 48%, #dff0ff 100%); color: #1a1a2e; font-family: 'Nunito', Inter, sans-serif; padding: clamp(20px,4vw,44px); }
+  .s47 * { margin: 0; box-sizing: border-box; }
+  .s47 .bar { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; }
+  .s47 .side { margin-top: clamp(22px,5vh,46px); background: rgba(255,255,255,.75); border-radius: 18px; padding: 12px; display: grid; gap: 7px; max-width: 250px; box-shadow: 0 10px 34px rgba(0,0,0,.09); }
+  .s47 .tab { background: #fff; border-radius: 10px; padding: 8px 12px; font-size: 12px; font-weight: 800; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
+  .s47 .tab.on { background: #1a1a2e; color: #fff; }
+  .s47 h3.name { font-size: clamp(34px, 7vw, 74px); font-weight: 900; letter-spacing: -0.025em; margin-top: clamp(20px,4vh,36px); }
+  .s47 .tag { margin-top: 10px; font-size: 14px; color: #55557a; max-width: 28em; }
+  .s47 .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 12px; color: #55557a; padding-top: 16px; }
+  .s47 .foot a { color: #1a1a2e; text-decoration: none; }
+
+  /* ══════════════════ 48 · SPACEX / TESLA ══════════════════ */
+  .s48 { background: #000; color: #fff; font-family: Inter, sans-serif; text-align: center; padding: clamp(20px,4vw,44px); }
+  .s48 * { margin: 0; box-sizing: border-box; }
+  .s48 .bar { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #aaa; }
+  .s48 h3.name { margin-top: clamp(50px,15vh,140px); font-size: clamp(24px, 5vw, 52px); font-weight: 400; letter-spacing: .42em; text-indent: .42em; text-transform: uppercase; line-height: 1.3; }
+  .s48 .tag { margin-top: 12px; font-size: 12px; letter-spacing: .24em; color: #bbb; text-transform: uppercase; }
+  .s48 .ctas { margin-top: 26px; display: flex; gap: 14px; justify-content: center; }
+  .s48 .ctas a { border: 2px solid #fff; color: #fff; padding: 11px 32px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; text-decoration: none; }
+  .s48 .foot { margin-top: auto; padding-top: 20px; display: flex; justify-content: space-between; font-size: 10px; letter-spacing: .22em; color: #888; border-top: 1px solid #222; }
+  .s48 .foot a { color: #fff; text-decoration: none; }
+
+  @media (max-width: 720px) {
+    .s11 .work, .s11 .titleblock { grid-template-columns: 1fr; }
+    .s11 .work > div + div { border-left: none; border-top: 1.5px solid rgba(255,255,255,.65); }
+    .s11 .titleblock span { border-left: none; }
+    .s13 .work { grid-template-columns: 1fr; }
+    .s13 .work .h { grid-column: 1; }
+    .s21 .row { grid-template-columns: 1fr; }
+    .s22 .p6 { display: none; }
+    .s29 .tiles { grid-template-columns: 1fr; }
+    .s30 .cards { grid-template-columns: 1fr; }
+    .s40 .cards { grid-template-columns: 1fr; }
+    .s1 .row, .s8 .work { grid-template-columns: 1fr; }
+    .s10 .grid { grid-template-columns: 1fr; }
+    .s10 .cell.wide { grid-column: span 1; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="board-nav">
+  <a href="#s1">01 Swiss</a><a href="#s2">02 Neo-Brutal</a><a href="#s3">03 Brutalism</a><a href="#s4">04 Pixel</a><a href="#s5">05 Terminal</a><a href="#s6">06 Glass</a><a href="#s7">07 Y2K</a><a href="#s8">08 Atlas (v8)</a><a href="#s9">09 Maximal</a><a href="#s10">10 Bento</a><a href="#s11">11 Blueprint</a><a href="#s12">12 Riso</a><a href="#s13">13 Academia</a><a href="#s14">14 Retro OS</a><a href="#s15">15 Zen</a><a href="#s16">16 Kinetic</a><a href="#s17">17 Industrial</a><a href="#s18">18 Clay</a><a href="#s19">19 Vaporwave</a><a href="#s20">20 Luxury</a><a href="#s21">21 Velocity ▦</a><a href="#s22">22 Broken Grid ▦</a><a href="#s23">23 Horizontal ▦</a><a href="#s24">24 VarFont ▦</a><a href="#s25">25 Scrolly ▦</a><a href="#s26">26 Contour ▦</a><a href="#s27">27 ASCII ▦</a><a href="#s28">28 BrutLux</a><a href="#s29">29 Apple</a><a href="#s30">30 Google</a><a href="#s31">31 Stripe</a><a href="#s32">32 Linear</a><a href="#s33">33 Vercel</a><a href="#s34">34 Notion</a><a href="#s35">35 Figma</a><a href="#s36">36 GitHub</a><a href="#s37">37 OpenAI</a><a href="#s38">38 Anthropic</a><a href="#s39">39 Spotify</a><a href="#s40">40 Airbnb</a><a href="#s41">41 Slack</a><a href="#s42">42 Discord</a><a href="#s43">43 Framer</a><a href="#s44">44 Raycast</a><a href="#s45">45 Supabase</a><a href="#s46">46 Tailwind</a><a href="#s47">47 Arc</a><a href="#s48">48 SpaceX</a>
+</nav>
+
+<header class="board-intro">
+  <h1>Style Board — 48 arah untuk v8</h1>
+  <p>
+    Isi mockup <b>identik di semua gaya</b>: nama, tagline, satu baris karya (CRM pipeline), satu kutipan, kontak.
+    Yang berubah hanya dunia visualnya — palet, tipografi, bentuk, dan bahasa geraknya.
+    Buka di browser, bandingkan berurutan, lalu pilih arah yang terasa paling <b>kamu</b>.
+  </p>
+</header>
+
+<!-- ═══════════ 1 · SWISS / EDITORIAL CLEAN ═══════════ -->
+<section class="style" id="s1">
+  <div class="style__meta">
+    <span class="no">01</span><h2>Swiss / Editorial Clean</h2>
+    <p>Arah keluarga v7. Putih, hairline, satu aksen merah, grotesk tebal. Presisi tanpa hiasan — dibaca "orang dewasa yang rapi". Motion: fade-up terukur.</p>
+  </div>
+  <div class="mock fit s1">
+    <div class="bar"><b>Nur Fajar</b><nav><span>Work</span><span>Praise</span><span>History</span><span>Contact</span></nav></div>
+    <h3 class="name">Nur<br /><em>Fajar.</em></h3>
+    <div class="row">
+      <p class="tag">AI specialist who builds apps and communities.</p>
+      <div class="work"><span class="k">AI build · Revenue ops</span><span class="t">CRM pipeline</span><span class="h">~11h runtime vs 300+h manual (96% less)</span></div>
+    </div>
+    <div class="foot"><span>Based in Indonesia · Available immediately</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 2 · NEO-BRUTALISM ═══════════ -->
+<section class="style" id="s2">
+  <div class="style__meta">
+    <span class="no">02</span><h2>Neo-Brutalism</h2>
+    <p>Border hitam tebal, hard shadow, kuning-pink primer. Berani dan playful. Motion: patah-patah, hover langsung lompat.</p>
+  </div>
+  <div class="mock fit s2">
+    <div class="bar"><span class="chip">Nur Fajar</span><span class="chip pink">Open to work</span></div>
+    <h3 class="name"><span>Nur</span> <span>Fajar</span></h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="work"><span class="k">AI build · Revenue ops</span><span class="t">CRM pipeline</span><span class="h">~11h runtime vs 300+h manual (96% less)</span></div>
+    <div class="foot"><a href="#">See the work</a><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 3 · BRUTALISM ASLI ═══════════ -->
+<section class="style" id="s3">
+  <div class="style__meta">
+    <span class="no">03</span><h2>Brutalism asli</h2>
+    <p>Style browser default, sengaja. Times New Roman, link biru, tabel, hit counter. Intelektual dan anti-desain — tapi dibaca "situs rusak" oleh rekruter.</p>
+  </div>
+  <div class="mock fit s3">
+    <p><a href="#s3">index</a> | <a href="#s3">work.txt</a> | <a href="#s3">about.txt</a> | <a href="#s3">contact</a></p>
+    <hr class="hr" />
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <br />
+    <table>
+      <tr><th>#</th><th>project</th><th>result</th></tr>
+      <tr><td>01</td><td>CRM pipeline (AI build, revenue ops)</td><td>~11h runtime vs 300+h manual (96% less)</td></tr>
+      <tr><td>02</td><td>Chatbot curriculum engine</td><td>5 programs, 150+ participants</td></tr>
+    </table>
+    <p class="counter">visitor no. <span>000042</span> &nbsp;|&nbsp; last updated October 2026</p>
+    <hr class="hr" />
+    <p class="foot">"He takes ownership, learns fast, and delivers." — Arnold Doray, Former manager, Terra AI<br /><br /><a href="#">hi@nurfajar.com</a></p>
+  </div>
+</section>
+
+<!-- ═══════════ 4 · PIXEL / 8-BIT ═══════════ -->
+<section class="style" id="s4">
+  <div class="style__meta">
+    <span class="no">04</span><h2>Pixel / 8-bit</h2>
+    <p>Font piksel, palette terbatas, scanline CRT, hard drop shadow. Nostalgia dan DIY. Motion: bergerak per langkah, tanpa kurva halus.</p>
+  </div>
+  <div class="mock fit s4">
+    <div class="bar"><span>NUR FAJAR</span><span>[PLAY ▶]</span></div>
+    <h3 class="name">NUR<br /><em>FAJAR</em></h3>
+    <p class="tag">AI specialist who builds apps<br />and communities.</p>
+    <div class="win">
+      <p class="k">STAGE 01 — AI BUILD · REVENUE OPS</p>
+      <p class="t">CRM PIPELINE</p>
+      <p class="h">+96% LESS MANUAL</p>
+    </div>
+    <div class="foot"><span>"He takes ownership, learns fast, and delivers." — ARNOLD D.</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 5 · TERMINAL / DEVELOPER-CORE ═══════════ -->
+<section class="style" id="s5">
+  <div class="style__meta">
+    <span class="no">05</span><h2>Terminal / Developer-core</h2>
+    <p>Jendela terminal, prompt, output berwarna. Sinyal "engineer beneran" — kuat untuk rekruter teknis. Motion: typewriter per karakter.</p>
+  </div>
+  <div class="mock fit s5">
+    <div class="win">
+      <div class="titlebar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span style="margin-left:8px">fajar@folio — zsh</span></div>
+      <div class="body">
+        <p class="ln"><span class="p">➜</span> <span class="g">~/folio</span> whoami</p>
+        <h3 class="name">NUR FAJAR</h3>
+        <p class="ln c">// AI specialist who builds apps and communities.</p>
+        <p class="ln"><span class="p">➜</span> <span class="g">~/folio</span> ls ./work --sort=impact</p>
+        <div class="work">
+          <p class="ln"><span class="y">01</span>  crm-pipeline/          AI build · Revenue ops</p>
+          <p class="ln"><span class="g">    └─ ~11h runtime vs 300+h manual (96% less)</span></p>
+        </div>
+        <p class="ln"><span class="p">➜</span> <span class="g">~/folio</span> cat praise/arnold.txt<span class="cursor"></span></p>
+        <p class="ln c">"He takes ownership, learns fast, and delivers."</p>
+        <div class="foot"><span>exit code 0 · available immediately</span><a href="#">hi@nurfajar.com</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 6 · GLASSMORPHISM / AURORA ═══════════ -->
+<section class="style" id="s6">
+  <div class="style__meta">
+    <span class="no">06</span><h2>Glassmorphism / Aurora</h2>
+    <p>Gradien aurora, kaca buram, pill button. Mahal dan SaaS-modern — tapi ini slop indicator #1 saat ini: ribuan situs AI dibuat bentuk ini.</p>
+  </div>
+  <div class="mock fit s6">
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+    <div class="glass">
+      <div class="bar"><span>Nur Fajar</span><span>Work · Praise · Contact</span></div>
+      <h3 class="name">Nur Fajar</h3>
+      <p class="tag">AI specialist who builds apps and communities.</p>
+      <div class="work"><span class="k">AI build · Revenue ops</span><span class="t">CRM pipeline</span><span class="h">~11h runtime vs 300+h manual (96% less)</span></div>
+      <div class="foot"><a href="#">See the work</a><a href="#">hi@nurfajar.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 7 · Y2K CYBER CHROME ═══════════ -->
+<section class="style" id="s7">
+  <div class="style__meta">
+    <span class="no">07</span><h2>Y2K Cyber Chrome</h2>
+    <p>Teks krom metalik, grid perspektif, lens flare — nostalgia 2000-an futuristik. Subkultural dan berani; sangat niche untuk hiring.</p>
+  </div>
+  <div class="mock fit s7">
+    <div class="lens"></div><div class="grid"></div>
+    <div class="bar"><span>NUR FAJAR</span><span>SYSTEM.OK — 2026</span></div>
+    <h3 class="name">NUR FAJAR</h3>
+    <p class="tag">AI SPECIALIST · APPS · COMMUNITIES</p>
+    <div class="work"><span class="k">MODULE 01 — AI BUILD</span><span class="t">CRM PIPELINE</span><span class="h">96% LESS MANUAL · ONLINE</span></div>
+    <div class="foot"><span>EST. 1999</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 8 · EDITORIAL POSTER / ATLAS ═══════════ -->
+<section class="style" id="s8">
+  <div class="style__meta">
+    <span class="no">08</span><h2>Editorial Poster / Celestial Atlas <span style="color:#4ade80">◀ arah v8 sekarang</span></h2>
+    <p>Kertas hangat, tinta, outline type, tick marks, mono index, aksen vermilion tunggal. Bahasa atlas astronomi cetak — sesuai bio-mu soal constellations.</p>
+  </div>
+  <div class="mock fit s8">
+    <div class="frame">
+      <div class="bar"><span>NUR FAJAR — FOLIO</span><span>PLATE 01 · OCT 2026</span></div>
+      <h3 class="name">NUR<br /><span class="b">FAJAR</span><span class="dot"></span></h3>
+      <p class="tag">AI specialist who builds apps and communities.</p>
+      <div class="work"><span>01</span><span class="t">CRM pipeline</span><span class="h">~11h vs 300+h (96% less)</span></div>
+      <div class="foot"><span>FIG. 01 — REVENUE OPS</span><a href="#">hi@nurfajar.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 9 · MAXIMALISM / ANTI-DESIGN ═══════════ -->
+<section class="style" id="s9">
+  <div class="style__meta">
+    <span class="no">09</span><h2>Maximalism / Anti-design</h2>
+    <p>Rotasi, tumpang tindih, stiker, font bentrok. Energi muda yang percaya diri — butuh selera tinggi biar "authored", bukan "kacau".</p>
+  </div>
+  <div class="mock fit s9">
+    <div class="bar"><span class="sticker st1">AI specialist</span><span class="sticker st2">apps + communities</span><span class="sticker st3">open to work</span></div>
+    <div class="name-wrap">
+      <span class="circle">96% LESS MANUAL WORK</span>
+      <h3 class="name">Nur<br /><em>Fajar!</em></h3>
+    </div>
+    <p class="tag">turning ideas into things that help people learn, work, and solve problems better.</p>
+    <div class="work"><span class="k">AI build · Revenue ops</span><span class="t">CRM pipeline</span><span class="h">~11h runtime vs 300+h manual (96% less)</span></div>
+    <div class="foot"><span>★ ★ ★ ★ ★</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 10 · BENTO GRID ═══════════ -->
+<section class="style" id="s10">
+  <div class="style__meta">
+    <span class="no">10</span><h2>Bento Grid</h2>
+    <p>Kotak modular ukuran beda, tiap sel satu fakta, hover micro-scale. Terorganisir dan padat — tapi slop indicator #2 untuk portfolio.</p>
+  </div>
+  <div class="mock s10">
+    <div class="grid">
+      <div class="cell wide"><div><p class="k">Hello</p><h3 class="name">Nur Fajar</h3><p class="tag">AI specialist who builds apps and communities.</p></div></div>
+      <div class="cell"><p class="k">Now</p><p class="big">Open to work</p><p class="who">Full-time · immediately</p></div>
+      <div class="cell"><p class="k">Work 01</p><p class="work"><span class="t">CRM pipeline</span></p><p class="who">AI build · Revenue ops</p></div>
+      <div class="cell"><p class="k">Impact</p><p class="big">96% less</p><p class="who">~11h runtime vs 300+h manual</p></div>
+      <div class="cell"><p class="k">Praise</p><p class="quote">"He takes ownership, learns fast, and delivers."</p><p class="who">Arnold Doray — Former manager, Terra AI</p></div>
+      <div class="cell"><p class="k">Say hi</p><p class="foot"><a href="#">hi@nurfajar.com</a></p><p class="who">Replies within 24 hours</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 11 · BLUEPRINT / TECHNICAL DRAWING ═══════════ -->
+<section class="style" id="s11">
+  <div class="style__meta">
+    <span class="no">11</span><h2>Blueprint / Technical Drawing</h2>
+    <p>Kertas biru arsitek: grid koordinat, garis ukur, title block resmi. Sepupu teknis dari atlas — sinyal "direncanakan, bukan didekorasi".</p>
+  </div>
+  <div class="mock fit s11">
+    <div class="frame">
+      <div class="bar"><span>DRAWING NO. NF-2026-01</span><span>SCALE 1:1 · REV A</span></div>
+      <h3 class="name">NUR FAJAR<br />AI SPECIALIST</h3>
+      <p class="dim">APPS &nbsp;·&nbsp; COMMUNITIES &nbsp;·&nbsp; PROGRAMS</p>
+      <div class="work">
+        <div><span class="k">Detail 01 — Revenue ops</span><span class="t">CRM pipeline</span><span class="h">9 agents · human review before send</span></div>
+        <div><span class="k">Measured</span><span class="h">~11h runtime vs 300+h manual (96% less)</span></div>
+      </div>
+      <div class="titleblock"><span>Designed by: N. Fajar</span><span>Checked: 4 managers</span><a href="#">hi@nurfajar.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 12 · RISOGRAPH / ZINE ═══════════ -->
+<section class="style" id="s12">
+  <div class="style__meta">
+    <span class="no">12</span><h2>Risograph / Zine</h2>
+    <p>Dua tinta overprint (biru + merah muda), misregistration sengaja, halftone, tape. Hangat, tangan-terasa, murah-mewah.</p>
+  </div>
+  <div class="mock fit s12">
+    <span class="tape"></span>
+    <div class="bar"><span>NUR FAJAR — ISSUE NO.1</span><span>OCT 2026</span></div>
+    <h3 class="name">Nur<br />Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities — printed in two inks.</p>
+    <div class="work"><span class="k">AI build · Revenue ops</span><span class="t">CRM pipeline</span><span class="h">~11h runtime vs 300+h manual (96% less)</span></div>
+    <div class="foot"><span>"He takes ownership, learns fast, and delivers." — Arnold D.</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 13 · DARK ACADEMIA ═══════════ -->
+<section class="style" id="s13">
+  <div class="style__meta">
+    <span class="no">13</span><h2>Dark Academia</h2>
+    <p>Coklat tua, krem, emas redup, serif klasik dengan italic. Perpustakaan tua yang tenang — kredibel dan berwibawa.</p>
+  </div>
+  <div class="mock fit s13">
+    <div class="frame">
+      <div class="bar"><span>COLLECTION I</span><span>MMXXVI</span></div>
+      <h3 class="name">Nur Fajar</h3>
+      <p class="tag">AI specialist who builds apps and communities.</p>
+      <div class="rule">❦</div>
+      <div class="work">
+        <span class="no">I.</span><span class="t">CRM pipeline</span>
+        <span class="h">~11h runtime vs 300+h manual — 96% less, with a human checking before anything sends.</span>
+      </div>
+      <p class="quote">"He takes ownership, learns fast, and delivers."</p>
+      <p class="who">Arnold Doray — Former manager, Terra AI</p>
+      <div class="foot"><span>Chapter one of six</span><a href="#">hi@nurfajar.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 14 · RETRO OS (WIN95) ═══════════ -->
+<section class="style" id="s14">
+  <div class="style__meta">
+    <span class="no">14</span><h2>Retro OS — Windows 95</h2>
+    <p>Desktop parodi: jendela, title bar navy, bevel, taskbar. Nostalgia yang lucu tapi rapi — portfolio kreatif bertema OS.</p>
+  </div>
+  <div class="mock fit s14">
+    <div class="window">
+      <div class="titlebar"><span>NUR_FAJAR.EXE — Portfolio 2026</span><span class="tbtns"><span class="titlebtn">_</span><span class="titlebtn">□</span><span class="titlebtn">×</span></span></div>
+      <div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>
+      <div class="body">
+        <h3 class="name">Nur Fajar</h3>
+        <p class="tag">AI specialist who builds apps and communities.</p>
+        <div class="group">
+          <span class="k">C:\work\crm-pipeline</span>
+          <span>AI build · Revenue ops — 9 Python + LLM agents, human approval before sending.</span>
+          <span class="h">Result: ~11h runtime vs 300+h manual (96% less)</span>
+        </div>
+        <div class="btnrow"><span class="btn">Download CV</span><span class="btn">Email me</span></div>
+      </div>
+    </div>
+    <div class="taskbar"><span class="taskbtn">Start</span><span>Nur_Fajar.exe — running</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ 15 · ZEN MINIMAL ═══════════ -->
+<section class="style" id="s15">
+  <div class="style__meta">
+    <span class="no">15</span><h2>Zen Minimal / Jepang</h2>
+    <p>Ruang kosong sangat besar, satu enso, teks vertikal, suara kecil. Tenang dan dewasa — konfidensi lewat pengurangan.</p>
+  </div>
+  <div class="mock fit s15">
+    <div class="wrap">
+      <div class="bar"><span>N. FAJAR</span><span>二〇二六</span></div>
+      <p class="vtext">AI SPECIALIST · APPS · COMMUNITIES</p>
+      <span class="enso"></span>
+      <h3 class="name">Nur Fajar</h3>
+      <p class="tag">Turning ideas into things that help people learn, work, and solve problems better.</p>
+      <div class="work"><span>01</span><span class="t">CRM pipeline</span><span>96% less manual</span></div>
+      <div class="foot"><span>Available immediately</span><a href="#">hi@nurfajar.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 16 · KINETIC TYPOGRAPHY ═══════════ -->
+<section class="style" id="s16">
+  <div class="style__meta">
+    <span class="no">16</span><h2>Kinetic Typography</h2>
+    <p>Teks adalah seluruh desain — raksasa, berlapis solid/outline, satu kata merah yang bergerak. energi poster musik.</p>
+  </div>
+  <div class="mock fit s16">
+    <div class="bar"><span>NUR FAJAR</span><span>FOLIO — 2026</span></div>
+    <div class="stack">
+      <span class="w">Builds apps</span>
+      <span class="w o">Builds</span>
+      <span class="w r move">Communities</span>
+      <span class="w small">AI specialist — CRM pipeline: 96% less manual outreach.</span>
+      <span class="w o">Ships.</span>
+    </div>
+    <div class="foot"><span>WORK · PRAISE · HISTORY</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 17 · INDUSTRIAL / MILITARY TERMINAL ═══════════ -->
+<section class="style" id="s17">
+  <div class="style__meta">
+    <span class="no">17</span><h2>Industrial / Military Terminal</h2>
+    <p>Panel logam, sekrup, garis hazard, font stencil, barcode. Swiss-print dipadu panel pesawat — tegas dan mekanis.</p>
+  </div>
+  <div class="mock fit s17">
+    <div class="panel">
+      <span class="screw sc1"></span><span class="screw sc2"></span><span class="screw sc3"></span><span class="screw sc4"></span>
+      <div class="bar"><span>UNIT: NF-01</span><span>STATUS: OPERATIONAL</span></div>
+      <h3 class="name">NUR FAJAR</h3>
+      <p class="tag">AI specialist · Apps · Communities · Programs</p>
+      <div class="work">
+        <span class="k">Module 01 — Revenue ops</span>
+        <span class="t">CRM PIPELINE</span>
+        <span class="h">~11h runtime vs 300+h manual (96% less)</span>
+      </div>
+      <span class="barcode"></span>
+      <div class="foot"><span>Approved by: A. Doray, CTO</span><a href="#">hi@nurfajar.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 18 · CLAYMORPHISM ═══════════ -->
+<section class="style" id="s18">
+  <div class="style__meta">
+    <span class="no">18</span><h2>Claymorphism</h2>
+    <p>Bentuk tanah liat mengembang: radius besar, double shadow manis, pastel. Ramah dan lembut — cocok produk consumer, jarang untuk hiring.</p>
+  </div>
+  <div class="mock fit s18">
+    <span class="shape c1"></span><span class="shape c2"></span>
+    <div class="card">
+      <div class="bar"><span>Nur Fajar</span><span class="chip">Open to work ✦</span></div>
+      <h3 class="name">Nur <span>Fajar</span></h3>
+      <p class="tag">AI specialist who builds apps and communities.</p>
+      <div class="work"><span class="k">AI build · Revenue ops</span><span class="t">CRM pipeline</span><span class="h">~11h runtime vs 300+h manual (96% less)</span></div>
+      <div class="foot"><a href="#">See the work</a><span>hi@nurfajar.com</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 19 · VAPORWAVE ═══════════ -->
+<section class="style" id="s19">
+  <div class="style__meta">
+    <span class="no">19</span><h2>Vaporwave / Synthwave</h2>
+    <p>Matahari terbenam bergaris, grid neon perspektif, katakana, glow pink-cyan. Estetika internet 2015 — subkultural dan kencang.</p>
+  </div>
+  <div class="mock fit s19">
+    <span class="sun"></span><span class="gridfloor"></span><span class="jp">ヌル・ファジャル</span>
+    <div class="content">
+      <div class="bar"><span>NF//FOLIO</span><span>2026.A.D</span></div>
+      <h3 class="name">NUR FAJAR</h3>
+      <p class="tag">AI specialist · apps · communities</p>
+      <div class="work"><span class="k">Transmission 01</span><span class="t">CRM PIPELINE</span><span class="h">96% LESS MANUAL · HUMAN-IN-THE-LOOP</span></div>
+      <div class="foot"><span>SIGNAL: STRONG</span><a href="#">hi@nurfajar.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 20 · DARK LUXURY ═══════════ -->
+<section class="style" id="s20">
+  <div class="style__meta">
+    <span class="no">20</span><h2>Dark Luxury</h2>
+    <p>Hitam pekat, emas tipis, serif italic, corner ornaments. Sunyi dan mahal — sedikit kata, banyak ruang.</p>
+  </div>
+  <div class="mock fit s20">
+    <div class="frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <p class="bar">Portfolio</p>
+      <h3 class="name">Nur <em>Fajar</em></h3>
+      <p class="tag">AI specialist · apps · communities</p>
+      <div class="work"><span class="t">CRM pipeline</span><span class="h">96% LESS · VERIFIED</span></div>
+      <div class="foot"><span>By appointment</span><a href="#">hi@nurfajar.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 21 · VELOCITY GROTESQUE ═══════════ -->
+<section class="style" id="s21">
+  <div class="style__meta">
+    <span class="no">21</span><h2>Velocity Grotesque <span style="color:#4ade80">▦ awwwards</span></h2>
+    <p>Bahasa Studio Freight / basement.studio: tipe oranye-hitam raksasa yang bergerak mengikuti kecepatan scroll. Demo: baris berjalan hidup.</p>
+  </div>
+  <div class="mock fit s21">
+    <div class="bar"><span>Nur Fajar</span><span>Folio 2026</span></div>
+    <div class="big">
+      <span class="line">AI specialist</span>
+      <div class="track"><span>Builds apps — Builds communities — Builds programs — Builds apps — Builds communities — Builds programs — </span></div>
+      <span class="line alt">Ships weekly</span>
+    </div>
+    <div class="row">
+      <div class="cardw"><span class="k">Work 01 — Revenue ops</span><span class="t">CRM pipeline</span><span class="h">~11h runtime vs 300+h manual (96% less)</span></div>
+      <div class="foot"><span>Available immediately</span><a href="#">hi@nurfajar.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 22 · BROKEN GRID / SWISS-PUNK ═══════════ -->
+<section class="style" id="s22">
+  <div class="style__meta">
+    <span class="no">22</span><h2>Broken Grid / Swiss-Punk <span style="color:#4ade80">▦ awwwards</span></h2>
+    <p>Bahasa Obys Agency: grid dipecah, tipe miring tumpang tindih, serif × grotesk × mono, grain film. Kacau yang terukur.</p>
+  </div>
+  <div class="mock fit s22">
+    <div class="field">
+      <span class="piece p1">Nur Fajar</span>
+      <span class="piece p2">builds apps<br />&amp; communities</span>
+      <span class="piece p3">WORK 01 — CRM pipeline. AI build, revenue ops. 9 Python + LLM agents, human review before anything sends. ~11h runtime vs 300+h manual (96% less).</span>
+      <span class="piece p4">Folio</span>
+      <span class="piece p5">OCT 2026 — TANGERANG, ID</span>
+      <span class="piece p6">"He takes ownership, learns fast, and delivers." — Arnold Doray, CTO, Wingfin</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 23 · HORIZONTAL SCROLL GALLERY ═══════════ -->
+<section class="style" id="s23">
+  <div class="style__meta">
+    <span class="no">23</span><h2>Horizontal Scroll Gallery <span style="color:#4ade80">▦ awwwards</span></h2>
+    <p>Galeri menyamping dengan snap — pola Locomotive. Scroll ke samping di strip bawah (bisa pakai roda mouse / geser).</p>
+  </div>
+  <div class="mock s23">
+    <div class="bar"><span>Selected work</span><span>Scroll sideways →</span></div>
+    <div class="rail">
+      <div class="card hi"><span class="no">01</span><span class="t">CRM pipeline</span><span class="h">AI build · Revenue ops — ~11h runtime vs 300+h manual (96% less)</span></div>
+      <div class="card"><span class="no">02</span><span class="t">Chatbot curriculum engine</span><span class="h">Enablement · 5 programs, 150+ participants</span></div>
+      <div class="card"><span class="no">03</span><span class="t">Web builds</span><span class="h">3 sites live — Next.js + TS + Vercel</span></div>
+      <div class="card"><span class="no">04</span><span class="t">Social content</span><span class="h">4 alumni videos · 24 posts published</span></div>
+      <div class="card"><span class="no">05</span><span class="t">Remember</span><span class="h">Desktop app · in development</span></div>
+      <div class="card"><span class="no">06</span><span class="t">Nyunda</span><span class="h">Android app · in development</span></div>
+    </div>
+    <p class="hint">← drag / scroll →</p>
+  </div>
+</section>
+
+<!-- ═══════════ 24 · VARIABLE FONT PLAYGROUND ═══════════ -->
+<section class="style" id="s24">
+  <div class="style__meta">
+    <span class="no">24</span><h2>Variable Font Playground <span style="color:#4ade80">▦ awwwards</span></h2>
+    <p>Huruf variable yang bobot & lebarnya bereaksi ke posisi kursor. Favorit juri Awwwards — halaman terasa hidup tanpa satu pun gambar.</p>
+  </div>
+  <div class="mock fit s24">
+    <div class="bar"><span>NF-2026</span><span>MOVE YOUR CURSOR</span></div>
+    <h3 class="name" id="vf-name">Nur Fajar</h3>
+    <p class="hint" id="vf-readout">wght 800 · wdth 100</p>
+    <div class="work"><span>Work 01 — CRM pipeline · 96% less manual</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 25 · SCROLLYTELLING PINNED ═══════════ -->
+<section class="style" id="s25">
+  <div class="style__meta">
+    <span class="no">25</span><h2>Scrollytelling Pinned <span style="color:#4ade80">▦ awwwards</span></h2>
+    <p>Pola Apple AirPods: adegan dipaku, teks berganti saat kamu scroll melewatinya. Gulir pelan melewati kotak ini.</p>
+  </div>
+  <div class="mock s25">
+    <div class="stage"><p class="cap">SCROLL ↓<br /><b id="s25-readout">Chapter 1 — the build</b></p></div>
+    <div class="steps">
+      <div class="step on"><p>Thousands of raw contacts. No qualification engine. A sales team with no time.</p></div>
+      <div class="step"><p>So Fajar built 9 Python + LLM agents — with a human checking before anything sends.</p></div>
+      <div class="step"><p>~11h runtime vs 300+h manual. 96% less outreach time.</p></div>
+      <div class="step"><p>That is what an AI specialist does. hi@nurfajar.com</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 26 · TOPOGRAPHIC CONTOUR ═══════════ -->
+<section class="style" id="s26">
+  <div class="style__meta">
+    <span class="no">26</span><h2>Topographic Contour <span style="color:#4ade80">▦ awwwards</span></h2>
+    <p>Garis kontur peta topografi — saudara langsung dari atlas-mu, tapi padang bukan langit. Tenang dan ilmiah.</p>
+  </div>
+  <div class="mock fit s26">
+    <svg class="contours" viewBox="0 0 1100 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <path d="M-20,120 C160,60 300,150 460,120 C640,88 760,170 920,140 C1020,122 1080,140 1130,130" />
+      <path d="M-20,190 C170,130 320,215 480,185 C660,152 780,240 940,208 C1040,188 1090,208 1130,198" />
+      <path class="mj" d="M-20,265 C180,200 340,290 500,258 C680,224 800,315 960,282 C1055,262 1095,280 1130,272" />
+      <path d="M-20,340 C190,272 360,365 520,332 C700,296 820,390 980,356 C1060,338 1100,352 1130,346" />
+      <path d="M-20,415 C200,345 380,440 540,406 C720,368 840,464 1000,430 C1070,414 1105,426 1130,420" />
+      <path class="mj" d="M-20,490 C210,418 400,515 560,480 C740,440 860,538 1020,504 C1075,492 1108,500 1130,494" />
+      <path d="M-20,60 C150,10 290,90 450,62 C630,30 750,105 910,78 C1010,60 1080,78 1130,68" />
+    </svg>
+    <div class="inner">
+      <div class="bar"><span>NUR FAJAR</span><span>ELEV. 600 M — OCT 2026</span></div>
+      <h3 class="name">Nur Fajar</h3>
+      <p class="tag">AI specialist who builds apps and communities.</p>
+      <div class="work"><span class="t">01 — CRM pipeline · 96% less manual</span><a href="#">hi@nurfajar.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 27 · ASCII / GENERATIVE CANVAS ═══════════ -->
+<section class="style" id="s27">
+  <div class="style__meta">
+    <span class="no">27</span><h2>ASCII / Generative Canvas <span style="color:#4ade80">▦ awwwards</span></h2>
+    <p>Kode sebagai tekstur hidup: medan karakter ASCII yang berdenyut. Kode bisa menggambar apa pun — angka kanon, monogram, bentuk rasi.</p>
+  </div>
+  <div class="mock fit s27">
+    <div class="head"><span>NF//GEN — 60FPS</span><span>SEED 2026</span></div>
+    <canvas id="s27-canvas"></canvas>
+    <h3 class="name">NUR FAJAR</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="foot"><span>WORK 01 — CRM PIPELINE · 96% LESS</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 28 · BRUTAL LUXURY ═══════════ -->
+<section class="style" id="s28">
+  <div class="style__meta">
+    <span class="no">28</span><h2>Brutal Luxury (Balenciaga)</h2>
+    <p>Helvetica polos, tanpa warna, tanpa shadow, tanpa motion — kepercayaan diri ekstrem lewat pengurangan total. Paling berani justru karena diam.</p>
+  </div>
+  <div class="mock fit s28">
+    <div class="bar"><span>Nur Fajar</span><span>Portfolio — 2026</span></div>
+    <h3 class="name">AI specialist who builds apps and communities.</h3>
+    <p class="tag">Selected work: CRM pipeline for Terra AI. 9 Python and LLM agents, one human review. ~11h runtime vs 300+h manual — 96% less outreach time.</p>
+    <div class="work"><span>Work 01 of 06</span><span>Next: Chatbot curriculum engine ↓</span></div>
+    <div class="foot"><span>hi@nurfajar.com</span><span>LinkedIn — CV</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ 29 · APPLE ═══════════ -->
+<section class="style" id="s29">
+  <div class="style__meta"><span class="no">29</span><h2>Apple</h2><p>Putih, tipe produk raksasa, abu, biru link. Dunia v7 — kini sebagai perbandingan langsung.</p></div>
+  <div class="mock fit s29">
+    <div class="bar"><span>◈</span><span>Work&nbsp;&nbsp;Praise&nbsp;&nbsp;History&nbsp;&nbsp;Contact</span></div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <p class="links"><span>See the work &gt;</span><span>Download CV &gt;</span></p>
+    <div class="tiles">
+      <div class="tile"><p class="t">CRM pipeline</p><p class="h">96% less manual outreach</p></div>
+      <div class="tile"><p class="t">Curriculum engine</p><p class="h">5 programs · 150+ participants</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 30 · GOOGLE ═══════════ -->
+<section class="style" id="s30">
+  <div class="style__meta"><span class="no">30</span><h2>Google</h2><p>Putih, Roboto, empat warna brand, pill pencarian, kartu bersih. Universal dan datar.</p></div>
+  <div class="mock fit s30">
+    <div class="bar"><span>Gmail-style links here</span></div>
+    <p class="logo"><span class="r1">N</span><span class="b1">u</span><span class="y1">r</span>&nbsp;<span class="b1">F</span><span class="g1">a</span><span class="r1">j</span><span class="y1">a</span><span class="g1">r</span></p>
+    <div class="search"><span>nur fajar — AI specialist portfolio</span><span>🔍</span></div>
+    <div class="cards">
+      <div class="card"><b>Work 01</b><br />CRM pipeline — 96% less manual outreach</div>
+      <div class="card"><b>Work 02</b><br />Chatbot curriculum engine — 150+ participants</div>
+      <div class="card"><b>Praise</b><br />"He takes ownership, learns fast, and delivers."</div>
+    </div>
+    <p class="foot">Nur Fajar — AI specialist · <a href="#">hi@nurfajar.com</a></p>
+  </div>
+</section>
+
+<!-- ═══════════ 31 · STRIPE ═══════════ -->
+<section class="style" id="s31">
+  <div class="style__meta"><span class="no">31</span><h2>Stripe</h2><p>Gradien anguler khas di kanan atas, navy, tombol pill. SaaS paling ditiru di dunia.</p></div>
+  <div class="mock fit s31">
+    <div class="content">
+      <div class="bar"><span>Nur Fajar</span><span>Work · Contact</span></div>
+      <h3 class="name">AI specialist who builds apps and communities.</h3>
+      <p class="tag">From 9-agent pipelines to 5 learning programs — built end to end, measured in hours saved.</p>
+      <span class="btn">See selected work →</span>
+      <div class="foot"><span>Work 01 — CRM pipeline · 96% less manual</span><a href="#">hi@nurfajar.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 32 · LINEAR ═══════════ -->
+<section class="style" id="s32">
+  <div class="style__meta"><span class="no">32</span><h2>Linear</h2><p>Hitam pekat, glow ungu samar di atas, border tipis, tipografi presisi. Standar SaaS modern.</p></div>
+  <div class="mock fit s32">
+    <div class="bar"><span>Nur Fajar</span><span>Work · Praise · Contact</span></div>
+    <p class="eyebrow">Folio 2026</p>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="cta"><a href="#">View work</a><a href="#">hi@nurfajar.com</a></div>
+    <div class="foot"><span>Work 01 — CRM pipeline · 96% less manual outreach</span><span>Available immediately</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ 33 · VERCEL ═══════════ -->
+<section class="style" id="s33">
+  <div class="style__meta"><span class="no">33</span><h2>Vercel</h2><p>Hitam-putih absolut, segitiga, mono detail. Nol dekorasi — geometri dan tipografi saja.</p></div>
+  <div class="mock fit s33">
+    <div class="bar"><span>▲</span><span>NF — 2026</span></div>
+    <p class="tri">▲</p>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <p class="mono">work[01] = "CRM pipeline" · metric: 96% less manual</p>
+    <div class="foot"><a href="#">Work</a><a href="#">Praise</a><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 34 · NOTION ═══════════ -->
+<section class="style" id="s34">
+  <div class="style__meta"><span class="no">34</span><h2>Notion</h2><p>Halaman dokumen dengan ikon emoji, callout abu, link bergaris bawah. Hangat dan akrab.</p></div>
+  <div class="mock fit s34">
+    <div class="bar"><span>Nur Fajar</span><span>Share · ⋯</span></div>
+    <div class="pageicon">🤖</div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="callout"><span class="em">💡</span><span>Work 01 — CRM pipeline: 9 Python + LLM agents, human approval before sending. Result: 96% less manual outreach.</span></div>
+    <div class="foot"><span>Last edited October 2026</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 35 · FIGMA ═══════════ -->
+<section class="style" id="s35">
+  <div class="style__meta"><span class="no">35</span><h2>Figma</h2><p>Putih dengan chip lima warna brand, heading tebal, kartu lembut. Playful-presisi.</p></div>
+  <div class="mock fit s35">
+    <div class="bar"><span class="flogo"><i style="background:#f24e1e"></i><i style="background:#a259ff"></i><i style="background:#1abcfe"></i><i style="background:#0acf83"></i></span><span>Menu</span></div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="chips"><span class="c1">AI build</span><span class="c2">Curriculum</span><span class="c3">Web builds</span><span class="c4">Content</span><span class="c5">Apps</span></div>
+    <div class="workcard"><span class="t">CRM pipeline</span><span>~11h runtime vs 300+h manual (96% less) — 9 Python + LLM agents.</span></div>
+    <div class="foot"><span>Work 01 of 06</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 36 · GITHUB ═══════════ -->
+<section class="style" id="s36">
+  <div class="style__meta"><span class="no">36</span><h2>GitHub</h2><p>Dark code UI: repo card, commit message, syntax warna. Bahasa asli developer.</p></div>
+  <div class="mock fit s36">
+    <div class="bar"><span>nurfajar</span><span>Folio 2026</span></div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="repo">
+      <span class="t">crm-pipeline/</span>
+      <span><span class="g">+2,140</span> <span class="r">-312</span> · 9 agents · human-in-the-loop</span>
+      <span>commit: "ship it — <span class="bl">96% less manual outreach</span>"</span>
+      <span class="badge">Merged · Oct 2026</span>
+    </div>
+    <div class="foot"><span>"He takes ownership, learns fast, and delivers." — Arnold D.</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 37 · OPENAI ═══════════ -->
+<section class="style" id="s37">
+  <div class="style__meta"><span class="no">37</span><h2>OpenAI</h2><p>Putih minimal, geometri bersih, satu kolom prompt di tengah. Tenang hampir tanpa warna.</p></div>
+  <div class="mock fit s37">
+    <div class="bar"><span>Nur Fajar</span><span>Menu</span></div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="prompt"><span>Ask about my work — try "what did the CRM pipeline save?"</span><span>→</span></div>
+    <div class="foot"><span>Work · Praise · History</span><span>hi@nurfajar.com</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ 38 · ANTHROPIC / CLAUDE ═══════════ -->
+<section class="style" id="s38">
+  <div class="style__meta"><span class="no">38</span><h2>Anthropic / Claude</h2><p>Gading hangat, coral #d97757, headline serif. Ramah-humanis — arah brand AI yang sedang naik.</p></div>
+  <div class="mock fit s38">
+    <div class="bar"><span>Nur Fajar</span><span>Work · Contact</span></div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="quote">"He takes ownership, learns fast, and delivers. I was extremely happy with his work."<span class="who">— Arnold Doray · Former manager, Terra AI · Now CTO, Wingfin</span></div>
+    <span class="btn">See the work</span>
+    <div class="foot"><span>Available immediately</span><span>hi@nurfajar.com</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ 39 · SPOTIFY ═══════════ -->
+<section class="style" id="s39">
+  <div class="style__meta"><span class="no">39</span><h2>Spotify</h2><p>Hitam + hijau #1db954, heading extra-bold, pill tebal. Loud dan percaya diri.</p></div>
+  <div class="mock fit s39">
+    <div class="bar"><span class="logo">◍</span><span>Portfolio · 2026</span></div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <span class="btn">▶ Play the folio</span>
+    <div class="foot"><span>Now shipping: CRM pipeline — 96% less manual</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 40 · AIRBNB ═══════════ -->
+<section class="style" id="s40">
+  <div class="style__meta"><span class="no">40</span><h2>Airbnb</h2><p>Rausch merah muda, kartu membulat, foto-gradien, search pill. Hospitality untuk data.</p></div>
+  <div class="mock fit s40">
+    <div class="bar"><span class="alogo">◉ Nur Fajar</span><span class="searchpill">Anywhere · Anytime · Add humans</span></div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities — available for your team.</p>
+    <div class="cards">
+      <div class="card"><span class="img"></span><p class="b"><b>CRM pipeline</b><br />96% less manual outreach</p></div>
+      <div class="card"><span class="img" style="background:linear-gradient(135deg,rgba(0,120,255,.15),rgba(0,200,255,.3))"></span><p class="b"><b>Curriculum engine</b><br />150+ participants</p></div>
+      <div class="card"><span class="img" style="background:linear-gradient(135deg,rgba(255,200,0,.2),rgba(255,120,0,.25))"></span><p class="b"><b>Social content</b><br />24 posts · 4 alumni videos</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 41 · SLACK ═══════════ -->
+<section class="style" id="s41">
+  <div class="style__meta"><span class="no">41</span><h2>Slack</h2><p>Channel list, aubergine + empat warna, kartu putih membulat. Kolaborasi sebagai metafora.</p></div>
+  <div class="mock fit s41">
+    <div class="bar"><span class="hash">#</span><span>Nur Fajar — portfolio</span></div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="chans">
+      <span class="chan"><span class="ch1">#</span> crm-pipeline — shipped, 96% less manual outreach</span>
+      <span class="chan"><span class="ch2">#</span> curriculum-engine — 5 programs · 150+ participants</span>
+      <span class="chan"><span class="ch3">#</span> praise — "He takes ownership, learns fast."</span>
+      <span class="chan"><span class="ch4">#</span> contact — hi@nurfajar.com · replies in 24h</span>
+    </div>
+    <div class="foot"><span>Available immediately</span><span>Onsite Indonesia · open to relocate</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ 42 · DISCORD ═══════════ -->
+<section class="style" id="s42">
+  <div class="style__meta"><span class="no">42</span><h2>Discord</h2><p>Blurple penuh, heading chunky, pill putih. Berani dan muda.</p></div>
+  <div class="mock fit s42">
+    <div class="bar"><span>Nur Fajar</span><span>Folio 2026</span></div>
+    <h3 class="name">Imagine who<br />ships your AI.</h3>
+    <p class="tag">Nur Fajar — AI specialist who builds apps and communities. CRM pipeline: 96% less manual outreach, human-approved.</p>
+    <span class="btn">Open the folio</span>
+    <div class="foot"><span>Work · Praise · History</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 43 · FRAMER ═══════════ -->
+<section class="style" id="s43">
+  <div class="style__meta"><span class="no">43</span><h2>Framer</h2><p>Hitam, gradient-border card (biru→pink), heading center. Sleek no-code era.</p></div>
+  <div class="mock fit s43">
+    <div class="bar"><span>Nur Fajar</span><span>Work · Contact</span></div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="card"><span><span class="k">WORK 01 — REVENUE OPS</span><br />CRM pipeline · 96% less manual</span><span>→</span></div>
+    <div class="foot"><span>Available immediately</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 44 · RAYCAST ═══════════ -->
+<section class="style" id="s44">
+  <div class="style__meta"><span class="no">44</span><h2>Raycast</h2><p>Hitam + glow merah-oranye, command bar ⌘K sebagai bintang. Interaksi sebagai identitas.</p></div>
+  <div class="mock fit s44">
+    <div class="bar"><span>Nur Fajar</span><span>Folio</span></div>
+    <div class="cmd">
+      <div class="input"><span>nur fajar…</span><span class="k">⌘K</span></div>
+      <div class="item on"><span>▸ View CRM pipeline — 96% less manual</span><span>↵</span></div>
+      <div class="item"><span>Curriculum engine — 150+ participants</span></div>
+      <div class="item"><span>Email Fajar — hi@nurfajar.com</span></div>
+    </div>
+    <h3 class="name">Nur Fajar</h3>
+    <div class="foot">AI specialist who builds apps and communities — <a href="#">start here</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 45 · SUPABASE ═══════════ -->
+<section class="style" id="s45">
+  <div class="style__meta"><span class="no">45</span><h2>Supabase</h2><p>Hitam + hijau #3ecf8e + amber, blok kode, mono. Dev-first yang lugas.</p></div>
+  <div class="mock fit s45">
+    <div class="bar"><span>Nur Fajar</span><span>Docs · Work</span></div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="code">
+      <span class="cm">// work/01 — revenue ops</span><br />
+      <span class="c">agents:</span> 9 <span class="cm">(python + llm)</span><br />
+      <span class="c">review:</span> human-in-the-loop<br />
+      <span class="a">result:</span> "~11h runtime vs 300+h manual"
+    </div>
+    <div class="foot"><span>in production since Jun 2026</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 46 · TAILWIND CSS ═══════════ -->
+<section class="style" id="s46">
+  <div class="style__meta"><span class="no">46</span><h2>Tailwind CSS</h2><p>Slate gelap, teks gradient sky-cyan, blok kode rounded. Estetika framework modern.</p></div>
+  <div class="mock fit s46">
+    <div class="bar"><span>Nur Fajar</span><span>Folio v8.0</span></div>
+    <h3 class="name">Nur <span>Fajar</span></h3>
+    <p class="tag">AI specialist who builds apps and communities.</p>
+    <div class="work">
+      <span>const impact = {</span><br />
+      &nbsp;&nbsp;<span class="g">manualOutreach:</span> "−96%",<br />
+      &nbsp;&nbsp;<span class="g">runtime:</span> "~11h vs 300+h"
+    </div>
+    <div class="foot"><span>Work 01 — CRM pipeline</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 47 · ARC ═══════════ -->
+<section class="style" id="s47">
+  <div class="style__meta"><span class="no">47</span><h2>Arc — The Browser Company</h2><p>Gradien pasti hangat, sidebar tab membulat, heading extra-bold. Ceria tanpa norak.</p></div>
+  <div class="mock fit s47">
+    <div class="bar"><span>✦ Nur Fajar</span><span>2026</span></div>
+    <div class="side">
+      <span class="tab on">Nur Fajar — AI specialist</span>
+      <span class="tab">CRM pipeline · 96% less</span>
+      <span class="tab">Curriculum engine · 150+</span>
+      <span class="tab">hi@nurfajar.com</span>
+    </div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI specialist who builds apps and communities — and keeps every tab in order.</p>
+    <div class="foot"><span>Available immediately</span><a href="#">LinkedIn · CV</a></div>
+  </div>
+</section>
+
+<!-- ═══════════ 48 · SPACEX / TESLA ═══════════ -->
+<section class="style" id="s48">
+  <div class="style__meta"><span class="no">48</span><h2>SpaceX / Tesla</h2><p>Hitam penuh, uppercase tracking lebar, dua tombol ghost. Sinematik dan dingin.</p></div>
+  <div class="mock fit s48">
+    <div class="bar"><span>NF</span><span>OCT 2026</span></div>
+    <h3 class="name">Nur Fajar</h3>
+    <p class="tag">AI Specialist · Apps · Communities</p>
+    <div class="ctas"><a href="#">Selected Work</a><a href="#">Contact</a></div>
+    <div class="foot"><span>MISSION: FULL-TIME ROLE</span><a href="#">hi@nurfajar.com</a></div>
+  </div>
+</section>
+
+<p class="board-note">
+  MOCKUP STATIS — bukan halaman produksi. Font dimuat dari Google Fonts (butuh internet).
+  Detail tiap arah bisa digali lebih jauh setelah satu arah dipilih.
+</p>
+
+<script>
+  /* 24 — Variable font playground: bobot & lebar mengikuti kursor. */
+  (function () {
+    var name = document.getElementById('vf-name');
+    var readout = document.getElementById('vf-readout');
+    var sec = document.getElementById('s24');
+    if (!name || !sec) return;
+    sec.addEventListener('pointermove', function (e) {
+      var r = sec.getBoundingClientRect();
+      var x = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+      var y = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+      var wght = Math.round(200 + x * 700);            /* 200..900 */
+      var wdth = Math.round(70 + y * 55);              /* 70..125 */
+      name.style.fontVariationSettings = "'wght' " + wght + ", 'wdth' " + wdth;
+      if (readout) readout.textContent = 'wght ' + wght + ' · wdth ' + wdth;
+    });
+  })();
+
+  /* 25 — Scrollytelling: langkah aktif mengganti teks adegan yang dipaku. */
+  (function () {
+    var readout = document.getElementById('s25-readout');
+    var steps = document.querySelectorAll('#s25 .step');
+    var labels = ['Chapter 1 — the build', 'Chapter 2 — the agents', 'Chapter 3 — the result', 'Chapter 4 — the hire'];
+    if (!steps.length) return;
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          steps.forEach(function (s) { s.classList.toggle('on', s === entry.target); });
+          var i = Array.prototype.indexOf.call(steps, entry.target);
+          if (readout && labels[i]) readout.textContent = labels[i];
+        });
+      },
+      { rootMargin: '-45% 0px -45% 0px' }
+    );
+    steps.forEach(function (s) { io.observe(s); });
+  })();
+
+  /* 27 — ASCII canvas: medan karakter berdenyut (interferensi dua gelombang). */
+  (function () {
+    var cv = document.getElementById('s27-canvas');
+    if (!cv) return;
+    var ctx = cv.getContext('2d');
+    var RAMP = ' .:-=+*#%@';
+    var t = 0;
+    function size() {
+      cv.width = Math.floor(cv.clientWidth / 9);
+      cv.height = Math.floor(300 / 14);
+    }
+    size();
+    window.addEventListener('resize', size);
+    function frame(loop) {
+      var out = '';
+      for (var y = 0; y < cv.height; y++) {
+        for (var x = 0; x < cv.width; x++) {
+          var v =
+            Math.sin(x * 0.14 + t) +
+            Math.sin(y * 0.19 - t * 0.8) +
+            Math.sin((x + y) * 0.09 + t * 0.5);
+          var idx = Math.max(0, Math.min(RAMP.length - 1, Math.floor((v + 3) / 6 * RAMP.length)));
+          out += RAMP[idx];
+        }
+        out += '\n';
+      }
+      ctx.fillStyle = '#050805';
+      ctx.fillRect(0, 0, cv.width * 9, cv.height * 14);
+      ctx.fillStyle = '#7be07b';
+      ctx.font = '12px "JetBrains Mono", monospace';
+      ctx.fillText(out, 0, 12);
+      t += 0.045;
+      if (loop) requestAnimationFrame(function () { frame(true); });
+    }
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) frame(true);
+    else frame(false);
+  })();
+</script>
+
+</body>
+</html>

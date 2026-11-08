@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Supabase — Nur Fajar (mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&family=Press+Start+2P&family=Orbitron:wght@500;700;900&family=Nunito:wght@700;800;900&family=Allerta+Stencil&family=Space+Grotesk:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>:root{--bg:#121212;--ink:#ededed;--sub:#888888;--rule:#2e2e2e;--accent:#3ecf8e;--disp:Inter;--bodyf:Inter;}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--bodyf),system-ui,sans-serif;font-size:15px;line-height:1.7;min-height:100svh}
+a{color:var(--accent);text-decoration:none}
+::selection{background:var(--accent);color:var(--bg)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.bar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;padding:12px clamp(16px,3vw,36px);font-size:12px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.bar .lk{display:flex;gap:14px}.bar a{color:var(--sub)}.bar a:hover{color:var(--ink)}
+.shell{max-width:1060px;margin:0 auto;padding:0 clamp(16px,3vw,36px)}
+.hero{min-height:92svh;display:flex;flex-direction:column;justify-content:center}
+.meta{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);border-bottom:1px solid var(--rule);padding-bottom:10px}
+.display{font-family:var(--disp);font-weight:800;font-size:clamp(46px,11vw,130px);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;margin-top:clamp(24px,6vh,54px)}
+.tag{margin-top:18px;color:var(--sub);max-width:28em}
+.cta{margin-top:22px;display:flex;gap:14px;align-items:center}
+.btn{background:var(--accent);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:13px;font-weight:600}
+.lnk{color:var(--accent);font-size:13px;border-bottom:1px solid var(--accent)}
+.works{margin-top:clamp(30px,8vh,70px)}
+.wrow{display:grid;grid-template-columns:4rem 1fr;border-top:1px solid var(--rule);padding:20px 0;gap:4px 14px}
+.wrow .no{font-family:'JetBrains Mono',monospace;color:var(--sub);font-size:12px;padding-top:4px}
+.k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
+.t{font-family:var(--disp);font-weight:750;font-size:clamp(20px,3.4vw,34px);letter-spacing:-.015em}
+.h{color:var(--sub);font-size:13px;max-width:42em;margin-top:4px}
+.h b{color:var(--accent);font-weight:600}
+.praise{border-top:1px solid var(--rule);padding:26px 0}
+blockquote{font-size:clamp(17px,2.4vw,24px);font-weight:500;line-height:1.45;max-width:30em}
+.who{margin-top:10px;color:var(--sub);font-size:12px}
+.contact{border-top:1px solid var(--rule);padding:clamp(30px,7vh,64px) 0 34px}
+.mail{font-family:var(--disp);font-weight:750;font-size:clamp(24px,5vw,54px);color:var(--ink);letter-spacing:-.02em}
+.mail:hover{color:var(--accent)}
+.sub{margin-top:10px;color:var(--sub);font-size:13px}
+.pre{position:fixed;inset:0;background:var(--bg);z-index:50;visibility:hidden;opacity:0}
+.pbar{position:fixed;top:0;left:0;height:2px;width:0;background:var(--accent);z-index:60}
+.dim{display:flex;align-items:center;gap:10px;font-size:9px;color:var(--sub);margin-top:12px;letter-spacing:.14em;text-transform:uppercase}
+.dim::before,.dim::after{content:'';flex:1;height:1px;background:var(--rule)}
+@media(max-width:720px){.wrow{grid-template-columns:2.4rem 1fr}}
+
+.display{font-weight:700;letter-spacing:-.025em;text-transform:none;font-size:clamp(34px,7vw,72px)}
+    .code{margin-top:20px;border:1px solid var(--rule);border-radius:10px;background:#171717;padding:14px 16px;font-family:'JetBrains Mono';font-size:12px;line-height:1.9;color:#888;display:grid;gap:4px}
+    .code .g{color:#3ecf8e}.code .a{color:#fe8c00}.code .cm{color:#555}.t{font-weight:600}
+    .mail{font-weight:700;text-transform:none;letter-spacing:-.02em;font-size:clamp(22px,4.4vw,40px)}
+</style>
+</head>
+<body data-motion="reveal">
+<div class="pre"></div>
+<div class="pbar"></div>
+<div class="bar"><span>Supabase — mockup</span><span class="lk"><a href="../index.html">← hub</a><a href="../style-board.html">board</a></span></div>
+<main class="shell">
+  <header class="hero">
+    <div class="meta"><span>NUR FAJAR</span><span>FOLIO — OCT 2026</span></div>
+    <h1 class="display" data-split>Nur Fajar</h1>
+    <p class="tag" data-reveal>AI specialist who builds apps and communities.</p>
+    <div class="code" data-reveal><span class="cm">// work/01 — revenue ops</span><span><span class="g">agents:</span> 9 <span class="cm">(python + llm)</span></span><span><span class="g">review:</span> human-in-the-loop</span><span><span class="a">result:</span> "~11h runtime vs 300+h manual"</span></div>
+    <div class="cta" data-reveal><a class="btn" href="#">See selected work</a><a class="lnk" href="#">hi@nurfajar.com</a></div>
+  </header>
+  
+  <section class="works">
+    <div class="wrow" data-reveal><span class="no">01</span><div><p class="k">AI build · Revenue ops</p><p class="t">CRM pipeline</p><p class="h">~11h runtime vs 300+h manual (96% less) — 9 Python + LLM agents, human-in-the-loop.</p></div></div>
+    <div class="wrow" data-reveal><span class="no">02</span><div><p class="k">Enablement · Curriculum</p><p class="t">Chatbot curriculum engine</p><p class="h">5 programs · 25+ live sessions · 150+ participants, owned end to end.</p></div></div>
+    <div class="wrow" data-reveal><span class="no">03</span><div><p class="k">Web build</p><p class="t">Web builds that prove shipping</p><p class="h">3 sites live — Next.js + TypeScript + Vercel, plus 4 alumni videos and 24 published posts.</p></div></div>
+  </section>
+  <section class="praise" data-reveal>
+    <blockquote>"He takes ownership, learns fast, and delivers. Across programs, curriculum, and our AI data pipeline, I was extremely happy with his work."</blockquote>
+    <p class="who">Arnold Doray — Former manager, Terra AI · Now CTO, Wingfin</p>
+  </section>
+  <footer class="contact" data-reveal>
+    <a class="mail" href="mailto:hi@nurfajar.com">hi@nurfajar.com</a>
+    <p class="sub">Available immediately · remote or hybrid, onsite Indonesia, open to relocate · replies within 24 hours.</p>
+  </footer>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+  document.documentElement.style.scrollBehavior = 'auto';
+  var lenis = new Lenis({ lerp: 0.11 });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+  gsap.ticker.lagSmoothing(0);
+
+  /* Progres baca di atas. */
+  gsap.to('.pbar', { width: '100%', ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: true } });
+
+  /* Anchor halus. */
+  document.addEventListener('click', function (e) {
+    var a = (e.target instanceof Element) && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (!el) return;
+    e.preventDefault();
+    lenis.scrollTo(el, { offset: -60, duration: 1.2 });
+  });
+
+  /* Reveal: fade-up sekali. */
+  gsap.utils.toArray('[data-reveal]').forEach(function (el) {
+    gsap.from(el, { y: 26, autoAlpha: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 90%' } });
+  });
+
+  /* Heading display: dibelah per baris ber-mask. */
+  document.fonts.ready.then(function () {
+    gsap.utils.toArray('[data-split]').forEach(function (el) {
+      try {
+        var sp = SplitText.create(el, { type: 'lines', mask: 'lines' });
+        gsap.from(sp.lines, { yPercent: 115, duration: 1.05, ease: 'power4.out', stagger: 0.08,
+          scrollTrigger: { trigger: el, start: 'top 88%' } });
+      } catch (e) { /* biarkan tampil polos */ }
+    });
+    ScrollTrigger.refresh();
+  });
+
+  /* Count-up untuk [data-count]. */
+  gsap.utils.toArray('[data-count]').forEach(function (el) {
+    var target = parseFloat(el.getAttribute('data-count'));
+    if (!target) return;
+    var o = { v: 0 };
+    ScrollTrigger.create({ trigger: el, start: 'top 88%', once: true,
+      onEnter: function () { gsap.to(o, { v: target, duration: 1.4, ease: 'power2.out',
+        onUpdate: function () { el.textContent = String(Math.round(o.v)); } }); } });
+  });
+
+  /* Tilt lembut untuk [data-tilt]. */
+  if (matchMedia('(pointer: fine)').matches) {
+    document.querySelectorAll('[data-tilt] .card, [data-tilt] .wrow').forEach(function (card) {
+      card.addEventListener('pointermove', function (e) {
+        var r = card.getBoundingClientRect();
+        var rx = ((e.clientY - r.top) / r.height - 0.5) * -6;
+        var ry = ((e.clientX - r.left) / r.width - 0.5) * 6;
+        gsap.to(card, { rotateX: rx, rotateY: ry, transformPerspective: 600, duration: 0.4 });
+      });
+      card.addEventListener('pointerleave', function () { gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.5 }); });
+    });
+  }
+})();
+
+
+</script>
+</body>
+</html>
