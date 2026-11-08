@@ -20,14 +20,15 @@ testimonials.md
 # sendiri, yang kalau tidak diabaikan akan ikut terpungut vitest dan eslint
 # saat dijalankan dari root repo.
 /.claude/
-/.worktrees/
+/.superpowers/
+/.impeccable/
 /v2/
 
-# Brainstorming visual-companion sessions (local scratch, not deployed)
-.superpowers/
-
-# Keluaran tool review desain lokal (detector/critique), bukan bagian situs.
-/.impeccable/
+# Arsip lokal yang berat: sumber modul & catatan memuat nama orang / IP
+# pemberi kerja, plus cache agent - tetap di disk di dalam archive/, tetapi
+# tidak pernah masuk git.
+/archive/legacy-src/
+/archive/_local/
 
 # Sumber sprite hasil image-gen (lokal saja; hasilnya sudah diingest & dipublikasikan)
 /public/v6/sprites/_inbox/
