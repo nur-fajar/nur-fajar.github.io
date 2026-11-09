@@ -2,7 +2,6 @@
 
 import { Fragment, useEffect, useRef, useState } from 'react';
 
-import { Boxes } from '@/components/ui/background-boxes';
 import { Button } from '@/components/ui/button';
 import { V9_BIO_LINES, V9_HERO } from '@/content/v9';
 
@@ -49,18 +48,9 @@ export function Cta1() {
   }, []);
 
   return (
-    <section className="relative flex min-h-svh flex-col justify-center py-32">
+    <section className="pointer-events-none relative flex flex-col pt-32 pb-16">
       <div className="container mx-auto">
-        {/* Latar: sel-sel miring edisi light (components/ui/background-boxes).
-          Biar pintar lagaksmooth dan tidak mengganggu teks: tembok selnya
-          diturunkan ke opacity-70, plus satu vignette sanft di tepi yang
-          hanya menurunkan sampai 45% (bukan nol, supaya tidak kembali ada
-          zona putih polos). Konten di atasnya tetap membawa z-20. */}
-        <div className="absolute inset-0 overflow-hidden [mask-image:radial-gradient(ellipse_at_center,black_62%,rgba(0,0,0,0.45))]">
-          <Boxes className="opacity-70" />
-        </div>
-
-        <div className="relative z-20 flex flex-col items-center px-4 pb-32 pt-24 text-center">
+        <div className="relative z-20 flex flex-col items-center px-4 text-center">
           {/* Foto kartun menggantikan deretan badge bintang di referensi.
             Gelombang A+C (sonar ring + halo memantul), dibuat clickable
             ke aksi email pertama dari kanon.
@@ -70,7 +60,7 @@ export function Cta1() {
             tetap ada di globals.css dan menu kanonnya di V9_HERO.menu,
             jadi mengembalikannya tinggal merender ulang bloknya. */}
           <a
-            className="avatar-wave relative mb-10 inline-block rounded-2xl"
+            className="avatar-wave pointer-events-auto relative mb-10 inline-block rounded-2xl"
             href={V9_HERO.ctas[0].href}
             aria-label={V9_HERO.ctas[0].label}
           >
@@ -126,6 +116,7 @@ export function Cta1() {
               return (
                 <Button key={cta.href} asChild variant={i === 1 ? 'secondary' : 'default'}>
                   <a
+                    className="pointer-events-auto"
                     href={cta.href}
                     {...(isExternal ? { target: '_blank', rel: 'noreferrer' } : {})}
                   >

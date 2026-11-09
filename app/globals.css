@@ -220,6 +220,39 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   Footer wordmark raksasa (opsi A, pilihan founder 2026-11-08): huruf besar
+   garis luar saja, hover terisi ungu. Nama satu baris paksa (nowrap) dan
+   ukuran vw supaya selalu muat satu baris di segala lebar layar.
+   Berpasangan dengan komponen components/ui/giant-footer.tsx. */
+.footer-giant {
+  position: relative;
+  z-index: 20;
+  padding: 4px 20px 16px;
+  /* Wordmark dekoratif: kursor tembus supaya sel grid di belakangnya
+     menerima hover (pola yang sama dengan hero). */
+  pointer-events: none;
+}
+
+.footer-word {
+  margin: 0;
+  font-size: clamp(3rem, 12.5vw, 11rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--ink);
+  transition: color 220ms ease;
+}
+
+.footer-word:hover {
+  color: var(--g2);
+  -webkit-text-stroke-color: var(--g2);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    AURORA, design system nurfajar.com v3
 
    Bahasa visualnya: kertas nyaris putih, blob warna besar yang di-blur berat
